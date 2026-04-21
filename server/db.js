@@ -7,6 +7,29 @@ async function run() {
   try {
     await client.connect();
     console.log("Kết nối MongoDB thành công!");
+
+    const db = client.db("test"); // Đổi tên database nếu cần
+    const collection = db.collection("demo"); // Đổi tên collection nếu cần
+
+    // TẠO (Create)
+    const insertResult = await collection.insertOne({ name: "Nguyen Van A", age: 25 });
+    console.log("Thêm thành công:", insertResult.insertedId);
+
+    // ĐỌC (Read)
+    const findResult = await collection.find({}).toArray();
+    console.log("Dữ liệu hiện có:", findResult);
+
+    // CẬP NHẬT (Update)
+    const updateResult = await collection.updateOne(
+      { name: "Nguyen Van A" },
+      { $set: { age: 26 } }
+    );
+    console.log("Số bản ghi cập nhật:", updateResult.modifiedCount);
+
+    // XOÁ (Delete)
+    const deleteResult = await collection.deleteOne({ name: "Nguyen Van A" });
+    console.log("Số bản ghi đã xoá:", deleteResult.deletedCount);
+
   } catch (err) {
     console.error("Kết nối MongoDB thất bại:", err);
   } finally {
