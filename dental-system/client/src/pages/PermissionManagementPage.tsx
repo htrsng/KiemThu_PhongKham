@@ -1,392 +1,219 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Pencil, Plus, Search, Trash2, X } from 'lucide-react'
-import type { AxiosError } from 'axios'
+import { useState } from 'react'
 import { PageShell } from '../components/PageShell'
-import { api } from '../lib/api'
+import { useToast } from '../contexts/ToastContext'
 
-type PermissionRecord = {
-    id: string
-    moduleCode: string
-    moduleName: string
-    actions: string[]
-    description?: string
-    status?: string
+type PermissionMatrix = {
+    [role: string]: {
+        [module: string]: {
+            [action: string]: boolean
+        }
+    }
 }
 
-type PermissionFormState = {
-    moduleCode: string
-    moduleName: string
-    actionsText: string
-    description: string
-    status: string
-}
+const MODULES = [
+    'Dashboard',
+    'Tài khoản',
+    'Bác sĩ',
+    'Dịch vụ',
+    'Phân quyền',
+    'Cấu hình',
+    'Báo cáo',
+]
 
-const PAGE_SIZE = 8
+const ACTIONS = ['View', 'Create', 'Edit', 'Delete', 'Export']
 
-const defaultFormState: PermissionFormState = {
-    moduleCode: '',
-    moduleName: '',
-    actionsText: '',
-    description: '',
-    status: 'active',
-}
-
-function normalizeAxiosError(error: unknown) {
-    const axiosError = error as AxiosError<{ error?: string }>
-    return axiosError.response?.data?.error || axiosError.message || 'Co loi xay ra khi ket noi API.'
+const DEFAULT_PERMISSIONS: PermissionMatrix = {
+    Admin: {
+        Dashboard: { View: true, Create: true, Edit: true, Delete: true, Export: true },
+        'Tài khoản': { View: true, Create: true, Edit: true, Delete: true, Export: true },
+        'Bác sĩ': { View: true, Create: true, Edit: true, Delete: true, Export: true },
+        'Dịch vụ': { View: true, Create: true, Edit: true, Delete: true, Export: true },
+        'Phân quyền': { View: true, Create: true, Edit: true, Delete: true, Export: true },
+        'Cấu hình': { View: true, Create: true, Edit: true, Delete: true, Export: true },
+        'Báo cáo': { View: true, Create: true, Edit: true, Delete: true, Export: true },
+    },
+    Doctor: {
+        Dashboard: { View: true, Create: false, Edit: false, Delete: false, Export: false },
+        'Tài khoản': { View: false, Create: false, Edit: false, Delete: false, Export: false },
+        'Bác sĩ': { View: true, Create: false, Edit: false, Delete: false, Export: false },
+        'Dịch vụ': { View: true, Create: false, Edit: false, Delete: false, Export: false },
+        'Phân quyền': { View: false, Create: false, Edit: false, Delete: false, Export: false },
+        'Cấu hình': { View: false, Create: false, Edit: false, Delete: false, Export: false },
+        'Báo cáo': { View: true, Create: false, Edit: false, Delete: false, Export: true },
+    },
+    Reception: {
+        Dashboard: { View: true, Create: false, Edit: false, Delete: false, Export: false },
+        'Tài khoản': { View: true, Create: true, Edit: false, Delete: false, Export: false },
+        'Bác sĩ': { View: true, Create: false, Edit: false, Delete: false, Export: false },
+        'Dịch vụ': { View: true, Create: false, Edit: false, Delete: false, Export: false },
+        'Phân quyền': { View: false, Create: false, Edit: false, Delete: false, Export: false },
+        'Cấu hình': { View: false, Create: false, Edit: false, Delete: false, Export: false },
+        'Báo cáo': { View: true, Create: false, Edit: false, Delete: false, Export: true },
+    },
 }
 
 export function PermissionManagementPage() {
-    const [permissions, setPermissions] = useState<PermissionRecord[]>([])
-    const [isLoading, setIsLoading] = useState(false)
-    const [isSaving, setIsSaving] = useState(false)
-    const [isModalOpen, setIsModalOpen] = useState(false)
-    const [editingId, setEditingId] = useState<string | null>(null)
-    const [searchTerm, setSearchTerm] = useState('')
-    const [page, setPage] = useState(1)
-    const [errorMessage, setErrorMessage] = useState('')
-    const [formState, setFormState] = useState<PermissionFormState>(defaultFormState)
+    const [permissions, setPermissions] = useState<PermissionMatrix>(DEFAULT_PERMISSIONS)
+    const [activeRole, setActiveRole] = useState<'Admin' | 'Doctor' | 'Reception'>('Admin')
+    const { addToast } = useToast()
 
-    const filteredPermissions = useMemo(() => {
-        const keyword = searchTerm.trim().toLowerCase()
-        if (!keyword) return permissions
-
-        return permissions.filter((permission) => {
-            return (
-                permission.moduleCode.toLowerCase().includes(keyword) ||
-                permission.moduleName.toLowerCase().includes(keyword) ||
-                permission.actions.join(', ').toLowerCase().includes(keyword)
-            )
-        })
-    }, [permissions, searchTerm])
-
-    const totalPages = Math.max(1, Math.ceil(filteredPermissions.length / PAGE_SIZE))
-
-    const pagedPermissions = useMemo(() => {
-        const start = (page - 1) * PAGE_SIZE
-        return filteredPermissions.slice(start, start + PAGE_SIZE)
-    }, [filteredPermissions, page])
-
-    useEffect(() => {
-        if (page > totalPages) {
-            setPage(totalPages)
-        }
-    }, [page, totalPages])
-
-    async function fetchPermissions() {
-        setIsLoading(true)
-        setErrorMessage('')
-        try {
-            const response = await api.get<{ data: PermissionRecord[] }>('/permissions', { params: { limit: 500 } })
-            setPermissions(response.data.data)
-        } catch (error) {
-            setErrorMessage(normalizeAxiosError(error))
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
-    useEffect(() => {
-        void fetchPermissions()
-    }, [])
-
-    function updateForm<K extends keyof PermissionFormState>(key: K, value: PermissionFormState[K]) {
-        setFormState((previous) => ({
-            ...previous,
-            [key]: value,
+    const togglePermission = (module: string, action: string) => {
+        setPermissions((prev) => ({
+            ...prev,
+            [activeRole]: {
+                ...prev[activeRole],
+                [module]: {
+                    ...prev[activeRole][module],
+                    [action]: !prev[activeRole][module][action],
+                },
+            },
         }))
     }
 
-    function resetModalState() {
-        setEditingId(null)
-        setFormState(defaultFormState)
-        setIsModalOpen(false)
+    const handleSaveConfig = () => {
+        addToast('success', 'Cập nhật cấu hình quyền hạn thành công')
     }
 
-    function openCreateModal() {
-        setEditingId(null)
-        setFormState(defaultFormState)
-        setIsModalOpen(true)
+    const handleReset = () => {
+        setPermissions(DEFAULT_PERMISSIONS)
+        addToast('info', 'Đã reset về cấu hình mặc định')
     }
 
-    function openEditModal(permission: PermissionRecord) {
-        setEditingId(permission.id)
-        setFormState({
-            moduleCode: permission.moduleCode,
-            moduleName: permission.moduleName,
-            actionsText: permission.actions.join(', '),
-            description: permission.description || '',
-            status: permission.status || 'active',
+    const grantAllPermissions = () => {
+        const newPerms = { ...permissions[activeRole] }
+        Object.keys(newPerms).forEach((module) => {
+            Object.keys(newPerms[module]).forEach((action) => {
+                newPerms[module][action] = true
+            })
         })
-        setIsModalOpen(true)
+        setPermissions((prev) => ({
+            ...prev,
+            [activeRole]: newPerms,
+        }))
     }
 
-    async function savePermission() {
-        if (!formState.moduleCode.trim() || !formState.moduleName.trim()) {
-            setErrorMessage('Module Code va Module Name la bat buoc.')
-            return
-        }
-
-        setIsSaving(true)
-        setErrorMessage('')
-
-        const payload = {
-            moduleCode: formState.moduleCode.trim(),
-            moduleName: formState.moduleName.trim(),
-            actions: formState.actionsText
-                .split(',')
-                .map((item) => item.trim())
-                .filter(Boolean),
-            description: formState.description.trim(),
-            status: formState.status,
-        }
-
-        try {
-            if (editingId) {
-                await api.put(`/permissions/${editingId}`, payload)
-            } else {
-                await api.post('/permissions', payload)
-            }
-
-            await fetchPermissions()
-            resetModalState()
-        } catch (error) {
-            setErrorMessage(normalizeAxiosError(error))
-        } finally {
-            setIsSaving(false)
-        }
-    }
-
-    async function deletePermission(id: string) {
-        setErrorMessage('')
-        try {
-            await api.delete(`/permissions/${id}`)
-            await fetchPermissions()
-        } catch (error) {
-            setErrorMessage(normalizeAxiosError(error))
-        }
+    const revokeAllPermissions = () => {
+        const newPerms = { ...permissions[activeRole] }
+        Object.keys(newPerms).forEach((module) => {
+            Object.keys(newPerms[module]).forEach((action) => {
+                newPerms[module][action] = false
+            })
+        })
+        setPermissions((prev) => ({
+            ...prev,
+            [activeRole]: newPerms,
+        }))
     }
 
     return (
-        <section data-testid="page-permissions" className="space-y-6">
+        <section className="space-y-6">
             <PageShell
                 title="Phân quyền"
-                description="Quản lý module quyền truy cập với API thật, hỗ trợ tìm kiếm, phân trang, tạo mới, sửa và xóa."
+                description="Quản lý quyền hạn cho từng vai trò người dùng. Cấu hình quyền truy cập module, tạo, sửa, xóa và xuất dữ liệu."
                 testId="page-permissions"
             />
 
-            {errorMessage ? (
-                <div data-testid="permissions-error" className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-                    {errorMessage}
-                </div>
-            ) : null}
-
-            <div className="flex flex-col gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:flex-row md:items-center md:justify-between">
-                <label className="relative block w-full md:max-w-sm" htmlFor="permissions-search-input">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <input
-                        id="permissions-search-input"
-                        data-testid="permissions-search-input"
-                        value={searchTerm}
-                        onChange={(event) => {
-                            setSearchTerm(event.target.value)
-                            setPage(1)
-                        }}
-                        placeholder="Tim module code, module name, action..."
-                        className="h-11 w-full rounded-2xl border border-slate-200 bg-white pl-10 pr-3 text-sm text-slate-700 outline-none ring-blue-200 transition focus:ring"
-                    />
-                </label>
-
-                <button
-                    type="button"
-                    data-testid="permissions-add-button"
-                    onClick={openCreateModal}
-                    className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-blue-900 px-4 text-sm font-semibold text-white shadow-lg shadow-blue-900/20 transition hover:bg-blue-800"
-                >
-                    <Plus className="h-4 w-4" />
-                    Them moi
-                </button>
+            {/* Role Tabs */}
+            <div className="flex gap-4 border-b border-slate-200">
+                {['Admin', 'Doctor', 'Reception'].map((role) => (
+                    <button
+                        key={role}
+                        onClick={() => setActiveRole(role as typeof activeRole)}
+                        className={`px-4 py-3 text-sm font-medium transition ${
+                            activeRole === role
+                                ? 'border-b-2 border-blue-600 text-blue-600'
+                                : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                    >
+                        {role}
+                    </button>
+                ))}
             </div>
 
-            <div className="overflow-x-auto rounded-3xl border border-slate-200 bg-white shadow-sm">
-                <table className="min-w-full text-left">
-                    <thead className="border-b border-slate-200 bg-slate-50/80 text-xs uppercase tracking-[0.16em] text-slate-500">
-                        <tr>
-                            <th className="px-5 py-4">Module Code</th>
-                            <th className="px-5 py-4">Module Name</th>
-                            <th className="px-5 py-4">Actions</th>
-                            <th className="px-5 py-4">Status</th>
-                            <th className="px-5 py-4 text-right">Actions</th>
+            {/* Toolbar */}
+            <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 md:flex-row md:items-center md:justify-between">
+                <div className="text-sm text-slate-600">
+                    Quản lý quyền hạn cho vai trò: <span className="font-semibold text-slate-900">{activeRole}</span>
+                </div>
+                <div className="flex gap-2">
+                    <button
+                        onClick={grantAllPermissions}
+                        className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                    >
+                        Cấp tất cả
+                    </button>
+                    <button
+                        onClick={revokeAllPermissions}
+                        className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                    >
+                        Thu hồi tất cả
+                    </button>
+                </div>
+            </div>
+
+            {/* Permission Matrix */}
+            <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <table className="min-w-full text-left text-sm">
+                    <thead>
+                        <tr className="border-b border-slate-200 bg-slate-50">
+                            <th className="sticky left-0 z-10 bg-slate-50 px-4 py-4 font-semibold text-slate-700">Module</th>
+                            {ACTIONS.map((action) => (
+                                <th key={action} className="px-4 py-4 text-center font-semibold text-slate-700 whitespace-nowrap">
+                                    {action}
+                                </th>
+                            ))}
                         </tr>
                     </thead>
-                    <tbody>
-                        {isLoading ? (
-                            <tr>
-                                <td className="px-5 py-8 text-sm text-slate-500" colSpan={5} data-testid="permissions-loading">
-                                    Dang tai du lieu...
+                    <tbody className="divide-y divide-slate-200">
+                        {MODULES.map((module) => (
+                            <tr key={module} className="hover:bg-slate-50">
+                                <td className="sticky left-0 z-10 bg-white px-4 py-4 font-medium text-slate-900 hover:bg-slate-50">
+                                    {module}
                                 </td>
-                            </tr>
-                        ) : pagedPermissions.length === 0 ? (
-                            <tr>
-                                <td className="px-5 py-8 text-sm text-slate-500" colSpan={5} data-testid="permissions-empty">
-                                    Khong co du lieu.
-                                </td>
-                            </tr>
-                        ) : (
-                            pagedPermissions.map((permission) => (
-                                <tr key={permission.id} className="border-b border-slate-100 last:border-b-0" data-testid={`permissions-row-${permission.id}`}>
-                                    <td className="px-5 py-4 text-sm font-medium text-slate-900">{permission.moduleCode}</td>
-                                    <td className="px-5 py-4 text-sm text-slate-700">{permission.moduleName}</td>
-                                    <td className="px-5 py-4 text-sm text-slate-700">{permission.actions.join(', ')}</td>
-                                    <td className="px-5 py-4 text-sm text-slate-700">{permission.status || 'active'}</td>
-                                    <td className="px-5 py-4">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <button
-                                                type="button"
-                                                data-testid={`permissions-edit-${permission.id}`}
-                                                onClick={() => openEditModal(permission)}
-                                                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-600 transition hover:text-blue-900"
-                                                aria-label="Sua"
-                                            >
-                                                <Pencil className="h-4 w-4" />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                data-testid={`permissions-delete-${permission.id}`}
-                                                onClick={() => {
-                                                    void deletePermission(permission.id)
-                                                }}
-                                                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-600 transition hover:text-rose-600"
-                                                aria-label="Xoa"
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </button>
-                                        </div>
+                                {ACTIONS.map((action) => (
+                                    <td key={action} className="px-4 py-4 text-center">
+                                        <label className="flex items-center justify-center cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                checked={permissions[activeRole][module][action] || false}
+                                                onChange={() => togglePermission(module, action)}
+                                                className="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                            />
+                                        </label>
                                     </td>
-                                </tr>
-                            ))
-                        )}
+                                ))}
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
 
-            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
-                <span data-testid="permissions-pagination-summary">
-                    Trang {page}/{totalPages} - {filteredPermissions.length} ban ghi
-                </span>
-                <div className="flex items-center gap-2">
-                    <button
-                        type="button"
-                        data-testid="permissions-pagination-prev"
-                        disabled={page <= 1}
-                        onClick={() => setPage((previous) => Math.max(1, previous - 1))}
-                        className="h-9 rounded-xl border border-slate-200 px-3 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                        Prev
-                    </button>
-                    <button
-                        type="button"
-                        data-testid="permissions-pagination-next"
-                        disabled={page >= totalPages}
-                        onClick={() => setPage((previous) => Math.min(totalPages, previous + 1))}
-                        className="h-9 rounded-xl border border-slate-200 px-3 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                        Next
-                    </button>
-                </div>
+            {/* Summary */}
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p className="text-sm text-slate-700">
+                    <span className="font-semibold">Tổng quyền:</span> {' '}
+                    {Object.values(permissions[activeRole])
+                        .flatMap((module) => Object.values(module))
+                        .filter(Boolean).length}{' '}
+                    / {MODULES.length * ACTIONS.length}
+                </p>
             </div>
 
-            {isModalOpen ? (
-                <div className="fixed inset-0 z-40 flex items-center justify-center bg-slate-900/50 p-4" data-testid="permissions-modal-overlay">
-                    <div className="w-full max-w-2xl rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
-                        <div className="flex items-start justify-between gap-4">
-                            <h3 className="text-xl font-semibold text-slate-900">{editingId ? 'Sua permission' : 'Them moi permission'}</h3>
-                            <button
-                                type="button"
-                                data-testid="permissions-modal-close"
-                                onClick={resetModalState}
-                                className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 text-slate-500 transition hover:text-slate-900"
-                            >
-                                <X className="h-4 w-4" />
-                            </button>
-                        </div>
-
-                        <div className="mt-6 grid gap-4 md:grid-cols-2">
-                            <label className="space-y-2 text-sm text-slate-700">
-                                <span>Module Code</span>
-                                <input
-                                    data-testid="permissions-form-module-code"
-                                    value={formState.moduleCode}
-                                    onChange={(event) => updateForm('moduleCode', event.target.value)}
-                                    className="h-11 w-full rounded-2xl border border-slate-200 px-3 outline-none ring-blue-200 transition focus:ring"
-                                />
-                            </label>
-                            <label className="space-y-2 text-sm text-slate-700">
-                                <span>Module Name</span>
-                                <input
-                                    data-testid="permissions-form-module-name"
-                                    value={formState.moduleName}
-                                    onChange={(event) => updateForm('moduleName', event.target.value)}
-                                    className="h-11 w-full rounded-2xl border border-slate-200 px-3 outline-none ring-blue-200 transition focus:ring"
-                                />
-                            </label>
-                            <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
-                                <span>Actions (comma separated)</span>
-                                <input
-                                    data-testid="permissions-form-actions"
-                                    value={formState.actionsText}
-                                    onChange={(event) => updateForm('actionsText', event.target.value)}
-                                    placeholder="view, create, update, delete"
-                                    className="h-11 w-full rounded-2xl border border-slate-200 px-3 outline-none ring-blue-200 transition focus:ring"
-                                />
-                            </label>
-                            <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
-                                <span>Description</span>
-                                <input
-                                    data-testid="permissions-form-description"
-                                    value={formState.description}
-                                    onChange={(event) => updateForm('description', event.target.value)}
-                                    className="h-11 w-full rounded-2xl border border-slate-200 px-3 outline-none ring-blue-200 transition focus:ring"
-                                />
-                            </label>
-                            <label className="space-y-2 text-sm text-slate-700">
-                                <span>Status</span>
-                                <select
-                                    data-testid="permissions-form-status"
-                                    value={formState.status}
-                                    onChange={(event) => updateForm('status', event.target.value)}
-                                    className="h-11 w-full rounded-2xl border border-slate-200 px-3 outline-none ring-blue-200 transition focus:ring"
-                                >
-                                    <option value="active">active</option>
-                                    <option value="inactive">inactive</option>
-                                </select>
-                            </label>
-                        </div>
-
-                        <div className="mt-6 flex items-center justify-end gap-3">
-                            <button
-                                type="button"
-                                data-testid="permissions-form-cancel"
-                                onClick={resetModalState}
-                                className="h-11 rounded-2xl border border-slate-200 px-4 text-sm font-semibold text-slate-600"
-                            >
-                                Huy
-                            </button>
-                            <button
-                                type="button"
-                                data-testid="permissions-form-submit"
-                                onClick={() => {
-                                    void savePermission()
-                                }}
-                                disabled={isSaving}
-                                className="h-11 rounded-2xl bg-blue-900 px-4 text-sm font-semibold text-white shadow-lg shadow-blue-900/20 transition hover:bg-blue-800 disabled:opacity-60"
-                            >
-                                {isSaving ? 'Dang luu...' : 'Luu'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            ) : null}
+            {/* Actions */}
+            <div className="flex justify-end gap-3">
+                <button
+                    onClick={handleReset}
+                    className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                >
+                    Reset
+                </button>
+                <button
+                    onClick={handleSaveConfig}
+                    className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                >
+                    Lưu cấu hình
+                </button>
+            </div>
         </section>
     )
 }

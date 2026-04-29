@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
-import type { AxiosError } from 'axios'
 import { Building2, Clock3 } from 'lucide-react'
 import { PageShell } from '../components/PageShell'
-import { api } from '../lib/api'
+import { generateMockActivities } from '../lib/mockData'
 
 type SettingsTab = 'clinic-info' | 'business-hours'
 
@@ -27,135 +26,73 @@ type BusinessHoursForm = {
 }
 
 const defaultClinicInfoForm: ClinicInfoForm = {
-    clinicName: '',
-    hotline: '',
-    address: '',
-    email: '',
+    clinicName: 'SmileCare Dental Clinic',
+    hotline: '1900 1234',
+    address: '123 Đường Lê Lợi, Q.1, TP.HCM',
+    email: 'contact@smilecare.vn',
     currency: 'VND',
 }
 
 const defaultBusinessHoursForm: BusinessHoursForm = {
-    weekdays: '',
-    saturday: '',
-    sunday: '',
+    weekdays: '08:00-20:00',
+    saturday: '08:00-17:00',
+    sunday: '08:00-12:00',
 }
 
-function normalizeAxiosError(error: unknown) {
-    const axiosError = error as AxiosError<{ error?: string }>
-    return axiosError.response?.data?.error || axiosError.message || 'Co loi xay ra khi ket noi API.'
-}
 
 export function GeneralSettingsPage() {
+    // State
     const [activeTab, setActiveTab] = useState<SettingsTab>('clinic-info')
-    const [settingsRecords, setSettingsRecords] = useState<SettingsRecord[]>([])
     const [clinicInfoForm, setClinicInfoForm] = useState<ClinicInfoForm>(defaultClinicInfoForm)
     const [businessHoursForm, setBusinessHoursForm] = useState<BusinessHoursForm>(defaultBusinessHoursForm)
-    const [isLoading, setIsLoading] = useState(false)
-    const [isSaving, setIsSaving] = useState(false)
-    const [errorMessage, setErrorMessage] = useState('')
     const [successMessage, setSuccessMessage] = useState('')
+    const [errorMessage, setErrorMessage] = useState('')
 
-    function findSetting(settingCode: string) {
-        return settingsRecords.find((record) => record.settingCode === settingCode)
+    // Validation
+    function validateClinicInfo(form: ClinicInfoForm) {
+        if (!form.clinicName.trim()) return 'Tên phòng khám không được để trống.'
+        if (!form.hotline.trim()) return 'Hotline không được để trống.'
+        if (!form.address.trim()) return 'Địa chỉ không được để trống.'
+        if (!form.email.trim() || !form.email.includes('@')) return 'Email không hợp lệ.'
+        if (!form.currency.trim()) return 'Vui lòng nhập loại tiền tệ.'
+        return ''
+    }
+    function validateBusinessHours(form: BusinessHoursForm) {
+        if (!form.weekdays.trim()) return 'Vui lòng nhập giờ làm việc ngày thường.'
+        if (!form.saturday.trim()) return 'Vui lòng nhập giờ làm việc thứ 7.'
+        if (!form.sunday.trim()) return 'Vui lòng nhập giờ làm việc Chủ nhật.'
+        return ''
     }
 
-    async function loadSettings() {
-        setIsLoading(true)
-        setErrorMessage('')
-
-        try {
-            const response = await api.get<{ data: SettingsRecord[] }>('/settings', { params: { limit: 200 } })
-            const records = response.data.data
-            setSettingsRecords(records)
-
-            const clinic = records.find((record) => record.settingCode === 'clinic.profile')
-            const hours = records.find((record) => record.settingCode === 'clinic.working-hours')
-
-            if (clinic?.value) {
-                const value = clinic.value
-                setClinicInfoForm({
-                    clinicName: String(value.clinicName || ''),
-                    hotline: String(value.hotline || ''),
-                    address: String(value.address || ''),
-                    email: String(value.email || ''),
-                    currency: String(value.currency || 'VND'),
-                })
-            }
-
-            if (hours?.value) {
-                const value = hours.value
-                setBusinessHoursForm({
-                    weekdays: String(value.weekdays || ''),
-                    saturday: String(value.saturday || ''),
-                    sunday: String(value.sunday || ''),
-                })
-            }
-        } catch (error) {
-            setErrorMessage(normalizeAxiosError(error))
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
-    useEffect(() => {
-        void loadSettings()
-    }, [])
-
-    async function saveClinicInfo() {
-        const record = findSetting('clinic.profile')
-        if (!record) {
-            setErrorMessage('Khong tim thay setting clinic.profile')
+    function handleSaveClinicInfo() {
+        const err = validateClinicInfo(clinicInfoForm)
+        if (err) {
+            setErrorMessage(err)
+            setSuccessMessage('')
             return
         }
-
+        setSuccessMessage('Đã lưu thông tin phòng khám (mock).')
         setErrorMessage('')
-        setSuccessMessage('')
-        setIsSaving(true)
-
-        try {
-            await api.put(`/settings/${record.id}`, {
-                ...record,
-                value: clinicInfoForm,
-            })
-            setSuccessMessage('Da luu thong tin phong kham.')
-            await loadSettings()
-        } catch (error) {
-            setErrorMessage(normalizeAxiosError(error))
-        } finally {
-            setIsSaving(false)
-        }
     }
-
-    async function saveBusinessHours() {
-        const record = findSetting('clinic.working-hours')
-        if (!record) {
-            setErrorMessage('Khong tim thay setting clinic.working-hours')
+    function handleSaveBusinessHours() {
+        const err = validateBusinessHours(businessHoursForm)
+        if (err) {
+            setErrorMessage(err)
+            setSuccessMessage('')
             return
         }
-
+        setSuccessMessage('Đã lưu giờ làm việc (mock).')
         setErrorMessage('')
-        setSuccessMessage('')
-        setIsSaving(true)
-
-        try {
-            await api.put(`/settings/${record.id}`, {
-                ...record,
-                value: businessHoursForm,
-            })
-            setSuccessMessage('Da luu gio lam viec.')
-            await loadSettings()
-        } catch (error) {
-            setErrorMessage(normalizeAxiosError(error))
-        } finally {
-            setIsSaving(false)
-        }
     }
+
+    // Recent activity (mock)
+    const recentActivities = generateMockActivities(5)
 
     return (
         <section data-testid="page-settings" className="space-y-6">
             <PageShell
                 title="Cấu hình"
-                description="Tab cấu hình cho thông tin phòng khám và giờ làm việc, đồng bộ dữ liệu trực tiếp với backend."
+                description="Tab cấu hình cho thông tin phòng khám và giờ làm việc. Dữ liệu chỉ lưu tạm thời (mock)."
                 testId="page-settings"
             />
 
@@ -176,8 +113,7 @@ export function GeneralSettingsPage() {
                     type="button"
                     data-testid="settings-tab-clinic-info"
                     onClick={() => setActiveTab('clinic-info')}
-                    className={`inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition ${activeTab === 'clinic-info' ? 'bg-blue-900 text-white' : 'text-slate-600'
-                        }`}
+                    className={`inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition ${activeTab === 'clinic-info' ? 'bg-blue-900 text-white' : 'text-slate-600'}`}
                 >
                     <Building2 className="h-4 w-4" />
                     Clinic Info
@@ -186,25 +122,18 @@ export function GeneralSettingsPage() {
                     type="button"
                     data-testid="settings-tab-business-hours"
                     onClick={() => setActiveTab('business-hours')}
-                    className={`inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition ${activeTab === 'business-hours' ? 'bg-blue-900 text-white' : 'text-slate-600'
-                        }`}
+                    className={`inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition ${activeTab === 'business-hours' ? 'bg-blue-900 text-white' : 'text-slate-600'}`}
                 >
                     <Clock3 className="h-4 w-4" />
                     Business Hours
                 </button>
             </div>
 
-            {isLoading ? (
-                <div data-testid="settings-loading" className="rounded-3xl border border-slate-200 bg-white px-5 py-8 text-sm text-slate-500">
-                    Dang tai du lieu...
-                </div>
-            ) : null}
-
-            {!isLoading && activeTab === 'clinic-info' ? (
+            {activeTab === 'clinic-info' ? (
                 <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                     <div className="grid gap-4 md:grid-cols-2">
                         <label className="space-y-2 text-sm text-slate-700">
-                            <span>Clinic Name</span>
+                            <span>Tên phòng khám</span>
                             <input
                                 data-testid="settings-clinic-name"
                                 value={clinicInfoForm.clinicName}
@@ -224,7 +153,7 @@ export function GeneralSettingsPage() {
                         </label>
 
                         <label className="space-y-2 text-sm text-slate-700 md:col-span-2">
-                            <span>Address</span>
+                            <span>Địa chỉ</span>
                             <input
                                 data-testid="settings-address"
                                 value={clinicInfoForm.address}
@@ -244,7 +173,7 @@ export function GeneralSettingsPage() {
                         </label>
 
                         <label className="space-y-2 text-sm text-slate-700">
-                            <span>Currency</span>
+                            <span>Tiền tệ</span>
                             <input
                                 data-testid="settings-currency"
                                 value={clinicInfoForm.currency}
@@ -258,23 +187,20 @@ export function GeneralSettingsPage() {
                         <button
                             type="button"
                             data-testid="settings-save-clinic-info"
-                            onClick={() => {
-                                void saveClinicInfo()
-                            }}
-                            disabled={isSaving}
-                            className="h-11 rounded-2xl bg-blue-900 px-4 text-sm font-semibold text-white shadow-lg shadow-blue-900/20 transition hover:bg-blue-800 disabled:opacity-60"
+                            onClick={handleSaveClinicInfo}
+                            className="h-11 rounded-2xl bg-blue-900 px-4 text-sm font-semibold text-white shadow-lg shadow-blue-900/20 transition hover:bg-blue-800"
                         >
-                            {isSaving ? 'Dang luu...' : 'Luu Clinic Info'}
+                            Lưu thông tin
                         </button>
                     </div>
                 </div>
             ) : null}
 
-            {!isLoading && activeTab === 'business-hours' ? (
+            {activeTab === 'business-hours' ? (
                 <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                     <div className="grid gap-4 md:grid-cols-3">
                         <label className="space-y-2 text-sm text-slate-700">
-                            <span>Weekdays</span>
+                            <span>Ngày thường</span>
                             <input
                                 data-testid="settings-weekdays"
                                 value={businessHoursForm.weekdays}
@@ -285,7 +211,7 @@ export function GeneralSettingsPage() {
                         </label>
 
                         <label className="space-y-2 text-sm text-slate-700">
-                            <span>Saturday</span>
+                            <span>Thứ 7</span>
                             <input
                                 data-testid="settings-saturday"
                                 value={businessHoursForm.saturday}
@@ -296,7 +222,7 @@ export function GeneralSettingsPage() {
                         </label>
 
                         <label className="space-y-2 text-sm text-slate-700">
-                            <span>Sunday</span>
+                            <span>Chủ nhật</span>
                             <input
                                 data-testid="settings-sunday"
                                 value={businessHoursForm.sunday}
@@ -311,17 +237,40 @@ export function GeneralSettingsPage() {
                         <button
                             type="button"
                             data-testid="settings-save-business-hours"
-                            onClick={() => {
-                                void saveBusinessHours()
-                            }}
-                            disabled={isSaving}
-                            className="h-11 rounded-2xl bg-blue-900 px-4 text-sm font-semibold text-white shadow-lg shadow-blue-900/20 transition hover:bg-blue-800 disabled:opacity-60"
+                            onClick={handleSaveBusinessHours}
+                            className="h-11 rounded-2xl bg-blue-900 px-4 text-sm font-semibold text-white shadow-lg shadow-blue-900/20 transition hover:bg-blue-800"
                         >
-                            {isSaving ? 'Dang luu...' : 'Luu Business Hours'}
+                            Lưu giờ làm việc
                         </button>
                     </div>
                 </div>
             ) : null}
+
+            <div className="mt-10">
+                <h3 className="mb-3 text-lg font-semibold text-slate-800">Hoạt động gần đây</h3>
+                <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+                    <table className="min-w-[400px] w-full text-sm">
+                        <thead>
+                            <tr className="bg-slate-50">
+                                <th className="px-4 py-2 text-left font-semibold text-slate-700">Thời gian</th>
+                                <th className="px-4 py-2 text-left font-semibold text-slate-700">Loại</th>
+                                <th className="px-4 py-2 text-left font-semibold text-slate-700">Mô tả</th>
+                                <th className="px-4 py-2 text-left font-semibold text-slate-700">Người thực hiện</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {recentActivities.map((act) => (
+                                <tr key={act.id}>
+                                    <td className="px-4 py-2 whitespace-nowrap">{new Date(act.timestamp).toLocaleString('vi-VN')}</td>
+                                    <td className="px-4 py-2 whitespace-nowrap">{act.type}</td>
+                                    <td className="px-4 py-2">{act.description}</td>
+                                    <td className="px-4 py-2 whitespace-nowrap">{act.performer}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </section>
     )
 }

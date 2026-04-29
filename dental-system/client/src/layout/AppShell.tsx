@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import { AppHeader } from '../components/AppHeader'
 import { Sidebar } from '../components/Sidebar'
+import { Breadcrumb } from '../components/Breadcrumb'
 
 export function AppShell() {
     return (
@@ -17,6 +18,10 @@ export function AppShell() {
                         <div className="rounded-[2rem] border border-white/70 bg-white/80 p-5 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-6 lg:p-8">
                             <div className="mb-6 lg:hidden">
                                 <Sidebar />
+                            </div>
+
+                            <div className="mb-4 hidden md:block">
+                                <Breadcrumb />
                             </div>
 
                             <Outlet />

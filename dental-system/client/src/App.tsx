@@ -1,8 +1,14 @@
+import { ToastProvider } from './contexts/ToastContext'
+import { ConfirmProvider } from './contexts/ConfirmContext'
 import { AppRouter } from './routes/AppRouter'
 
 function App() {
   return (
-    <AppRouter />
+    <ToastProvider>
+      <ConfirmProvider>
+        <AppRouter />
+      </ConfirmProvider>
+    </ToastProvider>
   )
 }
 
