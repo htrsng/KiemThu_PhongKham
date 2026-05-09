@@ -89,8 +89,8 @@ export type MockDoctor = {
     experience: number
     room: string
     consultationFee: number
-    status: 'Hoat dong' | 'Tam nghi'
-    schedule: string
+    status: 'active' | 'inactive'
+    schedule: Record<string, { enabled: boolean; startTime: string; endTime: string }>
 }
 
 export function generateMockDoctors(count: number = 9): MockDoctor[] {
@@ -112,7 +112,16 @@ export function generateMockDoctors(count: number = 9): MockDoctor[] {
         const email = `${lastName.toLowerCase()}.${firstName.toLowerCase().replace(/\s/g, '')}@smilecare.vn`
         const licenseNumber = `BS-${String(index + 1).padStart(5, '0')}`
         const consultationFee = (Math.floor(Math.random() * 5) + 2) * 100000
-        const status = index % 6 === 0 ? 'Tam nghi' : 'Hoat dong'
+        const status = index % 6 === 0 ? 'inactive' : 'active'
+        const schedule = {
+            T2: { enabled: true, startTime: '08:00', endTime: '17:00' },
+            T3: { enabled: true, startTime: '08:00', endTime: '17:00' },
+            T4: { enabled: true, startTime: '08:00', endTime: '17:00' },
+            T5: { enabled: true, startTime: '08:00', endTime: '17:00' },
+            T6: { enabled: true, startTime: '08:00', endTime: '17:00' },
+            T7: { enabled: false, startTime: '09:00', endTime: '16:00' },
+            CN: { enabled: false, startTime: '09:00', endTime: '12:00' },
+        }
 
         return {
             id: `doc-${String(index + 1).padStart(3, '0')}`,
@@ -126,7 +135,7 @@ export function generateMockDoctors(count: number = 9): MockDoctor[] {
             room: `Phòng ${room}`,
             consultationFee,
             status,
-            schedule: 'T2-T6 | 8:00-17:00',
+            schedule,
         }
     })
 }
@@ -211,6 +220,153 @@ export function generateMockPricingPolicies(count: number = 15): MockPricingPoli
             effectiveDate: effectiveDate.toISOString(),
             expiryDate: expiryDate.toISOString(),
             status: expiryDate > new Date() ? 'active' : 'inactive',
+        }
+    })
+}
+
+// Patient mock data
+export type MockPatient = {
+    id: string
+    fullName: string
+    phone: string
+    dateOfBirth: string // ISO string
+    gender: 'Nam' | 'Nữ' | 'Khác'
+    address: string
+    createdAt: string // ISO string
+}
+
+export function generateMockPatients(count: number = 20): MockPatient[] {
+    const lastNames = ['Lê', 'Phan', 'Đỗ', 'Bùi', 'Đinh', 'Hồ']
+    const firstNames = ['Quỳnh Anh', 'Gia Bảo', 'Minh Khang', 'Tuệ Nhi', 'Đức Huy', 'Phương Mai']
+    const genders = ['Nam', 'Nữ', 'Khác'] as const
+    const cities = ['Hà Nội', 'Đà Nẵng', 'TP.HCM', 'Cần Thơ', 'Hải Phòng']
+
+    return Array.from({ length: count }, (_, index) => {
+        const firstName = firstNames[index % firstNames.length]
+        const lastName = lastNames[index % lastNames.length]
+        const fullName = `${lastName} ${firstName}`
+        const phone = `09${String(Math.floor(Math.random() * 100000000)).padStart(8, '0')}`
+        const birthYear = new Date().getFullYear() - (Math.floor(Math.random() * 60) + 5)
+        const birthMonth = Math.floor(Math.random() * 12)
+        const birthDay = Math.floor(Math.random() * 28) + 1
+        const dateOfBirth = new Date(birthYear, birthMonth, birthDay).toISOString()
+        const createdAt = new Date(Date.now() - Math.floor(Math.random() * 365) * 24 * 60 * 60 * 1000).toISOString()
+
+        return {
+            id: `pat-${String(index + 1).padStart(3, '0')}`,
+            fullName,
+            phone,
+            dateOfBirth,
+            gender: genders[index % genders.length],
+            address: `${Math.floor(Math.random() * 100) + 1} Đường ABC, ${cities[index % cities.length]}`,
+            createdAt,
+        }
+    })
+}
+
+// Work Shift mock data
+export type MockWorkShift = {
+    id: string
+    name: string
+    startTime: string // "HH:mm"
+    endTime: string // "HH:mm"
+}
+
+export function generateMockWorkShifts(): MockWorkShift[] {
+    return [
+        { id: 'shift-1', name: 'Ca Sáng', startTime: '08:00', endTime: '12:00' },
+        { id: 'shift-2', name: 'Ca Chiều', startTime: '13:00', endTime: '17:00' },
+        { id: 'shift-3', name: 'Ca Tối', startTime: '17:00', endTime: '20:00' },
+        { id: 'shift-4', name: 'Cả ngày', startTime: '08:00', endTime: '17:00' },
+    ]
+}
+
+// Clinic Holiday mock data
+export type MockClinicHoliday = {
+    id: string
+    name: string
+    date: string // ISO string (date only)
+    isRecurring: boolean
+}
+
+export function generateMockClinicHolidays(): MockClinicHoliday[] {
+    const currentYear = new Date().getFullYear()
+    return [
+        {
+            id: 'holiday-1',
+            name: 'Nghỉ Tết Dương Lịch',
+            date: new Date(currentYear, 0, 1).toISOString().split('T')[0],
+            isRecurring: true,
+        },
+        {
+            id: 'holiday-2',
+            name: 'Nghỉ lễ 30/4',
+            date: new Date(currentYear, 3, 30).toISOString().split('T')[0],
+            isRecurring: true,
+        },
+        {
+            id: 'holiday-3',
+            name: 'Nghỉ lễ Quốc tế Lao động',
+            date: new Date(currentYear, 4, 1).toISOString().split('T')[0],
+            isRecurring: true,
+        },
+        {
+            id: 'holiday-4',
+            name: 'Bảo trì hệ thống',
+            date: new Date(currentYear, 6, 15).toISOString().split('T')[0],
+            isRecurring: false,
+        },
+    ]
+}
+
+// Appointment mock data
+export type MockAppointment = {
+    id: string
+    patientId: string
+    patientName: string
+    doctorId: string
+    doctorName: string
+    serviceId: string
+    serviceName: string
+    startTime: string // ISO string
+    endTime: string // ISO string
+    status: 'Đã lên lịch' | 'Đã hoàn thành' | 'Đã hủy'
+    notes: string
+}
+
+export function generateMockAppointments(count: number = 30): MockAppointment[] {
+    const patients = generateMockPatients(20)
+    const doctors = generateMockDoctors(9).filter((d) => d.status === 'active')
+    const services = generateMockServices(10)
+    const statuses = ['Đã lên lịch', 'Đã hoàn thành', 'Đã hủy'] as const
+    const notes = ['Bệnh nhân có tiền sử dị ứng', 'Cần chụp X-quang', 'Tái khám sau 1 tuần', '']
+
+    return Array.from({ length: count }, (_, index) => {
+        const patient = patients[index % patients.length]
+        const doctor = doctors[index % doctors.length]
+        const service = services[index % services.length]
+        const status = statuses[index % statuses.length]
+
+        const daysFromNow = Math.floor(Math.random() * 30) - 15 // -15 to +15 days from today
+        const hour = Math.floor(Math.random() * 9) + 8 // 8am to 4pm
+        const startTime = new Date()
+        startTime.setDate(startTime.getDate() + daysFromNow)
+        startTime.setHours(hour, 0, 0, 0)
+
+        const endTime = new Date(startTime.getTime() + service.duration * 60 * 1000)
+
+        return {
+            id: `apt-${String(index + 1).padStart(3, '0')}`,
+            patientId: patient.id,
+            patientName: patient.fullName,
+            doctorId: doctor.id,
+            doctorName: doctor.fullName,
+            serviceId: service.id,
+            serviceName: service.name,
+            startTime: startTime.toISOString(),
+            endTime: endTime.toISOString(),
+            status,
+            notes: notes[index % notes.length],
         }
     })
 }

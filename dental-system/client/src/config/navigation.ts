@@ -1,4 +1,12 @@
-import { LayoutDashboard, ShieldCheck, Stethoscope, Settings2, ClipboardList, Users } from 'lucide-react'
+import {
+    LayoutDashboard,
+    ShieldCheck,
+    Stethoscope,
+    Settings2,
+    ClipboardList,
+    Users,
+    Calendar,
+} from 'lucide-react'
 
 export type NavigationItem = {
     id: string
@@ -33,6 +41,14 @@ export const navigationItems: NavigationItem[] = [
         icon: Stethoscope,
         description: 'Hồ sơ chuyên môn',
         testId: 'nav-doctors',
+    },
+    {
+        id: 'appointments',
+        label: 'Quản lý Lịch hẹn',
+        path: '/appointments',
+        icon: Calendar,
+        description: 'Lịch hẹn và lịch làm việc',
+        testId: 'nav-appointments',
     },
     {
         id: 'services',

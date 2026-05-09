@@ -1,5 +1,6 @@
 import { ChevronRight } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
+import { routeTitleMap } from '../config/navigation'
 
 type BreadcrumbItem = {
     label: string
@@ -34,20 +35,11 @@ export function Breadcrumb() {
 }
 
 function getBreadcrumbs(pathname: string): BreadcrumbItem[] {
-    const paths: { [key: string]: string } = {
-        '/': 'Dashboard',
-        '/accounts': 'Quản lý tài khoản',
-        '/doctors': 'Quản lý bác sĩ',
-        '/services': 'Danh mục dịch vụ',
-        '/permissions': 'Phân quyền',
-        '/settings': 'Cấu hình',
-    }
-
     const breadcrumbs: BreadcrumbItem[] = [{ label: 'Dashboard', path: '/' }]
 
     if (pathname !== '/') {
         breadcrumbs.push({
-            label: paths[pathname] || 'Trang',
+            label: routeTitleMap[pathname] || 'Trang không xác định',
             path: pathname,
         })
     }

@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppShell } from '../layout/AppShell'
 import { AccountManagementPage } from '../pages/AccountManagementPage'
 import { DashboardPage } from '../pages/DashboardPage'
+import { AppointmentManagementPage } from '../pages/AppointmentManagementPage'
 import { DoctorManagementPage } from '../pages/DoctorManagementPage'
 import { GeneralSettingsPage } from '../pages/GeneralSettingsPage'
 import { PermissionManagementPage } from '../pages/PermissionManagementPage'
@@ -14,6 +15,7 @@ export function AppRouter() {
                 <Route element={<AppShell />}>
                     <Route index element={<DashboardPage />} />
                     <Route path="accounts" element={<AccountManagementPage />} />
+                    <Route path="appointments" element={<AppointmentManagementPage />} />
                     <Route path="doctors" element={<DoctorManagementPage />} />
                     <Route path="services" element={<ServiceCategoryPage />} />
                     <Route path="permissions" element={<PermissionManagementPage />} />

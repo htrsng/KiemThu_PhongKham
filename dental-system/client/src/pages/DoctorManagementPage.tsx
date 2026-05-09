@@ -23,7 +23,7 @@ type DoctorFormState = {
     room: string
     consultationFee: number
     licenseNumber: string
-    status: 'active' | 'inactive'
+    status: 'active' | 'inactive' // Giữ nguyên, giờ đã đồng bộ với MockDoctor
     schedule: Record<string, { enabled: boolean; startTime: string; endTime: string }>
 }
 
@@ -111,7 +111,7 @@ export function DoctorManagementPage() {
 
         // Status filter
         if (statusFilter !== 'all') {
-            result = result.filter((d) => d.status === statusFilter)
+            result = result.filter((d) => d.status === statusFilter) // Giờ sẽ hoạt động đúng
         }
 
         // Room filter
@@ -174,7 +174,7 @@ export function DoctorManagementPage() {
             room: doctor.room,
             consultationFee: doctor.consultationFee,
             licenseNumber: doctor.licenseNumber,
-            status: doctor.status,
+            status: doctor.status, // Giờ đã an toàn về kiểu dữ liệu
             schedule: { ...doctor.schedule },
         })
         setFormErrors({})
@@ -400,7 +400,7 @@ export function DoctorManagementPage() {
                                                 : 'bg-slate-100 text-slate-800'
                                         }`}
                                     >
-                                        {doctor.status === 'active' ? 'Đang làm' : 'Tạm dừng'}
+                                        {doctor.status === 'active' ? 'Đang làm việc' : 'Tạm dừng'}
                                     </span>
                                 </div>
 
