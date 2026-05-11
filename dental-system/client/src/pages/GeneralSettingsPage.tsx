@@ -1,15 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Building2, Clock3 } from 'lucide-react'
 import { PageShell } from '../components/PageShell'
 import { generateMockActivities } from '../lib/mockData'
 
 type SettingsTab = 'clinic-info' | 'business-hours'
-
-type SettingsRecord = {
-    id: string
-    settingCode: string
-    value: Record<string, unknown>
-}
 
 type ClinicInfoForm = {
     clinicName: string

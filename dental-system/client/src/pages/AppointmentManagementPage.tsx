@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import FullCalendar from '@fullcalendar/react'
+import type { EventClickArg } from '@fullcalendar/core'
+import type { DateClickArg } from '@fullcalendar/interaction'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
@@ -47,48 +49,13 @@ const menuItems: { id: SubPage; label: string; icon: React.ElementType }[] = [
     { id: 'holidays', label: 'Cài đặt ngày nghỉ', icon: CalendarOff },
 ]
 
-const DOCTOR_SCHEDULE_DAYS = [
-    { key: 'T2', label: 'Thứ 2' },
-    { key: 'T3', label: 'Thứ 3' },
-    { key: 'T4', label: 'Thứ 4' },
-    { key: 'T5', label: 'Thứ 5' },
-    { key: 'T6', label: 'Thứ 6' },
-    { key: 'T7', label: 'Thứ 7' },
-    { key: 'CN', label: 'Chủ nhật' },
-] as const
-
-type DoctorScheduleDayKey = (typeof DOCTOR_SCHEDULE_DAYS)[number]['key']
-
-type DoctorScheduleState = Record<DoctorScheduleDayKey, { enabled: boolean; startTime: string; endTime: string }>
-
-const createDefaultDoctorSchedule = (): DoctorScheduleState => ({
-    T2: { enabled: true, startTime: '08:00', endTime: '17:00' },
-    T3: { enabled: true, startTime: '08:00', endTime: '17:00' },
-    T4: { enabled: true, startTime: '08:00', endTime: '17:00' },
-    T5: { enabled: true, startTime: '08:00', endTime: '17:00' },
-    T6: { enabled: true, startTime: '08:00', endTime: '17:00' },
-    T7: { enabled: false, startTime: '08:00', endTime: '12:00' },
-    CN: { enabled: false, startTime: '08:00', endTime: '12:00' },
-})
-
-const cloneDoctorSchedule = (schedule?: MockDoctor['schedule']): DoctorScheduleState => {
-    const defaultSchedule = createDefaultDoctorSchedule()
-
-    if (!schedule) {
-        return defaultSchedule
-    }
-
-    return DOCTOR_SCHEDULE_DAYS.reduce((accumulator, day) => {
-        const source = schedule[day.key]
-        accumulator[day.key] = source
-            ? {
-                enabled: source.enabled,
-                startTime: source.startTime,
-                endTime: source.endTime,
-            }
-            : defaultSchedule[day.key]
-        return accumulator
-    }, {} as DoctorScheduleState)
+type DoctorOnCallShift = {
+    id: string
+    doctorId: string
+    doctorName: string
+    date: string // YYYY-MM-DD (local)
+    startTime: string // HH:mm
+    endTime: string // HH:mm
 }
 
 const PAGE_SIZE = 10
@@ -104,6 +71,7 @@ export function AppointmentManagementPage() {
     const [holidays, setHolidays] = useState<MockClinicHoliday[]>([])
     const [doctors, setDoctors] = useState<MockDoctor[]>([])
     const [services, setServices] = useState<MockService[]>([])
+    const [doctorShifts, setDoctorShifts] = useState<DoctorOnCallShift[]>([])
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -131,7 +99,7 @@ export function AppointmentManagementPage() {
             case 'patients':
                 return <PatientManagementView data={patients} setData={setPatients} />
             case 'doctor-schedule':
-                return <DoctorScheduleView data={doctors} setData={setDoctors} />
+                return <DoctorScheduleView doctors={doctors} shifts={doctorShifts} setShifts={setDoctorShifts} holidays={holidays} />
             case 'work-shifts':
                 return <WorkShiftSettingsView data={workShifts} setData={setWorkShifts} />
             case 'holidays':
@@ -145,6 +113,8 @@ export function AppointmentManagementPage() {
                         patients={patients}
                         doctors={doctors}
                         services={services}
+                        holidays={holidays}
+                        doctorShifts={doctorShifts}
                     />
                 )
         }
@@ -188,12 +158,20 @@ export function AppointmentManagementPage() {
 
 // #region Patient Management View
 function PatientManagementView({ data, setData }: { data: MockPatient[]; setData: React.Dispatch<React.SetStateAction<MockPatient[]>> }) {
+    type PatientFormState = {
+        fullName: string
+        phone: string
+        dateOfBirth: string
+        gender: MockPatient['gender']
+        address: string
+    }
+
     const [searchTerm, setSearchTerm] = useState('')
     const [page, setPage] = useState(1)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [editingId, setEditingId] = useState<string | null>(null)
-    const [formState, setFormState] = useState({ fullName: '', phone: '', dateOfBirth: '', gender: 'Nam' as const, address: '' })
-    const [formErrors, setFormErrors] = useState<Partial<typeof formState>>({})
+    const [formState, setFormState] = useState<PatientFormState>({ fullName: '', phone: '', dateOfBirth: '', gender: 'Nam', address: '' })
+    const [formErrors, setFormErrors] = useState<Partial<PatientFormState>>({})
 
     const { addToast } = useToast()
     const { confirm } = useConfirm()
@@ -236,7 +214,7 @@ function PatientManagementView({ data, setData }: { data: MockPatient[]; setData
     }
 
     const validate = () => {
-        const errors: Partial<typeof formState> = {}
+        const errors: Partial<PatientFormState> = {}
         if (!formState.fullName.trim()) errors.fullName = 'Họ tên không được để trống'
         if (!formState.phone.match(/^0\d{9}$/)) errors.phone = 'Số điện thoại không hợp lệ'
         if (!formState.dateOfBirth) errors.dateOfBirth = 'Ngày sinh không được để trống'
@@ -360,7 +338,16 @@ function PatientManagementView({ data, setData }: { data: MockPatient[]; setData
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium">Giới tính</label>
-                                    <select value={formState.gender} onChange={e => setFormState(s => ({ ...s, gender: e.target.value as any }))} className="mt-1 w-full rounded-lg border bg-white p-2 text-sm">
+                                    <select
+                                        value={formState.gender}
+                                        onChange={(e) =>
+                                            setFormState((s) => ({
+                                                ...s,
+                                                gender: e.target.value as MockPatient['gender'],
+                                            }))
+                                        }
+                                        className="mt-1 w-full rounded-lg border bg-white p-2 text-sm"
+                                    >
                                         <option>Nam</option>
                                         <option>Nữ</option>
                                         <option>Khác</option>
@@ -385,98 +372,217 @@ function PatientManagementView({ data, setData }: { data: MockPatient[]; setData
 // #endregion
 
 // #region Doctor Schedule View
-function DoctorScheduleView({ data, setData }: { data: MockDoctor[]; setData: React.Dispatch<React.SetStateAction<MockDoctor[]>> }) {
+function DoctorScheduleView({
+    doctors,
+    shifts,
+    setShifts,
+    holidays,
+}: {
+    doctors: MockDoctor[]
+    shifts: DoctorOnCallShift[]
+    setShifts: React.Dispatch<React.SetStateAction<DoctorOnCallShift[]>>
+    holidays: MockClinicHoliday[]
+}) {
     const [searchTerm, setSearchTerm] = useState('')
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [editingId, setEditingId] = useState<string | null>(null)
-    const [formState, setFormState] = useState({
+    const [formState, setFormState] = useState<{
+        doctorId: string
+        date: string
+        startTime: string
+        endTime: string
+    }>({
         doctorId: '',
-        schedule: createDefaultDoctorSchedule(),
+        date: '',
+        startTime: '08:00',
+        endTime: '17:00',
     })
 
     const { addToast } = useToast()
+    const { confirm } = useConfirm()
 
-    const filteredDoctors = useMemo(() => {
-        return data.filter((doctor) => {
-            const searchValue = searchTerm.toLowerCase()
-            return (
-                doctor.fullName.toLowerCase().includes(searchValue) ||
-                doctor.specialty.toLowerCase().includes(searchValue) ||
-                doctor.room.toLowerCase().includes(searchValue) ||
-                doctor.licenseNumber.toLowerCase().includes(searchValue)
-            )
+    const toMinutes = (value: string) => {
+        const [hh, mm] = value.split(':').map(Number)
+        return (hh ?? 0) * 60 + (mm ?? 0)
+    }
+
+    const isHolidayKey = (dateKey: string) => {
+        return holidays.find((h) => {
+            if (h.isRecurring) {
+                return h.date.slice(5) === dateKey.slice(5)
+            }
+            return h.date === dateKey
         })
-    }, [data, searchTerm])
+    }
+
+    const filteredShifts = useMemo(() => {
+        const searchValue = searchTerm.trim().toLowerCase()
+        if (!searchValue) {
+            return shifts
+        }
+        return shifts.filter((shift) => {
+            const doctor = doctors.find((d) => d.id === shift.doctorId)
+            const doctorText = doctor
+                ? `${doctor.fullName} ${doctor.specialty} ${doctor.room} ${doctor.licenseNumber}`.toLowerCase()
+                : shift.doctorName.toLowerCase()
+            return doctorText.includes(searchValue) || shift.date.includes(searchValue)
+        })
+    }, [doctors, shifts, searchTerm])
+
+    const sortedShifts = useMemo(() => {
+        return [...filteredShifts].sort((a, b) => {
+            const dateCompare = b.date.localeCompare(a.date)
+            if (dateCompare !== 0) {
+                return dateCompare
+            }
+            const doctorCompare = a.doctorName.localeCompare(b.doctorName)
+            if (doctorCompare !== 0) {
+                return doctorCompare
+            }
+            return a.startTime.localeCompare(b.startTime)
+        })
+    }, [filteredShifts])
+
+    const sortedHolidays = useMemo(() => {
+        return [...holidays].sort((a, b) => a.date.localeCompare(b.date))
+    }, [holidays])
 
     const resetModal = () => {
         setIsModalOpen(false)
         setEditingId(null)
-        setFormState({
-            doctorId: '',
-            schedule: createDefaultDoctorSchedule(),
-        })
+        setFormState({ doctorId: '', date: '', startTime: '08:00', endTime: '17:00' })
     }
 
     const openCreateModal = () => {
-        const defaultDoctorId = data.find((doctor) => doctor.status === 'active')?.id ?? data[0]?.id ?? ''
         setEditingId(null)
-        setFormState({
-            doctorId: defaultDoctorId,
-            schedule: createDefaultDoctorSchedule(),
-        })
+        const defaultDoctorId = doctors.find((doctor) => doctor.status === 'active')?.id ?? doctors[0]?.id ?? ''
+        setFormState({ doctorId: defaultDoctorId, date: '', startTime: '08:00', endTime: '17:00' })
         setIsModalOpen(true)
     }
 
-    const openEditModal = (doctor: MockDoctor) => {
-        setEditingId(doctor.id)
+    const openEditModal = (shift: DoctorOnCallShift) => {
+        setEditingId(shift.id)
         setFormState({
-            doctorId: doctor.id,
-            schedule: cloneDoctorSchedule(doctor.schedule),
+            doctorId: shift.doctorId,
+            date: shift.date,
+            startTime: shift.startTime,
+            endTime: shift.endTime,
         })
         setIsModalOpen(true)
     }
 
     const handleSave = () => {
-        const targetDoctorId = formState.doctorId || editingId
-        if (!targetDoctorId) {
-            addToast('error', 'Vui lòng chọn bác sĩ cần đăng ký lịch trực.')
+        const doctor = doctors.find((d) => d.id === formState.doctorId)
+        if (!doctor || !formState.date || !formState.startTime || !formState.endTime) {
+            addToast('error', 'Vui lòng điền đầy đủ thông tin bắt buộc.')
             return
         }
 
-        setData((prev) =>
-            prev.map((doctor) =>
-                doctor.id === targetDoctorId
-                    ? { ...doctor, schedule: cloneDoctorSchedule(formState.schedule) }
-                    : doctor
-            )
-        )
+        const holiday = isHolidayKey(formState.date)
+        if (holiday) {
+            addToast('error', `Không thể đăng ký lịch trực vào ngày nghỉ: ${holiday.name} (${formatDate(formState.date)}).`)
+            return
+        }
 
-        addToast('success', 'Đăng ký lịch trực bác sĩ thành công')
+        const startMinutes = toMinutes(formState.startTime)
+        const endMinutes = toMinutes(formState.endTime)
+        if (endMinutes <= startMinutes) {
+            addToast('error', 'Giờ kết thúc phải sau giờ bắt đầu.')
+            return
+        }
+
+        const overlaps = shifts.some((shift) => {
+            if (editingId && shift.id === editingId) {
+                return false
+            }
+            if (shift.doctorId !== formState.doctorId || shift.date !== formState.date) {
+                return false
+            }
+            const existingStart = toMinutes(shift.startTime)
+            const existingEnd = toMinutes(shift.endTime)
+            return startMinutes < existingEnd && endMinutes > existingStart
+        })
+
+        if (overlaps) {
+            addToast('error', 'Ca trực bị trùng với ca trực khác của bác sĩ trong ngày này.')
+            return
+        }
+
+        if (editingId) {
+            setShifts((prev) =>
+                prev.map((shift) =>
+                    shift.id === editingId
+                        ? {
+                            ...shift,
+                            doctorId: doctor.id,
+                            doctorName: doctor.fullName,
+                            date: formState.date,
+                            startTime: formState.startTime,
+                            endTime: formState.endTime,
+                        }
+                        : shift
+                )
+            )
+            addToast('success', 'Cập nhật ca trực thành công')
+        } else {
+            const newShift: DoctorOnCallShift = {
+                id: `shift-${Date.now()}`,
+                doctorId: doctor.id,
+                doctorName: doctor.fullName,
+                date: formState.date,
+                startTime: formState.startTime,
+                endTime: formState.endTime,
+            }
+            setShifts((prev) => [newShift, ...prev])
+            addToast('success', 'Đăng ký ca trực thành công')
+        }
         resetModal()
     }
 
-    const renderSummary = (schedule: DoctorScheduleState) => {
-        const workingDays = DOCTOR_SCHEDULE_DAYS.filter((day) => schedule[day.key].enabled)
-
-        if (workingDays.length === 0) {
-            return 'Chưa đăng ký'
+    const handleDelete = async (shift: DoctorOnCallShift) => {
+        const confirmed = await confirm({
+            title: 'Xóa ca trực',
+            message: `Bạn có chắc muốn xóa ca trực của "${shift.doctorName}" ngày ${formatDate(shift.date)}?`,
+            isDangerous: true,
+        })
+        if (!confirmed) {
+            return
         }
-
-        const firstShift = schedule[workingDays[0].key]
-        const dayLabels = workingDays.map((day) => day.label).join(', ')
-
-        return `${dayLabels} • ${firstShift.startTime} - ${firstShift.endTime}`
+        setShifts((prev) => prev.filter((s) => s.id !== shift.id))
+        addToast('success', 'Đã xóa ca trực')
     }
 
     return (
         <div className="space-y-4">
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm">
+                <div className="font-semibold text-slate-900">Ngày nghỉ phòng khám</div>
+                {sortedHolidays.length === 0 ? (
+                    <div className="mt-1 text-slate-600">Chưa có ngày nghỉ. Vui lòng cấu hình ở mục "Cài đặt ngày nghỉ".</div>
+                ) : (
+                    <div className="mt-2 space-y-1 text-slate-700">
+                        {sortedHolidays.slice(0, 6).map((h) => (
+                            <div key={h.id} className="flex flex-wrap items-center justify-between gap-2">
+                                <span className="font-medium">{h.name}</span>
+                                <span className="text-slate-600">{formatDate(h.date)}{h.isRecurring ? ' (lặp lại)' : ''}</span>
+                            </div>
+                        ))}
+                        {sortedHolidays.length > 6 ? (
+                            <div className="pt-1 text-xs text-slate-500">+{sortedHolidays.length - 6} ngày nghỉ khác</div>
+                        ) : null}
+                        <div className="pt-2 text-xs text-slate-500">
+                            Lưu ý: Ngày nghỉ là nghỉ toàn phòng khám; lịch trực theo thứ vẫn giữ nguyên nhưng các ngày nghỉ sẽ được loại trừ khi đặt lịch hẹn.
+                        </div>
+                    </div>
+                )}
+            </div>
+
             <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 md:flex-row md:items-center md:justify-between">
                 <div className="relative w-full md:max-w-sm">
                     <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                     <input
                         value={searchTerm}
                         onChange={(event) => setSearchTerm(event.target.value)}
-                        placeholder="Tìm theo tên, chuyên khoa, phòng..."
+                        placeholder="Tìm theo tên bác sĩ hoặc ngày (YYYY-MM-DD)"
                         className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3 text-sm"
                     />
                 </div>
@@ -488,56 +594,57 @@ function DoctorScheduleView({ data, setData }: { data: MockDoctor[]; setData: Re
                 </button>
             </div>
 
-            {filteredDoctors.length === 0 ? (
-                <EmptyState title="Không tìm thấy bác sĩ" />
+            {sortedShifts.length === 0 ? (
+                <EmptyState title="Chưa có ca trực" />
             ) : (
                 <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
                     <table className="min-w-full text-left text-sm">
                         <thead>
                             <tr className="border-b bg-slate-50">
+                                <th className="px-4 py-3 font-semibold text-slate-700">Ngày</th>
                                 <th className="px-4 py-3 font-semibold text-slate-700">Bác sĩ</th>
-                                <th className="px-4 py-3 font-semibold text-slate-700">Chuyên khoa</th>
-                                <th className="px-4 py-3 font-semibold text-slate-700">Phòng</th>
-                                <th className="px-4 py-3 font-semibold text-slate-700">Lịch trực</th>
-                                <th className="px-4 py-3 font-semibold text-slate-700">Trạng thái</th>
+                                <th className="px-4 py-3 font-semibold text-slate-700">Giờ trực</th>
                                 <th className="px-4 py-3 text-right font-semibold text-slate-700">Hành động</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-200">
-                            {filteredDoctors.map((doctor) => {
-                                const activeDays = DOCTOR_SCHEDULE_DAYS.filter((day) => doctor.schedule[day.key]?.enabled).length
-
-                                return (
-                                    <tr key={doctor.id} className="hover:bg-slate-50">
-                                        <td className="px-4 py-3">
-                                            <div className="font-medium text-slate-900">{doctor.fullName}</div>
-                                            <div className="text-xs text-slate-500">{doctor.licenseNumber} • {formatPhone(doctor.phone)}</div>
-                                        </td>
-                                        <td className="px-4 py-3 text-slate-700">{doctor.specialty}</td>
-                                        <td className="px-4 py-3 text-slate-700">{doctor.room}</td>
-                                        <td className="px-4 py-3 text-slate-700">
-                                            <div className="max-w-md text-xs leading-5 text-slate-600">
-                                                {renderSummary(doctor.schedule as DoctorScheduleState)}
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${activeDays > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'}`}>
-                                                {activeDays > 0 ? `Đã đăng ký ${activeDays} ngày` : 'Chưa đăng ký'}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <button
-                                                    onClick={() => openEditModal(doctor)}
-                                                    className="inline-flex h-8 items-center gap-1 rounded-lg border px-3 text-xs font-medium text-slate-600 hover:text-blue-600"
-                                                >
-                                                    <Pencil className="h-4 w-4" /> Sửa
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
+                            {sortedShifts.map((shift) => (
+                                <tr key={shift.id} className="hover:bg-slate-50">
+                                    <td className="px-4 py-3 text-slate-700">
+                                        <div className="font-medium text-slate-900">{formatDate(shift.date)}</div>
+                                        <div className="text-xs text-slate-500">{shift.date}</div>
+                                    </td>
+                                    <td className="px-4 py-3">
+                                        <div className="font-medium text-slate-900">{shift.doctorName}</div>
+                                        {(() => {
+                                            const doctor = doctors.find((d) => d.id === shift.doctorId)
+                                            if (!doctor) {
+                                                return null
+                                            }
+                                            return <div className="text-xs text-slate-500">{doctor.specialty} • {doctor.room} • {formatPhone(doctor.phone)}</div>
+                                        })()}
+                                    </td>
+                                    <td className="px-4 py-3 text-slate-700">{shift.startTime} - {shift.endTime}</td>
+                                    <td className="px-4 py-3">
+                                        <div className="flex items-center justify-end gap-2">
+                                            <button
+                                                onClick={() => openEditModal(shift)}
+                                                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border text-slate-600 hover:text-blue-600"
+                                                title="Sửa"
+                                            >
+                                                <Pencil className="h-4 w-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => void handleDelete(shift)}
+                                                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border text-slate-600 hover:text-rose-600"
+                                                title="Xóa"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
@@ -551,6 +658,23 @@ function DoctorScheduleView({ data, setData }: { data: MockDoctor[]; setData: Re
                             <button onClick={resetModal} className="text-slate-400 hover:text-slate-600"><X className="h-5 w-5" /></button>
                         </div>
 
+                        {sortedHolidays.length > 0 ? (
+                            <div className="mb-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                                <div className="text-sm font-semibold text-slate-900">Ngày nghỉ phòng khám (tham chiếu)</div>
+                                <div className="mt-2 grid gap-2 md:grid-cols-2">
+                                    {sortedHolidays.slice(0, 4).map((h) => (
+                                        <div key={h.id} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700">
+                                            <div className="font-medium text-slate-900">{h.name}</div>
+                                            <div className="mt-0.5 text-slate-600">{formatDate(h.date)}{h.isRecurring ? ' (lặp lại)' : ''}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                                {sortedHolidays.length > 4 ? (
+                                    <div className="mt-2 text-xs text-slate-500">+{sortedHolidays.length - 4} ngày nghỉ khác</div>
+                                ) : null}
+                            </div>
+                        ) : null}
+
                         <div className="space-y-5">
                             <div>
                                 <label className="block text-sm font-medium">Bác sĩ *</label>
@@ -560,7 +684,7 @@ function DoctorScheduleView({ data, setData }: { data: MockDoctor[]; setData: Re
                                     className="mt-1 w-full rounded-lg border bg-white p-2 text-sm"
                                 >
                                     <option value="">Chọn bác sĩ</option>
-                                    {data.map((doctor) => (
+                                    {doctors.map((doctor) => (
                                         <option key={doctor.id} value={doctor.id}>
                                             {doctor.fullName} - {doctor.specialty}
                                         </option>
@@ -568,84 +692,36 @@ function DoctorScheduleView({ data, setData }: { data: MockDoctor[]; setData: Re
                                 </select>
                             </div>
 
-                            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                                <div className="mb-3 grid grid-cols-12 gap-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                                    <div className="col-span-12 md:col-span-3">Ngày</div>
-                                    <div className="col-span-12 md:col-span-2">Kích hoạt</div>
-                                    <div className="col-span-6 md:col-span-3">Giờ bắt đầu</div>
-                                    <div className="col-span-6 md:col-span-3">Giờ kết thúc</div>
+                            <div className="grid gap-4 md:grid-cols-2">
+                                <div>
+                                    <label className="block text-sm font-medium">Ngày trực *</label>
+                                    <input
+                                        type="date"
+                                        value={formState.date}
+                                        onChange={(event) => setFormState((state) => ({ ...state, date: event.target.value }))}
+                                        className="mt-1 w-full rounded-lg border p-2 text-sm"
+                                    />
+                                    <div className="mt-1 text-xs text-slate-500">Lưu theo ngày cụ thể; không tự lặp tuần sau.</div>
                                 </div>
-
-                                <div className="space-y-3">
-                                    {DOCTOR_SCHEDULE_DAYS.map((day) => {
-                                        const dayState = formState.schedule[day.key]
-
-                                        return (
-                                            <div key={day.key} className="grid grid-cols-12 gap-3 rounded-xl border border-slate-200 bg-white p-3">
-                                                <div className="col-span-12 md:col-span-3">
-                                                    <div className="font-medium text-slate-900">{day.label}</div>
-                                                    <div className="text-xs text-slate-500">{day.key}</div>
-                                                </div>
-                                                <div className="col-span-12 md:col-span-2 md:flex md:items-center">
-                                                    <label className="inline-flex items-center gap-2 text-sm text-slate-700">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={dayState.enabled}
-                                                            onChange={(event) => setFormState((state) => ({
-                                                                ...state,
-                                                                schedule: {
-                                                                    ...state.schedule,
-                                                                    [day.key]: {
-                                                                        ...state.schedule[day.key],
-                                                                        enabled: event.target.checked,
-                                                                    },
-                                                                },
-                                                            }))}
-                                                        />
-                                                        Có trực
-                                                    </label>
-                                                </div>
-                                                <div className="col-span-6 md:col-span-3">
-                                                    <label className="block text-xs font-medium text-slate-500">Bắt đầu</label>
-                                                    <input
-                                                        type="time"
-                                                        value={dayState.startTime}
-                                                        disabled={!dayState.enabled}
-                                                        onChange={(event) => setFormState((state) => ({
-                                                            ...state,
-                                                            schedule: {
-                                                                ...state.schedule,
-                                                                [day.key]: {
-                                                                    ...state.schedule[day.key],
-                                                                    startTime: event.target.value,
-                                                                },
-                                                            },
-                                                        }))}
-                                                        className="mt-1 w-full rounded-lg border p-2 text-sm disabled:bg-slate-100"
-                                                    />
-                                                </div>
-                                                <div className="col-span-6 md:col-span-3">
-                                                    <label className="block text-xs font-medium text-slate-500">Kết thúc</label>
-                                                    <input
-                                                        type="time"
-                                                        value={dayState.endTime}
-                                                        disabled={!dayState.enabled}
-                                                        onChange={(event) => setFormState((state) => ({
-                                                            ...state,
-                                                            schedule: {
-                                                                ...state.schedule,
-                                                                [day.key]: {
-                                                                    ...state.schedule[day.key],
-                                                                    endTime: event.target.value,
-                                                                },
-                                                            },
-                                                        }))}
-                                                        className="mt-1 w-full rounded-lg border p-2 text-sm disabled:bg-slate-100"
-                                                    />
-                                                </div>
-                                            </div>
-                                        )
-                                    })}
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label className="block text-sm font-medium">Giờ bắt đầu *</label>
+                                        <input
+                                            type="time"
+                                            value={formState.startTime}
+                                            onChange={(event) => setFormState((state) => ({ ...state, startTime: event.target.value }))}
+                                            className="mt-1 w-full rounded-lg border p-2 text-sm"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium">Giờ kết thúc *</label>
+                                        <input
+                                            type="time"
+                                            value={formState.endTime}
+                                            onChange={(event) => setFormState((state) => ({ ...state, endTime: event.target.value }))}
+                                            className="mt-1 w-full rounded-lg border p-2 text-sm"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -665,7 +741,7 @@ function DoctorScheduleView({ data, setData }: { data: MockDoctor[]; setData: Re
 // #endregion
 
 // #region Simple CRUD View (for Shifts and Holidays)
-type CrudItem = { id: string; [key: string]: any }
+type CrudItem = { id: string; [key: string]: unknown }
 type FieldConfig = {
     key: string
     label: string
@@ -708,14 +784,18 @@ function SimpleCrudView<T extends CrudItem>({
 
     const openEditModal = (item: T) => {
         setEditingId(item.id)
-        const stateToEdit = { ...item }
-        delete stateToEdit.id
-        fields.forEach(field => {
+        const { id: _id, ...rest } = item as unknown as { id: string } & Record<string, unknown>
+        void _id
+        const stateToEdit: Record<string, unknown> = { ...rest }
+        fields.forEach((field) => {
             if (field.type === 'date' && stateToEdit[field.key]) {
-                stateToEdit[field.key] = new Date(stateToEdit[field.key]).toISOString().split('T')[0]
+                const raw = stateToEdit[field.key]
+                if (typeof raw === 'string' || typeof raw === 'number' || raw instanceof Date) {
+                    stateToEdit[field.key] = new Date(raw).toISOString().split('T')[0]
+                }
             }
         })
-        setFormState(stateToEdit)
+        setFormState(stateToEdit as Omit<T, 'id'>)
         setIsModalOpen(true)
     }
 
@@ -763,7 +843,7 @@ function SimpleCrudView<T extends CrudItem>({
                                 <tr key={item.id} className="hover:bg-slate-50">
                                     {columns.map(col => (
                                         <td key={`${item.id}-${String(col.key)}`} className="px-4 py-3 text-slate-700">
-                                            {col.render ? col.render(item) : item[col.key]}
+                                            {col.render ? col.render(item) : String(item[col.key] ?? '')}
                                         </td>
                                     ))}
                                     <td className="px-4 py-3">
@@ -804,7 +884,7 @@ function SimpleCrudView<T extends CrudItem>({
                                                 {field.label}
                                                 <input
                                                     type={field.type}
-                                                    value={formState[field.key] || ''}
+                                                    value={String(formState[field.key] ?? '')}
                                                     onChange={e => setFormState(s => ({ ...s, [field.key]: e.target.value }))}
                                                     className="mt-1 w-full rounded-lg border p-2 text-sm"
                                                     placeholder={field.placeholder}
@@ -876,12 +956,16 @@ function AppointmentBookingView({
     patients,
     doctors,
     services,
+    holidays,
+    doctorShifts,
 }: {
     appointments: MockAppointment[]
     setAppointments: React.Dispatch<React.SetStateAction<MockAppointment[]>>
     patients: MockPatient[]
     doctors: MockDoctor[]
     services: MockService[]
+    holidays: MockClinicHoliday[]
+    doctorShifts: DoctorOnCallShift[]
 }) {
     const [doctorFilter, setDoctorFilter] = useState<string>('all')
     const [statusFilter, setStatusFilter] = useState<string>('all')
@@ -893,15 +977,69 @@ function AppointmentBookingView({
     const { addToast } = useToast()
     const { confirm } = useConfirm()
 
-    const initialFormState = {
+    type AppointmentFormState = {
+        patientId: string
+        doctorId: string
+        serviceId: string
+        startTime: string
+        notes: string
+        status: MockAppointment['status']
+    }
+
+    const initialFormState: AppointmentFormState = {
         patientId: '',
         doctorId: '',
         serviceId: '',
         startTime: '',
         notes: '',
-        status: 'Đã lên lịch' as const,
+        status: 'Đã lên lịch',
     }
-    const [formState, setFormState] = useState(initialFormState)
+    const [formState, setFormState] = useState<AppointmentFormState>(initialFormState)
+
+    const isClinicHoliday = (date: Date) => {
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const day = String(date.getDate()).padStart(2, '0')
+        const dateKey = `${year}-${month}-${day}`
+
+        return holidays.find((h) => {
+            if (h.isRecurring) {
+                return h.date.slice(5) === dateKey.slice(5)
+            }
+            return h.date === dateKey
+        })
+    }
+
+    const getLocalDateKey = (date: Date) => {
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const day = String(date.getDate()).padStart(2, '0')
+        return `${year}-${month}-${day}`
+    }
+
+    const toMinutes = (value: string) => {
+        const [hh, mm] = value.split(':').map(Number)
+        return (hh ?? 0) * 60 + (mm ?? 0)
+    }
+
+    const getTimeKey = (date: Date) => {
+        const hh = String(date.getHours()).padStart(2, '0')
+        const mm = String(date.getMinutes()).padStart(2, '0')
+        return `${hh}:${mm}`
+    }
+
+    const isWithinDoctorShift = (doctorId: string, startTime: Date, endTime: Date) => {
+        const dateKey = getLocalDateKey(startTime)
+        const startMinutes = toMinutes(getTimeKey(startTime))
+        const endMinutes = toMinutes(getTimeKey(endTime))
+
+        const candidates = doctorShifts.filter((shift) => shift.doctorId === doctorId && shift.date === dateKey)
+        return candidates.some((shift) => {
+            const shiftStart = toMinutes(shift.startTime)
+            const shiftEnd = toMinutes(shift.endTime)
+            return startMinutes >= shiftStart && endMinutes <= shiftEnd
+        })
+    }
 
     const filteredAppointments = useMemo(() => {
         return appointments
@@ -975,7 +1113,13 @@ function AppointmentBookingView({
         setIsModalOpen(true)
     }
 
-    const handleDateClick = (arg: { date: Date; allDay: boolean }) => {
+    const handleDateClick = (arg: DateClickArg) => {
+        const holiday = isClinicHoliday(arg.date)
+        if (holiday) {
+            addToast('error', `Ngày ${formatDate(arg.date)} là ngày nghỉ: ${holiday.name}. Vui lòng chọn ngày khác.`)
+            return
+        }
+
         openCreateModal()
         const startTime = new Date(arg.date)
         if (arg.allDay) {
@@ -987,8 +1131,8 @@ function AppointmentBookingView({
         }))
     }
 
-    const handleEventClick = (arg: { event: { extendedProps: MockAppointment } }) => {
-        openEditModal(arg.event.extendedProps)
+    const handleEventClick = (arg: EventClickArg) => {
+        openEditModal(arg.event.extendedProps as unknown as MockAppointment)
     }
 
     const handleSave = () => {
@@ -1003,6 +1147,45 @@ function AppointmentBookingView({
 
         const startTime = new Date(formState.startTime)
         const endTime = new Date(startTime.getTime() + service.duration * 60 * 1000)
+
+        const original = editingId ? appointments.find((a) => a.id === editingId) : undefined
+        const scheduleInputsChanged = !original
+            ? true
+            : (
+                original.doctorId !== formState.doctorId ||
+                original.serviceId !== formState.serviceId ||
+                formatDateTimeLocal(original.startTime) !== formState.startTime
+            )
+
+        if (scheduleInputsChanged) {
+            const holiday = isClinicHoliday(startTime)
+            if (holiday) {
+                addToast('error', `Không thể đặt lịch vào ngày nghỉ: ${holiday.name} (${formatDate(startTime)}).`)
+                return
+            }
+
+            if (!isWithinDoctorShift(doctor.id, startTime, endTime)) {
+                addToast('error', `Bác sĩ chưa đăng ký ca trực cho ${formatDate(startTime)} (khung giờ ${getTimeKey(startTime)}-${getTimeKey(endTime)}).`)
+                return
+            }
+
+            const hasOverlap = appointments.some((apt) => {
+                if (editingId && apt.id === editingId) {
+                    return false
+                }
+                if (apt.doctorId !== doctor.id || apt.status === 'Đã hủy') {
+                    return false
+                }
+                const existingStart = new Date(apt.startTime)
+                const existingEnd = new Date(apt.endTime)
+                return startTime < existingEnd && endTime > existingStart
+            })
+
+            if (hasOverlap) {
+                addToast('error', 'Lịch hẹn bị trùng giờ với lịch hẹn khác của bác sĩ.')
+                return
+            }
+        }
 
         if (editingId) {
             setAppointments(prev => prev.map(apt => apt.id === editingId ? {
@@ -1211,7 +1394,16 @@ function AppointmentBookingView({
                             {editingId && (
                                 <div>
                                     <label className="block text-sm font-medium">Trạng thái</label>
-                                    <select value={formState.status} onChange={e => setFormState(s => ({ ...s, status: e.target.value as any }))} className="mt-1 w-full rounded-lg border bg-white p-2 text-sm">
+                                    <select
+                                        value={formState.status}
+                                        onChange={(e) =>
+                                            setFormState((s) => ({
+                                                ...s,
+                                                status: e.target.value as MockAppointment['status'],
+                                            }))
+                                        }
+                                        className="mt-1 w-full rounded-lg border bg-white p-2 text-sm"
+                                    >
                                         <option>Đã lên lịch</option>
                                         <option>Đã hoàn thành</option>
                                         <option>Đã hủy</option>

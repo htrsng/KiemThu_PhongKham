@@ -1,26 +1,73 @@
-import { Activity, CalendarDays, ClipboardList, Users, BarChart2, PieChart, LineChart } from 'lucide-react'
+import { Activity, CalendarDays, ClipboardList, Users, BarChart2, PieChart, LineChart, UserCheck } from 'lucide-react'
 import { PageShell } from '../components/PageShell'
-import { generateMockAccounts, generateMockDoctors, generateMockServices, generateMockActivities } from '../lib/mockData'
-
-const stats = [
-    { label: 'Tài khoản đang hoạt động', value: generateMockAccounts().filter(a => a.status === 'Hoat dong').length, icon: Users },
-    { label: 'Bác sĩ hoạt động', value: generateMockDoctors().filter(d => d.status === 'Hoat dong').length, icon: Activity },
-    { label: 'Dịch vụ trong danh mục', value: generateMockServices().length, icon: ClipboardList },
-    { label: 'Ca hẹn hôm nay', value: 28, icon: CalendarDays },
-]
+import { generateMockAccounts, generateMockDoctors, generateMockServices, generateMockActivities, generateMockAppointments } from '../lib/mockData'
+import { useAuth } from '../contexts/AuthContext'
+import { getInitials } from '../lib/formatters'
 
 export function DashboardPage() {
+    const { currentUser } = useAuth()
     // Mock data
     const activities = generateMockActivities(6)
     const doctors = generateMockDoctors()
     const accounts = generateMockAccounts()
-    const services = generateMockServices()
 
     // Simple chart mock (replace with chart lib if needed)
     function StatBar({ value, max, color }: { value: number, max: number, color: string }) {
         return <div className="h-3 rounded bg-slate-100"><div style={{ width: `${(value / max) * 100}%` }} className={`h-3 rounded ${color}`}></div></div>
     }
 
+    // Render Doctor's Dashboard
+    if (currentUser?.role === 'Doctor') {
+        const myAppointments = generateMockAppointments(50).filter(
+            (apt) => apt.doctorId === currentUser.referenceId
+        )
+        const todayAppointments = myAppointments.filter(
+            (apt) => new Date(apt.startTime).toDateString() === new Date().toDateString() && apt.status === 'Đã lên lịch'
+        )
+
+        return (
+            <div className="space-y-8">
+                <PageShell
+                    title={`Chào mừng trở lại, Bác sĩ ${currentUser.fullName}!`}
+                    description="Đây là tổng quan lịch làm việc và các hoạt động của bạn hôm nay."
+                    testId="page-dashboard-doctor"
+                />
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                    <article className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <div className="flex items-center justify-between gap-4">
+                            <div>
+                                <p className="text-sm text-slate-500">Lịch hẹn hôm nay</p>
+                                <p className="mt-3 text-3xl font-semibold text-slate-900">{todayAppointments.length}</p>
+                            </div>
+                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-900">
+                                <CalendarDays className="h-5 w-5" />
+                            </div>
+                        </div>
+                    </article>
+                    <article className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <div className="flex items-center justify-between gap-4">
+                            <div>
+                                <p className="text-sm text-slate-500">Bệnh nhân đã hoàn thành</p>
+                                <p className="mt-3 text-3xl font-semibold text-slate-900">{myAppointments.filter(a => a.status === 'Đã hoàn thành').length}</p>
+                            </div>
+                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-900">
+                                <UserCheck className="h-5 w-5" />
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        )
+    }
+
+    const stats = [
+        { label: 'Tài khoản đang hoạt động', value: generateMockAccounts().filter(a => a.status === 'Hoat dong').length, icon: Users },
+        { label: 'Bác sĩ hoạt động', value: generateMockDoctors().filter(d => d.status === 'active').length, icon: Activity },
+        { label: 'Dịch vụ trong danh mục', value: generateMockServices().length, icon: ClipboardList },
+        { label: 'Ca hẹn hôm nay', value: 28, icon: CalendarDays },
+    ]
+
+    // Render Admin's Dashboard
     return (
         <div className="space-y-8">
             <PageShell
@@ -128,11 +175,9 @@ export function DashboardPage() {
                     <span className="font-semibold text-slate-800">Bác sĩ đang làm việc</span>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                    {doctors.filter(d => d.status === 'Hoat dong').slice(0, 6).map(doc => (
+                    {doctors.filter(d => d.status === 'active').slice(0, 6).map(doc => (
                         <div key={doc.id} className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-blue-50 p-4">
-                            <div className="h-12 w-12 rounded-full bg-blue-200 flex items-center justify-center font-bold text-blue-900">
-                                {doc.fullName.split(' ').slice(-1)[0][0]}
-                            </div>
+                            <div className="h-12 w-12 rounded-full bg-blue-200 flex items-center justify-center font-bold text-blue-900">{getInitials(doc.fullName)}</div>
                             <div>
                                 <div className="font-semibold text-blue-900">{doc.fullName}</div>
                                 <div className="text-xs text-slate-500">{doc.specialty} - {doc.degree}</div>

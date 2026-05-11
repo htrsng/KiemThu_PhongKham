@@ -1,5 +1,3 @@
-import { getRelativeTime } from './formatters'
-
 // Account mock data
 export type MockAccount = {
     id: string
@@ -10,14 +8,19 @@ export type MockAccount = {
     status: 'Hoat dong' | 'Bi khoa'
     lastLogin: string
     createdAt: string
+    dateOfBirth?: string
+    hometown?: string
+    address?: string
+    referenceId?: string // ID liên kết (ví dụ: doctorId)
 }
 
 export function generateMockAccounts(count: number = 15): MockAccount[] {
     const roles = ['Admin', 'Doctor', 'Reception'] as const
     const lastNames = ['Nguyễn', 'Trần', 'Hoàng', 'Phạm', 'Võ', 'Vũ', 'Tạ', 'Đặng']
     const firstNames = ['Văn A', 'Thị B', 'Minh C', 'Hùng D', 'Linh E', 'Tuấn F', 'Hà G']
+    const cities = ['Hà Nội', 'TP.HCM', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ']
 
-    return Array.from({ length: count }, (_, index) => {
+    const randomAccounts: MockAccount[] = Array.from({ length: count }, (_, index) => {
         const firstName = firstNames[index % firstNames.length]
         const lastName = lastNames[index % lastNames.length]
         const fullName = `${lastName} ${firstName}`
@@ -28,6 +31,11 @@ export function generateMockAccounts(count: number = 15): MockAccount[] {
         const daysAgo = Math.floor(Math.random() * 30)
         const lastLogin = new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000)
         const createdAt = new Date(Date.now() - (daysAgo + Math.floor(Math.random() * 60)) * 24 * 60 * 60 * 1000)
+        const birthYear = new Date().getFullYear() - (Math.floor(Math.random() * 30) + 22)
+        const birthMonth = Math.floor(Math.random() * 12)
+        const birthDay = Math.floor(Math.random() * 28) + 1
+        const dateOfBirth = new Date(birthYear, birthMonth, birthDay).toISOString()
+
 
         return {
             id: `acc-${String(index + 1).padStart(3, '0')}`,
@@ -38,8 +46,28 @@ export function generateMockAccounts(count: number = 15): MockAccount[] {
             status,
             lastLogin: lastLogin.toISOString(),
             createdAt: createdAt.toISOString(),
+            dateOfBirth,
+            hometown: cities[index % cities.length],
+            address: `${Math.floor(Math.random() * 100) + 1} Đường ABC, ${cities[index % cities.length]}`,
+            referenceId: role === 'Doctor' ? `doc-${String(index + 1).padStart(3, '0')}` : undefined
         }
     })
+
+    // Thêm tài khoản admin tĩnh theo yêu cầu
+    const adminAccount: MockAccount = {
+        id: 'acc-admin-999',
+        username: 'admin',
+        fullName: 'System Admin',
+        email: 'admin@gmail.com',
+        role: 'Admin',
+        status: 'Hoat dong',
+        lastLogin: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        hometown: 'Hà Nội',
+        address: 'Hà Nội'
+    }
+
+    return [adminAccount, ...randomAccounts]
 }
 
 // Audit log mock data
@@ -55,7 +83,6 @@ export type MockAuditLog = {
 export function generateMockAuditLogs(count: number = 20): MockAuditLog[] {
     const actions = ['Đăng nhập', 'Đổi mật khẩu', 'Tạo tài khoản', 'Khóa tài khoản', 'Sửa tài khoản'] as const
     const accounts = ['admin.user', 'doctor.hung', 'reception.linh', 'admin.tuan']
-    const results = ['Thành công', 'Thất bại'] as const
 
     return Array.from({ length: count }, (_, index) => {
         const hoursAgo = Math.floor(Math.random() * 72)
@@ -154,7 +181,6 @@ export type MockService = {
 }
 
 export function generateMockServices(count: number = 10): MockService[] {
-    const categories = ['Khám', 'Điều trị', 'Phẫu thuật', 'Thẩm mỹ', 'Vệ sinh'] as const
     const units = ['răng', 'hàm', 'lần', 'liệu trình'] as const
     const services = [
         { name: 'Khám tổng quát', category: 'Khám' as const, duration: 30, basePrice: 200000, description: 'Khám sức khỏe răng miệng toàn bộ' },

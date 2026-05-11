@@ -3,7 +3,7 @@ import { Pencil, Plus, Search, Trash2, X, Lock, Unlock, Eye, EyeOff } from 'luci
 import { PageShell } from '../components/PageShell'
 import { useToast } from '../contexts/ToastContext'
 import { useConfirm } from '../contexts/ConfirmContext'
-import { TableLoadingSkeleton, LoadingSkeleton } from '../components/LoadingSkeleton'
+import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
 import { EmptyState } from '../components/EmptyState'
 import { formatDateTime, getRelativeTime } from '../lib/formatters'
 import { validateUsername, validateEmail, validatePassword, validateRequired } from '../lib/validators'

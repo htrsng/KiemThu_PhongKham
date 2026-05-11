@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Pencil, Plus, Trash2, X, Calendar } from 'lucide-react'
+import { Pencil, Plus, Trash2, X } from 'lucide-react'
 import { PageShell } from '../components/PageShell'
 import { useToast } from '../contexts/ToastContext'
 import { useConfirm } from '../contexts/ConfirmContext'
@@ -15,13 +15,15 @@ const UNITS = ['răng', 'hàm', 'lần', 'liệu trình']
 type ServiceFormState = {
     name: string
     code: string
-    category: string
-    unit: string
+    category: MockService['category']
+    unit: MockService['unit']
     duration: number
     description: string
     basePrice: number
     status: 'active' | 'inactive'
 }
+
+type ServiceFormErrors = Partial<Record<keyof ServiceFormState, string>>
 
 type PricingFormState = {
     serviceId: string
@@ -32,11 +34,12 @@ type PricingFormState = {
     status: 'active' | 'inactive'
 }
 
+type PricingFormErrors = Partial<Record<keyof PricingFormState, string>>
+
 export function ServiceCategoryPage() {
     const [activeTab, setActiveTab] = useState<Tab>('services')
     const [services, setServices] = useState<MockService[]>([])
     const [pricingPolicies, setPricingPolicies] = useState<MockPricingPolicy[]>([])
-    const [isLoading, setIsLoading] = useState(true)
 
     // Service modal state
     const [isServiceModalOpen, setIsServiceModalOpen] = useState(false)
@@ -51,7 +54,7 @@ export function ServiceCategoryPage() {
         basePrice: 0,
         status: 'active',
     })
-    const [serviceFormErrors, setServiceFormErrors] = useState<Partial<ServiceFormState>>({})
+    const [serviceFormErrors, setServiceFormErrors] = useState<ServiceFormErrors>({})
 
     // Pricing modal state
     const [isPricingModalOpen, setIsPricingModalOpen] = useState(false)
@@ -60,11 +63,11 @@ export function ServiceCategoryPage() {
         serviceId: '',
         type: 'Niêm yết',
         price: 0,
-        effectiveDate: new Date().toISOString().split('T')[0],
-        expiryDate: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        effectiveDate: '',
+        expiryDate: '',
         status: 'active',
     })
-    const [pricingFormErrors, setPricingFormErrors] = useState<Partial<PricingFormState>>({})
+    const [pricingFormErrors, setPricingFormErrors] = useState<PricingFormErrors>({})
 
     const [serviceSearchTerm, setServiceSearchTerm] = useState('')
     const [pricingSearchService, setPricingSearchService] = useState('')
@@ -77,7 +80,6 @@ export function ServiceCategoryPage() {
         const timer = setTimeout(() => {
             setServices(generateMockServices(10))
             setPricingPolicies(generateMockPricingPolicies(15))
-            setIsLoading(false)
         }, 500)
         return () => clearTimeout(timer)
     }, [])
@@ -132,7 +134,7 @@ export function ServiceCategoryPage() {
     }
 
     function validateServiceForm(): boolean {
-        const errors: Partial<ServiceFormState> = {}
+        const errors: ServiceFormErrors = {}
         if (!serviceFormState.name.trim()) errors.name = 'Tên dịch vụ không được để trống'
         if (serviceFormState.basePrice <= 0) errors.basePrice = 'Giá cơ bản phải lớn hơn 0'
         if (serviceFormState.duration <= 0) errors.duration = 'Thời gian phải lớn hơn 0'
@@ -206,7 +208,7 @@ export function ServiceCategoryPage() {
     }
 
     function validatePricingForm(): boolean {
-        const errors: Partial<PricingFormState> = {}
+        const errors: PricingFormErrors = {}
         if (!pricingFormState.serviceId) errors.serviceId = 'Vui lòng chọn dịch vụ'
         if (pricingFormState.price <= 0) errors.price = 'Giá phải lớn hơn 0'
         if (new Date(pricingFormState.expiryDate) <= new Date(pricingFormState.effectiveDate)) {
@@ -503,7 +505,12 @@ export function ServiceCategoryPage() {
                                     <label className="block text-sm font-medium text-slate-900">Danh mục</label>
                                     <select
                                         value={serviceFormState.category}
-                                        onChange={(e) => setServiceFormState((prev) => ({ ...prev, category: e.target.value }))}
+                                        onChange={(e) =>
+                                            setServiceFormState((prev) => ({
+                                                ...prev,
+                                                category: e.target.value as MockService['category'],
+                                            }))
+                                        }
                                         className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"
                                     >
                                         {CATEGORIES.map((cat) => (
@@ -515,7 +522,12 @@ export function ServiceCategoryPage() {
                                     <label className="block text-sm font-medium text-slate-900">Đơn vị</label>
                                     <select
                                         value={serviceFormState.unit}
-                                        onChange={(e) => setServiceFormState((prev) => ({ ...prev, unit: e.target.value }))}
+                                        onChange={(e) =>
+                                            setServiceFormState((prev) => ({
+                                                ...prev,
+                                                unit: e.target.value as MockService['unit'],
+                                            }))
+                                        }
                                         className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"
                                     >
                                         {UNITS.map((unit) => (

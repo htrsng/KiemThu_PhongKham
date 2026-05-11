@@ -1,31 +1,59 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Pencil, Trash2, X, Plus, Clock, Phone, Mail, Award, BookOpen, ChevronLeft, ChevronRight, User } from 'lucide-react'
+import { Pencil, Trash2, X, Plus, Clock, Phone, Mail, Award, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react'
 import { PageShell } from '../components/PageShell'
 import { useToast } from '../contexts/ToastContext'
 import { useConfirm } from '../contexts/ConfirmContext'
-import { formatVND, formatPhone, getSpecialtyColor, getInitials } from '../lib/formatters'
+import { formatDate, formatPhone, getSpecialtyColor, getInitials } from '../lib/formatters'
 import { generateMockDoctors, type MockDoctor } from '../lib/mockData'
 import { EmptyState } from '../components/EmptyState'
 
-const SPECIALTIES = ['Nha khoa tổng quát', 'Niềng răng', 'Implant', 'Nhổ răng', 'Nha chu']
-const DEGREES = ['Bác sĩ', 'Thạc sĩ', 'Tiến sĩ', 'Phó Giáo sư', 'Giáo sư']
-const ROOMS = Array.from({ length: 205 }, (_, i) => (101 + i).toString()) // 101-305
+const SPECIALTIES: MockDoctor['specialty'][] = ['Nha khoa tổng quát', 'Niềng răng', 'Implant', 'Nhổ răng', 'Nha chu']
+const DEGREES: MockDoctor['degree'][] = ['Bác sĩ', 'Thạc sĩ', 'Tiến sĩ', 'Phó Giáo sư', 'Giáo sư']
+const ROOMS: MockDoctor['room'][] = Array.from({ length: 205 }, (_, i) => `Phòng ${101 + i}`) // Phòng 101 - Phòng 305
 const SCHEDULE_DAYS = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']
 const SCHEDULE_DAY_NAMES = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật']
+
+function formatDateInput(date: Date): string {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+}
+
+function parseDateInput(value: string): Date {
+    const [year, month, day] = value.split('-').map(Number)
+    return new Date(year, month - 1, day)
+}
+
+function getMonday(date: Date): Date {
+    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    const dayOfWeek = d.getDay() // 0 (CN) ... 6 (T7)
+    const diffToMonday = (dayOfWeek + 6) % 7
+    d.setDate(d.getDate() - diffToMonday)
+    return d
+}
+
+function addDays(date: Date, days: number): Date {
+    const d = new Date(date)
+    d.setDate(d.getDate() + days)
+    return d
+}
 
 type DoctorFormState = {
     fullName: string
     phone: string
     email: string
-    specialty: string
-    degree: string
+    specialty: MockDoctor['specialty']
+    degree: MockDoctor['degree']
     experience: number
-    room: string
+    room: MockDoctor['room']
     consultationFee: number
     licenseNumber: string
     status: 'active' | 'inactive' // Giữ nguyên, giờ đã đồng bộ với MockDoctor
     schedule: Record<string, { enabled: boolean; startTime: string; endTime: string }>
 }
+
+type DoctorFormErrors = Partial<Record<keyof DoctorFormState, string>>
 
 type ScheduleModalState = {
     isOpen: boolean
@@ -35,9 +63,11 @@ type ScheduleModalState = {
 
 export function DoctorManagementPage() {
     const [doctors, setDoctors] = useState<MockDoctor[]>([])
-    const [isLoading, setIsLoading] = useState(true)
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 3
+
+    const [scheduleWeekStart, setScheduleWeekStart] = useState(() => formatDateInput(getMonday(new Date())))
+    const scheduleWeekStartDate = useMemo(() => parseDateInput(scheduleWeekStart), [scheduleWeekStart])
 
     // Modal states
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -56,7 +86,7 @@ export function DoctorManagementPage() {
         specialty: SPECIALTIES[0],
         degree: DEGREES[0],
         experience: 0,
-        room: '101',
+        room: ROOMS[0],
         consultationFee: 0,
         licenseNumber: '',
         status: 'active',
@@ -68,13 +98,13 @@ export function DoctorManagementPage() {
         ),
     })
 
-    const [formErrors, setFormErrors] = useState<Partial<DoctorFormState>>({})
+    const [formErrors, setFormErrors] = useState<DoctorFormErrors>({})
 
     // Filter states
     const [searchTerm, setSearchTerm] = useState('')
-    const [specialtyFilter, setSpecialtyFilter] = useState<string | null>(null)
+    const [specialtyFilter, setSpecialtyFilter] = useState<MockDoctor['specialty'] | null>(null)
     const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all')
-    const [roomFilter, setRoomFilter] = useState<string | null>(null)
+    const [roomFilter, setRoomFilter] = useState<MockDoctor['room'] | null>(null)
     const [sortBy, setSortBy] = useState<'name' | 'fee' | 'experience'>('name')
 
     const { addToast } = useToast()
@@ -84,7 +114,6 @@ export function DoctorManagementPage() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setDoctors(generateMockDoctors(9))
-            setIsLoading(false)
         }, 500)
         return () => clearTimeout(timer)
     }, [])
@@ -147,7 +176,7 @@ export function DoctorManagementPage() {
             specialty: SPECIALTIES[0],
             degree: DEGREES[0],
             experience: 0,
-            room: '101',
+            room: ROOMS[0],
             consultationFee: 0,
             licenseNumber: '',
             status: 'active',
@@ -182,7 +211,7 @@ export function DoctorManagementPage() {
     }
 
     function validateForm(): boolean {
-        const errors: Partial<DoctorFormState> = {}
+        const errors: DoctorFormErrors = {}
 
         if (!formState.fullName.trim()) errors.fullName = 'Họ tên không được để trống'
         if (!formState.phone.match(/^0\d{9}$/)) errors.phone = 'Số điện thoại không hợp lệ (0xxxxxxxxx)'
@@ -231,6 +260,7 @@ export function DoctorManagementPage() {
     }
 
     function openScheduleModal(doctor: MockDoctor) {
+        setScheduleWeekStart(formatDateInput(getMonday(new Date())))
         setEditingDoctorId(doctor.id)
         setFormState({
             fullName: doctor.fullName,
@@ -297,7 +327,10 @@ export function DoctorManagementPage() {
                     <select
                         value={specialtyFilter || ''}
                         onChange={(e) => {
-                            setSpecialtyFilter(e.target.value || null)
+                            const nextValue = e.target.value
+                            setSpecialtyFilter(
+                                nextValue ? (nextValue as MockDoctor['specialty']) : null
+                            )
                             setCurrentPage(1)
                         }}
                         className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none ring-blue-200 transition focus:ring"
@@ -326,7 +359,8 @@ export function DoctorManagementPage() {
                     <select
                         value={roomFilter || ''}
                         onChange={(e) => {
-                            setRoomFilter(e.target.value || null)
+                            const nextValue = e.target.value
+                            setRoomFilter(nextValue ? (nextValue as MockDoctor['room']) : null)
                             setCurrentPage(1)
                         }}
                         className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none ring-blue-200 transition focus:ring"
@@ -334,7 +368,7 @@ export function DoctorManagementPage() {
                         <option value="">Tất cả phòng</option>
                         {ROOMS.map((room) => (
                             <option key={room} value={room}>
-                                Phòng {room}
+                                {room}
                             </option>
                         ))}
                     </select>
@@ -587,7 +621,10 @@ export function DoctorManagementPage() {
                                     <select
                                         value={formState.specialty}
                                         onChange={(e) =>
-                                            setFormState((prev) => ({ ...prev, specialty: e.target.value }))
+                                            setFormState((prev) => ({
+                                                ...prev,
+                                                specialty: e.target.value as MockDoctor['specialty'],
+                                            }))
                                         }
                                         className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"
                                     >
@@ -603,7 +640,10 @@ export function DoctorManagementPage() {
                                     <select
                                         value={formState.degree}
                                         onChange={(e) =>
-                                            setFormState((prev) => ({ ...prev, degree: e.target.value }))
+                                            setFormState((prev) => ({
+                                                ...prev,
+                                                degree: e.target.value as MockDoctor['degree'],
+                                            }))
                                         }
                                         className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"
                                     >
@@ -650,7 +690,7 @@ export function DoctorManagementPage() {
                                     >
                                         {ROOMS.map((room) => (
                                             <option key={room} value={room}>
-                                                Phòng {room}
+                                                {room}
                                             </option>
                                         ))}
                                     </select>
@@ -729,14 +769,33 @@ export function DoctorManagementPage() {
                             </button>
                         </div>
 
+                        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                            <div>
+                                <label className="block text-sm font-medium text-slate-900">Tuần áp dụng (Thứ 2)</label>
+                                <input
+                                    type="date"
+                                    value={scheduleWeekStart}
+                                    onChange={(e) => {
+                                        const picked = parseDateInput(e.target.value)
+                                        setScheduleWeekStart(formatDateInput(getMonday(picked)))
+                                    }}
+                                    className="mt-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"
+                                />
+                            </div>
+                            <p className="text-xs text-slate-500">Hiển thị ngày cụ thể theo tuần để dễ đối chiếu.</p>
+                        </div>
+
                         <div className="space-y-3 max-h-[60vh] overflow-y-auto">
                             {SCHEDULE_DAYS.map((day, idx) => (
                                 <div
                                     key={day}
                                     className="flex items-center gap-4 rounded-lg border border-slate-200 p-3"
                                 >
-                                    <div className="w-16">
+                                    <div className="w-40">
                                         <span className="font-semibold text-slate-900">{SCHEDULE_DAY_NAMES[idx]}</span>
+                                        <div className="text-xs text-slate-500">
+                                            {formatDate(addDays(scheduleWeekStartDate, idx), 'short')}
+                                        </div>
                                     </div>
                                     <input
                                         type="checkbox"

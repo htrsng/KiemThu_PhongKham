@@ -15,6 +15,7 @@ export type NavigationItem = {
     icon: typeof LayoutDashboard
     description: string
     testId: string
+    allowedRoles: ('Admin' | 'Doctor' | 'Reception')[]
 }
 
 export const navigationItems: NavigationItem[] = [
@@ -25,6 +26,7 @@ export const navigationItems: NavigationItem[] = [
         icon: LayoutDashboard,
         description: 'Tổng quan hoạt động',
         testId: 'nav-dashboard',
+        allowedRoles: ['Admin', 'Doctor', 'Reception'],
     },
     {
         id: 'accounts',
@@ -33,6 +35,7 @@ export const navigationItems: NavigationItem[] = [
         icon: Users,
         description: 'Tài khoản và trạng thái',
         testId: 'nav-accounts',
+        allowedRoles: ['Admin'],
     },
     {
         id: 'doctors',
@@ -41,6 +44,7 @@ export const navigationItems: NavigationItem[] = [
         icon: Stethoscope,
         description: 'Hồ sơ chuyên môn',
         testId: 'nav-doctors',
+        allowedRoles: ['Admin', 'Doctor', 'Reception'],
     },
     {
         id: 'appointments',
@@ -49,6 +53,7 @@ export const navigationItems: NavigationItem[] = [
         icon: Calendar,
         description: 'Lịch hẹn và lịch làm việc',
         testId: 'nav-appointments',
+        allowedRoles: ['Admin', 'Doctor', 'Reception'],
     },
     {
         id: 'services',
@@ -57,6 +62,7 @@ export const navigationItems: NavigationItem[] = [
         icon: ClipboardList,
         description: 'Giá và lịch sử',
         testId: 'nav-services',
+        allowedRoles: ['Admin', 'Reception'],
     },
     {
         id: 'permissions',
@@ -65,6 +71,7 @@ export const navigationItems: NavigationItem[] = [
         icon: ShieldCheck,
         description: 'Ma trận quyền truy cập',
         testId: 'nav-permissions',
+        allowedRoles: ['Admin'],
     },
     {
         id: 'settings',
@@ -73,6 +80,7 @@ export const navigationItems: NavigationItem[] = [
         icon: Settings2,
         description: 'Thông tin và giờ làm việc',
         testId: 'nav-settings',
+        allowedRoles: ['Admin'],
     },
 ]
 
