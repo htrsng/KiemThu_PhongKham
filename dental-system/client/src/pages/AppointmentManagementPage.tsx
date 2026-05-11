@@ -35,7 +35,7 @@ import { useToast } from '../contexts/ToastContext'
 import { useConfirm } from '../contexts/ConfirmContext'
 import { EmptyState } from '../components/EmptyState'
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
-import { formatDate, formatDateTime, formatPhone, formatVND } from '../lib/formatters'
+import { formatDate, formatDateTime, formatDateTimeLocal, formatPhone, formatVND } from '../lib/formatters'
 
 type SubPage = 'appointments' | 'patients' | 'doctor-schedule' | 'work-shifts' | 'holidays'
 
@@ -968,7 +968,7 @@ function AppointmentBookingView({
             patientId: apt.patientId,
             doctorId: apt.doctorId,
             serviceId: apt.serviceId,
-            startTime: formatDateTime(apt.startTime, true),
+            startTime: formatDateTimeLocal(apt.startTime),
             notes: apt.notes,
             status: apt.status,
         })
@@ -983,7 +983,7 @@ function AppointmentBookingView({
         }
         setFormState(prev => ({
             ...prev,
-            startTime: formatDateTime(startTime.toISOString(), true)
+            startTime: formatDateTimeLocal(startTime)
         }))
     }
 
