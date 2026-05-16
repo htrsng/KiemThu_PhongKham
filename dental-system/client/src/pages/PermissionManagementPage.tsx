@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { PageShell } from '../components/PageShell'
 import { useToast } from '../contexts/ToastContext'
+import { useAuth } from '../contexts/AuthContext' // Import useAuth
+import { EmptyState } from '../components/EmptyState'
 
 type PermissionMatrix = {
     [role: string]: {
@@ -59,7 +61,12 @@ const DEFAULT_PERMISSIONS: PermissionMatrix = {
 export function PermissionManagementPage() {
     const [permissions, setPermissions] = useState<PermissionMatrix>(DEFAULT_PERMISSIONS)
     const [activeRole, setActiveRole] = useState<'Admin' | 'Doctor' | 'Reception'>('Admin')
+    const { currentUser } = useAuth() // Get current user
     const { addToast } = useToast()
+
+    if (currentUser?.role === 'Doctor' || currentUser?.role === 'Reception') {
+        return <EmptyState title="Bạn không có quyền truy cập mục này." description="Chỉ quản trị viên mới có thể quản lý phân quyền." />
+    }
 
     const togglePermission = (module: string, action: string) => {
         setPermissions((prev) => ({

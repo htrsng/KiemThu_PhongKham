@@ -5,6 +5,7 @@ import { calculateDoctorSalary, type SalaryReport } from '../lib/payrollEngine';
 import { formatVND } from '../lib/formatters'
 import { Banknote, Search, Download } from 'lucide-react'
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
+import { useAuth } from '../contexts/AuthContext' // Import useAuth
 import { useToast } from '../contexts/ToastContext'
 import { PayrollDetailModal } from '../components/PayrollDetailModal';
 import { useData, type Doctor, type Shift, type Appointment } from '../contexts/DataContext';
@@ -31,6 +32,7 @@ export function DoctorPayrollPage() {
     const [searchTerm, setSearchTerm] = useState('')
     const [selectedReport, setSelectedReport] = useState<SalaryReport | null>(null);
 
+    const { currentUser } = useAuth(); // Get current user
     useToast()
 
     const isLoading = doctorsIsLoading || shiftsIsLoading || appointmentsIsLoading || mockDataIsLoading;
@@ -47,6 +49,10 @@ export function DoctorPayrollPage() {
         
         return data.sort((a, b) => b.totalSalary - a.totalSalary)
     }, [doctors, shifts, appointments, services, targetMonth, targetYear, searchTerm])
+
+    if (currentUser?.role === 'Doctor') {
+        return <EmptyState title="Bạn không có quyền truy cập mục này." description="Chỉ quản trị viên mới có thể xem bảng lương bác sĩ." />
+    }
 
     const totalPayout = payrollData.reduce((sum, d) => sum + d.totalSalary, 0)
 

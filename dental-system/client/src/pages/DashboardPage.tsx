@@ -1,25 +1,91 @@
-import { Activity, CalendarDays, ClipboardList, Users, BarChart2, PieChart, LineChart, UserCheck } from 'lucide-react'
+import { useMemo } from 'react'
+import {
+    Activity,
+    CalendarDays,
+    ClipboardList,
+    Users,
+    UserCheck,
+    DollarSign,
+    UserPlus,
+    CalendarX2,
+    TrendingUp,
+    PieChart,
+    BarChart,
+} from 'lucide-react'
 import { PageShell } from '../components/PageShell'
 import { generateMockAccounts, generateMockDoctors, generateMockServices, generateMockActivities, generateMockAppointments } from '../lib/mockData'
 import { useAuth } from '../contexts/AuthContext'
-import { getInitials } from '../lib/formatters'
+import { getInitials, formatVND } from '../lib/formatters'
+import { useNavigate } from 'react-router-dom'
+import {
+    ResponsiveContainer, BarChart as RechartsBarChart, Bar, XAxis, YAxis, Tooltip, Legend, PieChart as RechartsPieChart, Pie, Cell, LineChart as RechartsLineChart, Line, CartesianGrid
+} from 'recharts'
+
 
 export function DashboardPage() {
-    const { currentUser } = useAuth()
-    // Mock data
-    const activities = generateMockActivities(6)
-    const doctors = generateMockDoctors()
-    const accounts = generateMockAccounts()
+    const { currentUser, logout } = useAuth() // Lấy hàm logout
+    // Memoize mock data to prevent re-generation on every render
+    const activities = useMemo(() => generateMockActivities(6), [])
+    const doctors = useMemo(() => generateMockDoctors(), [])
+    const accounts = useMemo(() => generateMockAccounts(), [])
+    const services = useMemo(() => generateMockServices(), [])
+    const appointments = useMemo(() => generateMockAppointments(200), []); // More data for better charts
+    const patients = useMemo(() => generateMockAppointments(50), []);
+    const navigate = useNavigate() // Khởi tạo hàm navigate
 
-    // Simple chart mock (replace with chart lib if needed)
-    function StatBar({ value, max, color }: { value: number, max: number, color: string }) {
-        return <div className="h-3 rounded bg-slate-100"><div style={{ width: `${(value / max) * 100}%` }} className={`h-3 rounded ${color}`}></div></div>
-    }
+    const analytics = useMemo(() => {
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+
+        // New patients this month
+        const newPatientsThisMonth = patients.filter(p => {
+            const createdAt = new Date(p.createdAt);
+            return createdAt.getMonth() === currentMonth && createdAt.getFullYear() === currentYear;
+        }).length;
+
+        const monthAppointments = appointments.filter(a => {
+            const startTime = new Date(a.startTime);
+            return startTime.getMonth() === currentMonth && startTime.getFullYear() === currentYear;
+        });
+
+        // Total revenue this month
+        const totalRevenueThisMonth = monthAppointments
+            .filter(a => a.status === 'Đã hoàn thành')
+            .reduce((sum, apt) => {
+                const service = services.find(s => s.id === apt.serviceId);
+                return sum + (service?.basePrice || 0);
+            }, 0);
+
+        // Cancellation rate
+        const cancelledCount = monthAppointments.filter(a => a.status === 'Đã hủy').length;
+        const cancellationRate = monthAppointments.length > 0 ? (cancelledCount / monthAppointments.length) * 100 : 0;
+
+        // 7-day visit trends
+        const visitTrends = Array.from({ length: 7 }).map((_, i) => {
+            const date = new Date();
+            date.setDate(now.getDate() - i);
+            const dateString = date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+            const count = appointments.filter(a => new Date(a.startTime).toDateString() === date.toDateString()).length;
+            return { name: dateString, "Lượt khám": count };
+        }).reverse();
+
+        // Service distribution
+        const serviceDistributionMap = new Map<string, number>();
+        appointments.filter(a => a.status === 'Đã hoàn thành').forEach(apt => {
+            serviceDistributionMap.set(apt.serviceName, (serviceDistributionMap.get(apt.serviceName) || 0) + 1);
+        });
+        const serviceDistribution = Array.from(serviceDistributionMap.entries()).map(([name, value]) => ({ name, value }));
+
+        return { newPatientsThisMonth, totalRevenueThisMonth, cancellationRate, visitTrends, serviceDistribution };
+    }, [appointments, patients, services]);
 
     // Render Doctor's Dashboard
     if (currentUser?.role === 'Doctor') {
-        const myAppointments = generateMockAppointments(50).filter(
-            (apt) => apt.doctorId === currentUser.referenceId
+        const myAppointments = useMemo(
+            () => generateMockAppointments(50).filter(
+                (apt) => apt.doctorId === currentUser.referenceId
+            ), [currentUser.referenceId]
         )
         const todayAppointments = myAppointments.filter(
             (apt) => new Date(apt.startTime).toDateString() === new Date().toDateString() && apt.status === 'Đã lên lịch'
@@ -60,12 +126,15 @@ export function DashboardPage() {
         )
     }
 
-    const stats = [
-        { label: 'Tài khoản đang hoạt động', value: generateMockAccounts().filter(a => a.status === 'Hoat dong').length, icon: Users },
-        { label: 'Bác sĩ hoạt động', value: generateMockDoctors().filter(d => d.status === 'active').length, icon: Activity },
-        { label: 'Dịch vụ trong danh mục', value: generateMockServices().length, icon: ClipboardList },
-        { label: 'Ca hẹn hôm nay', value: 28, icon: CalendarDays },
-    ]
+    const stats = useMemo(() => [
+        { label: 'Doanh thu tháng', value: formatVND(analytics.totalRevenueThisMonth), icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+        { label: 'Bệnh nhân mới', value: analytics.newPatientsThisMonth, icon: UserPlus, color: 'text-blue-600', bg: 'bg-blue-50' },
+        { label: 'Tỉ lệ hủy hẹn', value: `${analytics.cancellationRate.toFixed(1)}%`, icon: CalendarX2, color: 'text-rose-600', bg: 'bg-rose-50' },
+        { label: 'Bác sĩ hoạt động', value: doctors.filter(d => d.status === 'active').length, icon: Users, color: 'text-sky-600', bg: 'bg-sky-50' },
+    ], [analytics, doctors])
+
+    const PIE_CHART_COLORS = ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe'];
+
 
     // Render Admin's Dashboard
     return (
@@ -85,9 +154,9 @@ export function DashboardPage() {
                             <div className="flex items-center justify-between gap-4">
                                 <div>
                                     <p className="text-sm text-slate-500">{stat.label}</p>
-                                    <p className="mt-3 text-3xl font-semibold text-slate-900">{stat.value}</p>
+                                    <p className="mt-3 text-2xl font-bold text-slate-900">{stat.value}</p>
                                 </div>
-                                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-900">
+                                <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${stat.bg} ${stat.color}`}>
                                     <Icon className="h-5 w-5" />
                                 </div>
                             </div>
@@ -96,71 +165,78 @@ export function DashboardPage() {
                 })}
             </div>
 
-            {/* Simple Bar Chart (mock) */}
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="flex items-center gap-2 mb-4">
-                    <BarChart2 className="h-5 w-5 text-blue-900" />
-                    <span className="font-semibold text-slate-800">Số bác sĩ theo chuyên môn</span>
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                {/* 7-day visit trends */}
+                <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-2">
+                    <div className="flex items-center gap-2 mb-4">
+                        <TrendingUp className="h-5 w-5 text-blue-900" />
+                        <span className="font-semibold text-slate-800">Lượt khám trong 7 ngày qua</span>
+                    </div>
+                    <ResponsiveContainer width="100%" height={300}>
+                        <RechartsLineChart data={analytics.visitTrends} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                            <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
+                            <YAxis fontSize={12} tickLine={false} axisLine={false} />
+                            <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '0.75rem' }} />
+                            <Legend wrapperStyle={{ fontSize: '0.875rem' }} />
+                            <Line type="monotone" dataKey="Lượt khám" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                        </RechartsLineChart>
+                    </ResponsiveContainer>
                 </div>
-                <div className="space-y-3">
-                    {Array.from(new Set(doctors.map(d => d.specialty))).map(specialty => {
-                        const count = doctors.filter(d => d.specialty === specialty).length
-                        return (
-                            <div key={specialty} className="flex items-center gap-4">
-                                <span className="w-40 text-slate-700">{specialty}</span>
-                                <StatBar value={count} max={doctors.length} color="bg-blue-400" />
-                                <span className="text-slate-500">{count}</span>
-                            </div>
-                        )
-                    })}
+
+                {/* Service Distribution */}
+                <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <div className="flex items-center gap-2 mb-4">
+                        <PieChart className="h-5 w-5 text-blue-900" />
+                        <span className="font-semibold text-slate-800">Phân bổ dịch vụ</span>
+                    </div>
+                    <ResponsiveContainer width="100%" height={300}>
+                        <RechartsPieChart>
+                            <Pie
+                                data={analytics.serviceDistribution}
+                                cx="50%"
+                                cy="50%"
+                                labelLine={false}
+                                outerRadius={80}
+                                fill="#8884d8"
+                                dataKey="value"
+                                nameKey="name"
+                                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                labelStyle={{ fontSize: '0.75rem', fill: '#475569' }}
+                            >
+                                {analytics.serviceDistribution.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]} />
+                                ))}
+                            </Pie>
+                            <Tooltip formatter={(value) => `${value} lượt`} />
+                        </RechartsPieChart>
+                    </ResponsiveContainer>
                 </div>
             </div>
 
-            {/* Simple Pie Chart (mock) */}
+            {/* Recent Activities */}
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-4">
-                    <PieChart className="h-5 w-5 text-blue-900" />
-                    <span className="font-semibold text-slate-800">Tỉ lệ tài khoản theo vai trò</span>
-                </div>
-                <div className="flex gap-8 items-end">
-                    {Array.from(new Set(accounts.map(a => a.role))).map(role => {
-                        const count = accounts.filter(a => a.role === role).length
-                        return (
-                            <div key={role} className="flex flex-col items-center">
-                                <div className="mb-2 h-20 w-20 rounded-full flex items-end justify-center bg-blue-100">
-                                    <div style={{ height: `${count / accounts.length * 80}px` }} className="w-12 rounded-b-full bg-blue-500" />
-                                </div>
-                                <span className="text-slate-700 font-medium">{role}</span>
-                                <span className="text-slate-500">{count}</span>
-                            </div>
-                        )
-                    })}
-                </div>
-            </div>
-
-            {/* Simple Line Chart (mock) */}
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="flex items-center gap-2 mb-4">
-                    <LineChart className="h-5 w-5 text-blue-900" />
+                    <Activity className="h-5 w-5 text-blue-900" />
                     <span className="font-semibold text-slate-800">Hoạt động gần đây</span>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="min-w-[400px] w-full text-sm">
                         <thead>
                             <tr className="bg-slate-50">
-                                <th className="px-4 py-2 text-left font-semibold text-slate-700">Thời gian</th>
-                                <th className="px-4 py-2 text-left font-semibold text-slate-700">Loại</th>
-                                <th className="px-4 py-2 text-left font-semibold text-slate-700">Mô tả</th>
-                                <th className="px-4 py-2 text-left font-semibold text-slate-700">Người thực hiện</th>
+                                <th className="px-4 py-3 text-left font-semibold text-slate-700">Thời gian</th>
+                                <th className="px-4 py-3 text-left font-semibold text-slate-700">Loại</th>
+                                <th className="px-4 py-3 text-left font-semibold text-slate-700">Mô tả</th>
+                                <th className="px-4 py-3 text-left font-semibold text-slate-700">Người thực hiện</th>
                             </tr>
                         </thead>
                         <tbody>
                             {activities.map((act) => (
                                 <tr key={act.id}>
-                                    <td className="px-4 py-2 whitespace-nowrap">{new Date(act.timestamp).toLocaleString('vi-VN')}</td>
-                                    <td className="px-4 py-2 whitespace-nowrap">{act.type}</td>
-                                    <td className="px-4 py-2">{act.description}</td>
-                                    <td className="px-4 py-2 whitespace-nowrap">{act.performer}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap">{new Date(act.timestamp).toLocaleString('vi-VN')}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap">{act.type}</td>
+                                    <td className="px-4 py-3">{act.description}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap">{act.performer}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -168,20 +244,22 @@ export function DashboardPage() {
                 </div>
             </div>
 
-            {/* On-duty doctors */}
+            {/* On-Duty Doctors */}
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-4">
-                    <Activity className="h-5 w-5 text-blue-900" />
+                    <UserCheck className="h-5 w-5 text-blue-900" />
                     <span className="font-semibold text-slate-800">Bác sĩ đang làm việc</span>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {doctors.filter(d => d.status === 'active').slice(0, 6).map(doc => (
-                        <div key={doc.id} className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-blue-50 p-4">
-                            <div className="h-12 w-12 rounded-full bg-blue-200 flex items-center justify-center font-bold text-blue-900">{getInitials(doc.fullName)}</div>
+                        <div key={doc.id} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 transition hover:shadow-md">
+                            <div className="h-12 w-12 flex-shrink-0 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-900">{getInitials(doc.fullName)}</div>
                             <div>
                                 <div className="font-semibold text-blue-900">{doc.fullName}</div>
                                 <div className="text-xs text-slate-500">{doc.specialty} - {doc.degree}</div>
-                                <div className="text-xs text-slate-500">{doc.phone}</div>
+                                <button className="mt-1 text-xs font-semibold text-blue-600 hover:underline">
+                                    Xem lịch
+                                </button>
                             </div>
                         </div>
                     ))}

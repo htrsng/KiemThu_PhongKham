@@ -12,6 +12,7 @@ export type MockAccount = {
     hometown?: string
     address?: string
     referenceId?: string // ID liên kết (ví dụ: doctorId)
+    password?: string // Thêm trường mật khẩu
 }
 
 export function generateMockAccounts(count: number = 15): MockAccount[] {
@@ -49,7 +50,8 @@ export function generateMockAccounts(count: number = 15): MockAccount[] {
             dateOfBirth,
             hometown: cities[index % cities.length],
             address: `${Math.floor(Math.random() * 100) + 1} Đường ABC, ${cities[index % cities.length]}`,
-            referenceId: role === 'Doctor' ? `doc-${String(index + 1).padStart(3, '0')}` : undefined
+            referenceId: role === 'Doctor' ? `doc-${String(index + 1).padStart(3, '0')}` : undefined,
+            password: 'password123' // Mật khẩu mặc định cho mock data
         }
     })
 
@@ -64,7 +66,8 @@ export function generateMockAccounts(count: number = 15): MockAccount[] {
         lastLogin: new Date().toISOString(),
         createdAt: new Date().toISOString(),
         hometown: 'Hà Nội',
-        address: 'Hà Nội'
+        address: 'Hà Nội',
+        password: 'adminpassword' // Mật khẩu cho tài khoản admin
     }
 
     return [adminAccount, ...randomAccounts]

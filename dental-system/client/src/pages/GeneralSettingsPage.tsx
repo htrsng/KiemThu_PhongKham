@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Building2, Clock3 } from 'lucide-react'
 import { PageShell } from '../components/PageShell'
+import { useAuth } from '../contexts/AuthContext' // Import useAuth
+import { EmptyState } from '../components/EmptyState'
 import { generateMockActivities } from '../lib/mockData'
 
 type SettingsTab = 'clinic-info' | 'business-hours'
@@ -41,6 +43,7 @@ export function GeneralSettingsPage() {
     const [businessHoursForm, setBusinessHoursForm] = useState<BusinessHoursForm>(defaultBusinessHoursForm)
     const [successMessage, setSuccessMessage] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
+    const { currentUser } = useAuth() // Get current user
 
     // Validation
     function validateClinicInfo(form: ClinicInfoForm) {
@@ -81,6 +84,10 @@ export function GeneralSettingsPage() {
 
     // Recent activity (mock)
     const recentActivities = generateMockActivities(5)
+
+    if (currentUser?.role === 'Doctor' || currentUser?.role === 'Reception') {
+        return <EmptyState title="Bạn không có quyền truy cập mục này." description="Chỉ quản trị viên mới có thể cấu hình hệ thống." />
+    }
 
     return (
         <section data-testid="page-settings" className="space-y-6">

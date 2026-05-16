@@ -3,7 +3,7 @@ import { X } from 'lucide-react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { type MockDoctor } from '../lib/mockData'
+import type { Doctor } from '../contexts/DataContext'
 
 // 1. Định nghĩa Schema validation bằng Zod
 // Đây là "nguồn chân lý duy nhất" cho form của bạn.
@@ -21,17 +21,17 @@ const doctorSchema = z.object({
 })
 
 // 2. Tự động suy ra Type từ Schema
-type DoctorFormData = z.infer<typeof doctorSchema>
+export type DoctorFormData = z.infer<typeof doctorSchema>
 
-const SPECIALTIES: MockDoctor['specialty'][] = ['Nha khoa tổng quát', 'Niềng răng', 'Implant', 'Nhổ răng', 'Nha chu']
-const DEGREES: MockDoctor['degree'][] = ['Bác sĩ', 'Thạc sĩ', 'Tiến sĩ', 'Phó Giáo sư', 'Giáo sư']
+const SPECIALTIES: Doctor['specialty'][] = ['Nha khoa tổng quát', 'Niềng răng', 'Implant', 'Nhổ răng', 'Nha chu']
+const DEGREES: Doctor['degree'][] = ['Bác sĩ', 'Thạc sĩ', 'Tiến sĩ', 'Phó Giáo sư', 'Giáo sư']
 const ROOMS: string[] = Array.from({ length: 205 }, (_, i) => `Phòng ${101 + i}`)
 
 interface DoctorFormModalProps {
     isOpen: boolean
     onClose: () => void
     onSave: (data: DoctorFormData, doctorId: string | null) => void
-    editingDoctor: MockDoctor | null
+    editingDoctor: Doctor | null
 }
 
 export function DoctorFormModal({ isOpen, onClose, onSave, editingDoctor }: DoctorFormModalProps) {

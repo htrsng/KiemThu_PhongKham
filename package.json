@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "@types/recharts": "^1.8.29",
     "express": "^5.2.1",
-    "mongodb": "^7.2.0"
+    "mongodb": "^7.2.0",
+    "recharts": "^3.8.1"
   }
 }

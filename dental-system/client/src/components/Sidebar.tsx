@@ -1,9 +1,19 @@
-import type { NavLinkRenderProps } from 'react-router-dom'
-import { NavLink } from 'react-router-dom'
-import { ChevronRight, HeartPulse } from 'lucide-react'
+import { NavLink, useNavigate, type NavLinkRenderProps } from 'react-router-dom'
+import { ChevronRight, HeartPulse, LogOut } from 'lucide-react'
 import { navigationItems } from '../config/navigation'
+import { useAuth } from '../contexts/AuthContext'
 
 export function Sidebar() {
+    const { currentUser, logout } = useAuth()
+    const navigate = useNavigate()
+
+    const handleLogout = () => {
+        logout()
+        navigate('/login')
+    }
+
+    const allowedNavItems = navigationItems.filter(item => currentUser?.role && item.allowedRoles.includes(currentUser.role));
+
     return (
         <aside className="flex h-full w-80 flex-col border-r border-slate-200/80 bg-white/90 px-4 py-5 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl">
             <div className="mb-8 flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm">
@@ -17,7 +27,7 @@ export function Sidebar() {
             </div>
 
             <nav className="flex-1 space-y-2" aria-label="Primary navigation">
-                {navigationItems.map((item) => {
+                {allowedNavItems.map((item) => {
                     const Icon = item.icon
 
                     return (
@@ -49,6 +59,22 @@ export function Sidebar() {
                     )
                 })}
             </nav>
+
+            {/* Logout Button */}
+            <div className="mt-4">
+                <button
+                    onClick={handleLogout}
+                    className="group flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 transition-all duration-200 hover:bg-rose-50 hover:text-rose-700"
+                >
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 ring-1 ring-inset ring-slate-200 transition-transform duration-200 group-hover:scale-[1.03] group-hover:bg-rose-100 group-hover:ring-rose-200">
+                        <LogOut className="h-4 w-4" />
+                    </span>
+                    <span className="min-w-0 flex-1 text-left">
+                        <span className="block text-sm font-semibold">Đăng xuất</span>
+                        <span className="block text-xs text-slate-500">Thoát khỏi hệ thống</span>
+                    </span>
+                </button>
+            </div>
 
             <div className="mt-6 rounded-3xl bg-gradient-to-br from-slate-900 to-blue-950 p-4 text-white shadow-lg shadow-slate-950/20">
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-200/80">System Status</p>

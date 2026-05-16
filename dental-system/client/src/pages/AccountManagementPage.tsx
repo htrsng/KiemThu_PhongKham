@@ -1,13 +1,16 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Pencil, Plus, Search, Trash2, X, Lock, Unlock, Eye, EyeOff } from 'lucide-react'
 import { PageShell } from '../components/PageShell'
 import { useToast } from '../contexts/ToastContext'
 import { useConfirm } from '../contexts/ConfirmContext'
+import { useAuth } from '../contexts/AuthContext' // Import useAuth
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
 import { EmptyState } from '../components/EmptyState'
 import { formatDateTime, getRelativeTime } from '../lib/formatters'
 import { validateUsername, validateEmail, validatePassword, validateRequired } from '../lib/validators'
-import { generateMockAccounts, generateMockAuditLogs, type MockAccount, type MockAuditLog } from '../lib/mockData'
+import { generateMockAuditLogs, type MockAccount, type MockAuditLog } from '../lib/mockData'
+import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse } from '../lib/api'
 
 type FormState = {
     username: string
@@ -53,9 +56,7 @@ function getStatusBadgeClass(status: string): string {
 }
 
 export function AccountManagementPage() {
-    const [accounts, setAccounts] = useState<MockAccount[]>([])
-    const [isLoading, setIsLoading] = useState(true)
-    const [isModalOpen, setIsModalOpen] = useState(false)
+     const [isModalOpen, setIsModalOpen] = useState(false)
     const [editingId, setEditingId] = useState<string | null>(null)
     const [searchTerm, setSearchTerm] = useState('')
     const [roleFilter, setRoleFilter] = useState<'All' | 'Admin' | 'Doctor' | 'Reception'>('All')
@@ -64,24 +65,56 @@ export function AccountManagementPage() {
     const [formState, setFormState] = useState<FormState>(defaultFormState)
     const [formErrors, setFormErrors] = useState<FormErrors>({})
     const [activeTab, setActiveTab] = useState<'accounts' | 'audit'>('accounts')
-    const [auditLogs, setAuditLogs] = useState<MockAuditLog[]>([])
+    const [auditLogs] = useState<MockAuditLog[]>(() => generateMockAuditLogs(20)) // Audit log vẫn dùng mock
     const [auditSearchRole, setAuditSearchRole] = useState('')
     const [auditActionFilter, setAuditActionFilter] = useState<string>('')
     const [auditPage, setAuditPage] = useState(1)
 
     const { addToast } = useToast()
+    const { currentUser } = useAuth() // Get current user
     const { confirm } = useConfirm()
+    const queryClient = useQueryClient()
 
-    // Initialize mock data
-    useEffect(() => {
-        // Simulate API delay
-        const timer = setTimeout(() => {
-            setAccounts(generateMockAccounts(15))
-            setAuditLogs(generateMockAuditLogs(20))
-            setIsLoading(false)
-        }, 500)
-        return () => clearTimeout(timer)
-    }, [])
+    // --- Data Fetching using TanStack Query ---
+    const { data: accounts = [], isLoading } = useQuery<MockAccount[], Error>({
+        queryKey: ['accounts'],
+        queryFn: async () => (await api.get<ApiListResponse<MockAccount>>('/accounts')).data.data,
+    });
+
+    const { mutate: createAccount } = useMutation<MockAccount, Error, Omit<MockAccount, 'id' | 'lastLogin' | 'createdAt'>>({
+        mutationFn: async (newAccount) => (await api.post<ApiItemResponse<MockAccount>>('/accounts', newAccount)).data.data,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['accounts'] });
+            addToast('success', 'Tạo tài khoản thành công');
+            resetModal();
+        },
+        onError: (err) => addToast('error', `Lỗi: ${err.message}`),
+    });
+
+    const { mutate: updateAccount } = useMutation<MockAccount, Error, { id: string; data: Partial<MockAccount> }>({
+        mutationFn: async ({ id, data }) => (await api.put<ApiItemResponse<MockAccount>>(`/accounts/${id}`, data)).data.data,
+        onSuccess: (updatedAccount) => {
+            queryClient.setQueryData<MockAccount[]>(['accounts'], (oldData) =>
+                oldData ? oldData.map(acc => acc.id === updatedAccount.id ? updatedAccount : acc) : []
+            );
+            addToast('success', 'Cập nhật tài khoản thành công');
+            resetModal();
+        },
+        onError: (err) => addToast('error', `Lỗi: ${err.message}`),
+    });
+
+    const { mutate: deleteAccount } = useMutation<ApiDeleteResponse, Error, string>({
+        mutationFn: async (id) => (await api.delete<ApiDeleteResponse>(`/accounts/${id}`)).data,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['accounts'] });
+            addToast('success', 'Xóa tài khoản thành công');
+        },
+        onError: (err) => addToast('error', `Lỗi: ${err.message}`),
+    });
+
+    if (currentUser?.role === 'Doctor') {
+        return <EmptyState title="Bạn không có quyền truy cập mục này." description="Chỉ quản trị viên mới có thể quản lý tài khoản." />
+    }
 
     // Filter and paginate accounts
     const filteredAccounts = useMemo(() => {
@@ -142,6 +175,10 @@ export function AccountManagementPage() {
         } else if (!validateUsername(formState.username).valid) {
             errors.username = validateUsername(formState.username).error
         }
+        // Kiểm tra trùng lặp username khi tạo mới
+        if (!isEditMode && accounts.some(acc => acc.username === formState.username)) {
+            errors.username = 'Username này đã tồn tại.'
+        }
 
         if (!validateRequired(formState.fullName, 'Họ tên').valid) {
             errors.fullName = validateRequired(formState.fullName, 'Họ tên').error
@@ -151,6 +188,10 @@ export function AccountManagementPage() {
             errors.email = validateRequired(formState.email, 'Email').error
         } else if (!validateEmail(formState.email).valid) {
             errors.email = validateEmail(formState.email).error
+        }
+        // Kiểm tra trùng lặp email khi tạo mới
+        if (!isEditMode && accounts.some(acc => acc.email === formState.email)) {
+            errors.email = 'Email này đã được sử dụng.'
         }
 
         if (!isEditMode) {
@@ -204,115 +245,43 @@ export function AccountManagementPage() {
         if (!validateForm(!!editingId)) return
 
         if (editingId) {
-            // Edit mode
-            setAccounts((prev) =>
-                prev.map((acc) =>
-                    acc.id === editingId
-                        ? {
-                            ...acc,
-                            username: formState.username,
-                            fullName: formState.fullName,
-                            email: formState.email,
-                            role: formState.role,
-                            status: formState.status,
-                        }
-                        : acc
-                )
-            )
-            addToast('success', 'Cập nhật tài khoản thành công')
-
-            // Add audit log
-            setAuditLogs((prev) => [
-                {
-                    id: `log-${Date.now()}`,
-                    timestamp: new Date().toISOString(),
-                    account: formState.username,
-                    action: 'Sửa tài khoản',
-                    ipAddress: `192.168.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`,
-                    result: 'Thành công',
-                },
-                ...prev,
-            ])
+            updateAccount({
+                id: editingId,
+                data: {
+                    username: formState.username,
+                    fullName: formState.fullName,
+                    email: formState.email,
+                    role: formState.role,
+                    status: formState.status,
+                }
+            });
         } else {
-            // Create mode
-            const newAccount: MockAccount = {
-                id: `acc-${Date.now()}`,
+            createAccount({
                 username: formState.username,
                 fullName: formState.fullName,
                 email: formState.email,
                 role: formState.role,
                 status: formState.status,
-                lastLogin: new Date().toISOString(),
-                createdAt: new Date().toISOString(),
-            }
-            setAccounts((prev) => [newAccount, ...prev])
-            addToast('success', 'Tạo tài khoản thành công')
-
-            // Add audit log
-            setAuditLogs((prev) => [
-                {
-                    id: `log-${Date.now()}`,
-                    timestamp: new Date().toISOString(),
-                    account: formState.username,
-                    action: 'Tạo tài khoản',
-                    ipAddress: `192.168.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`,
-                    result: 'Thành công',
-                },
-                ...prev,
-            ])
+                password: formState.password,
+            });
         }
-
-        resetModal()
     }
 
     async function handleDeleteAccount(account: MockAccount) {
         const confirmed = await confirm({
             title: 'Xóa tài khoản',
             message: `Bạn có chắc muốn xóa tài khoản "${account.fullName}"? Hành động này không thể hoàn tác.`,
-            confirmLabel: 'Xóa',
-            cancelLabel: 'Hủy',
             isDangerous: true,
         })
 
         if (confirmed) {
-            setAccounts((prev) => prev.filter((acc) => acc.id !== account.id))
-            addToast('success', 'Xóa tài khoản thành công')
-
-            // Add audit log
-            setAuditLogs((prev) => [
-                {
-                    id: `log-${Date.now()}`,
-                    timestamp: new Date().toISOString(),
-                    account: account.username,
-                    action: 'Tạo tài khoản',
-                    ipAddress: `192.168.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`,
-                    result: 'Thành công',
-                },
-                ...prev,
-            ])
+            deleteAccount(account.id);
         }
     }
 
     async function handleToggleLock(account: MockAccount) {
         const newStatus = account.status === 'Hoat dong' ? 'Bi khoa' : 'Hoat dong'
-        setAccounts((prev) =>
-            prev.map((acc) => (acc.id === account.id ? { ...acc, status: newStatus } : acc))
-        )
-
-        addToast('success', `${newStatus === 'Bi khoa' ? 'Khóa' : 'Mở khóa'} tài khoản thành công`)
-
-        // Add audit log
-        setAuditLogs((prev) => [
-            {
-                id: `log-${Date.now()}`,
-                timestamp: new Date().toISOString(),
-                account: account.username,
-                action: 'Khóa tài khoản',
-                ipAddress: `192.168.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`,
-                result: 'Thành công',
-            },
-            ...prev,
-        ])
+        updateAccount({ id: account.id, data: { status: newStatus } });
     }
 
     function handleClearFilters() {

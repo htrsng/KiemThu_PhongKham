@@ -4,16 +4,16 @@ import { Pencil, Trash2, X, Plus, Clock, Phone, Mail, Award, BookOpen, ChevronLe
 import { PageShell } from '../components/PageShell'
 import { useToast } from '../contexts/ToastContext'
 import { useConfirm } from '../contexts/ConfirmContext'
-import { formatDate, formatPhone, getSpecialtyColor, getInitials } from '../lib/formatters'
-import { type MockDoctor } from '../lib/mockData'
+import { useAuth } from '../contexts/AuthContext' // Import useAuth
+import { formatPhone, getSpecialtyColor, getInitials } from '../lib/formatters'
 import { EmptyState } from '../components/EmptyState'
 import { DoctorFormModal } from '../components/DoctorFormModal'
 import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse } from '../lib/api'
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
 import type { Doctor, DoctorPayload } from '../contexts/DataContext'
 
-const SPECIALTIES: MockDoctor['specialty'][] = ['Nha khoa tổng quát', 'Niềng răng', 'Implant', 'Nhổ răng', 'Nha chu']
-const ROOMS: MockDoctor['room'][] = Array.from({ length: 205 }, (_, i) => `Phòng ${101 + i}`) // Phòng 101 - Phòng 305
+const SPECIALTIES: Doctor['specialty'][] = ['Nha khoa tổng quát', 'Niềng răng', 'Implant', 'Nhổ răng', 'Nha chu']
+const ROOMS: Doctor['room'][] = Array.from({ length: 205 }, (_, i) => `Phòng ${101 + i}`) // Phòng 101 - Phòng 305
 const SCHEDULE_DAYS = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']
 const SCHEDULE_DAY_NAMES = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật']
 
@@ -46,6 +46,7 @@ function addDays(date: Date, days: number): Date {
 export function DoctorManagementPage() {
     const queryClient = useQueryClient()
     const { addToast } = useToast()
+    const { currentUser } = useAuth() // Get current user
     const { confirm } = useConfirm()
 
     // --- Data Fetching using TanStack Query ---
@@ -113,20 +114,21 @@ export function DoctorManagementPage() {
 
     // Modal states
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [editingDoctor, setEditingDoctor] = useState<MockDoctor | null>(null)
+    const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null)
     const [scheduleModal, setScheduleModal] = useState<{
         isOpen: boolean,
-        doctor: MockDoctor | null
+        doctor: Doctor | null
     }>({ isOpen: false, doctor: null })
     // State for schedule form inside the modal
-    const [scheduleForm, setScheduleForm] = useState<MockDoctor['schedule'] | null>(null)
+    const [scheduleForm, setScheduleForm] = useState<Doctor['schedule'] | null>(null)
 
     // Filter states
     const [searchTerm, setSearchTerm] = useState('')
-    const [specialtyFilter, setSpecialtyFilter] = useState<MockDoctor['specialty'] | null>(null)
+    const [specialtyFilter, setSpecialtyFilter] = useState<Doctor['specialty'] | null>(null)
     const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all')
-    const [roomFilter, setRoomFilter] = useState<MockDoctor['room'] | null>(null)
+    const [roomFilter, setRoomFilter] = useState<Doctor['room'] | null>(null)
     const [sortBy, setSortBy] = useState<'name' | 'fee' | 'experience'>('name')
+    const isDoctor = currentUser?.role === 'Doctor';
 
     // Filter and sort doctors
     const filteredDoctors = useMemo(() => {
@@ -141,6 +143,11 @@ export function DoctorManagementPage() {
                     d.phone.includes(keyword) ||
                     d.licenseNumber.toLowerCase().includes(keyword)
             )
+        }
+
+        // If current user is a Doctor, only show their own profile
+        if (isDoctor && currentUser?.referenceId) {
+            result = result.filter(d => d.id === currentUser.referenceId);
         }
 
         // Specialty filter
@@ -182,12 +189,12 @@ export function DoctorManagementPage() {
         setIsModalOpen(true)
     }
 
-    function openEditModal(doctor: MockDoctor) {
+    function openEditModal(doctor: Doctor) {
         setEditingDoctor(doctor)
         setIsModalOpen(true)
     }
 
-    function handleSaveDoctor(data: Omit<MockDoctor, 'id' | 'schedule'>, doctorId: string | null) {
+    function handleSaveDoctor(data: DoctorFormData, doctorId: string | null) {
         if (doctorId) {
             updateDoctor({ id: doctorId, data });
         } else {
@@ -197,7 +204,7 @@ export function DoctorManagementPage() {
         setCurrentPage(1)
     }
 
-    async function handleDeleteDoctor(doctor: MockDoctor) {
+    async function handleDeleteDoctor(doctor: Doctor) {
         const confirmed = await confirm({
             title: 'Xóa bác sĩ',
             message: `Bạn có chắc muốn xóa bác sĩ "${doctor.fullName}"?`,
@@ -210,7 +217,7 @@ export function DoctorManagementPage() {
         }
     }
 
-    function openScheduleModal(doctor: MockDoctor) {
+    function openScheduleModal(doctor: Doctor) {
         setScheduleWeekStart(formatDateInput(getMonday(new Date())))
         setScheduleModal({ isOpen: true, doctor })
         setScheduleForm({ ...doctor.schedule }) // Copy schedule to edit
@@ -254,7 +261,8 @@ export function DoctorManagementPage() {
                         className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-900 px-4 text-sm font-semibold text-white transition hover:bg-blue-800"
                     >
                         <Plus className="h-4 w-4" />
-                        Thêm bác sĩ
+                        {/* Only Admin can add new doctors */}
+                        {isDoctor ? 'Hồ sơ của tôi' : 'Thêm bác sĩ'}
                     </button>
                 </div>
 
@@ -265,9 +273,10 @@ export function DoctorManagementPage() {
                         onChange={(e) => {
                             const nextValue = e.target.value
                             setSpecialtyFilter(
-                                nextValue ? (nextValue as MockDoctor['specialty']) : null
+                                nextValue ? (nextValue as Doctor['specialty']) : null
                             )
                             setCurrentPage(1)
+                            if (isDoctor) setSpecialtyFilter(null); // Doctors cannot filter by specialty if only seeing their own
                         }}
                         className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none ring-blue-200 transition focus:ring"
                     >
@@ -284,6 +293,7 @@ export function DoctorManagementPage() {
                         onChange={(e) => {
                             setStatusFilter(e.target.value as typeof statusFilter)
                             setCurrentPage(1)
+                            if (isDoctor) setStatusFilter('all'); // Doctors cannot filter by status if only seeing their own
                         }}
                         className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none ring-blue-200 transition focus:ring"
                     >
@@ -296,8 +306,9 @@ export function DoctorManagementPage() {
                         value={roomFilter || ''}
                         onChange={(e) => {
                             const nextValue = e.target.value
-                            setRoomFilter(nextValue ? (nextValue as MockDoctor['room']) : null)
+                            setRoomFilter(nextValue ? (nextValue as Doctor['room']) : null)
                             setCurrentPage(1)
+                            if (isDoctor) setRoomFilter(null); // Doctors cannot filter by room if only seeing their own
                         }}
                         className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none ring-blue-200 transition focus:ring"
                     >
@@ -313,6 +324,7 @@ export function DoctorManagementPage() {
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
                         className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none ring-blue-200 transition focus:ring"
+                        disabled={isDoctor} // Doctors cannot sort if only seeing their own
                     >
                         <option value="name">Sắp xếp: Tên A-Z</option>
                         <option value="fee">Sắp xếp: Phí thấp-cao</option>
@@ -327,6 +339,7 @@ export function DoctorManagementPage() {
                             setRoomFilter(null)
                             setSortBy('name')
                             setCurrentPage(1)
+                            if (isDoctor) { /* No need to clear filters if they are already disabled/filtered */ }
                         }}
                         className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
                     >
@@ -415,20 +428,22 @@ export function DoctorManagementPage() {
                                 {/* Actions */}
                                 <div className="flex gap-2">
                                     <button
-                                        onClick={() => openScheduleModal(doctor)}
+                                        onClick={() => openScheduleModal(doctor)} // Doctor can view their own schedule
                                         className="flex-1 inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 text-xs font-semibold text-blue-600 transition hover:bg-blue-100"
                                     >
                                         <Clock className="h-3.5 w-3.5" />
                                         Xem lịch
                                     </button>
                                     <button
-                                        onClick={() => openEditModal(doctor)}
+                                        onClick={() => openEditModal(doctor)} // Doctor can edit their own profile
                                         className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:text-blue-600"
+                                        disabled={isDoctor && doctor.id !== currentUser?.referenceId}
                                     >
                                         <Pencil className="h-4 w-4" />
                                     </button>
                                     <button
                                         onClick={() => handleDeleteDoctor(doctor)}
+                                        disabled={isDoctor} // Doctors cannot delete other doctors
                                         className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:text-rose-600"
                                     >
                                         <Trash2 className="h-4 w-4" />

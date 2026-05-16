@@ -135,23 +135,6 @@ const resourceConfigs = [
     ]
   },
   {
-    path: '/api/appointments',
-    collectionName: 'appointments',
-    seed: [
-      {
-        patientId: "pat-seed-1",
-        patientName: "Trần Thị B",
-        doctorId: "placeholder-doctor-id", // LƯU Ý: ID này chỉ là giữ chỗ.
-        doctorName: "Dr. Nguyen Quang Huy",
-        serviceId: "SV-001",
-        serviceName: "Kham tong quat",
-        startTime: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
-        endTime: new Date(new Date(new Date().setDate(new Date().getDate() + 1)).getTime() + 30 * 60000).toISOString(),
-        status: 'Đã lên lịch',
-      }
-    ]
-  },
-  {
     path: '/api/service-categories',
     collectionName: 'service_categories',
     seed: [

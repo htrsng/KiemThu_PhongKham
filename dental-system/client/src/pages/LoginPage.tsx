@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { Stethoscope, UserCircle } from 'lucide-react'
@@ -18,6 +18,14 @@ export function LoginPage() {
     const [dateOfBirth, setDateOfBirth] = useState('')
     const [hometown, setHometown] = useState('')
     const [address, setAddress] = useState('')
+    const { isAuthenticated } = useAuth(); // Lấy isAuthenticated từ context
+
+    useEffect(() => {
+        console.log('LoginPage: isAuthenticated state:', isAuthenticated);
+        if (isAuthenticated) {
+            navigate('/');
+        }
+    }, [isAuthenticated, navigate]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -25,14 +33,30 @@ export function LoginPage() {
 
         try {
             if (isLogin) {
-                const success = await login(email)
-                if (success) {
+                const result = await login(email, password)
+                if (result.success && result.account) {
+                    // Logic cụ thể cho tài khoản bác sĩ sau khi đăng nhập thành công
+                    if (result.account.role === 'Doctor') {
+                        console.log(`Bác sĩ ${result.account.fullName} đã đăng nhập thành công!`);
+                        // Bạn có thể thêm điều hướng riêng cho bác sĩ tại đây nếu cần,
+                        // ví dụ: navigate('/doctor-dashboard');
+                    }
                     navigate('/')
                 } else {
-                    setError('Sai tài khoản hoặc tài khoản đã bị khóa (Dùng mock data, thử email: admin@gmail.com)')
+                    switch (result.error) {
+                        case 'not_found':
+                        case 'wrong_password':
+                            setError('Email hoặc mật khẩu không chính xác.');
+                            break;
+                        case 'locked':
+                            setError('Tài khoản này đã bị khóa. Vui lòng liên hệ quản trị viên.');
+                            break;
+                        default:
+                            setError('Đã có lỗi xảy ra trong quá trình đăng nhập.');
+                    }
                 }
             } else {
-                const success = await register({ email, fullName, role, dateOfBirth, hometown, address })
+                const success = await register({ email, fullName, role, dateOfBirth, hometown, address, password }) // Truyền password
                 if (success) {
                     navigate('/')
                 }

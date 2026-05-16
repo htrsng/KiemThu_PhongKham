@@ -36,7 +36,7 @@ export const navigationItems: NavigationItem[] = [
         icon: Users,
         description: 'Tài khoản và trạng thái',
         testId: 'nav-accounts',
-        allowedRoles: ['Admin'],
+        allowedRoles: ['Admin'], // Chỉ Admin có thể quản lý tài khoản
     },
     {
         id: 'doctors',
@@ -44,7 +44,7 @@ export const navigationItems: NavigationItem[] = [
         path: '/doctors',
         icon: Stethoscope,
         description: 'Hồ sơ chuyên môn',
-        testId: 'nav-doctors',
+        testId: 'nav-doctors', // Admin quản lý tất cả, Bác sĩ xem/sửa hồ sơ của mình
         allowedRoles: ['Admin', 'Doctor', 'Reception'],
     },
     {
@@ -53,7 +53,7 @@ export const navigationItems: NavigationItem[] = [
         path: '/appointments',
         icon: Calendar,
         description: 'Lịch hẹn và lịch làm việc',
-        testId: 'nav-appointments',
+        testId: 'nav-appointments', // Admin/Lễ tân quản lý tất cả, Bác sĩ quản lý lịch của mình
         allowedRoles: ['Admin', 'Doctor', 'Reception'],
     },
     {

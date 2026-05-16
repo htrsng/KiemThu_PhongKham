@@ -1,11 +1,15 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Pencil, Plus, Trash2, X } from 'lucide-react'
 import { PageShell } from '../components/PageShell'
 import { useToast } from '../contexts/ToastContext'
 import { useConfirm } from '../contexts/ConfirmContext'
 import { formatVND, formatDate } from '../lib/formatters'
-import { generateMockServices, generateMockPricingPolicies, type MockService, type MockPricingPolicy } from '../lib/mockData'
+import { useAuth } from '../contexts/AuthContext' // Import useAuth
+import { type MockService, type MockPricingPolicy } from '../lib/mockData'
 import { EmptyState } from '../components/EmptyState'
+import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse } from '../lib/api'
+import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
 
 type Tab = 'services' | 'pricing'
 
@@ -38,8 +42,6 @@ type PricingFormErrors = Partial<Record<keyof PricingFormState, string>>
 
 export function ServiceCategoryPage() {
     const [activeTab, setActiveTab] = useState<Tab>('services')
-    const [services, setServices] = useState<MockService[]>([])
-    const [pricingPolicies, setPricingPolicies] = useState<MockPricingPolicy[]>([])
 
     // Service modal state
     const [isServiceModalOpen, setIsServiceModalOpen] = useState(false)
@@ -73,16 +75,66 @@ export function ServiceCategoryPage() {
     const [pricingSearchService, setPricingSearchService] = useState('')
 
     const { addToast } = useToast()
+    const { currentUser } = useAuth() // Get current user
     const { confirm } = useConfirm()
+    const queryClient = useQueryClient()
 
-    // Load mock data
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setServices(generateMockServices(10))
-            setPricingPolicies(generateMockPricingPolicies(15))
-        }, 500)
-        return () => clearTimeout(timer)
-    }, [])
+    // --- Data Fetching for Services ---
+    const { data: services = [], isLoading: servicesLoading } = useQuery<MockService[], Error>({
+        queryKey: ['services'],
+        queryFn: async () => (await api.get<ApiListResponse<MockService>>('/services')).data.data,
+    });
+
+    const { mutate: createService } = useMutation<MockService, Error, Omit<MockService, 'id'>>({
+        mutationFn: async (newService) => (await api.post<ApiItemResponse<MockService>>('/services', newService)).data.data,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['services'] });
+            addToast('success', 'Tạo dịch vụ thành công');
+            setIsServiceModalOpen(false);
+        },
+    });
+
+    const { mutate: updateService } = useMutation<MockService, Error, { id: string; data: Partial<MockService> }>({
+        mutationFn: async ({ id, data }) => (await api.put<ApiItemResponse<MockService>>(`/services/${id}`, data)).data.data,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['services'] });
+            addToast('success', 'Cập nhật dịch vụ thành công');
+            setIsServiceModalOpen(false);
+        },
+    });
+
+    const { mutate: deleteService } = useMutation<ApiDeleteResponse, Error, string>({
+        mutationFn: async (id) => (await api.delete<ApiDeleteResponse>(`/services/${id}`)).data,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['services'] });
+            addToast('success', 'Xóa dịch vụ thành công');
+        },
+    });
+
+    // --- Data Fetching for Pricing Policies ---
+    const { data: pricingPolicies = [], isLoading: pricingLoading } = useQuery<MockPricingPolicy[], Error>({
+        queryKey: ['pricing-policies'],
+        queryFn: async () => (await api.get<ApiListResponse<MockPricingPolicy>>('/pricing-policies')).data.data,
+    });
+
+    const { mutate: savePricingPolicy } = useMutation<MockPricingPolicy, Error, { id?: string; data: Omit<MockPricingPolicy, 'id' | 'serviceName'> }>({
+        mutationFn: async ({ id, data }) => {
+            const url = id ? `/pricing-policies/${id}` : '/pricing-policies';
+            const method = id ? 'put' : 'post';
+            return (await api[method]<ApiItemResponse<MockPricingPolicy>>(url, data)).data.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['pricing-policies'] });
+            addToast('success', 'Lưu chính sách giá thành công');
+            setIsPricingModalOpen(false);
+        },
+    });
+
+    const isLoading = servicesLoading || pricingLoading;
+
+    if (currentUser?.role === 'Doctor') {
+        return <EmptyState title="Bạn không có quyền truy cập mục này." description="Chỉ quản trị viên và lễ tân mới có thể quản lý dịch vụ và chính sách giá." />
+    }
 
     // Filter services
     const filteredServices = useMemo(() => {
@@ -146,35 +198,20 @@ export function ServiceCategoryPage() {
         if (!validateServiceForm()) return
 
         if (editingServiceId) {
-            setServices((prev) =>
-                prev.map((s) =>
-                    s.id === editingServiceId ? { ...s, ...serviceFormState } : s
-                )
-            )
-            addToast('success', 'Cập nhật dịch vụ thành công')
+            updateService({ id: editingServiceId, data: serviceFormState });
         } else {
-            const newService: MockService = {
-                id: `srv-${Date.now()}`,
-                ...serviceFormState,
-            }
-            setServices((prev) => [newService, ...prev])
-            addToast('success', 'Tạo dịch vụ mới thành công')
+            createService(serviceFormState);
         }
-
-        setIsServiceModalOpen(false)
     }
 
     async function handleDeleteService(service: MockService) {
         const confirmed = await confirm({
             title: 'Xóa dịch vụ',
             message: `Bạn có chắc muốn xóa dịch vụ "${service.name}"?`,
-            confirmLabel: 'Xóa',
-            cancelLabel: 'Hủy',
             isDangerous: true,
         })
         if (confirmed) {
-            setServices((prev) => prev.filter((s) => s.id !== service.id))
-            addToast('success', 'Xóa dịch vụ thành công')
+            deleteService(service.id);
         }
     }
 
@@ -224,43 +261,21 @@ export function ServiceCategoryPage() {
         const selectedService = services.find((s) => s.id === pricingFormState.serviceId)
         if (!selectedService) return
 
-        if (editingPricingId) {
-            setPricingPolicies((prev) =>
-                prev.map((p) =>
-                    p.id === editingPricingId
-                        ? {
-                            ...p,
-                            ...pricingFormState,
-                            serviceName: selectedService.name,
-                        }
-                        : p
-                )
-            )
-            addToast('success', 'Cập nhật chính sách giá thành công')
-        } else {
-            const newPolicy: MockPricingPolicy = {
-                id: `pp-${Date.now()}`,
-                ...pricingFormState,
-                serviceName: selectedService.name,
-            }
-            setPricingPolicies((prev) => [newPolicy, ...prev])
-            addToast('success', 'Tạo chính sách giá mới thành công')
-        }
-
-        setIsPricingModalOpen(false)
+        savePricingPolicy({
+            id: editingPricingId || undefined,
+            data: pricingFormState,
+        });
     }
 
     async function handleDeletePricing(policy: MockPricingPolicy) {
         const confirmed = await confirm({
             title: 'Xóa chính sách giá',
             message: `Bạn có chắc muốn xóa chính sách giá cho dịch vụ "${policy.serviceName}"?`,
-            confirmLabel: 'Xóa',
-            cancelLabel: 'Hủy',
             isDangerous: true,
         })
         if (confirmed) {
-            setPricingPolicies((prev) => prev.filter((p) => p.id !== policy.id))
-            addToast('success', 'Xóa chính sách giá thành công')
+            // Cần endpoint để xóa pricing policy
+            addToast('warning', 'Chức năng xóa chính sách giá chưa được hỗ trợ bởi API.');
         }
     }
 
@@ -318,8 +333,12 @@ export function ServiceCategoryPage() {
                     </div>
 
                     {/* Services Table */}
-                    {filteredServices.length === 0 ? (
-                        <EmptyState title="Không tìm thấy dịch vụ" description="Không có dịch vụ phù hợp với tìm kiếm của bạn" />
+                    {isLoading ? (
+                        <div className="rounded-2xl border border-slate-200 bg-white p-6">
+                            <TableLoadingSkeleton rows={5} />
+                        </div>
+                    ) : filteredServices.length === 0 ? (
+                        <EmptyState title="Không tìm thấy dịch vụ" description="Chưa có dịch vụ nào được tạo hoặc không có kết quả phù hợp." />
                     ) : (
                         <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
                             <table className="min-w-full text-left text-sm">
@@ -400,8 +419,12 @@ export function ServiceCategoryPage() {
                     </div>
 
                     {/* Pricing Table */}
-                    {filteredPricingPolicies.length === 0 ? (
-                        <EmptyState title="Không tìm thấy chính sách giá" description="Không có chính sách giá phù hợp với tìm kiếm của bạn" />
+                    {isLoading ? (
+                        <div className="rounded-2xl border border-slate-200 bg-white p-6">
+                            <TableLoadingSkeleton rows={5} />
+                        </div>
+                    ) : filteredPricingPolicies.length === 0 ? (
+                        <EmptyState title="Không tìm thấy chính sách giá" description="Chưa có chính sách giá nào được tạo." />
                     ) : (
                         <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
                             <table className="min-w-full text-left text-sm">

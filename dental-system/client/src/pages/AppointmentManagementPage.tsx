@@ -37,6 +37,7 @@ import {
 import { useToast } from '../contexts/ToastContext'
 import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse } from '../lib/api'
 import { useConfirm } from '../contexts/ConfirmContext'
+import { useAuth } from '../contexts/AuthContext' // Import useAuth
 import { EmptyState } from '../components/EmptyState'
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
 import { formatDate, formatDateTime, formatDateTimeLocal, formatPhone, formatVND } from '../lib/formatters'
@@ -52,9 +53,10 @@ const menuItems: { id: SubPage; label: string; icon: React.ElementType }[] = [
 ]
 
 type DoctorOnCallShift = {
-    id: string
-    doctorId: string
-    doctorName: string
+    id: string // This type is already defined in mockData.ts as MockDoctorShift
+    doctorId: string // It's better to use the type from mockData.ts or DataContext.tsx
+    doctorName: string // Let's stick to the existing type for consistency.
+    // The type `DoctorOnCallShift` is defined here and used locally.
     date: string // YYYY-MM-DD (local)
     startTime: string // HH:mm
     endTime: string // HH:mm
@@ -65,6 +67,7 @@ const PAGE_SIZE = 10
 export function AppointmentManagementPage() {
     const [activeSubPage, setActiveSubPage] = useState<SubPage>('doctor-schedule')
     const [isLoading, setIsLoading] = useState(true)
+    const { currentUser } = useAuth() // Get current user
     const queryClient = useQueryClient()
     const { addToast } = useToast()
 
@@ -153,6 +156,15 @@ export function AppointmentManagementPage() {
         return () => clearTimeout(timer)
     }, [])
 
+    // Filter menu items based on user role
+    const filteredMenuItems = useMemo(() => {
+        if (currentUser?.role === 'Doctor') {
+            // Doctors can only see their appointments and schedule
+            return menuItems.filter(item => item.id === 'appointments' || item.id === 'doctor-schedule');
+        }
+        return menuItems;
+    }, [currentUser]);
+
     const renderContent = () => {
         if ((isLoading || doctorsIsLoading) && !['doctor-schedule', 'appointments'].includes(activeSubPage)) {
             return (
@@ -163,7 +175,8 @@ export function AppointmentManagementPage() {
         }
 
         switch (activeSubPage) {
-            case 'patients':
+            case 'patients': // Only Admin/Reception should see this
+                if (currentUser?.role === 'Doctor') return <EmptyState title="Bạn không có quyền truy cập mục này." />
                 return <PatientManagementView data={patients} setData={setPatients} />
             case 'doctor-schedule':
                 return <DoctorScheduleView 
@@ -174,10 +187,13 @@ export function AppointmentManagementPage() {
                     createShift={createShift}
                     updateShift={updateShift}
                     deleteShift={deleteShift}
+                    currentUser={currentUser} // Pass currentUser
                 />
-            case 'work-shifts':
+            case 'work-shifts': // Only Admin/Reception should see this
+                if (currentUser?.role === 'Doctor') return <EmptyState title="Bạn không có quyền truy cập mục này." />
                 return <WorkShiftSettingsView data={workShifts} setData={setWorkShifts} />
-            case 'holidays':
+            case 'holidays': // Only Admin/Reception should see this
+                if (currentUser?.role === 'Doctor') return <EmptyState title="Bạn không có quyền truy cập mục này." />
                 return <HolidaySettingsView data={holidays} setData={setHolidays} />
             case 'appointments':
             default:
@@ -191,6 +207,7 @@ export function AppointmentManagementPage() {
                         holidays={holidays}
                         doctorShifts={doctorShifts}
                         createAppointment={createAppointment}
+                        currentUser={currentUser} // Pass currentUser
                         updateAppointment={updateAppointment}
                     />
                 )
@@ -209,7 +226,7 @@ export function AppointmentManagementPage() {
                 {/* Left Menu */}
                 <aside className="w-full md:w-1/4 lg:w-1/5">
                     <nav className="flex flex-col gap-2">
-                        {menuItems.map((item) => (
+                        {filteredMenuItems.map((item) => (
                             <button
                                 key={item.id}
                                 onClick={() => setActiveSubPage(item.id)}
@@ -457,6 +474,7 @@ function DoctorScheduleView({
     createShift,
     updateShift,
     deleteShift,
+    currentUser, // Accept currentUser prop
 }: {
     doctors: MockDoctor[]
     shifts: DoctorOnCallShift[]
@@ -465,6 +483,7 @@ function DoctorScheduleView({
     createShift: (data: Omit<DoctorOnCallShift, 'id'>) => void
     updateShift: (params: { id: string; data: Partial<Omit<DoctorOnCallShift, 'id'>> }) => void
     deleteShift: (id: string) => void
+    currentUser: MockAccount | null
 }) {
     const [searchTerm, setSearchTerm] = useState('')
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -481,8 +500,16 @@ function DoctorScheduleView({
         endTime: '17:00',
     })
 
+    // Initialize formState.doctorId based on currentUser if Doctor
+    useEffect(() => {
+        if (currentUser?.role === 'Doctor' && currentUser.referenceId) {
+            setFormState(prev => ({ ...prev, doctorId: currentUser.referenceId }));
+        }
+    }, [currentUser]);
+
     const { addToast } = useToast()
     const { confirm } = useConfirm()
+    const isDoctor = currentUser?.role === 'Doctor';
 
     const toMinutes = (value: string) => {
         const [hh, mm] = value.split(':').map(Number)
@@ -513,7 +540,11 @@ function DoctorScheduleView({
     }, [doctors, shifts, searchTerm])
 
     const sortedShifts = useMemo(() => {
-        return [...filteredShifts].sort((a, b) => {
+        let resultShifts = filteredShifts;
+        if (isDoctor && currentUser?.referenceId) {
+            resultShifts = resultShifts.filter(shift => shift.doctorId === currentUser.referenceId);
+        }
+        return [...resultShifts].sort((a, b) => {
             const dateCompare = b.date.localeCompare(a.date)
             if (dateCompare !== 0) {
                 return dateCompare
@@ -538,7 +569,10 @@ function DoctorScheduleView({
 
     const openCreateModal = () => {
         setEditingId(null)
-        const defaultDoctorId = doctors.find((doctor) => doctor.status === 'active')?.id ?? doctors[0]?.id ?? ''
+        const defaultDoctorId = isDoctor && currentUser?.referenceId
+            ? currentUser.referenceId
+            : doctors.find((doctor) => doctor.status === 'active')?.id ?? doctors[0]?.id ?? '';
+
         setFormState({ doctorId: defaultDoctorId, date: '', startTime: '08:00', endTime: '17:00' })
         setIsModalOpen(true)
     }
@@ -656,13 +690,14 @@ function DoctorScheduleView({
                     <input
                         value={searchTerm}
                         onChange={(event) => setSearchTerm(event.target.value)}
-                        placeholder="Tìm theo tên bác sĩ hoặc ngày (YYYY-MM-DD)"
+                        placeholder={isDoctor ? "Tìm theo ngày (YYYY-MM-DD)" : "Tìm theo tên bác sĩ hoặc ngày (YYYY-MM-DD)"}
                         className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3 text-sm"
                     />
                 </div>
                 <button
                     onClick={openCreateModal}
                     className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-900 px-4 text-sm font-semibold text-white"
+                    disabled={isDoctor && !currentUser?.referenceId} // Disable if doctor and no referenceId
                 >
                     <Plus className="h-4 w-4" /> Đăng ký lịch trực
                 </button>
@@ -704,14 +739,16 @@ function DoctorScheduleView({
                                     <td className="px-4 py-3">
                                         <div className="flex items-center justify-end gap-2">
                                             <button
-                                                onClick={() => openEditModal(shift)}
+                                                onClick={() => openEditModal(shift)} // Doctor can edit their own shifts
                                                 className="inline-flex h-8 w-8 items-center justify-center rounded-lg border text-slate-600 hover:text-blue-600"
                                                 title="Sửa"
+                                                disabled={isDoctor && shift.doctorId !== currentUser?.referenceId}
                                             >
                                                 <Pencil className="h-4 w-4" />
                                             </button>
                                             <button
                                                 onClick={() => void handleDelete(shift)}
+                                                disabled={isDoctor && shift.doctorId !== currentUser?.referenceId} // Doctor can delete their own shifts
                                                 className="inline-flex h-8 w-8 items-center justify-center rounded-lg border text-slate-600 hover:text-rose-600"
                                                 title="Xóa"
                                             >
@@ -758,6 +795,7 @@ function DoctorScheduleView({
                                     value={formState.doctorId}
                                     onChange={(event) => setFormState((state) => ({ ...state, doctorId: event.target.value }))}
                                     className="mt-1 w-full rounded-lg border bg-white p-2 text-sm"
+                                    disabled={isDoctor} // Disable doctor selection for doctors
                                 >
                                     <option value="">Chọn bác sĩ</option>
                                     {doctors.map((doctor) => (
@@ -1036,6 +1074,7 @@ function AppointmentBookingView({
     doctorShifts,
     createAppointment,
     updateAppointment,
+    currentUser, // Accept currentUser prop
 }: {
     isLoading: boolean
     appointments: MockAppointment[]
@@ -1046,6 +1085,7 @@ function AppointmentBookingView({
     doctorShifts: DoctorOnCallShift[]
     createAppointment: (data: Omit<MockAppointment, 'id'>) => void
     updateAppointment: (params: { id: string; data: Partial<MockAppointment> }) => void
+    currentUser: MockAccount | null
 }) {
     const [doctorFilter, setDoctorFilter] = useState<string>('all')
     const [statusFilter, setStatusFilter] = useState<string>('all')
@@ -1056,6 +1096,7 @@ function AppointmentBookingView({
 
     const { addToast } = useToast()
     const { confirm } = useConfirm()
+    const isDoctor = currentUser?.role === 'Doctor';
 
     type AppointmentFormState = {
         patientId: string
@@ -1074,6 +1115,13 @@ function AppointmentBookingView({
         notes: '',
         status: 'Đã lên lịch',
     }
+
+    // Initialize formState.doctorId based on currentUser if Doctor
+    useEffect(() => {
+        if (isDoctor && currentUser?.referenceId) {
+            setFormState(prev => ({ ...prev, doctorId: currentUser.referenceId }));
+        }
+    }, [isDoctor, currentUser]);
     const [formState, setFormState] = useState<AppointmentFormState>(initialFormState)
 
     const isClinicHoliday = (date: Date) => {
@@ -1122,10 +1170,16 @@ function AppointmentBookingView({
     }
 
     const filteredAppointments = useMemo(() => {
-        return appointments
+        let result = appointments
             .filter(a => doctorFilter === 'all' || a.doctorId === doctorFilter)
             .filter(a => statusFilter === 'all' || a.status === statusFilter)
             .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime())
+
+        if (isDoctor && currentUser?.referenceId) {
+            result = result.filter(apt => apt.doctorId === currentUser.referenceId);
+        }
+
+        return result;
     }, [appointments, doctorFilter, statusFilter])
 
     const totalPages = Math.max(1, Math.ceil(filteredAppointments.length / PAGE_SIZE))
@@ -1321,6 +1375,7 @@ function AppointmentBookingView({
                         value={doctorFilter}
                         onChange={e => { setDoctorFilter(e.target.value); setPage(1); }}
                         className="h-10 rounded-xl border bg-white px-3 text-sm"
+                        disabled={isDoctor} // Disable doctor filter for doctors
                     >
                         <option value="all">Tất cả bác sĩ</option>
                         {doctors.map(d => <option key={d.id} value={d.id}>{d.fullName}</option>)}
@@ -1338,6 +1393,7 @@ function AppointmentBookingView({
                 </div>
                 <button onClick={openCreateModal} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-900 px-4 text-sm font-semibold text-white">
                     <Plus className="h-4 w-4" /> Tạo lịch hẹn
+                    {/* Doctors can create appointments for their own schedule */}
                 </button>
             </div>
 
@@ -1403,8 +1459,10 @@ function AppointmentBookingView({
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <button onClick={() => openEditModal(apt)} className="inline-flex h-8 w-8 items-center justify-center rounded-lg border text-slate-600 hover:text-blue-600"><Pencil className="h-4 w-4" /></button>
-                                                    {apt.status === 'Đã lên lịch' && (
+                                                    {/* Doctors can only update status for their own appointments */}
+                                                    {apt.status === 'Đã lên lịch' && (!isDoctor || apt.doctorId === currentUser?.referenceId) && (
                                                         <>
+                                                            {/* Only Admin/Reception or the doctor themselves can mark as complete/cancel */}
                                                             <button onClick={() => handleUpdateStatus(apt, 'Đã hoàn thành')} className="inline-flex h-8 items-center rounded-lg border bg-emerald-50 px-2 text-xs text-emerald-700">Hoàn thành</button>
                                                             <button onClick={() => handleUpdateStatus(apt, 'Đã hủy')} className="inline-flex h-8 items-center rounded-lg border bg-rose-50 px-2 text-xs text-rose-700">Hủy</button>
                                                         </>
@@ -1456,6 +1514,7 @@ function AppointmentBookingView({
                                 <label className="block text-sm font-medium">Bác sĩ *</label>
                                 <select value={formState.doctorId} onChange={e => setFormState(s => ({ ...s, doctorId: e.target.value }))} className="mt-1 w-full rounded-lg border bg-white p-2 text-sm">
                                     <option value="">Chọn bác sĩ</option>
+                                    {/* If doctor, only show their own ID */}
                                     {doctors.filter(d => d.status === 'active').map(d => <option key={d.id} value={d.id}>{d.fullName} ({d.specialty})</option>)}
                                 </select>
                             </div>
@@ -1469,6 +1528,7 @@ function AppointmentBookingView({
                             </div>
                             {editingId && (
                                 <div>
+                                    {/* Only Admin/Reception or the doctor themselves can change status */}
                                     <label className="block text-sm font-medium">Trạng thái</label>
                                     <select
                                         value={formState.status}
