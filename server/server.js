@@ -4,24 +4,36 @@ const express = require('express');
 const cors = require('cors');
 const { MongoClient, ObjectId } = require('mongodb');
 
-const PORT = Number(process.env.PORT || 3000);
+const PORT = Number(process.env.PORT || 5000);
 const DATABASE_NAME = process.env.MONGODB_DB || 'smilecare';
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  throw new Error('MONGODB_URI is required to start the SmileCare backend.');
+  console.error('Missing env var: MONGODB_URI');
+  process.exit(1);
 }
 
 const app = express();
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173'],
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+      return callback(null, true);
+    }
+    return callback(new Error('CORS: Origin not allowed'), false);
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(express.json({ limit: '2mb' }));
 
-const client = new MongoClient(MONGODB_URI);
+const mongoClient = new MongoClient(MONGODB_URI, {
+  serverSelectionTimeoutMS: 10000,
+});
+
 const collections = new Map();
 
 const resourceConfigs = [
@@ -40,30 +52,6 @@ const resourceConfigs = [
         status: 'active',
         permissions: ['dashboard.view', 'accounts.manage', 'settings.manage'],
         lastLoginAt: '2026-04-24T08:10:00.000Z'
-      },
-      {
-        accountCode: 'ACC-002',
-        fullName: 'Tran Van Minh',
-        username: 'minh.tran',
-        roleCode: 'ROLE_DOCTOR',
-        department: 'Khoa implant',
-        phone: '0918123456',
-        email: 'minh.tran@smilecare.vn',
-        status: 'active',
-        permissions: ['dashboard.view', 'patients.view', 'services.view'],
-        lastLoginAt: '2026-04-24T13:45:00.000Z'
-      },
-      {
-        accountCode: 'ACC-003',
-        fullName: 'Le Thi Hanh',
-        username: 'hanh.le',
-        roleCode: 'ROLE_RECEPTIONIST',
-        department: 'Tiep nhan',
-        phone: '0987123456',
-        email: 'hanh.le@smilecare.vn',
-        status: 'active',
-        permissions: ['appointments.manage', 'patients.view', 'billing.create'],
-        lastLoginAt: '2026-04-25T07:30:00.000Z'
       }
     ]
   },
@@ -84,13 +72,6 @@ const resourceConfigs = [
         description: 'Quan ly kham, dieu tri va phac do lam sang',
         scope: 'clinical',
         status: 'active'
-      },
-      {
-        roleCode: 'ROLE_RECEPTIONIST',
-        roleName: 'Le tan',
-        description: 'Tiep nhan, xep lich va lap phieu dich vu',
-        scope: 'frontdesk',
-        status: 'active'
       }
     ]
   },
@@ -103,20 +84,6 @@ const resourceConfigs = [
         moduleName: 'Bang dieu khien',
         actions: ['view'],
         description: 'Tong hop KPI, lich lam viec va canh bao he thong',
-        status: 'active'
-      },
-      {
-        moduleCode: 'accounts',
-        moduleName: 'Tai khoan',
-        actions: ['view', 'create', 'update', 'delete'],
-        description: 'Quan ly tai khoan va phan quyen nguoi dung',
-        status: 'active'
-      },
-      {
-        moduleCode: 'pricing-policies',
-        moduleName: 'Chinh sach gia',
-        actions: ['view', 'create', 'update', 'delete', 'approve'],
-        description: 'Dieu chinh gia va chiet khau theo doi tuong benh nhan',
         status: 'active'
       }
     ]
@@ -134,41 +101,53 @@ const resourceConfigs = [
         room: 'Phong 201',
         status: 'active',
         consultationFee: 250000,
-        workSchedule: {
-          monFri: '08:00-17:30',
-          sat: '08:00-12:00'
-        },
-        serviceCategoryCodes: ['IMPLANT', 'SURGERY']
-      },
+      }
+    ]
+  },
+  {
+    path: '/api/shifts',
+    collectionName: 'shifts',
+    seed: [
       {
-        doctorCode: 'DOC-002',
-        fullName: 'Dr. Pham Thu Ha',
-        specialty: 'Nieng rang',
-        degree: 'Bac si chuyen khoa I',
-        experienceYears: 9,
-        room: 'Phong 305',
-        status: 'active',
-        consultationFee: 180000,
-        workSchedule: {
-          monFri: '08:30-18:00',
-          sat: '08:30-16:00'
-        },
-        serviceCategoryCodes: ['ORTHO', 'CONSULTATION']
-      },
+        doctorId: 'doc-001',
+        doctorName: 'Nguyễn Văn A',
+        date: new Date().toISOString().slice(0, 10),
+        startTime: '08:00',
+        endTime: '17:00',
+      }
+    ]
+  },
+  {
+    path: '/api/appointments',
+    collectionName: 'appointments',
+    seed: [
       {
-        doctorCode: 'DOC-003',
-        fullName: 'Dr. Le Hoang Nam',
-        specialty: 'Nha khoa tong quat',
-        degree: 'Bac si RHM',
-        experienceYears: 6,
-        room: 'Phong 102',
-        status: 'on_leave',
-        consultationFee: 150000,
-        workSchedule: {
-          monFri: '13:00-20:00',
-          sat: 'Off'
-        },
-        serviceCategoryCodes: ['GENERAL', 'PREVENTIVE']
+        patientId: "pat-seed-1",
+        patientName: "Trần Thị B",
+        doctorId: "placeholder-doctor-id", // LƯU Ý: ID này chỉ là giữ chỗ.
+        doctorName: "Dr. Nguyen Quang Huy",
+        serviceId: "SV-001",
+        serviceName: "Kham tong quat",
+        startTime: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+        endTime: new Date(new Date(new Date().setDate(new Date().getDate() + 1)).getTime() + 30 * 60000).toISOString(),
+        status: 'Đã lên lịch',
+      }
+    ]
+  },
+  {
+    path: '/api/appointments',
+    collectionName: 'appointments',
+    seed: [
+      {
+        patientId: "pat-seed-1",
+        patientName: "Trần Thị B",
+        doctorId: "placeholder-doctor-id", // LƯU Ý: ID này chỉ là giữ chỗ.
+        doctorName: "Dr. Nguyen Quang Huy",
+        serviceId: "SV-001",
+        serviceName: "Kham tong quat",
+        startTime: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+        endTime: new Date(new Date(new Date().setDate(new Date().getDate() + 1)).getTime() + 30 * 60000).toISOString(),
+        status: 'Đã lên lịch',
       }
     ]
   },
@@ -182,20 +161,6 @@ const resourceConfigs = [
         description: 'Kham, ve sinh rang mieng va dieu tri co ban',
         status: 'active',
         priority: 1
-      },
-      {
-        categoryCode: 'IMPLANT',
-        name: 'Cay ghep Implant',
-        description: 'Phuc hinh rang mat bang implant',
-        status: 'active',
-        priority: 2
-      },
-      {
-        categoryCode: 'ORTHO',
-        name: 'Nieng rang',
-        description: 'Dieu chinh khop can va tham my ham rang',
-        status: 'active',
-        priority: 3
       }
     ]
   },
@@ -211,78 +176,13 @@ const resourceConfigs = [
         durationMinutes: 20,
         taxRate: 0,
         status: 'active'
-      },
-      {
-        serviceCode: 'SV-010',
-        categoryCode: 'IMPLANT',
-        name: 'Cay implant don',
-        standardPrice: 15000000,
-        durationMinutes: 90,
-        taxRate: 0,
-        status: 'active'
-      },
-      {
-        serviceCode: 'SV-021',
-        categoryCode: 'ORTHO',
-        name: 'Nieng rang kim loai co ban',
-        standardPrice: 18000000,
-        durationMinutes: 45,
-        taxRate: 0,
-        status: 'active'
       }
     ]
   },
   {
     path: '/api/pricing-policies',
     collectionName: 'pricing_policies',
-    seed: [
-      {
-        policyCode: 'POL-2026-01',
-        serviceCode: 'SV-010',
-        serviceName: 'Cay implant don',
-        basePrice: 15000000,
-        patientType: 'student',
-        studentDiscountPercent: 5,
-        memberDiscountPercent: 8,
-        ageDiscountRules: [
-          { minAge: 60, maxAge: 120, discountPercent: 4, label: 'Nguoi cao tuoi' }
-        ],
-        seasonalPromotions: [
-          {
-            label: 'Khai truong quy II',
-            discountPercent: 10,
-            startsOn: '2026-04-01',
-            endsOn: '2026-06-30'
-          }
-        ],
-        effectiveFrom: '2026-01-01',
-        effectiveTo: '2026-12-31',
-        status: 'active'
-      },
-      {
-        policyCode: 'POL-2026-02',
-        serviceCode: 'SV-021',
-        serviceName: 'Nieng rang kim loai co ban',
-        basePrice: 18000000,
-        patientType: 'family',
-        studentDiscountPercent: 4,
-        memberDiscountPercent: 6,
-        ageDiscountRules: [
-          { minAge: 12, maxAge: 18, discountPercent: 3, label: 'Hoc sinh' }
-        ],
-        seasonalPromotions: [
-          {
-            label: 'Mua he hoc duong',
-            discountPercent: 7,
-            startsOn: '2026-05-01',
-            endsOn: '2026-08-31'
-          }
-        ],
-        effectiveFrom: '2026-01-01',
-        effectiveTo: '2026-12-31',
-        status: 'active'
-      }
-    ]
+    seed: []
   },
   {
     path: '/api/settings',
@@ -300,29 +200,6 @@ const resourceConfigs = [
           currency: 'VND'
         },
         status: 'active'
-      },
-      {
-        settingCode: 'clinic.working-hours',
-        group: 'schedule',
-        name: 'Gio lam viec',
-        value: {
-          weekdays: '08:00-20:00',
-          saturday: '08:00-17:00',
-          sunday: '08:00-12:00'
-        },
-        status: 'active'
-      },
-      {
-        settingCode: 'billing.rules',
-        group: 'billing',
-        name: 'Quy tac thanh toan',
-        value: {
-          depositPercent: 30,
-          taxRate: 0,
-          allowInstallment: true,
-          refundPolicyDays: 7
-        },
-        status: 'active'
       }
     ]
   }
@@ -330,17 +207,13 @@ const resourceConfigs = [
 
 function getCollection(collectionName) {
   const collection = collections.get(collectionName);
-
-  if (!collection) {
-    throw new Error(`Collection not initialized: ${collectionName}`);
-  }
-
+  if (!collection) throw new Error(`Collection not initialized: ${collectionName}`);
   return collection;
 }
 
 function toPublicDocument(document) {
+  if (!document) return null;
   const { _id, ...rest } = document;
-
   return {
     id: _id.toString(),
     _id: _id.toString(),
@@ -352,232 +225,245 @@ function toPublicDocuments(documents) {
   return documents.map(toPublicDocument);
 }
 
-function buildFilter(query) {
-  const filter = {};
-
-  for (const [key, value] of Object.entries(query)) {
-    if (key === 'limit' || key === 'skip' || key === 'sort' || key === 'fields') {
-      continue;
-    }
-
-    filter[key] = value;
-  }
-
-  return filter;
-}
-
 function parseOptionalInteger(value, fallback) {
-  if (value === undefined) {
-    return fallback;
-  }
-
+  if (value === undefined) return fallback;
   const parsed = Number.parseInt(String(value), 10);
   return Number.isNaN(parsed) ? fallback : parsed;
 }
 
+function buildFilter(query) {
+  const filter = {};
+  for (const [key, value] of Object.entries(query)) {
+    if (['limit', 'skip', 'sort'].includes(key)) continue;
+    filter[key] = value;
+  }
+  return filter;
+}
+
 function sanitizeBody(body) {
   const copy = { ...body };
-
   delete copy._id;
   delete copy.id;
   delete copy.createdAt;
   delete copy.updatedAt;
-
   return copy;
 }
 
 async function seedCollection(collection, seed) {
+  if (!seed || seed.length === 0) return;
   const count = await collection.countDocuments();
-
-  if (count > 0 || seed.length === 0) {
-    return;
-  }
+  if (count > 0) return;
 
   const now = new Date().toISOString();
-  const documents = seed.map((document) => ({
-    ...document,
+  await collection.insertMany(seed.map((doc) => ({
+    ...doc,
     createdAt: now,
-    updatedAt: now
-  }));
-
-  await collection.insertMany(documents);
+    updatedAt: now,
+  })));
 }
 
 async function initializeDatabase() {
-  await client.connect();
-  console.log('MongoDB connected successfully.');
+  await mongoClient.connect();
 
-  const db = client.db(DATABASE_NAME);
-
+  const db = mongoClient.db(DATABASE_NAME);
   for (const resourceConfig of resourceConfigs) {
     const collection = db.collection(resourceConfig.collectionName);
     collections.set(resourceConfig.collectionName, collection);
-
     await seedCollection(collection, resourceConfig.seed);
     await collection.createIndex({ updatedAt: -1 });
   }
 }
 
 function registerResourceRoutes(resourceConfig) {
-  const collection = () => getCollection(resourceConfig.collectionName);
+  const getCol = () => getCollection(resourceConfig.collectionName);
 
-  app.get(resourceConfig.path, async (req, res) => {
+  app.get(resourceConfig.path, async (req, res, next) => {
     try {
       const filter = buildFilter(req.query);
       const limit = parseOptionalInteger(req.query.limit, 100);
       const skip = parseOptionalInteger(req.query.skip, 0);
-      const sort = req.query.sort ? { [String(req.query.sort)]: 1 } : { updatedAt: -1 };
+      const rawSort = req.query.sort ? String(req.query.sort) : '-updatedAt';
+      const sortKey = rawSort.startsWith('-') ? rawSort.slice(1) : rawSort;
+      const sortDir = rawSort.startsWith('-') ? -1 : 1;
+      const sort = { [sortKey]: sortDir };
 
-      const documents = await collection().find(filter).sort(sort).skip(skip).limit(limit).toArray();
-      res.json({ data: toPublicDocuments(documents), total: documents.length });
+      const cursor = getCol().find(filter).sort(sort).skip(skip).limit(limit);
+      const documents = await cursor.toArray();
+      const total = await getCol().countDocuments(filter);
+      res.json({ data: toPublicDocuments(documents), total });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   });
 
-  app.post(resourceConfig.path, async (req, res) => {
+  app.post(resourceConfig.path, async (req, res, next) => {
     try {
       const now = new Date().toISOString();
       const payload = sanitizeBody(req.body);
-      const result = await collection().insertOne({
+      const result = await getCol().insertOne({
         ...payload,
         createdAt: now,
-        updatedAt: now
+        updatedAt: now,
       });
 
-      const insertedDocument = await collection().findOne({ _id: result.insertedId });
-      res.status(201).json({ data: toPublicDocument(insertedDocument) });
+      const inserted = await getCol().findOne({ _id: result.insertedId });
+      res.status(201).json({ data: toPublicDocument(inserted) });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   });
 
-  app.get(`${resourceConfig.path}/:id`, async (req, res) => {
+  app.get(`${resourceConfig.path}/:id`, async (req, res, next) => {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({ error: 'Invalid document id.' });
       }
 
-      const document = await collection().findOne({ _id: new ObjectId(req.params.id) });
-
-      if (!document) {
-        return res.status(404).json({ error: 'Document not found.' });
-      }
-
-      return res.json({ data: toPublicDocument(document) });
+      const doc = await getCol().findOne({ _id: new ObjectId(req.params.id) });
+      if (!doc) return res.status(404).json({ error: 'Document not found.' });
+      return res.json({ data: toPublicDocument(doc) });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   });
 
-  app.put(`${resourceConfig.path}/:id`, async (req, res) => {
+  app.put(`${resourceConfig.path}/:id`, async (req, res, next) => {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({ error: 'Invalid document id.' });
       }
 
       const payload = sanitizeBody(req.body);
-      const result = await collection().updateOne(
+      const result = await getCol().updateOne(
         { _id: new ObjectId(req.params.id) },
-        {
-          $set: {
-            ...payload,
-            updatedAt: new Date().toISOString()
-          }
-        }
+        { $set: { ...payload, updatedAt: new Date().toISOString() } }
       );
 
-      if (result.matchedCount === 0) {
-        return res.status(404).json({ error: 'Document not found.' });
-      }
-
-      const updatedDocument = await collection().findOne({ _id: new ObjectId(req.params.id) });
-      return res.json({ data: toPublicDocument(updatedDocument) });
+      if (result.matchedCount === 0) return res.status(404).json({ error: 'Document not found.' });
+      const updated = await getCol().findOne({ _id: new ObjectId(req.params.id) });
+      return res.json({ data: toPublicDocument(updated) });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   });
 
-  app.delete(`${resourceConfig.path}/:id`, async (req, res) => {
+  app.patch(`${resourceConfig.path}/:id`, async (req, res, next) => {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({ error: 'Invalid document id.' });
       }
 
-      const result = await collection().deleteOne({ _id: new ObjectId(req.params.id) });
+      const payload = sanitizeBody(req.body);
+      const result = await getCol().updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: { ...payload, updatedAt: new Date().toISOString() } }
+      );
 
-      if (result.deletedCount === 0) {
-        return res.status(404).json({ error: 'Document not found.' });
+      if (result.matchedCount === 0) return res.status(404).json({ error: 'Document not found.' });
+      const updated = await getCol().findOne({ _id: new ObjectId(req.params.id) });
+      return res.json({ data: toPublicDocument(updated) });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.delete(`${resourceConfig.path}/:id`, async (req, res, next) => {
+    try {
+      if (!ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ error: 'Invalid document id.' });
       }
 
+      const result = await getCol().deleteOne({ _id: new ObjectId(req.params.id) });
+      if (result.deletedCount === 0) return res.status(404).json({ error: 'Document not found.' });
       return res.json({ deletedCount: result.deletedCount });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   });
 }
 
 function registerMetaRoutes() {
-  app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', service: 'smilecare-backend', database: DATABASE_NAME });
-  });
-
-  app.get('/api/dashboard/summary', async (req, res) => {
-    try {
-      const [accounts, doctors, services, policies, settings, permissions] = await Promise.all([
-        getCollection('accounts').countDocuments(),
-        getCollection('doctors').countDocuments(),
-        getCollection('services').countDocuments(),
-        getCollection('pricing_policies').countDocuments(),
-        getCollection('settings').countDocuments(),
-        getCollection('permissions').countDocuments()
-      ]);
-
-      res.json({
-        data: {
-          counts: {
-            accounts,
-            doctors,
-            services,
-            pricingPolicies: policies,
-            settings,
-            permissions
-          }
-        }
-      });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
+  app.get('/api/health', async (req, res) => {
+    res.json({
+      status: 'ok',
+      service: 'smilecare-backend',
+      database: DATABASE_NAME,
+    });
   });
 
   app.get('/api/modules', (req, res) => {
     res.json({
-      data: resourceConfigs.map((resourceConfig) => ({
-        path: resourceConfig.path,
-        collectionName: resourceConfig.collectionName,
-        seedCount: resourceConfig.seed.length
+      data: resourceConfigs.map((rc) => ({
+        path: rc.path,
+        collectionName: rc.collectionName,
+        seedCount: rc.seed.length,
       }))
     });
   });
+
+  app.get('/api/dashboard/summary', async (req, res, next) => {
+    try {
+      const counts = {};
+      for (const rc of resourceConfigs) {
+        counts[rc.collectionName] = await getCollection(rc.collectionName).countDocuments();
+      }
+      res.json({ data: { counts } });
+    } catch (error) {
+      next(error);
+    }
+  });
 }
+
+function registerErrorHandler() {
+  app.use((err, req, res, next) => {
+    const message = err && err.message ? err.message : 'Internal server error';
+    res.status(500).json({ error: message });
+  });
+}
+
+let server;
 
 async function main() {
   try {
     await initializeDatabase();
+    console.log('MongoDB connected successfully.');
 
     for (const resourceConfig of resourceConfigs) {
       registerResourceRoutes(resourceConfig);
     }
-
     registerMetaRoutes();
+    registerErrorHandler();
 
-    app.listen(PORT, () => {
+    server = app.listen(PORT, () => {
       console.log(`SmileCare backend is running at http://localhost:${PORT}`);
+    });
+
+    server.on('error', (error) => {
+      if (error && error.code === 'EADDRINUSE') {
+        console.error(`Port ${PORT} is already in use.`);
+        process.exit(1);
+      }
+      console.error('Server error:', error);
+      process.exit(1);
     });
   } catch (error) {
     console.error('MongoDB connection failed:', error);
     process.exit(1);
   }
 }
+
+async function shutdown() {
+  try {
+    if (server) {
+      await new Promise((resolve) => server.close(resolve));
+    }
+    await mongoClient.close();
+  } finally {
+    process.exit(0);
+  }
+}
+
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
 
 main();

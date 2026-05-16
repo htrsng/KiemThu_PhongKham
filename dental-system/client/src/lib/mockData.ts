@@ -116,6 +116,8 @@ export type MockDoctor = {
     experience: number
     room: string
     consultationFee: number
+    hourlyRate?: number
+    serviceCommissionRate?: number
     status: 'active' | 'inactive'
     schedule: Record<string, { enabled: boolean; startTime: string; endTime: string }>
 }
@@ -139,6 +141,8 @@ export function generateMockDoctors(count: number = 9): MockDoctor[] {
         const email = `${lastName.toLowerCase()}.${firstName.toLowerCase().replace(/\s/g, '')}@smilecare.vn`
         const licenseNumber = `BS-${String(index + 1).padStart(5, '0')}`
         const consultationFee = (Math.floor(Math.random() * 5) + 2) * 100000
+        const hourlyRate = 100000 + Math.floor(Math.random() * 5) * 20000 // Dao động 100k - 180k
+        const serviceCommissionRate = 10 + Math.floor(Math.random() * 10) // Dao động 10% - 20%
         const status = index % 6 === 0 ? 'inactive' : 'active'
         const schedule = {
             T2: { enabled: true, startTime: '08:00', endTime: '17:00' },
@@ -161,6 +165,8 @@ export function generateMockDoctors(count: number = 9): MockDoctor[] {
             experience,
             room: `Phòng ${room}`,
             consultationFee,
+            hourlyRate,
+            serviceCommissionRate,
             status,
             schedule,
         }
@@ -248,6 +254,38 @@ export function generateMockPricingPolicies(count: number = 15): MockPricingPoli
             status: expiryDate > new Date() ? 'active' : 'inactive',
         }
     })
+}
+
+export type MockDoctorShift = {
+    id: string
+    doctorId: string
+    doctorName: string
+    date: string
+    startTime: string
+    endTime: string
+}
+
+export function generateMockDoctorShifts(doctors: MockDoctor[], month: number, year: number): MockDoctorShift[] {
+    const shifts: MockDoctorShift[] = []
+    const daysInMonth = new Date(year, month, 0).getDate()
+    
+    doctors.forEach(doctor => {
+        if (doctor.status !== 'active') return;
+        for (let day = 1; day <= daysInMonth; day++) {
+            if (Math.random() > 0.5) { // 50% xác suất có ca trực
+                const date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+                shifts.push({
+                    id: `shift-${doctor.id}-${date}`,
+                    doctorId: doctor.id,
+                    doctorName: doctor.fullName,
+                    date,
+                    startTime: '08:00',
+                    endTime: '17:00'
+                })
+            }
+        }
+    })
+    return shifts
 }
 
 // Patient mock data

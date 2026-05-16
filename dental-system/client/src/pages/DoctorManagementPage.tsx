@@ -1,14 +1,18 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Pencil, Trash2, X, Plus, Clock, Phone, Mail, Award, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { Pencil, Trash2, X, Plus, Clock, Phone, Mail, Award, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react' // X is used in ScheduleModal
 import { PageShell } from '../components/PageShell'
 import { useToast } from '../contexts/ToastContext'
 import { useConfirm } from '../contexts/ConfirmContext'
 import { formatDate, formatPhone, getSpecialtyColor, getInitials } from '../lib/formatters'
-import { generateMockDoctors, type MockDoctor } from '../lib/mockData'
+import { type MockDoctor } from '../lib/mockData'
 import { EmptyState } from '../components/EmptyState'
+import { DoctorFormModal } from '../components/DoctorFormModal'
+import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse } from '../lib/api'
+import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
+import type { Doctor, DoctorPayload } from '../contexts/DataContext'
 
 const SPECIALTIES: MockDoctor['specialty'][] = ['Nha khoa tổng quát', 'Niềng răng', 'Implant', 'Nhổ răng', 'Nha chu']
-const DEGREES: MockDoctor['degree'][] = ['Bác sĩ', 'Thạc sĩ', 'Tiến sĩ', 'Phó Giáo sư', 'Giáo sư']
 const ROOMS: MockDoctor['room'][] = Array.from({ length: 205 }, (_, i) => `Phòng ${101 + i}`) // Phòng 101 - Phòng 305
 const SCHEDULE_DAYS = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']
 const SCHEDULE_DAY_NAMES = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật']
@@ -39,30 +43,68 @@ function addDays(date: Date, days: number): Date {
     return d
 }
 
-type DoctorFormState = {
-    fullName: string
-    phone: string
-    email: string
-    specialty: MockDoctor['specialty']
-    degree: MockDoctor['degree']
-    experience: number
-    room: MockDoctor['room']
-    consultationFee: number
-    licenseNumber: string
-    status: 'active' | 'inactive' // Giữ nguyên, giờ đã đồng bộ với MockDoctor
-    schedule: Record<string, { enabled: boolean; startTime: string; endTime: string }>
-}
-
-type DoctorFormErrors = Partial<Record<keyof DoctorFormState, string>>
-
-type ScheduleModalState = {
-    isOpen: boolean
-    doctorId: string | null
-    doctorName: string
-}
-
 export function DoctorManagementPage() {
-    const [doctors, setDoctors] = useState<MockDoctor[]>([])
+    const queryClient = useQueryClient()
+    const { addToast } = useToast()
+    const { confirm } = useConfirm()
+
+    // --- Data Fetching using TanStack Query ---
+    const { data: doctors = [], isLoading } = useQuery<Doctor[], Error>({
+        queryKey: ['doctors'],
+        queryFn: async () => {
+            const response = await api.get<ApiListResponse<Doctor>>('/doctors');
+            // Giả lập độ trễ của server
+            await new Promise(resolve => setTimeout(resolve, 500));
+            return response.data.data;
+        },
+    });
+
+    const { mutate: createDoctor } = useMutation<Doctor, Error, DoctorPayload>({
+        mutationFn: async (newDoctor) => {
+            const response = await api.post<ApiItemResponse<Doctor>>('/doctors', newDoctor);
+            return response.data.data;
+        },
+        onSuccess: (newDoctor) => {
+            queryClient.invalidateQueries({ queryKey: ['doctors'] });
+            addToast('success', `Đã tạo bác sĩ mới: ${newDoctor.fullName}`);
+            setIsModalOpen(false);
+        },
+        onError: (error) => {
+            addToast('error', `Lỗi khi tạo bác sĩ: ${error.message}`);
+        },
+    });
+
+    const { mutate: updateDoctor } = useMutation<Doctor, Error, { id: string; data: Partial<DoctorPayload> }>({
+        mutationFn: async ({ id, data }) => {
+            const response = await api.put<ApiItemResponse<Doctor>>(`/doctors/${id}`, data);
+            return response.data.data;
+        },
+        onSuccess: (updatedDoctor) => {
+            queryClient.setQueryData<Doctor[]>(['doctors'], (oldData) =>
+                oldData ? oldData.map((d) => (d.id === updatedDoctor.id ? updatedDoctor : d)) : []
+            );
+            addToast('success', `Đã cập nhật thông tin bác sĩ: ${updatedDoctor.fullName}`);
+            setIsModalOpen(false);
+        },
+        onError: (error) => {
+            addToast('error', `Lỗi khi cập nhật bác sĩ: ${error.message}`);
+        },
+    });
+
+    const { mutate: deleteDoctor } = useMutation<ApiDeleteResponse, Error, string>({
+        mutationFn: async (id) => {
+            const response = await api.delete<ApiDeleteResponse>(`/doctors/${id}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['doctors'] });
+            addToast('success', `Đã xóa bác sĩ.`);
+        },
+        onError: (error) => {
+            addToast('error', `Lỗi khi xóa bác sĩ: ${error.message}`);
+        },
+    });
+
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 3
 
@@ -71,34 +113,13 @@ export function DoctorManagementPage() {
 
     // Modal states
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null)
-    const [scheduleModal, setScheduleModal] = useState<ScheduleModalState>({
-        isOpen: false,
-        doctorId: null,
-        doctorName: '',
-    })
-
-    // Form state
-    const [formState, setFormState] = useState<DoctorFormState>({
-        fullName: '',
-        phone: '',
-        email: '',
-        specialty: SPECIALTIES[0],
-        degree: DEGREES[0],
-        experience: 0,
-        room: ROOMS[0],
-        consultationFee: 0,
-        licenseNumber: '',
-        status: 'active',
-        schedule: Object.fromEntries(
-            SCHEDULE_DAYS.map((day) => [
-                day,
-                { enabled: day !== 'CN', startTime: '08:00', endTime: '17:00' },
-            ])
-        ),
-    })
-
-    const [formErrors, setFormErrors] = useState<DoctorFormErrors>({})
+    const [editingDoctor, setEditingDoctor] = useState<MockDoctor | null>(null)
+    const [scheduleModal, setScheduleModal] = useState<{
+        isOpen: boolean,
+        doctor: MockDoctor | null
+    }>({ isOpen: false, doctor: null })
+    // State for schedule form inside the modal
+    const [scheduleForm, setScheduleForm] = useState<MockDoctor['schedule'] | null>(null)
 
     // Filter states
     const [searchTerm, setSearchTerm] = useState('')
@@ -106,17 +127,6 @@ export function DoctorManagementPage() {
     const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all')
     const [roomFilter, setRoomFilter] = useState<MockDoctor['room'] | null>(null)
     const [sortBy, setSortBy] = useState<'name' | 'fee' | 'experience'>('name')
-
-    const { addToast } = useToast()
-    const { confirm } = useConfirm()
-
-    // Load mock data
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setDoctors(generateMockDoctors(9))
-        }, 500)
-        return () => clearTimeout(timer)
-    }, [])
 
     // Filter and sort doctors
     const filteredDoctors = useMemo(() => {
@@ -168,80 +178,22 @@ export function DoctorManagementPage() {
 
     // Form functions
     function openCreateModal() {
-        setEditingDoctorId(null)
-        setFormState({
-            fullName: '',
-            phone: '',
-            email: '',
-            specialty: SPECIALTIES[0],
-            degree: DEGREES[0],
-            experience: 0,
-            room: ROOMS[0],
-            consultationFee: 0,
-            licenseNumber: '',
-            status: 'active',
-            schedule: Object.fromEntries(
-                SCHEDULE_DAYS.map((day) => [
-                    day,
-                    { enabled: day !== 'CN', startTime: '08:00', endTime: '17:00' },
-                ])
-            ),
-        })
-        setFormErrors({})
+        setEditingDoctor(null)
         setIsModalOpen(true)
     }
 
     function openEditModal(doctor: MockDoctor) {
-        setEditingDoctorId(doctor.id)
-        setFormState({
-            fullName: doctor.fullName,
-            phone: doctor.phone,
-            email: doctor.email,
-            specialty: doctor.specialty,
-            degree: doctor.degree,
-            experience: doctor.experience,
-            room: doctor.room,
-            consultationFee: doctor.consultationFee,
-            licenseNumber: doctor.licenseNumber,
-            status: doctor.status, // Giờ đã an toàn về kiểu dữ liệu
-            schedule: { ...doctor.schedule },
-        })
-        setFormErrors({})
+        setEditingDoctor(doctor)
         setIsModalOpen(true)
     }
 
-    function validateForm(): boolean {
-        const errors: DoctorFormErrors = {}
-
-        if (!formState.fullName.trim()) errors.fullName = 'Họ tên không được để trống'
-        if (!formState.phone.match(/^0\d{9}$/)) errors.phone = 'Số điện thoại không hợp lệ (0xxxxxxxxx)'
-        if (!formState.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) errors.email = 'Email không hợp lệ'
-        if (!formState.licenseNumber.match(/^BS-\d{5}$/)) errors.licenseNumber = 'Mã giấy phép không hợp lệ (BS-XXXXX)'
-        if (formState.experience < 0 || formState.experience > 50) errors.experience = 'Kinh nghiệm phải từ 0-50 năm'
-        if (formState.consultationFee <= 0) errors.consultationFee = 'Giá khám phải lớn hơn 0'
-
-        setFormErrors(errors)
-        return Object.keys(errors).length === 0
-    }
-
-    function handleSaveDoctor() {
-        if (!validateForm()) return
-
-        if (editingDoctorId) {
-            setDoctors((prev) =>
-                prev.map((d) => (d.id === editingDoctorId ? { ...d, ...formState } : d))
-            )
-            addToast('success', 'Cập nhật thông tin bác sĩ thành công')
+    function handleSaveDoctor(data: Omit<MockDoctor, 'id' | 'schedule'>, doctorId: string | null) {
+        if (doctorId) {
+            updateDoctor({ id: doctorId, data });
         } else {
-            const newDoctor: MockDoctor = {
-                id: `doc-${Date.now()}`,
-                ...formState,
-            }
-            setDoctors((prev) => [newDoctor, ...prev])
-            addToast('success', 'Thêm bác sĩ mới thành công')
+            createDoctor(data as DoctorPayload);
         }
-
-        setIsModalOpen(false)
+        setEditingDoctor(null)
         setCurrentPage(1)
     }
 
@@ -254,41 +206,25 @@ export function DoctorManagementPage() {
             isDangerous: true,
         })
         if (confirmed) {
-            setDoctors((prev) => prev.filter((d) => d.id !== doctor.id))
-            addToast('success', 'Xóa bác sĩ thành công')
+            deleteDoctor(doctor.id);
         }
     }
 
     function openScheduleModal(doctor: MockDoctor) {
         setScheduleWeekStart(formatDateInput(getMonday(new Date())))
-        setEditingDoctorId(doctor.id)
-        setFormState({
-            fullName: doctor.fullName,
-            phone: doctor.phone,
-            email: doctor.email,
-            specialty: doctor.specialty,
-            degree: doctor.degree,
-            experience: doctor.experience,
-            room: doctor.room,
-            consultationFee: doctor.consultationFee,
-            licenseNumber: doctor.licenseNumber,
-            status: doctor.status,
-            schedule: { ...doctor.schedule },
-        })
-        setScheduleModal({
-            isOpen: true,
-            doctorId: doctor.id,
-            doctorName: doctor.fullName,
-        })
+        setScheduleModal({ isOpen: true, doctor })
+        setScheduleForm({ ...doctor.schedule }) // Copy schedule to edit
     }
 
     function handleSaveSchedule() {
-        setDoctors((prev) =>
-            prev.map((d) => (d.id === editingDoctorId ? { ...d, schedule: formState.schedule } : d))
-        )
-        addToast('success', 'Cập nhật lịch làm việc thành công')
-        setScheduleModal({ isOpen: false, doctorId: null, doctorName: '' })
-        setEditingDoctorId(null)
+        if (!scheduleModal.doctor || !scheduleForm) return
+
+        // Gọi mutation để cập nhật lịch làm việc
+        updateDoctor({ id: scheduleModal.doctor.id, data: { schedule: scheduleForm } as Partial<DoctorPayload> });
+        // Lưu ý: Cần đảm bảo server của bạn xử lý việc cập nhật `schedule`
+        // trong `PUT /api/doctors/:id`
+
+        setScheduleModal({ isOpen: false, doctor: null })
     }
 
     return (
@@ -400,7 +336,11 @@ export function DoctorManagementPage() {
             </div>
 
             {/* Doctor Cards */}
-            {paginatedDoctors.length === 0 ? (
+            {isLoading ? (
+                <div className="rounded-2xl border border-slate-200 bg-white p-6">
+                    <TableLoadingSkeleton rows={3} />
+                </div>
+            ) : paginatedDoctors.length === 0 ? (
                 <EmptyState
                     title="Không tìm thấy bác sĩ"
                     description="Không có bác sĩ phù hợp với tìm kiếm của bạn"
@@ -525,244 +465,23 @@ export function DoctorManagementPage() {
                 </div>
             )}
 
-            {/* Doctor Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <div className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-                        <div className="mb-4 flex items-center justify-between">
-                            <h3 className="text-xl font-semibold text-slate-900">
-                                {editingDoctorId ? 'Chỉnh sửa thông tin bác sĩ' : 'Thêm bác sĩ mới'}
-                            </h3>
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                className="text-slate-400 hover:text-slate-600"
-                            >
-                                <X className="h-5 w-5" />
-                            </button>
-                        </div>
-
-                        <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-900">Họ tên *</label>
-                                    <input
-                                        type="text"
-                                        value={formState.fullName}
-                                        onChange={(e) =>
-                                            setFormState((prev) => ({ ...prev, fullName: e.target.value }))
-                                        }
-                                        placeholder="Nhập họ tên"
-                                        className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"
-                                    />
-                                    {formErrors.fullName && (
-                                        <p className="mt-1 text-xs text-rose-600">{formErrors.fullName}</p>
-                                    )}
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-900">
-                                        Mã giấy phép *
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={formState.licenseNumber}
-                                        onChange={(e) =>
-                                            setFormState((prev) => ({
-                                                ...prev,
-                                                licenseNumber: e.target.value.toUpperCase(),
-                                            }))
-                                        }
-                                        placeholder="BS-XXXXX"
-                                        className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-mono text-slate-900 outline-none ring-blue-200 transition focus:ring"
-                                    />
-                                    {formErrors.licenseNumber && (
-                                        <p className="mt-1 text-xs text-rose-600">{formErrors.licenseNumber}</p>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-900">
-                                        Số điện thoại *
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={formState.phone}
-                                        onChange={(e) =>
-                                            setFormState((prev) => ({ ...prev, phone: e.target.value }))
-                                        }
-                                        placeholder="0xxxxxxxxx"
-                                        className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"
-                                    />
-                                    {formErrors.phone && (
-                                        <p className="mt-1 text-xs text-rose-600">{formErrors.phone}</p>
-                                    )}
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-900">Email *</label>
-                                    <input
-                                        type="email"
-                                        value={formState.email}
-                                        onChange={(e) =>
-                                            setFormState((prev) => ({ ...prev, email: e.target.value }))
-                                        }
-                                        placeholder="doctor@example.com"
-                                        className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"
-                                    />
-                                    {formErrors.email && (
-                                        <p className="mt-1 text-xs text-rose-600">{formErrors.email}</p>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-900">Chuyên khoa</label>
-                                    <select
-                                        value={formState.specialty}
-                                        onChange={(e) =>
-                                            setFormState((prev) => ({
-                                                ...prev,
-                                                specialty: e.target.value as MockDoctor['specialty'],
-                                            }))
-                                        }
-                                        className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"
-                                    >
-                                        {SPECIALTIES.map((spec) => (
-                                            <option key={spec} value={spec}>
-                                                {spec}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-900">Bằng cấp</label>
-                                    <select
-                                        value={formState.degree}
-                                        onChange={(e) =>
-                                            setFormState((prev) => ({
-                                                ...prev,
-                                                degree: e.target.value as MockDoctor['degree'],
-                                            }))
-                                        }
-                                        className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"
-                                    >
-                                        {DEGREES.map((deg) => (
-                                            <option key={deg} value={deg}>
-                                                {deg}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-3 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-900">
-                                        Kinh nghiệm (năm) *
-                                    </label>
-                                    <input
-                                        type="number"
-                                        value={formState.experience}
-                                        onChange={(e) =>
-                                            setFormState((prev) => ({
-                                                ...prev,
-                                                experience: parseInt(e.target.value) || 0,
-                                            }))
-                                        }
-                                        min="0"
-                                        max="50"
-                                        placeholder="0"
-                                        className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"
-                                    />
-                                    {formErrors.experience && (
-                                        <p className="mt-1 text-xs text-rose-600">{formErrors.experience}</p>
-                                    )}
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-900">Phòng</label>
-                                    <select
-                                        value={formState.room}
-                                        onChange={(e) =>
-                                            setFormState((prev) => ({ ...prev, room: e.target.value }))
-                                        }
-                                        className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"
-                                    >
-                                        {ROOMS.map((room) => (
-                                            <option key={room} value={room}>
-                                                {room}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-900">
-                                        Phí khám (VND) *
-                                    </label>
-                                    <input
-                                        type="number"
-                                        value={formState.consultationFee}
-                                        onChange={(e) =>
-                                            setFormState((prev) => ({
-                                                ...prev,
-                                                consultationFee: parseInt(e.target.value) || 0,
-                                            }))
-                                        }
-                                        placeholder="0"
-                                        className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"
-                                    />
-                                    {formErrors.consultationFee && (
-                                        <p className="mt-1 text-xs text-rose-600">{formErrors.consultationFee}</p>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-slate-900">Trạng thái</label>
-                                <select
-                                    value={formState.status}
-                                    onChange={(e) =>
-                                        setFormState((prev) => ({
-                                            ...prev,
-                                            status: e.target.value as 'active' | 'inactive',
-                                        }))
-                                    }
-                                    className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"
-                                >
-                                    <option value="active">Đang làm việc</option>
-                                    <option value="inactive">Tạm dừng</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="mt-6 flex justify-end gap-3">
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-                            >
-                                Hủy
-                            </button>
-                            <button
-                                onClick={handleSaveDoctor}
-                                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-                            >
-                                {editingDoctorId ? 'Cập nhật' : 'Tạo mới'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <DoctorFormModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSave={handleSaveDoctor}
+                editingDoctor={editingDoctor}
+            />
 
             {/* Schedule Modal */}
-            {scheduleModal.isOpen && (
+            {scheduleModal.isOpen && scheduleModal.doctor && scheduleForm && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
                     <div className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl">
                         <div className="mb-4 flex items-center justify-between">
                             <h3 className="text-xl font-semibold text-slate-900">
-                                Lịch làm việc - {scheduleModal.doctorName}
+                                Lịch làm việc - {scheduleModal.doctor.fullName}
                             </h3>
                             <button
-                                onClick={() => setScheduleModal({ isOpen: false, doctorId: null, doctorName: '' })}
+                                onClick={() => setScheduleModal({ isOpen: false, doctor: null })}
                                 className="text-slate-400 hover:text-slate-600"
                             >
                                 <X className="h-5 w-5" />
@@ -799,37 +518,34 @@ export function DoctorManagementPage() {
                                     </div>
                                     <input
                                         type="checkbox"
-                                        checked={formState.schedule[day]?.enabled || false}
+                                        checked={scheduleForm[day]?.enabled || false}
                                         onChange={(e) =>
-                                            setFormState((prev) => ({
+                                            setScheduleForm((prev) => prev && ({
                                                 ...prev,
-                                                schedule: {
-                                                    ...prev.schedule,
-                                                    [day]: {
-                                                        ...prev.schedule[day],
-                                                        enabled: e.target.checked,
-                                                    },
+                                                [day]: {
+                                                    ...(prev[day] || {
+                                                        startTime: '08:00',
+                                                        endTime: '17:00',
+                                                    }),
+                                                    enabled: e.target.checked,
                                                 },
                                             }))
                                         }
                                         className="h-4 w-4"
                                     />
-                                    {formState.schedule[day]?.enabled && (
+                                    {scheduleForm?.[day]?.enabled && (
                                         <>
                                             <div className="flex items-center gap-2">
                                                 <label className="text-sm text-slate-600">Bắt đầu:</label>
                                                 <input
                                                     type="time"
-                                                    value={formState.schedule[day]?.startTime || '08:00'}
+                                                    value={scheduleForm[day]?.startTime || '08:00'}
                                                     onChange={(e) =>
-                                                        setFormState((prev) => ({
+                                                        setScheduleForm((prev) => prev && ({
                                                             ...prev,
-                                                            schedule: {
-                                                                ...prev.schedule,
-                                                                [day]: {
-                                                                    ...prev.schedule[day],
-                                                                    startTime: e.target.value,
-                                                                },
+                                                            [day]: {
+                                                                ...prev[day],
+                                                                startTime: e.target.value,
                                                             },
                                                         }))
                                                     }
@@ -840,16 +556,13 @@ export function DoctorManagementPage() {
                                                 <label className="text-sm text-slate-600">Kết thúc:</label>
                                                 <input
                                                     type="time"
-                                                    value={formState.schedule[day]?.endTime || '17:00'}
+                                                    value={scheduleForm[day]?.endTime || '17:00'}
                                                     onChange={(e) =>
-                                                        setFormState((prev) => ({
+                                                        setScheduleForm((prev) => prev && ({
                                                             ...prev,
-                                                            schedule: {
-                                                                ...prev.schedule,
-                                                                [day]: {
-                                                                    ...prev.schedule[day],
-                                                                    endTime: e.target.value,
-                                                                },
+                                                            [day]: {
+                                                                ...prev[day],
+                                                                endTime: e.target.value,
                                                             },
                                                         }))
                                                     }
@@ -864,7 +577,7 @@ export function DoctorManagementPage() {
 
                         <div className="mt-6 flex justify-end gap-3">
                             <button
-                                onClick={() => setScheduleModal({ isOpen: false, doctorId: null, doctorName: '' })}
+                                onClick={() => setScheduleModal({ isOpen: false, doctor: null })}
                                 className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
                             >
                                 Hủy

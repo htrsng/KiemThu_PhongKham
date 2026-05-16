@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import type { EventClickArg } from '@fullcalendar/core'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { DateClickArg } from '@fullcalendar/interaction'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -34,6 +35,7 @@ import {
     type MockService,
 } from '../lib/mockData'
 import { useToast } from '../contexts/ToastContext'
+import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse } from '../lib/api'
 import { useConfirm } from '../contexts/ConfirmContext'
 import { EmptyState } from '../components/EmptyState'
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
@@ -61,25 +63,90 @@ type DoctorOnCallShift = {
 const PAGE_SIZE = 10
 
 export function AppointmentManagementPage() {
-    const [activeSubPage, setActiveSubPage] = useState<SubPage>('appointments')
+    const [activeSubPage, setActiveSubPage] = useState<SubPage>('doctor-schedule')
     const [isLoading, setIsLoading] = useState(true)
+    const queryClient = useQueryClient()
+    const { addToast } = useToast()
+
+    // --- Server-side data for Appointments ---
+    const { data: appointments = [], isLoading: appointmentsIsLoading } = useQuery<MockAppointment[], Error>({
+        queryKey: ['appointments'],
+        queryFn: async () => (await api.get<ApiListResponse<MockAppointment>>('/appointments')).data.data,
+    });
+
+    const { mutate: createAppointment } = useMutation<MockAppointment, Error, Omit<MockAppointment, 'id'>>({
+        mutationFn: async (newApt) => (await api.post<ApiItemResponse<MockAppointment>>('/appointments', newApt)).data.data,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['appointments'] });
+            addToast('success', 'Tạo lịch hẹn thành công');
+        },
+        onError: (err) => addToast('error', `Lỗi khi tạo lịch hẹn: ${err.message}`),
+    });
+
+    const { mutate: updateAppointment } = useMutation<MockAppointment, Error, { id: string; data: Partial<MockAppointment> }>({
+        mutationFn: async ({ id, data }) => (await api.put<ApiItemResponse<MockAppointment>>(`/appointments/${id}`, data)).data.data,
+        onSuccess: (updatedApt) => {
+            // Optimistically update the cache
+            queryClient.setQueryData<MockAppointment[]>(['appointments'], (oldData) => 
+                oldData ? oldData.map(apt => apt.id === updatedApt.id ? updatedApt : apt) : []
+            );
+            addToast('success', 'Cập nhật lịch hẹn thành công');
+        },
+        onError: (err) => addToast('error', `Lỗi khi cập nhật lịch hẹn: ${err.message}`),
+    });
 
     // Data states
+    // --- Server-side data for Doctor Shifts ---
+    const { data: doctorShifts = [], isLoading: shiftsIsLoading } = useQuery<DoctorOnCallShift[], Error>({
+        queryKey: ['doctorShifts'],
+        queryFn: async () => (await api.get<ApiListResponse<DoctorOnCallShift>>('/shifts')).data.data,
+    });
+
+    const { mutate: createShift } = useMutation<DoctorOnCallShift, Error, Omit<DoctorOnCallShift, 'id'>>({
+        mutationFn: async (newShift) => (await api.post<ApiItemResponse<DoctorOnCallShift>>('/shifts', newShift)).data.data,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['doctorShifts'] });
+            addToast('success', 'Đăng ký ca trực thành công');
+        },
+        onError: (err) => addToast('error', `Lỗi khi đăng ký ca trực: ${err.message}`),
+    });
+
+    const { mutate: updateShift } = useMutation<DoctorOnCallShift, Error, { id: string; data: Partial<Omit<DoctorOnCallShift, 'id'>> }>({
+        mutationFn: async ({ id, data }) => (await api.put<ApiItemResponse<DoctorOnCallShift>>(`/shifts/${id}`, data)).data.data,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['doctorShifts'] });
+            addToast('success', 'Cập nhật ca trực thành công');
+        },
+        onError: (err) => addToast('error', `Lỗi khi cập nhật ca trực: ${err.message}`),
+    });
+
+    const { mutate: deleteShift } = useMutation<ApiDeleteResponse, Error, string>({
+        mutationFn: async (id) => (await api.delete<ApiDeleteResponse>(`/shifts/${id}`)).data,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['doctorShifts'] });
+            addToast('success', 'Đã xóa ca trực');
+        },
+        onError: (err) => addToast('error', `Lỗi khi xóa ca trực: ${err.message}`),
+    });
+
+    // --- Server-side data for Doctors ---
+    const { data: doctors = [], isLoading: doctorsIsLoading } = useQuery<MockDoctor[], Error>({
+        queryKey: ['doctors'],
+        queryFn: async () => (await api.get<ApiListResponse<MockDoctor>>('/doctors')).data.data,
+    });
+
+
+    // --- Mock data for other modules (will be migrated later) ---
     const [patients, setPatients] = useState<MockPatient[]>([])
-    const [appointments, setAppointments] = useState<MockAppointment[]>([])
     const [workShifts, setWorkShifts] = useState<MockWorkShift[]>([])
     const [holidays, setHolidays] = useState<MockClinicHoliday[]>([])
-    const [doctors, setDoctors] = useState<MockDoctor[]>([])
     const [services, setServices] = useState<MockService[]>([])
-    const [doctorShifts, setDoctorShifts] = useState<DoctorOnCallShift[]>([])
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setPatients(generateMockPatients(30))
-            setAppointments(generateMockAppointments(50))
             setWorkShifts(generateMockWorkShifts())
             setHolidays(generateMockClinicHolidays())
-            setDoctors(generateMockDoctors(10))
             setServices(generateMockServices(10))
             setIsLoading(false)
         }, 500)
@@ -87,7 +154,7 @@ export function AppointmentManagementPage() {
     }, [])
 
     const renderContent = () => {
-        if (isLoading) {
+        if ((isLoading || doctorsIsLoading) && !['doctor-schedule', 'appointments'].includes(activeSubPage)) {
             return (
                 <div className="rounded-2xl border border-slate-200 bg-white p-6">
                     <TableLoadingSkeleton rows={PAGE_SIZE} />
@@ -99,7 +166,15 @@ export function AppointmentManagementPage() {
             case 'patients':
                 return <PatientManagementView data={patients} setData={setPatients} />
             case 'doctor-schedule':
-                return <DoctorScheduleView doctors={doctors} shifts={doctorShifts} setShifts={setDoctorShifts} holidays={holidays} />
+                return <DoctorScheduleView 
+                    doctors={doctors} 
+                    shifts={doctorShifts} 
+                    holidays={holidays} 
+                    isLoading={shiftsIsLoading}
+                    createShift={createShift}
+                    updateShift={updateShift}
+                    deleteShift={deleteShift}
+                />
             case 'work-shifts':
                 return <WorkShiftSettingsView data={workShifts} setData={setWorkShifts} />
             case 'holidays':
@@ -108,13 +183,15 @@ export function AppointmentManagementPage() {
             default:
                 return (
                     <AppointmentBookingView
+                        isLoading={appointmentsIsLoading}
                         appointments={appointments}
-                        setAppointments={setAppointments}
                         patients={patients}
                         doctors={doctors}
                         services={services}
                         holidays={holidays}
                         doctorShifts={doctorShifts}
+                        createAppointment={createAppointment}
+                        updateAppointment={updateAppointment}
                     />
                 )
         }
@@ -375,13 +452,19 @@ function PatientManagementView({ data, setData }: { data: MockPatient[]; setData
 function DoctorScheduleView({
     doctors,
     shifts,
-    setShifts,
     holidays,
+    isLoading,
+    createShift,
+    updateShift,
+    deleteShift,
 }: {
     doctors: MockDoctor[]
     shifts: DoctorOnCallShift[]
-    setShifts: React.Dispatch<React.SetStateAction<DoctorOnCallShift[]>>
     holidays: MockClinicHoliday[]
+    isLoading: boolean
+    createShift: (data: Omit<DoctorOnCallShift, 'id'>) => void
+    updateShift: (params: { id: string; data: Partial<Omit<DoctorOnCallShift, 'id'>> }) => void
+    deleteShift: (id: string) => void
 }) {
     const [searchTerm, setSearchTerm] = useState('')
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -509,32 +592,24 @@ function DoctorScheduleView({
         }
 
         if (editingId) {
-            setShifts((prev) =>
-                prev.map((shift) =>
-                    shift.id === editingId
-                        ? {
-                            ...shift,
-                            doctorId: doctor.id,
-                            doctorName: doctor.fullName,
-                            date: formState.date,
-                            startTime: formState.startTime,
-                            endTime: formState.endTime,
-                        }
-                        : shift
-                )
-            )
-            addToast('success', 'Cập nhật ca trực thành công')
+            updateShift({
+                id: editingId,
+                data: {
+                    doctorId: doctor.id,
+                    doctorName: doctor.fullName,
+                    date: formState.date,
+                    startTime: formState.startTime,
+                    endTime: formState.endTime,
+                }
+            })
         } else {
-            const newShift: DoctorOnCallShift = {
-                id: `shift-${Date.now()}`,
+            createShift({
                 doctorId: doctor.id,
                 doctorName: doctor.fullName,
                 date: formState.date,
                 startTime: formState.startTime,
                 endTime: formState.endTime,
-            }
-            setShifts((prev) => [newShift, ...prev])
-            addToast('success', 'Đăng ký ca trực thành công')
+            })
         }
         resetModal()
     }
@@ -548,8 +623,7 @@ function DoctorScheduleView({
         if (!confirmed) {
             return
         }
-        setShifts((prev) => prev.filter((s) => s.id !== shift.id))
-        addToast('success', 'Đã xóa ca trực')
+        deleteShift(shift.id)
     }
 
     return (
@@ -594,7 +668,9 @@ function DoctorScheduleView({
                 </button>
             </div>
 
-            {sortedShifts.length === 0 ? (
+            {isLoading ? (
+                <div className="rounded-2xl border border-slate-200 bg-white p-6"><TableLoadingSkeleton rows={10} /></div>
+            ) : sortedShifts.length === 0 ? (
                 <EmptyState title="Chưa có ca trực" />
             ) : (
                 <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -951,21 +1027,25 @@ function HolidaySettingsView({ data, setData }: { data: MockClinicHoliday[]; set
 
 // #region Appointment Booking View
 function AppointmentBookingView({
+    isLoading,
     appointments,
-    setAppointments,
     patients,
     doctors,
     services,
     holidays,
     doctorShifts,
+    createAppointment,
+    updateAppointment,
 }: {
+    isLoading: boolean
     appointments: MockAppointment[]
-    setAppointments: React.Dispatch<React.SetStateAction<MockAppointment[]>>
     patients: MockPatient[]
     doctors: MockDoctor[]
     services: MockService[]
     holidays: MockClinicHoliday[]
     doctorShifts: DoctorOnCallShift[]
+    createAppointment: (data: Omit<MockAppointment, 'id'>) => void
+    updateAppointment: (params: { id: string; data: Partial<MockAppointment> }) => void
 }) {
     const [doctorFilter, setDoctorFilter] = useState<string>('all')
     const [statusFilter, setStatusFilter] = useState<string>('all')
@@ -1188,19 +1268,16 @@ function AppointmentBookingView({
         }
 
         if (editingId) {
-            setAppointments(prev => prev.map(apt => apt.id === editingId ? {
-                ...apt,
+            updateAppointment({ id: editingId, data: {
                 ...formState,
                 patientName: patient.fullName,
                 doctorName: doctor.fullName,
                 serviceName: service.name,
                 startTime: startTime.toISOString(),
                 endTime: endTime.toISOString(),
-            } : apt))
-            addToast('success', 'Cập nhật lịch hẹn thành công')
+            }})
         } else {
-            const newApt: MockAppointment = {
-                id: `apt-${Date.now()}`,
+            createAppointment({
                 patientId: patient.id,
                 patientName: patient.fullName,
                 doctorId: doctor.id,
@@ -1211,9 +1288,7 @@ function AppointmentBookingView({
                 endTime: endTime.toISOString(),
                 notes: formState.notes,
                 status: 'Đã lên lịch',
-            }
-            setAppointments(prev => [newApt, ...prev])
-            addToast('success', 'Tạo lịch hẹn thành công')
+            })
         }
         resetModal()
     }
@@ -1225,8 +1300,7 @@ function AppointmentBookingView({
             isDangerous: status === 'Đã hủy',
         })
         if (confirmed) {
-            setAppointments(prev => prev.map(a => a.id === apt.id ? { ...a, status } : a))
-            addToast('success', `Đã ${status.toLowerCase()} lịch hẹn.`)
+            updateAppointment({ id: apt.id, data: { status } })
         }
     }
 
@@ -1297,7 +1371,9 @@ function AppointmentBookingView({
                 </div>
             ) : (
                 <>
-                    {paginatedAppointments.length === 0 ? (
+                    {isLoading ? (
+                        <div className="rounded-2xl border border-slate-200 bg-white p-6"><TableLoadingSkeleton rows={PAGE_SIZE} /></div>
+                    ) : paginatedAppointments.length === 0 ? (
                         <EmptyState title="Không có lịch hẹn" />
                     ) : (
                         <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">

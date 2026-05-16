@@ -6,6 +6,7 @@ import {
     ClipboardList,
     Users,
     Calendar,
+    Banknote,
 } from 'lucide-react'
 
 export type NavigationItem = {
@@ -63,6 +64,15 @@ export const navigationItems: NavigationItem[] = [
         description: 'Giá và lịch sử',
         testId: 'nav-services',
         allowedRoles: ['Admin', 'Reception'],
+    },
+    {
+        id: 'payroll',
+        label: 'Bảng lương',
+        path: '/payroll',
+        icon: Banknote,
+        description: 'Tính lương bác sĩ',
+        testId: 'nav-payroll',
+        allowedRoles: ['Admin'],
     },
     {
         id: 'permissions',
