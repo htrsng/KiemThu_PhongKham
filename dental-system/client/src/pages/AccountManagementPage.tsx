@@ -9,7 +9,7 @@ import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
 import { EmptyState } from '../components/EmptyState'
 import { formatDateTime, getRelativeTime } from '../lib/formatters'
 import { validateUsername, validateEmail, validatePassword, validateRequired } from '../lib/validators'
-import { generateMockAuditLogs, type MockAccount, type MockAuditLog } from '../lib/mockData'
+import { type MockAccount, type MockAuditLog } from '../lib/mockData'
 import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse } from '../lib/api'
 
 type FormState = {
@@ -65,7 +65,6 @@ export function AccountManagementPage() {
     const [formState, setFormState] = useState<FormState>(defaultFormState)
     const [formErrors, setFormErrors] = useState<FormErrors>({})
     const [activeTab, setActiveTab] = useState<'accounts' | 'audit'>('accounts')
-    const [auditLogs] = useState<MockAuditLog[]>(() => generateMockAuditLogs(20)) // Audit log vẫn dùng mock
     const [auditSearchRole, setAuditSearchRole] = useState('')
     const [auditActionFilter, setAuditActionFilter] = useState<string>('')
     const [auditPage, setAuditPage] = useState(1)
@@ -79,6 +78,12 @@ export function AccountManagementPage() {
     const { data: accounts = [], isLoading } = useQuery<MockAccount[], Error>({
         queryKey: ['accounts'],
         queryFn: async () => (await api.get<ApiListResponse<MockAccount>>('/accounts')).data.data,
+    });
+
+    // --- Data Fetching for Audit Logs ---
+    const { data: auditLogs = [], isLoading: auditLogsLoading } = useQuery<MockAuditLog[], Error>({
+        queryKey: ['audit-logs'],
+        queryFn: async () => (await api.get<ApiListResponse<MockAuditLog>>('/audit-logs')).data.data,
     });
 
     const { mutate: createAccount } = useMutation<MockAccount, Error, Omit<MockAccount, 'id' | 'lastLogin' | 'createdAt'>>({
@@ -537,7 +542,9 @@ export function AccountManagementPage() {
                     </div>
 
                     {/* Audit Table */}
-                    {auditLogsToDisplay.length === 0 ? (
+                    {auditLogsLoading ? (
+                        <div className="rounded-2xl border border-slate-200 bg-white p-6"><TableLoadingSkeleton rows={PAGE_SIZE} /></div>
+                    ) : auditLogsToDisplay.length === 0 ? (
                         <EmptyState
                             title="Không tìm thấy hoạt động"
                             description="Không có dữ liệu lịch sử phù hợp"

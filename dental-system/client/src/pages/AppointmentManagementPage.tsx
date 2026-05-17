@@ -20,19 +20,13 @@ import {
     List,
 } from 'lucide-react'
 import { PageShell } from '../components/PageShell'
-import {
-    generateMockPatients,
-    generateMockAppointments,
-    generateMockWorkShifts,
-    generateMockClinicHolidays,
-    type MockPatient,
-    type MockAppointment,
-    type MockWorkShift,
-    type MockClinicHoliday,
-    generateMockDoctors,
-    type MockDoctor,
-    generateMockServices,
-    type MockService,
+import type { 
+    MockPatient,
+    MockAppointment,
+    MockWorkShift,
+    MockClinicHoliday,
+    MockDoctor,
+    MockService,
 } from '../lib/mockData'
 import { useToast } from '../contexts/ToastContext'
 import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse } from '../lib/api'
@@ -66,7 +60,6 @@ const PAGE_SIZE = 10
 
 export function AppointmentManagementPage() {
     const [activeSubPage, setActiveSubPage] = useState<SubPage>('doctor-schedule')
-    const [isLoading, setIsLoading] = useState(true)
     const { currentUser } = useAuth() // Get current user
     const queryClient = useQueryClient()
     const { addToast } = useToast()
@@ -138,23 +131,71 @@ export function AppointmentManagementPage() {
         queryFn: async () => (await api.get<ApiListResponse<MockDoctor>>('/doctors')).data.data,
     });
 
+    // --- Server-side data for Patients ---
+    const { data: patients = [], isLoading: patientsIsLoading } = useQuery<MockPatient[], Error>({
+        queryKey: ['patients'],
+        queryFn: async () => (await api.get<ApiListResponse<MockPatient>>('/patients')).data.data,
+    });
 
-    // --- Mock data for other modules (will be migrated later) ---
-    const [patients, setPatients] = useState<MockPatient[]>([])
-    const [workShifts, setWorkShifts] = useState<MockWorkShift[]>([])
-    const [holidays, setHolidays] = useState<MockClinicHoliday[]>([])
-    const [services, setServices] = useState<MockService[]>([])
+    const { mutate: savePatient } = useMutation<MockPatient, Error, { id?: string; data: Partial<Omit<MockPatient, 'id' | 'createdAt'>> }>({
+        mutationFn: async ({ id, data }) => {
+            const url = id ? `/patients/${id}` : '/patients';
+            const method = id ? 'put' : 'post';
+            return (await api[method]<ApiItemResponse<MockPatient>>(url, data)).data.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['patients'] });
+            addToast('success', 'Lưu thông tin bệnh nhân thành công');
+        },
+        onError: (err) => addToast('error', `Lỗi: ${err.message}`),
+    });
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setPatients(generateMockPatients(30))
-            setWorkShifts(generateMockWorkShifts())
-            setHolidays(generateMockClinicHolidays())
-            setServices(generateMockServices(10))
-            setIsLoading(false)
-        }, 500)
-        return () => clearTimeout(timer)
-    }, [])
+    const { mutate: deletePatient } = useMutation<ApiDeleteResponse, Error, string>({
+        mutationFn: async (id) => (await api.delete(`/patients/${id}`)).data,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['patients'] });
+            addToast('success', 'Xóa bệnh nhân thành công');
+        },
+        onError: (err) => addToast('error', `Lỗi: ${err.message}`),
+    });
+
+    // --- Server-side data for Work Shifts ---
+    const { data: workShifts = [], isLoading: workShiftsIsLoading } = useQuery<MockWorkShift[], Error>({
+        queryKey: ['work-shifts'],
+        queryFn: async () => (await api.get<ApiListResponse<MockWorkShift>>('/work-shifts')).data.data,
+    });
+
+    const { mutate: saveWorkShift } = useMutation<MockWorkShift, Error, { id?: string; data: Omit<MockWorkShift, 'id'> }>({
+        mutationFn: async ({ id, data }) => (await api[id ? 'put' : 'post']<ApiItemResponse<MockWorkShift>>(id ? `/work-shifts/${id}` : '/work-shifts', data)).data.data,
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['work-shifts'] }),
+    });
+
+    const { mutate: deleteWorkShift } = useMutation<ApiDeleteResponse, Error, string>({
+        mutationFn: async (id) => (await api.delete(`/work-shifts/${id}`)).data,
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['work-shifts'] }),
+    });
+
+    // --- Server-side data for Holidays ---
+    const { data: holidays = [], isLoading: holidaysIsLoading } = useQuery<MockClinicHoliday[], Error>({
+        queryKey: ['holidays'],
+        queryFn: async () => (await api.get<ApiListResponse<MockClinicHoliday>>('/holidays')).data.data,
+    });
+
+    const { mutate: saveHoliday } = useMutation<MockClinicHoliday, Error, { id?: string; data: Omit<MockClinicHoliday, 'id'> }>({
+        mutationFn: async ({ id, data }) => (await api[id ? 'put' : 'post']<ApiItemResponse<MockClinicHoliday>>(id ? `/holidays/${id}` : '/holidays', data)).data.data,
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['holidays'] }),
+    });
+
+    const { mutate: deleteHoliday } = useMutation<ApiDeleteResponse, Error, string>({
+        mutationFn: async (id) => (await api.delete(`/holidays/${id}`)).data,
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['holidays'] }),
+    });
+
+    // --- Server-side data for Services ---
+    const { data: services = [], isLoading: servicesIsLoading } = useQuery<MockService[], Error>({
+        queryKey: ['services'],
+        queryFn: async () => (await api.get<ApiListResponse<MockService>>('/services')).data.data,
+    });
 
     // Filter menu items based on user role
     const filteredMenuItems = useMemo(() => {
@@ -166,24 +207,21 @@ export function AppointmentManagementPage() {
     }, [currentUser]);
 
     const renderContent = () => {
-        if ((isLoading || doctorsIsLoading) && !['doctor-schedule', 'appointments'].includes(activeSubPage)) {
-            return (
-                <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                    <TableLoadingSkeleton rows={PAGE_SIZE} />
-                </div>
-            )
-        }
-
         switch (activeSubPage) {
             case 'patients': // Only Admin/Reception should see this
                 if (currentUser?.role === 'Doctor') return <EmptyState title="Bạn không có quyền truy cập mục này." />
-                return <PatientManagementView data={patients} setData={setPatients} />
+                return <PatientManagementView 
+                    data={patients} 
+                    isLoading={patientsIsLoading} 
+                    savePatient={savePatient} 
+                    deletePatient={deletePatient} 
+                />
             case 'doctor-schedule':
                 return <DoctorScheduleView 
                     doctors={doctors} 
                     shifts={doctorShifts} 
                     holidays={holidays} 
-                    isLoading={shiftsIsLoading}
+                    isLoading={shiftsIsLoading || doctorsIsLoading || holidaysIsLoading}
                     createShift={createShift}
                     updateShift={updateShift}
                     deleteShift={deleteShift}
@@ -191,15 +229,25 @@ export function AppointmentManagementPage() {
                 />
             case 'work-shifts': // Only Admin/Reception should see this
                 if (currentUser?.role === 'Doctor') return <EmptyState title="Bạn không có quyền truy cập mục này." />
-                return <WorkShiftSettingsView data={workShifts} setData={setWorkShifts} />
+                return <WorkShiftSettingsView 
+                    data={workShifts} 
+                    isLoading={workShiftsIsLoading} 
+                    saveWorkShift={saveWorkShift} 
+                    deleteWorkShift={deleteWorkShift} 
+                />
             case 'holidays': // Only Admin/Reception should see this
                 if (currentUser?.role === 'Doctor') return <EmptyState title="Bạn không có quyền truy cập mục này." />
-                return <HolidaySettingsView data={holidays} setData={setHolidays} />
+                return <HolidaySettingsView 
+                    data={holidays} 
+                    isLoading={holidaysIsLoading} 
+                    saveHoliday={saveHoliday} 
+                    deleteHoliday={deleteHoliday} 
+                />
             case 'appointments':
             default:
                 return (
                     <AppointmentBookingView
-                        isLoading={appointmentsIsLoading}
+                        isLoading={appointmentsIsLoading || patientsIsLoading || doctorsIsLoading || servicesIsLoading || holidaysIsLoading || shiftsIsLoading}
                         appointments={appointments}
                         patients={patients}
                         doctors={doctors}
@@ -251,7 +299,14 @@ export function AppointmentManagementPage() {
 }
 
 // #region Patient Management View
-function PatientManagementView({ data, setData }: { data: MockPatient[]; setData: React.Dispatch<React.SetStateAction<MockPatient[]>> }) {
+function PatientManagementView({ 
+    data, 
+    isLoading,
+    savePatient,
+    deletePatient,
+}: { 
+    data: MockPatient[]; isLoading: boolean; savePatient: (params: { id?: string; data: Partial<Omit<MockPatient, 'id' | 'createdAt'>> }) => void; deletePatient: (id: string) => void 
+}) {
     type PatientFormState = {
         fullName: string
         phone: string
@@ -320,17 +375,12 @@ function PatientManagementView({ data, setData }: { data: MockPatient[]; setData
         if (!validate()) return
 
         if (editingId) {
-            setData(prev => prev.map(p => p.id === editingId ? { ...p, ...formState, dateOfBirth: new Date(formState.dateOfBirth).toISOString() } : p))
-            addToast('success', 'Cập nhật bệnh nhân thành công')
+            savePatient({ id: editingId, data: { ...formState, dateOfBirth: new Date(formState.dateOfBirth).toISOString() } });
         } else {
-            const newPatient: MockPatient = {
-                id: `pat-${Date.now()}`,
+            savePatient({ data: {
                 ...formState,
                 dateOfBirth: new Date(formState.dateOfBirth).toISOString(),
-                createdAt: new Date().toISOString()
-            }
-            setData(prev => [newPatient, ...prev])
-            addToast('success', 'Thêm bệnh nhân thành công')
+            }});
         }
         resetModal()
     }
@@ -338,8 +388,7 @@ function PatientManagementView({ data, setData }: { data: MockPatient[]; setData
     const handleDelete = async (patient: MockPatient) => {
         const confirmed = await confirm({ title: 'Xóa bệnh nhân', message: `Bạn có chắc muốn xóa bệnh nhân "${patient.fullName}"?`, isDangerous: true })
         if (confirmed) {
-            setData(prev => prev.filter(p => p.id !== patient.id))
-            addToast('success', 'Xóa bệnh nhân thành công')
+            deletePatient(patient.id);
         }
     }
 
@@ -360,7 +409,9 @@ function PatientManagementView({ data, setData }: { data: MockPatient[]; setData
                 </button>
             </div>
 
-            {paginatedData.length === 0 ? (
+            {isLoading ? (
+                <div className="rounded-2xl border border-slate-200 bg-white p-6"><TableLoadingSkeleton rows={PAGE_SIZE} /></div>
+            ) : paginatedData.length === 0 ? (
                 <EmptyState title="Không tìm thấy bệnh nhân" />
             ) : (
                 <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -863,24 +914,28 @@ type FieldConfig = {
     placeholder?: string
 }
 
-function SimpleCrudView<T extends CrudItem>({
+function SimpleCrudView<T extends CrudItem, U extends Omit<T, 'id'>>({
     title,
     data,
-    setData,
+    isLoading,
+    saveMutation,
+    deleteMutation,
     columns,
     fields,
     initialFormState,
 }: {
     title: string
     data: T[]
-    setData: React.Dispatch<React.SetStateAction<T[]>>
+    isLoading: boolean
+    saveMutation: (params: { id?: string; data: U }) => void
+    deleteMutation: (id: string) => void
     columns: { key: keyof T; label: string; render?: (item: T) => React.ReactNode }[]
     fields: FieldConfig[]
     initialFormState: Omit<T, 'id'>
 }) {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [editingId, setEditingId] = useState<string | null>(null)
-    const [formState, setFormState] = useState<Omit<T, 'id'>>(initialFormState)
+    const [formState, setFormState] = useState<U>(initialFormState as U)
 
     const { addToast } = useToast()
     const { confirm } = useConfirm()
@@ -909,18 +964,15 @@ function SimpleCrudView<T extends CrudItem>({
                 }
             }
         })
-        setFormState(stateToEdit as Omit<T, 'id'>)
+        setFormState(stateToEdit as U)
         setIsModalOpen(true)
     }
 
     const handleSave = () => {
         if (editingId) {
-            setData(prev => prev.map(item => item.id === editingId ? { ...item, ...formState } : item))
-            addToast('success', `Cập nhật ${title.toLowerCase()} thành công`)
+            saveMutation({ id: editingId, data: formState });
         } else {
-            const newItem = { id: `${title.toLowerCase()}-${Date.now()}`, ...formState } as T
-            setData(prev => [newItem, ...prev])
-            addToast('success', `Thêm ${title.toLowerCase()} thành công`)
+            saveMutation({ data: formState });
         }
         resetModal()
     }
@@ -928,8 +980,7 @@ function SimpleCrudView<T extends CrudItem>({
     const handleDelete = async (item: T) => {
         const confirmed = await confirm({ title: `Xóa ${title}`, message: `Bạn có chắc muốn xóa "${item.name || item.id}"?`, isDangerous: true })
         if (confirmed) {
-            setData(prev => prev.filter(d => d.id !== item.id))
-            addToast('success', `Xóa ${title.toLowerCase()} thành công`)
+            deleteMutation(item.id);
         }
     }
 
@@ -941,7 +992,9 @@ function SimpleCrudView<T extends CrudItem>({
                 </button>
             </div>
 
-            {data.length === 0 ? (
+            {isLoading ? (
+                <div className="rounded-2xl border border-slate-200 bg-white p-6"><TableLoadingSkeleton rows={5} /></div>
+            ) : data.length === 0 ? (
                 <EmptyState title={`Chưa có ${title.toLowerCase()}`} />
             ) : (
                 <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -1020,12 +1073,21 @@ function SimpleCrudView<T extends CrudItem>({
     )
 }
 
-function WorkShiftSettingsView({ data, setData }: { data: MockWorkShift[]; setData: React.Dispatch<React.SetStateAction<MockWorkShift[]>> }) {
+function WorkShiftSettingsView({ 
+    data, 
+    isLoading,
+    saveWorkShift,
+    deleteWorkShift,
+}: { 
+    data: MockWorkShift[]; isLoading: boolean; saveWorkShift: (params: { id?: string; data: Omit<MockWorkShift, 'id'> }) => void; deleteWorkShift: (id: string) => void 
+}) {
     return (
-        <SimpleCrudView<MockWorkShift>
+        <SimpleCrudView<MockWorkShift, Omit<MockWorkShift, 'id'>>
             title="Ca làm việc"
             data={data}
-            setData={setData}
+            isLoading={isLoading}
+            saveMutation={saveWorkShift}
+            deleteMutation={deleteWorkShift}
             columns={[
                 { key: 'name', label: 'Tên ca' },
                 { key: 'startTime', label: 'Giờ bắt đầu' },
@@ -1041,12 +1103,21 @@ function WorkShiftSettingsView({ data, setData }: { data: MockWorkShift[]; setDa
     )
 }
 
-function HolidaySettingsView({ data, setData }: { data: MockClinicHoliday[]; setData: React.Dispatch<React.SetStateAction<MockClinicHoliday[]>> }) {
+function HolidaySettingsView({ 
+    data, 
+    isLoading,
+    saveHoliday,
+    deleteHoliday,
+}: { 
+    data: MockClinicHoliday[]; isLoading: boolean; saveHoliday: (params: { id?: string; data: Omit<MockClinicHoliday, 'id'> }) => void; deleteHoliday: (id: string) => void 
+}) {
     return (
-        <SimpleCrudView<MockClinicHoliday>
+        <SimpleCrudView<MockClinicHoliday, Omit<MockClinicHoliday, 'id'>>
             title="Ngày nghỉ"
             data={data}
-            setData={setData}
+            isLoading={isLoading}
+            saveMutation={saveHoliday}
+            deleteMutation={deleteHoliday}
             columns={[
                 { key: 'name', label: 'Tên ngày nghỉ' },
                 { key: 'date', label: 'Ngày', render: (item) => formatDate(item.date) },
@@ -1226,7 +1297,7 @@ function AppointmentBookingView({
     const resetModal = () => {
         setIsModalOpen(false)
         setEditingId(null)
-        setFormState(initialFormState)
+        setFormState(initialFormState as U)
     }
 
     const openCreateModal = () => {

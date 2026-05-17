@@ -72,7 +72,7 @@ export const navigationItems: NavigationItem[] = [
         icon: Banknote,
         description: 'Tính lương bác sĩ',
         testId: 'nav-payroll',
-        allowedRoles: ['Admin'],
+        allowedRoles: ['Admin', 'Doctor'],
     },
     {
         id: 'permissions',

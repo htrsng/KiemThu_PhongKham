@@ -1,102 +1,112 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
-import { type MockAccount, generateMockAccounts } from '../lib/mockData'
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { api, type ApiItemResponse } from '../lib/api';
+import { type MockAccount } from '../lib/mockData';
 
-type AuthContextType = {
-    currentUser: MockAccount | null
-    isAuthenticated: boolean
-    login: (email: string, password: string) => Promise<{ success: boolean; account?: MockAccount | null, error?: 'not_found' | 'locked' | 'wrong_password' }>
-    register: (data: Partial<MockAccount>) => Promise<boolean>
-    logout: () => void
+interface LoginResponse {
+    token: string;
+    account: MockAccount;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+interface AuthResult {
+    success: boolean;
+    account?: MockAccount;
+    error?: string;
+}
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [currentUser, setCurrentUser] = useState<MockAccount | null>(null)
-    const [accounts, setAccounts] = useState<MockAccount[]>([])
+interface AuthContextType {
+    isAuthenticated: boolean;
+    currentUser: MockAccount | null;
+    isLoading: boolean;
+    login: (email: string, password: string) => Promise<AuthResult>;
+    logout: () => void;
+    register: (data: Partial<MockAccount>) => Promise<AuthResult>;
+}
 
-    // Khởi tạo mock data accounts khi app load
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+    const [currentUser, setCurrentUser] = useState<MockAccount | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
-        setAccounts(generateMockAccounts(15))
-    }, [])
+        const checkAuthStatus = async () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                setIsLoading(false);
+                return;
+            }
 
-    const login = async (email: string, password: string) => {
-        console.log('AuthContext: Attempting login for email:', email);
-        
-        // Simulate API delay
-        await new Promise((resolve) => setTimeout(resolve, 500))
-        
-        const account = accounts.find((acc) => acc.email === email)
-        if (!account) {
-            console.log('AuthContext: Login failed - account not found for email:', email);
-            return { success: false, error: 'not_found' };
-        }
-        if (account.password !== password) {
-            console.log('AuthContext: Login failed - wrong password for email:', email);
-            return { success: false, error: 'wrong_password' };
-        }
-        if (account.status !== 'Hoat dong') {
-            console.log('AuthContext: Login failed - account locked for email:', email);
-            return { success: false, error: 'locked' };
-        }
-        setCurrentUser(account)
-        console.log('AuthContext: Login successful for user:', account.fullName);
-        return { success: true, account: account };
-    }
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-    const register = async (data: Partial<MockAccount>) => {
-        await new Promise((resolve) => setTimeout(resolve, 500))
-        
-        const newAccount: MockAccount = {
-            id: `acc-${Date.now()}`,
-            username: data.email?.split('@')[0] || '',
-            fullName: data.fullName || '',
-            email: data.email || '',
-            role: data.role as 'Admin' | 'Doctor' | 'Reception',
-            status: 'Hoat dong',
-            lastLogin: new Date().toISOString(),
-            createdAt: new Date().toISOString(),
-            dateOfBirth: data.dateOfBirth,
-            hometown: data.hometown, 
-            address: data.address,
-            password: data.password || 'password123', // Lưu mật khẩu
-            // Nếu là bác sĩ, trong thực tế sẽ gọi API tạo thêm Doctor Profile
-            referenceId: data.role === 'Doctor' ? `doc-${Date.now()}` : undefined
+            try {
+                const response = await api.get<ApiItemResponse<MockAccount>>('/auth/me');
+                if (response.data?.data) {
+                    setCurrentUser(response.data.data);
+                } else {
+                    localStorage.removeItem('authToken');
+                }
+            } catch (error) {
+                console.error("Auth check failed:", error);
+                localStorage.removeItem('authToken');
+                delete api.defaults.headers.common['Authorization'];
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        checkAuthStatus();
+    }, []);
+
+    const login = async (email: string, password: string): Promise<AuthResult> => {
+        try {
+            const response = await api.post<LoginResponse>('/auth/login', { email, password });
+            const { token, account } = response.data;
+
+            localStorage.setItem('authToken', token);
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            setCurrentUser(account);
+
+            return { success: true, account };
+        } catch (error: any) {
+            return { success: false, error: error.response?.data?.error || 'unknown_error' };
         }
-        
-        setAccounts((prev) => [...prev, newAccount])
-        setCurrentUser(newAccount) // Tự động đăng nhập sau khi đăng ký
-        console.log('AuthContext: User registered and logged in:', newAccount.fullName);
-        return true
-    }
+    };
+
+    const register = async (data: Partial<MockAccount>): Promise<AuthResult> => {
+        try {
+            const response = await api.post<LoginResponse>('/auth/register', data);
+            const { token, account } = response.data;
+
+            localStorage.setItem('authToken', token);
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            setCurrentUser(account);
+
+            return { success: true, account };
+        } catch (error: any) {
+            return { success: false, error: error.response?.data?.error || 'unknown_error' };
+        }
+    };
 
     const logout = () => {
-        console.log('AuthContext: Calling logout...');
-        setCurrentUser(null)
-        console.log('AuthContext: currentUser set to null. User is now logged out.');
+        setCurrentUser(null);
+        localStorage.removeItem('authToken');
+        delete api.defaults.headers.common['Authorization'];
+        window.location.href = '/login';
+    };
+
+    const value = { isAuthenticated: !!currentUser, currentUser, isLoading, login, logout, register };
+
+    if (isLoading) {
+        return <div className="flex h-screen items-center justify-center">Đang tải ứng dụng...</div>;
     }
 
-    const isAuthenticated = !!currentUser; // Định nghĩa isAuthenticated ở đây
-    useEffect(() => {
-        console.log('AuthContext: currentUser changed:', currentUser);
-        console.log('AuthContext: isAuthenticated changed:', isAuthenticated);
-    }, [currentUser]); // Chỉ cần phụ thuộc vào currentUser
-
-    return (
-        <AuthContext.Provider value={{
-            currentUser,
-            isAuthenticated,
-            login,
-            register,
-            logout
-        }}>
-            {children}
-        </AuthContext.Provider>
-    )
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
-    const context = useContext(AuthContext)
-    if (!context) throw new Error('useAuth must be used within an AuthProvider')
-    return context
+    const context = useContext(AuthContext);
+    if (context === undefined) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
 }

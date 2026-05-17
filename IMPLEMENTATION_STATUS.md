@@ -147,44 +147,42 @@
 
 ---
 
+#### **Lệnh 2: Doctor Management**
+**File**: `src/pages/DoctorManagementPage.tsx` ✅
+
+**Features Implemented**:
+- 🎫 **Doctor Cards Layout**
+  - Avatar placeholder (initials with pastel specialty color)
+  - Display: Name, Specialty, Phone, Email, Experience years, Degree
+  - Status badge: "Đang làm việc" / "Tạm dừng"
+  - "Xem lịch" button opening weekly schedule modal
+
+- 🔍 **Filters & Search**
+  - Search by name, phone, or license number
+  - Specialty filter dropdown
+  - Status filter (active/inactive)
+  - Room filter dropdown
+  - Sort by (name, consultation fee, experience)
+  - "Xóa bộ lọc" button
+
+- ➕ **Add/Edit Modal** (via `DoctorFormModal.tsx`)
+  - All required fields for doctor profile
+  - Validation for required fields
+
+- 📅 **Schedule Modal**
+  - Weekly view (Monday-Sunday) with specific dates
+  - Time slots (start/end times) for each day
+  - Toggle shifts on/off for each day
+  - Save schedule functionality
+
+- 📊 **Pagination**: 3 doctors per page with navigation
+
+---
+
 ### 🔄 IN PROGRESS
 
 #### **Lệnh 2: Doctor Management**
 **File**: `src/pages/DoctorManagementPage.tsx` - **NOT YET CREATED**
-
-**Planned Features**:
-- 🎫 **Doctor Cards Layout**
-  - Avatar placeholder (user icon with pastel specialty color)
-  - Display: Name, Specialty, Phone, Email, Experience years, License number
-  - "Xem lịch" button opening weekly schedule modal
-
-- 🔍 **Filters & Search**
-  - Search by name or phone
-  - Specialty filter
-  - Status filter (active/inactive)
-  - Room filter
-  - Sort by (name, consultation fee, experience)
-
-- ➕ **Add/Edit Modal**
-  - License Number (BS-XXXXX validation)
-  - Full Name (required)
-  - Phone (0xxxxxxxxx validation)
-  - Email
-  - Specialty dropdown (5 options)
-  - Degree dropdown (5 options)
-  - Experience (0-50 years)
-  - Room dropdown (101-305)
-  - Consultation Fee (VND)
-  - Schedule: T2-CN checkboxes with time pickers
-
-- 📅 **Schedule Modal**
-  - Weekly view (Monday-Sunday)
-  - Time slots (start/end times)
-  - Toggle shifts on/off
-
-- 📊 **Pagination**: 3 doctors per page × 3 pages (9 mock doctors)
-
----
 
 #### **Lệnh 5: Settings**
 **File**: `src/pages/GeneralSettingsPage.tsx` - **NOT YET CREATED**
@@ -298,21 +296,14 @@ dental-system/
 
 ## 🚀 Next Steps (Priority Order)
 
-### 1️⃣ **IMMEDIATE** - Doctor Management (Lệnh 2)
-- Create `DoctorManagementPage.tsx` with card-based layout
-- Implement doctor cards with avatar + pastel colors
-- Add schedule modal with time pickers
-- Advanced filters (specialty, room, status, sort)
-- Expected: ~400 lines | Completion: High priority
-
-### 2️⃣ **HIGH** - Settings Pages (Lệnh 5)
+### 1️⃣ **IMMEDIATE** - Settings Pages (Lệnh 5)
 - Create `GeneralSettingsPage.tsx` with 2 tabs
 - Business Hours: 7 rows × 5 columns (day + open/close/break times + toggle)
 - Clinic Info: Logo upload, tax ID, license, website, description, room count
 - Form validation for all fields
 - Expected: ~350 lines
 
-### 3️⃣ **HIGH** - Dashboard Enhancement (Lệnh 6)
+### 2️⃣ **HIGH** - Dashboard Enhancement (Lệnh 6)
 - Enhance `DashboardPage.tsx` with charts and analytics
 - Add 7 stat cards (revenue, new patients, cancel rate)
 - Line/Bar/Pie charts using recharts
@@ -320,7 +311,7 @@ dental-system/
 - On-duty doctors cards
 - Expected: ~500 lines
 
-### 4️⃣ **FINAL** - Backend Integration
+### 3️⃣ **FINAL** - Backend Integration
 - Implement actual API calls in `lib/api.ts`
 - Remove mock data dependencies
 - Connect to server at localhost:5000/api

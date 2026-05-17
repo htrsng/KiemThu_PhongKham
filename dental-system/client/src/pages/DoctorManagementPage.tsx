@@ -5,9 +5,9 @@ import { PageShell } from '../components/PageShell'
 import { useToast } from '../contexts/ToastContext'
 import { useConfirm } from '../contexts/ConfirmContext'
 import { useAuth } from '../contexts/AuthContext' // Import useAuth
-import { formatPhone, getSpecialtyColor, getInitials } from '../lib/formatters'
+import { formatPhone, getSpecialtyColor, getInitials, formatDate } from '../lib/formatters'
 import { EmptyState } from '../components/EmptyState'
-import { DoctorFormModal } from '../components/DoctorFormModal'
+import { DoctorFormModal, type DoctorFormData } from '../components/DoctorFormModal'
 import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse } from '../lib/api'
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
 import type { Doctor, DoctorPayload } from '../contexts/DataContext'
@@ -54,8 +54,6 @@ export function DoctorManagementPage() {
         queryKey: ['doctors'],
         queryFn: async () => {
             const response = await api.get<ApiListResponse<Doctor>>('/doctors');
-            // Giả lập độ trễ của server
-            await new Promise(resolve => setTimeout(resolve, 500));
             return response.data.data;
         },
     });
@@ -220,7 +218,7 @@ export function DoctorManagementPage() {
     function openScheduleModal(doctor: Doctor) {
         setScheduleWeekStart(formatDateInput(getMonday(new Date())))
         setScheduleModal({ isOpen: true, doctor })
-        setScheduleForm({ ...doctor.schedule }) // Copy schedule to edit
+        setScheduleForm({ ...(doctor.schedule || {}) }) // Copy schedule to edit, with fallback for new doctors
     }
 
     function handleSaveSchedule() {
@@ -556,13 +554,12 @@ export function DoctorManagementPage() {
                                                     type="time"
                                                     value={scheduleForm[day]?.startTime || '08:00'}
                                                     onChange={(e) =>
-                                                        setScheduleForm((prev) => prev && ({
-                                                            ...prev,
-                                                            [day]: {
-                                                                ...prev[day],
-                                                                startTime: e.target.value,
-                                                            },
-                                                        }))
+                                                        setScheduleForm((prev) =>
+                                                            prev && {
+                                                                ...prev,
+                                                                [day]: { ...(prev[day] || { enabled: true, endTime: '17:00' }), startTime: e.target.value },
+                                                            }
+                                                        )
                                                     }
                                                     className="rounded border border-slate-200 px-2 py-1 text-sm"
                                                 />
@@ -573,13 +570,12 @@ export function DoctorManagementPage() {
                                                     type="time"
                                                     value={scheduleForm[day]?.endTime || '17:00'}
                                                     onChange={(e) =>
-                                                        setScheduleForm((prev) => prev && ({
-                                                            ...prev,
-                                                            [day]: {
-                                                                ...prev[day],
-                                                                endTime: e.target.value,
-                                                            },
-                                                        }))
+                                                        setScheduleForm((prev) =>
+                                                            prev && {
+                                                                ...prev,
+                                                                [day]: { ...(prev[day] || { enabled: true, startTime: '08:00' }), endTime: e.target.value },
+                                                            }
+                                                        )
                                                     }
                                                     className="rounded border border-slate-200 px-2 py-1 text-sm"
                                                 />

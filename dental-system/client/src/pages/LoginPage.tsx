@@ -56,9 +56,13 @@ export function LoginPage() {
                     }
                 }
             } else {
-                const success = await register({ email, fullName, role, dateOfBirth, hometown, address, password }) // Truyền password
-                if (success) {
+                const result = await register({ email, fullName, role, dateOfBirth, hometown, address, password })
+                if (result.success) {
+                    // Đăng ký thành công sẽ tự động đăng nhập và chuyển hướng
                     navigate('/')
+                } else {
+                    // Xử lý lỗi đăng ký
+                    setError(result.error === 'email_exists' ? 'Email này đã được sử dụng.' : 'Đã có lỗi xảy ra khi đăng ký.');
                 }
             }
         } catch (err) {

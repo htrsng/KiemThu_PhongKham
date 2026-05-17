@@ -34,139 +34,189 @@ const mongoClient = new MongoClient(MONGODB_URI, {
   serverSelectionTimeoutMS: 10000,
 });
 
-const collections = new Map();
+const collections = new Map();const toISO = (date) => date.toISOString();
+const now = new Date();
+const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+// --- SEED DATA GENERATION ---
+
+// 1. Doctors
+const seedDoctors = [
+  { _id: new ObjectId("6650a4e6e4a3b18f8a5a4b10"), doctorCode: 'DOC-001', fullName: 'Dr. Nguyễn Quang Huy', specialty: 'Implant', degree: 'Thạc sĩ RHM', experienceYears: 12, room: 'Phòng 201', status: 'active', consultationFee: 300000, hourlyRate: 150000, serviceCommissionRate: 15, schedule: {
+    T2: { enabled: true, startTime: '08:00', endTime: '17:00' }, T3: { enabled: true, startTime: '08:00', endTime: '17:00' }, T4: { enabled: true, startTime: '08:00', endTime: '17:00' },
+    T5: { enabled: true, startTime: '08:00', endTime: '17:00' }, T6: { enabled: true, startTime: '08:00', endTime: '17:00' }, T7: { enabled: false, startTime: '09:00', endTime: '16:00' },
+    CN: { enabled: false, startTime: '09:00', endTime: '12:00' },
+  }},
+  { _id: new ObjectId("6650a4e6e4a3b18f8a5a4b11"), doctorCode: 'DOC-002', fullName: 'Dr. Trần Minh Anh', specialty: 'Niềng răng', degree: 'Bác sĩ CKI', experienceYears: 8, room: 'Phòng 202', status: 'active', consultationFee: 250000, hourlyRate: 120000, serviceCommissionRate: 12, schedule: {
+    T2: { enabled: true, startTime: '08:00', endTime: '12:00' }, T3: { enabled: false, startTime: '08:00', endTime: '17:00' }, T4: { enabled: true, startTime: '13:00', endTime: '17:00' },
+    T5: { enabled: true, startTime: '08:00', endTime: '17:00' }, T6: { enabled: false, startTime: '08:00', endTime: '17:00' }, T7: { enabled: true, startTime: '09:00', endTime: '16:00' },
+    CN: { enabled: false, startTime: '09:00', endTime: '12:00' },
+  }},
+  { _id: new ObjectId("6650a4e6e4a3b18f8a5a4b12"), doctorCode: 'DOC-003', fullName: 'Dr. Lê Thị Hồng', specialty: 'Nha khoa tổng quát', degree: 'Bác sĩ', experienceYears: 5, room: 'Phòng 101', status: 'active', consultationFee: 200000, hourlyRate: 100000, serviceCommissionRate: 10, schedule: {
+    T2: { enabled: true, startTime: '08:00', endTime: '17:00' }, T3: { enabled: true, startTime: '08:00', endTime: '17:00' }, T4: { enabled: false, startTime: '08:00', endTime: '17:00' },
+    T5: { enabled: true, startTime: '08:00', endTime: '17:00' }, T6: { enabled: true, startTime: '08:00', endTime: '17:00' }, T7: { enabled: true, startTime: '09:00', endTime: '12:00' },
+    CN: { enabled: false, startTime: '09:00', endTime: '12:00' },
+  }},
+  { _id: new ObjectId("6650a4e6e4a3b18f8a5a4b13"), doctorCode: 'DOC-004', fullName: 'Dr. Phạm Văn Tuấn', specialty: 'Nhổ răng', degree: 'Bác sĩ', experienceYears: 10, room: 'Phòng 301', status: 'inactive', consultationFee: 200000, hourlyRate: 100000, serviceCommissionRate: 10, schedule: {
+    T2: { enabled: false, startTime: '08:00', endTime: '17:00' }, T3: { enabled: false, startTime: '08:00', endTime: '17:00' }, T4: { enabled: false, startTime: '08:00', endTime: '17:00' },
+    T5: { enabled: false, startTime: '08:00', endTime: '17:00' }, T6: { enabled: false, startTime: '08:00', endTime: '17:00' }, T7: { enabled: false, startTime: '09:00', endTime: '16:00' },
+    CN: { enabled: false, startTime: '09:00', endTime: '12:00' },
+  }},
+];
+
+// 2. Accounts (Admin, Doctors, Receptionists)
+const seedAccounts = [
+  { accountCode: 'ACC-001', fullName: 'System Admin', username: 'admin', email: 'admin@gmail.com', password: 'adminpassword', role: 'Admin', status: 'active', lastLoginAt: toISO(new Date()) },
+  { accountCode: 'ACC-002', fullName: 'Dr. Nguyễn Quang Huy', username: 'huy.nguyen', email: 'huy.nguyen@smilecare.vn', password: 'password123', role: 'Doctor', status: 'active', referenceId: "6650a4e6e4a3b18f8a5a4b10", lastLoginAt: toISO(new Date(today.getTime() - 1 * 24 * 3600 * 1000)) },
+  { accountCode: 'ACC-003', fullName: 'Dr. Trần Minh Anh', username: 'anh.tran', email: 'anh.tran@smilecare.vn', password: 'password123', role: 'Doctor', status: 'active', referenceId: "6650a4e6e4a3b18f8a5a4b11", lastLoginAt: toISO(new Date(today.getTime() - 2 * 24 * 3600 * 1000)) },
+  { accountCode: 'ACC-004', fullName: 'Dr. Lê Thị Hồng', username: 'hong.le', email: 'hong.le@smilecare.vn', password: 'password123', role: 'Doctor', status: 'active', referenceId: "6650a4e6e4a3b18f8a5a4b12", lastLoginAt: toISO(new Date(today.getTime() - 3 * 24 * 3600 * 1000)) },
+  { accountCode: 'ACC-005', fullName: 'Lê Thị Mai', username: 'mai.le', email: 'mai.le@smilecare.vn', password: 'password123', role: 'Reception', status: 'active', lastLoginAt: toISO(new Date(today.getTime() - 1 * 3600 * 1000)) },
+  { accountCode: 'ACC-006', fullName: 'Trần Văn Hùng', username: 'hung.tran', email: 'hung.tran@smilecare.vn', password: 'password123', role: 'Reception', status: 'Bi khoa' },
+];
+
+// 3. Services
+const seedServices = [
+  { _id: new ObjectId("6650a5bde4a3b18f8a5a4b20"), serviceCode: 'SV-001', name: 'Khám tổng quát', category: 'Khám', basePrice: 200000, duration: 20, status: 'active' },
+  { _id: new ObjectId("6650a5bde4a3b18f8a5a4b21"), serviceCode: 'SV-002', name: 'Cắm Implant Hàn Quốc', category: 'Phẫu thuật', basePrice: 15000000, duration: 90, status: 'active' },
+  { _id: new ObjectId("6650a5bde4a3b18f8a5a4b22"), serviceCode: 'SV-003', name: 'Niềng răng mắc cài kim loại', category: 'Chỉnh nha', basePrice: 30000000, duration: 60, status: 'active' },
+  { _id: new ObjectId("6650a5bde4a3b18f8a5a4b23"), serviceCode: 'SV-004', name: 'Tẩy trắng răng', category: 'Thẩm mỹ', basePrice: 2500000, duration: 60, status: 'active' },
+  { _id: new ObjectId("6650a5bde4a3b18f8a5a4b24"), serviceCode: 'SV-005', name: 'Nhổ răng khôn', category: 'Phẫu thuật', basePrice: 1500000, duration: 45, status: 'active' },
+  { _id: new ObjectId("6650a5bde4a3b18f8a5a4b25"), serviceCode: 'SV-006', name: 'Lấy cao răng', category: 'Vệ sinh', basePrice: 300000, duration: 30, status: 'inactive' },
+];
+
+// 4. Shifts (for active doctors)
+const seedShifts = [];
+const activeDoctors = seedDoctors.filter(d => d.status === 'active');
+const daysInCurrentMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+for (let day = 1; day <= daysInCurrentMonth; day++) {
+    activeDoctors.forEach((doctor, index) => {
+        if ((day + index) % 3 !== 0) { // Not every doctor works every day
+            const date = new Date(now.getFullYear(), now.getMonth(), day);
+            seedShifts.push({ doctorId: doctor._id.toString(), doctorName: doctor.fullName, date: date.toISOString().slice(0, 10), startTime: '08:00', endTime: '17:00' });
+        }
+    });
+}
+
+// 5. Appointments
+const seedAppointments = [];
+const appointmentStatuses = ['Đã hoàn thành', 'Đã lên lịch', 'Đã hủy'];
+const patientNames = ['Nguyễn Văn An', 'Trần Thị Bình', 'Lê Minh Cường', 'Phạm Thuỳ Dung', 'Hoàng Văn Em'];
+for (let i = 0; i < 50; i++) {
+    const doctor = activeDoctors[i % activeDoctors.length];
+    const service = seedServices.filter(s => s.status === 'active')[i % seedServices.filter(s => s.status === 'active').length];
+    const status = appointmentStatuses[i % appointmentStatuses.length];
+    const dayOffset = i - 25; // Appointments from last month to next month
+    const startTime = new Date(today.getTime() + dayOffset * 24 * 3600 * 1000);
+    startTime.setHours(9 + (i % 8), (i % 2) * 30, 0, 0); // 9:00 - 16:30
+    const endTime = new Date(startTime.getTime() + service.duration * 60000);
+
+    seedAppointments.push({
+        patientId: `PAT-0${i % 5 + 1}`,
+        patientName: patientNames[i % patientNames.length],
+        doctorId: doctor._id.toString(),
+        doctorName: doctor.fullName,
+        serviceId: service._id.toString(),
+        serviceName: service.name,
+        startTime: toISO(startTime),
+        endTime: toISO(endTime),
+        status: status,
+        notes: status === 'Đã hủy' ? 'Bệnh nhân báo bận' : (i % 4 === 0 ? 'Bệnh nhân có tiền sử dị ứng' : ''),
+    });
+}
+
+// 6. Patients
+const seedPatients = [];
+const patientLastNames = ['Lê', 'Phan', 'Đỗ', 'Bùi', 'Đinh', 'Hồ'];
+const patientFirstNames = ['Quỳnh Anh', 'Gia Bảo', 'Minh Khang', 'Tuệ Nhi', 'Đức Huy', 'Phương Mai'];
+const genders = ['Nam', 'Nữ', 'Khác'];
+const cities = ['Hà Nội', 'Đà Nẵng', 'TP.HCM', 'Cần Thơ', 'Hải Phòng'];
+
+for (let i = 0; i < 30; i++) {
+    const fullName = `${patientLastNames[i % patientLastNames.length]} ${patientFirstNames[i % patientFirstNames.length]}`;
+    const birthYear = new Date().getFullYear() - (Math.floor(Math.random() * 60) + 5);
+    const createdAt = new Date(today.getTime() - Math.floor(Math.random() * 365) * 24 * 3600 * 1000);
+
+    seedPatients.push({
+        fullName,
+        phone: `09${String(Math.floor(Math.random() * 100000000)).padStart(8, '0')}`,
+        dateOfBirth: new Date(birthYear, i % 12, (i % 28) + 1).toISOString(),
+        gender: genders[i % genders.length],
+        address: `${i + 1} Đường ABC, ${cities[i % cities.length]}`,
+        createdAt: createdAt.toISOString(),
+    });
+}
+
+// 7. Work Shifts
+const seedWorkShifts = [
+  { name: 'Ca sáng', startTime: '08:00', endTime: '12:00' },
+  { name: 'Ca chiều', startTime: '13:00', endTime: '17:00' },
+  { name: 'Ca tối', startTime: '17:00', endTime: '20:00' },
+  { name: 'Cả ngày', startTime: '08:00', endTime: '17:00' },
+];
+
+// 8. Holidays
+const seedHolidays = [
+    { name: 'Tết Dương Lịch', date: `${now.getFullYear()}-01-01`, isRecurring: true },
+    { name: 'Giỗ Tổ Hùng Vương', date: `${now.getFullYear()}-04-18`, isRecurring: false }, // Example date, changes yearly
+    { name: 'Ngày Thống nhất', date: `${now.getFullYear()}-04-30`, isRecurring: true },
+    { name: 'Quốc tế Lao động', date: `${now.getFullYear()}-05-01`, isRecurring: true },
+    { name: 'Quốc Khánh', date: `${now.getFullYear()}-09-02`, isRecurring: true },
+];
+
+// 9. Audit Logs
+const seedAuditLogs = [];
+const auditActions = ['Đăng nhập', 'Tạo tài khoản', 'Sửa tài khoản', 'Khóa tài khoản'];
+const auditResults = ['Thành công', 'Thất bại'];
+for (let i = 0; i < 20; i++) {
+    const account = seedAccounts[i % seedAccounts.length];
+    seedAuditLogs.push({
+        timestamp: new Date(today.getTime() - i * 3 * 3600 * 1000).toISOString(),
+        account: account.fullName,
+        action: auditActions[i % auditActions.length],
+        ipAddress: `192.168.1.${i + 10}`,
+        result: auditResults[i % auditResults.length],
+    });
+}
 
 const resourceConfigs = [
-  {
-    path: '/api/accounts',
-    collectionName: 'accounts',
-    seed: [
-      {
-        accountCode: 'ACC-001',
-        fullName: 'Nguyen Thi An',
-        username: 'an.nguyen',
-        roleCode: 'ROLE_ADMIN',
-        department: 'Ban dieu hanh',
-        phone: '0903123456',
-        email: 'an.nguyen@smilecare.vn',
-        status: 'active',
-        permissions: ['dashboard.view', 'accounts.manage', 'settings.manage'],
-        lastLoginAt: '2026-04-24T08:10:00.000Z'
-      }
-    ]
-  },
+  { path: '/api/accounts', collectionName: 'accounts', seed: seedAccounts },
+  { path: '/api/doctors', collectionName: 'doctors', seed: seedDoctors },
+  { path: '/api/services', collectionName: 'services', seed: seedServices },
+  { path: '/api/shifts', collectionName: 'shifts', seed: seedShifts },
+  { path: '/api/appointments', collectionName: 'appointments', seed: seedAppointments },
+  { path: '/api/patients', collectionName: 'patients', seed: seedPatients },
+  { path: '/api/work-shifts', collectionName: 'work_shifts', seed: seedWorkShifts },
+  { path: '/api/holidays', collectionName: 'holidays', seed: seedHolidays },
+  { path: '/api/audit-logs', collectionName: 'audit_logs', seed: seedAuditLogs },
   {
     path: '/api/roles',
     collectionName: 'roles',
     seed: [
-      {
-        roleCode: 'ROLE_ADMIN',
-        roleName: 'Quan tri he thong',
-        description: 'Toan quyen quan ly du lieu va cau hinh',
-        scope: 'global',
-        status: 'active'
-      },
-      {
-        roleCode: 'ROLE_DOCTOR',
-        roleName: 'Bac si',
-        description: 'Quan ly kham, dieu tri va phac do lam sang',
-        scope: 'clinical',
-        status: 'active'
-      }
+      { roleCode: 'ROLE_ADMIN', roleName: 'Quan tri he thong', description: 'Toan quyen quan ly du lieu va cau hinh', scope: 'global', status: 'active' },
+      { roleCode: 'ROLE_DOCTOR', roleName: 'Bac si', description: 'Quan ly kham, dieu tri va phac do lam sang', scope: 'clinical', status: 'active' },
+      { roleCode: 'ROLE_RECEPTION', roleName: 'Le tan', description: 'Quan ly lich hen, tiep don benh nhan', scope: 'front-desk', status: 'active' }
     ]
   },
   {
     path: '/api/permissions',
     collectionName: 'permissions',
     seed: [
-      {
-        moduleCode: 'dashboard',
-        moduleName: 'Bang dieu khien',
-        actions: ['view'],
-        description: 'Tong hop KPI, lich lam viec va canh bao he thong',
-        status: 'active'
-      }
-    ]
-  },
-  {
-    path: '/api/doctors',
-    collectionName: 'doctors',
-    seed: [
-      {
-        doctorCode: 'DOC-001',
-        fullName: 'Dr. Nguyen Quang Huy',
-        specialty: 'Implant',
-        degree: 'Thac si RHM',
-        experienceYears: 12,
-        room: 'Phong 201',
-        status: 'active',
-        consultationFee: 250000,
-      }
-    ]
-  },
-  {
-    path: '/api/shifts',
-    collectionName: 'shifts',
-    seed: [
-      {
-        doctorId: 'doc-001',
-        doctorName: 'Nguyễn Văn A',
-        date: new Date().toISOString().slice(0, 10),
-        startTime: '08:00',
-        endTime: '17:00',
-      }
-    ]
-  },
-  {
-    path: '/api/appointments',
-    collectionName: 'appointments',
-    seed: [
-      {
-        patientId: "pat-seed-1",
-        patientName: "Trần Thị B",
-        doctorId: "placeholder-doctor-id", // LƯU Ý: ID này chỉ là giữ chỗ.
-        doctorName: "Dr. Nguyen Quang Huy",
-        serviceId: "SV-001",
-        serviceName: "Kham tong quat",
-        startTime: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
-        endTime: new Date(new Date(new Date().setDate(new Date().getDate() + 1)).getTime() + 30 * 60000).toISOString(),
-        status: 'Đã lên lịch',
-      }
+      { moduleCode: 'dashboard', moduleName: 'Bang dieu khien', actions: ['view'], description: 'Tong hop KPI, lich lam viec va canh bao he thong', status: 'active' },
+      { moduleCode: 'accounts', moduleName: 'Quan ly tai khoan', actions: ['view', 'create', 'edit', 'delete'], description: 'Quan ly tai khoan nguoi dung he thong', status: 'active' }
     ]
   },
   {
     path: '/api/service-categories',
     collectionName: 'service_categories',
     seed: [
-      {
-        categoryCode: 'GENERAL',
-        name: 'Nha khoa tong quat',
-        description: 'Kham, ve sinh rang mieng va dieu tri co ban',
-        status: 'active',
-        priority: 1
-      }
+      { categoryCode: 'EXAM', name: 'Khám & Tư vấn', status: 'active', priority: 1 },
+      { categoryCode: 'TREATMENT', name: 'Điều trị', status: 'active', priority: 2 },
+      { categoryCode: 'SURGERY', name: 'Phẫu thuật', status: 'active', priority: 3 },
+      { categoryCode: 'COSMETIC', name: 'Thẩm mỹ', status: 'active', priority: 4 },
+      { categoryCode: 'HYGIENE', name: 'Vệ sinh', status: 'active', priority: 5 },
     ]
   },
-  {
-    path: '/api/services',
-    collectionName: 'services',
-    seed: [
-      {
-        serviceCode: 'SV-001',
-        categoryCode: 'GENERAL',
-        name: 'Kham tong quat',
-        standardPrice: 120000,
-        durationMinutes: 20,
-        taxRate: 0,
-        status: 'active'
-      }
-    ]
-  },
-  {
-    path: '/api/pricing-policies',
-    collectionName: 'pricing_policies',
-    seed: []
-  },
+  { path: '/api/pricing-policies', collectionName: 'pricing_policies', seed: [] },
   {
     path: '/api/settings',
     collectionName: 'settings',
@@ -175,12 +225,17 @@ const resourceConfigs = [
         settingCode: 'clinic.profile',
         group: 'clinic',
         name: 'Ho so phong kham',
+        value: { clinicName: 'SmileCare Dental Clinic', hotline: '19001234', address: '123 Nguyen Trai, Quan 1, TP.HCM', email: 'contact@smilecare.vn', currency: 'VND' },
+        status: 'active'
+      },
+      {
+        settingCode: 'clinic.hours',
+        group: 'clinic',
+        name: 'Gio lam viec',
         value: {
-          clinicName: 'SmileCare Dental Clinic',
-          hotline: '19001234',
-          address: '123 Nguyen Trai, Quan 1, TP.HCM',
-          email: 'contact@smilecare.vn',
-          currency: 'VND'
+          weekdays: '08:00-20:00',
+          saturday: '08:00-17:00',
+          sunday: '08:00-12:00',
         },
         status: 'active'
       }
@@ -365,6 +420,116 @@ function registerResourceRoutes(resourceConfig) {
   });
 }
 
+function registerAuthRoutes() {
+  const accounts = getCollection('accounts');
+  const doctors = getCollection('doctors');
+
+  // Login
+  app.post('/api/auth/login', async (req, res, next) => {
+    try {
+      const { email, password } = req.body;
+      if (!email || !password) {
+        return res.status(400).json({ error: 'Email and password are required.' });
+      }
+
+      const account = await accounts.findOne({ email: email.toLowerCase() });
+
+      if (!account) {
+        return res.status(404).json({ error: 'not_found', message: 'Account not found.' });
+      }
+      // LƯU Ý: Trong ứng dụng thực tế, mật khẩu phải được hash và so sánh bằng bcrypt
+      if (account.password !== password) {
+        return res.status(401).json({ error: 'wrong_password', message: 'Invalid credentials.' });
+      }
+      if (account.status !== 'active') {
+        return res.status(403).json({ error: 'locked', message: 'Account is locked.' });
+      }
+
+      const publicAccount = toPublicDocument(account);
+      delete publicAccount.password;
+
+      // LƯU Ý: Đây là token giả lập, chỉ dùng cho mục đích demo.
+      // Trong ứng dụng thực tế, hãy sử dụng thư viện như 'jsonwebtoken'.
+      const token = publicAccount.id;
+
+      res.json({ token, account: publicAccount });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Register
+  app.post('/api/auth/register', async (req, res, next) => {
+    try {
+        const { email, password, fullName, role } = req.body;
+        if (!email || !password || !fullName || !role) {
+            return res.status(400).json({ error: 'Missing required fields for registration.' });
+        }
+
+        const existingAccount = await accounts.findOne({ email: email.toLowerCase() });
+        if (existingAccount) {
+            return res.status(409).json({ error: 'email_exists', message: 'An account with this email already exists.' });
+        }
+
+        let newDoctorId = null;
+        if (role === 'Doctor') {
+            const doctorCount = await doctors.countDocuments();
+            const newDoctor = {
+                fullName,
+                email,
+                doctorCode: `DOC-${String(doctorCount + 1).padStart(3, '0')}`,
+                licenseNumber: 'BS-00000', // Giá trị mặc định
+                phone: 'Chưa cập nhật', // Giá trị mặc định
+                specialty: 'Nha khoa tổng quát',
+                degree: 'Bác sĩ',
+                experience: 0,
+                room: 'Chưa xếp',
+                consultationFee: 0,
+                status: 'inactive', // Bác sĩ mới cần được admin kích hoạt
+                schedule: { T2: { enabled: false, startTime: '08:00', endTime: '17:00' }, T3: { enabled: false, startTime: '08:00', endTime: '17:00' }, T4: { enabled: false, startTime: '08:00', endTime: '17:00' }, T5: { enabled: false, startTime: '08:00', endTime: '17:00' }, T6: { enabled: false, startTime: '08:00', endTime: '17:00' }, T7: { enabled: false, startTime: '09:00', endTime: '16:00' }, CN: { enabled: false, startTime: '09:00', endTime: '12:00' } },
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            };
+            const doctorResult = await doctors.insertOne(newDoctor);
+            newDoctorId = doctorResult.insertedId;
+        }
+
+        const accountCount = await accounts.countDocuments();
+        const newAccountPayload = { ...req.body, accountCode: `ACC-${String(accountCount + 1).padStart(3, '0')}`, username: email.split('@')[0], status: 'active', referenceId: newDoctorId ? newDoctorId.toString() : undefined, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+
+        const accountResult = await accounts.insertOne(newAccountPayload);
+        const newAccount = await accounts.findOne({ _id: accountResult.insertedId });
+
+        const publicAccount = toPublicDocument(newAccount);
+        delete publicAccount.password;
+
+        const token = publicAccount.id;
+        res.status(201).json({ token, account: publicAccount });
+    } catch (error) {
+        next(error);
+    }
+  });
+
+  // Get current user from token
+  app.get('/api/auth/me', async (req, res, next) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'No token provided.' });
+      }
+      const token = authHeader.split(' ')[1];
+      if (!ObjectId.isValid(token)) return res.status(401).json({ error: 'Invalid token format.' });
+      const account = await accounts.findOne({ _id: new ObjectId(token) });
+      if (!account) return res.status(401).json({ error: 'Invalid token.' });
+      const publicAccount = toPublicDocument(account);
+      delete publicAccount.password;
+      res.json({ data: publicAccount });
+    } catch (error) {
+      next(error);
+    }
+  });
+}
+
 function registerMetaRoutes() {
   app.get('/api/health', async (req, res) => {
     res.json({
@@ -414,6 +579,7 @@ async function main() {
     for (const resourceConfig of resourceConfigs) {
       registerResourceRoutes(resourceConfig);
     }
+    registerAuthRoutes();
     registerMetaRoutes();
     registerErrorHandler();
 
@@ -431,7 +597,13 @@ async function main() {
     });
   } catch (error) {
     console.error('MongoDB connection failed:', error);
-    process.exit(1);
+    if (error.name === 'MongoServerSelectionError') {
+      console.error('This usually means the MongoDB server is not running or is inaccessible.');
+      console.error('Please ensure your MongoDB server is running and accessible at the configured MONGODB_URI.');
+    } else {
+      console.error('An unexpected error occurred during MongoDB connection.');
+    }
+    process.exit(1); // Exit the process as database connection is critical
   }
 }
 

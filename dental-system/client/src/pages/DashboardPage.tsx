@@ -13,24 +13,28 @@ import {
     BarChart,
 } from 'lucide-react'
 import { PageShell } from '../components/PageShell'
-import { generateMockAccounts, generateMockDoctors, generateMockServices, generateMockActivities, generateMockAppointments } from '../lib/mockData'
 import { useAuth } from '../contexts/AuthContext'
 import { getInitials, formatVND } from '../lib/formatters'
 import { useNavigate } from 'react-router-dom'
 import {
     ResponsiveContainer, BarChart as RechartsBarChart, Bar, XAxis, YAxis, Tooltip, Legend, PieChart as RechartsPieChart, Pie, Cell, LineChart as RechartsLineChart, Line, CartesianGrid
 } from 'recharts'
+import { useQuery } from '@tanstack/react-query'
+import { api, type ApiListResponse } from '../lib/api'
+import type { MockDoctor as Doctor, MockAppointment as Appointment, MockPatient as Patient, MockService as Service, MockActivity } from '../lib/mockData'
 
 
 export function DashboardPage() {
     const { currentUser, logout } = useAuth() // Lấy hàm logout
-    // Memoize mock data to prevent re-generation on every render
-    const activities = useMemo(() => generateMockActivities(6), [])
-    const doctors = useMemo(() => generateMockDoctors(), [])
-    const accounts = useMemo(() => generateMockAccounts(), [])
-    const services = useMemo(() => generateMockServices(), [])
-    const appointments = useMemo(() => generateMockAppointments(200), []); // More data for better charts
-    const patients = useMemo(() => generateMockAppointments(50), []);
+
+    // Lấy dữ liệu thật từ API
+    const { data: doctors = [] } = useQuery<Doctor[], Error>({ queryKey: ['doctors'], queryFn: async () => (await api.get<ApiListResponse<Doctor>>('/doctors')).data.data });
+    const { data: appointments = [] } = useQuery<Appointment[], Error>({ queryKey: ['appointments'], queryFn: async () => (await api.get<ApiListResponse<Appointment>>('/appointments')).data.data });
+    const { data: patients = [] } = useQuery<Patient[], Error>({ queryKey: ['patients'], queryFn: async () => (await api.get<ApiListResponse<Patient>>('/patients')).data.data });
+    const { data: services = [] } = useQuery<Service[], Error>({ queryKey: ['services'], queryFn: async () => (await api.get<ApiListResponse<Service>>('/services')).data.data });
+    // Dữ liệu hoạt động vẫn dùng mock vì chưa có API
+    const activities = useMemo(() => [], []);
+
     const navigate = useNavigate() // Khởi tạo hàm navigate
 
     const analytics = useMemo(() => {
@@ -39,7 +43,7 @@ export function DashboardPage() {
         const currentYear = now.getFullYear();
 
         // New patients this month
-        const newPatientsThisMonth = patients.filter(p => {
+        const newPatientsThisMonth = patients.filter((p: Patient) => {
             const createdAt = new Date(p.createdAt);
             return createdAt.getMonth() === currentMonth && createdAt.getFullYear() === currentYear;
         }).length;
@@ -53,7 +57,7 @@ export function DashboardPage() {
         const totalRevenueThisMonth = monthAppointments
             .filter(a => a.status === 'Đã hoàn thành')
             .reduce((sum, apt) => {
-                const service = services.find(s => s.id === apt.serviceId);
+                const service = services.find((s: Service) => s.id === apt.serviceId);
                 return sum + (service?.basePrice || 0);
             }, 0);
 
@@ -82,13 +86,13 @@ export function DashboardPage() {
 
     // Render Doctor's Dashboard
     if (currentUser?.role === 'Doctor') {
-        const myAppointments = useMemo(
-            () => generateMockAppointments(50).filter(
-                (apt) => apt.doctorId === currentUser.referenceId
-            ), [currentUser.referenceId]
-        )
+        const myAppointments = useMemo(() => {
+            if (!currentUser?.referenceId) return [];
+            return appointments.filter(apt => apt.doctorId === currentUser.referenceId);
+        }, [appointments, currentUser]);
+
         const todayAppointments = myAppointments.filter(
-            (apt) => new Date(apt.startTime).toDateString() === new Date().toDateString() && apt.status === 'Đã lên lịch'
+            (apt: Appointment) => new Date(apt.startTime).toDateString() === new Date().toDateString() && apt.status === 'Đã lên lịch'
         )
 
         return (
@@ -257,7 +261,10 @@ export function DashboardPage() {
                             <div>
                                 <div className="font-semibold text-blue-900">{doc.fullName}</div>
                                 <div className="text-xs text-slate-500">{doc.specialty} - {doc.degree}</div>
-                                <button className="mt-1 text-xs font-semibold text-blue-600 hover:underline">
+                                <button 
+                                    onClick={() => navigate('/doctors')}
+                                    className="mt-1 text-xs font-semibold text-blue-600 hover:underline"
+                                >
                                     Xem lịch
                                 </button>
                             </div>
