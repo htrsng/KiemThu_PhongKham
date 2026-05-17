@@ -67,11 +67,11 @@ const seedDoctors = [
 // 2. Accounts (Admin, Doctors, Receptionists)
 const seedAccounts = [
   { accountCode: 'ACC-001', fullName: 'System Admin', username: 'admin', email: 'admin@gmail.com', password: 'adminpassword', role: 'Admin', status: 'active', lastLoginAt: toISO(new Date()) },
-  { accountCode: 'ACC-002', fullName: 'Dr. Nguyễn Quang Huy', username: 'huy.nguyen', email: 'huy.nguyen@smilecare.vn', password: 'password123', role: 'Doctor', status: 'active', referenceId: "6650a4e6e4a3b18f8a5a4b10", lastLoginAt: toISO(new Date(today.getTime() - 1 * 24 * 3600 * 1000)) },
-  { accountCode: 'ACC-003', fullName: 'Dr. Trần Minh Anh', username: 'anh.tran', email: 'anh.tran@smilecare.vn', password: 'password123', role: 'Doctor', status: 'active', referenceId: "6650a4e6e4a3b18f8a5a4b11", lastLoginAt: toISO(new Date(today.getTime() - 2 * 24 * 3600 * 1000)) },
-  { accountCode: 'ACC-004', fullName: 'Dr. Lê Thị Hồng', username: 'hong.le', email: 'hong.le@smilecare.vn', password: 'password123', role: 'Doctor', status: 'active', referenceId: "6650a4e6e4a3b18f8a5a4b12", lastLoginAt: toISO(new Date(today.getTime() - 3 * 24 * 3600 * 1000)) },
-  { accountCode: 'ACC-005', fullName: 'Lê Thị Mai', username: 'mai.le', email: 'mai.le@smilecare.vn', password: 'password123', role: 'Reception', status: 'active', lastLoginAt: toISO(new Date(today.getTime() - 1 * 3600 * 1000)) },
-  { accountCode: 'ACC-006', fullName: 'Trần Văn Hùng', username: 'hung.tran', email: 'hung.tran@smilecare.vn', password: 'password123', role: 'Reception', status: 'Bi khoa' },
+  { accountCode: 'ACC-002', fullName: 'Dr. Nguyễn Quang Huy', username: 'huy.nguyen', email: 'huy.nguyen@gmail.com', password: 'password123', role: 'Doctor', status: 'active', referenceId: "6650a4e6e4a3b18f8a5a4b10", lastLoginAt: toISO(new Date(today.getTime() - 1 * 24 * 3600 * 1000)) },
+  { accountCode: 'ACC-003', fullName: 'Dr. Trần Minh Anh', username: 'anh.tran', email: 'anh.tran@gmail.com', password: 'password123', role: 'Doctor', status: 'active', referenceId: "6650a4e6e4a3b18f8a5a4b11", lastLoginAt: toISO(new Date(today.getTime() - 2 * 24 * 3600 * 1000)) },
+  { accountCode: 'ACC-004', fullName: 'Dr. Lê Thị Hồng', username: 'hong.le', email: 'hong.le@gmail.com', password: 'password123', role: 'Doctor', status: 'active', referenceId: "6650a4e6e4a3b18f8a5a4b12", lastLoginAt: toISO(new Date(today.getTime() - 3 * 24 * 3600 * 1000)) },
+  { accountCode: 'ACC-005', fullName: 'Lê Thị Mai', username: 'mai.le', email: 'mai.le@gmail.com', password: 'password123', role: 'Reception', status: 'active', lastLoginAt: toISO(new Date(today.getTime() - 1 * 3600 * 1000)) },
+  { accountCode: 'ACC-006', fullName: 'Trần Văn Hùng', username: 'hung.tran', email: 'hung.tran@gmail.com', password: 'password123', role: 'Reception', status: 'Bi khoa' },
 ];
 
 // 3. Services
@@ -432,6 +432,11 @@ function registerAuthRoutes() {
         return res.status(400).json({ error: 'Email and password are required.' });
       }
 
+      // Yêu cầu: tên đăng nhập phải có đuôi @gmail.com
+      if (!email.toLowerCase().endsWith('@gmail.com')) {
+        return res.status(400).json({ error: 'invalid_email_format', message: 'Tên đăng nhập phải có đuôi @gmail.com.' });
+      }
+
       const account = await accounts.findOne({ email: email.toLowerCase() });
 
       if (!account) {
@@ -464,6 +469,11 @@ function registerAuthRoutes() {
         const { email, password, fullName, role } = req.body;
         if (!email || !password || !fullName || !role) {
             return res.status(400).json({ error: 'Missing required fields for registration.' });
+        }
+
+        // Yêu cầu: email đăng ký phải có đuôi @gmail.com
+        if (!email.toLowerCase().endsWith('@gmail.com')) {
+            return res.status(400).json({ error: 'invalid_email_format', message: 'Email đăng ký phải là địa chỉ @gmail.com.' });
         }
 
         const existingAccount = await accounts.findOne({ email: email.toLowerCase() });

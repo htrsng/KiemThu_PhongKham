@@ -31,6 +31,12 @@ export function LoginPage() {
         e.preventDefault()
         setError('')
 
+        // Kiểm tra client-side để có phản hồi nhanh
+        if (!email.toLowerCase().endsWith('@gmail.com')) {
+            setError('Email phải là một địa chỉ @gmail.com hợp lệ.');
+            return;
+        }
+
         try {
             if (isLogin) {
                 const result = await login(email, password)
@@ -51,6 +57,9 @@ export function LoginPage() {
                         case 'locked':
                             setError('Tài khoản này đã bị khóa. Vui lòng liên hệ quản trị viên.');
                             break;
+                        case 'invalid_email_format':
+                            setError('Tên đăng nhập phải có đuôi @gmail.com.');
+                            break;
                         default:
                             setError('Đã có lỗi xảy ra trong quá trình đăng nhập.');
                     }
@@ -62,7 +71,13 @@ export function LoginPage() {
                     navigate('/')
                 } else {
                     // Xử lý lỗi đăng ký
-                    setError(result.error === 'email_exists' ? 'Email này đã được sử dụng.' : 'Đã có lỗi xảy ra khi đăng ký.');
+                    if (result.error === 'email_exists') {
+                        setError('Email này đã được sử dụng.');
+                    } else if (result.error === 'invalid_email_format') {
+                        setError('Email đăng ký phải là địa chỉ @gmail.com.');
+                    } else {
+                        setError('Đã có lỗi xảy ra khi đăng ký.');
+                    }
                 }
             }
         } catch (err) {
@@ -164,7 +179,7 @@ export function LoginPage() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full rounded-xl border border-slate-200 pl-11 pr-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                                placeholder={isLogin ? "admin@gmail.com" : "vidu@gmail.com"}
+                                placeholder="your.name@gmail.com"
                             />
                         </div>
                     </div>
