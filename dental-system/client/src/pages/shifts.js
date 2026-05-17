@@ -30,11 +30,13 @@ router.post('/', async (req, res) => {
             date,
             startTime,
             endTime,
+            status: 'Đã đăng ký', // Thêm trạng thái mặc định
         });
 
         const savedShift = await newShift.save();
         res.status(201).json({ data: savedShift });
     } catch (err) {
+        console.error('Error creating shift:', err);
         res.status(400).json({ message: err.message });
     }
 });

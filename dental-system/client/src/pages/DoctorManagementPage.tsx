@@ -517,39 +517,42 @@ export function DoctorManagementPage() {
                             <p className="text-xs text-slate-500">Hiển thị ngày cụ thể theo tuần để dễ đối chiếu.</p>
                         </div>
 
-                        <div className="space-y-3 max-h-[60vh] overflow-y-auto">
+                        <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
                             {SCHEDULE_DAYS.map((day, idx) => (
-                                <div
-                                    key={day}
-                                    className="flex items-center gap-4 rounded-lg border border-slate-200 p-3"
-                                >
-                                    <div className="w-40">
-                                        <span className="font-semibold text-slate-900">{SCHEDULE_DAY_NAMES[idx]}</span>
-                                        <div className="text-xs text-slate-500">
-                                            {formatDate(addDays(scheduleWeekStartDate, idx), 'short')}
+                                <div key={day} className="rounded-xl border border-slate-200 bg-white p-4">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <span className="font-bold text-slate-900">{SCHEDULE_DAY_NAMES[idx]}</span>
+                                            <div className="text-xs text-slate-500">
+                                                {formatDate(addDays(scheduleWeekStartDate, idx), 'short')}
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <label htmlFor={`enabled-${day}`} className="text-sm font-medium text-slate-700">Làm việc</label>
+                                            <input
+                                                id={`enabled-${day}`}
+                                                type="checkbox"
+                                                checked={scheduleForm[day]?.enabled || false}
+                                                onChange={(e) =>
+                                                    setScheduleForm((prev) => prev && ({
+                                                        ...prev,
+                                                        [day]: {
+                                                            ...(prev[day] || {
+                                                                startTime: '08:00',
+                                                                endTime: '17:00',
+                                                            }),
+                                                            enabled: e.target.checked,
+                                                        },
+                                                    }))
+                                                }
+                                                className="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                            />
                                         </div>
                                     </div>
-                                    <input
-                                        type="checkbox"
-                                        checked={scheduleForm[day]?.enabled || false}
-                                        onChange={(e) =>
-                                            setScheduleForm((prev) => prev && ({
-                                                ...prev,
-                                                [day]: {
-                                                    ...(prev[day] || {
-                                                        startTime: '08:00',
-                                                        endTime: '17:00',
-                                                    }),
-                                                    enabled: e.target.checked,
-                                                },
-                                            }))
-                                        }
-                                        className="h-4 w-4"
-                                    />
                                     {scheduleForm?.[day]?.enabled && (
-                                        <>
-                                            <div className="flex items-center gap-2">
-                                                <label className="text-sm text-slate-600">Bắt đầu:</label>
+                                        <div className="mt-4 grid grid-cols-1 gap-4 border-t border-slate-200 pt-4 sm:grid-cols-2">
+                                            <div>
+                                                <label className="block text-sm font-bold text-slate-700 mb-1">Bắt đầu</label>
                                                 <input
                                                     type="time"
                                                     value={scheduleForm[day]?.startTime || '08:00'}
@@ -561,11 +564,11 @@ export function DoctorManagementPage() {
                                                             }
                                                         )
                                                     }
-                                                    className="rounded border border-slate-200 px-2 py-1 text-sm"
+                                                    className="w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm"
                                                 />
                                             </div>
-                                            <div className="flex items-center gap-2">
-                                                <label className="text-sm text-slate-600">Kết thúc:</label>
+                                            <div>
+                                                <label className="block text-sm font-bold text-slate-700 mb-1">Kết thúc</label>
                                                 <input
                                                     type="time"
                                                     value={scheduleForm[day]?.endTime || '17:00'}
@@ -577,10 +580,10 @@ export function DoctorManagementPage() {
                                                             }
                                                         )
                                                     }
-                                                    className="rounded border border-slate-200 px-2 py-1 text-sm"
+                                                    className="w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm"
                                                 />
                                             </div>
-                                        </>
+                                        </div>
                                     )}
                                 </div>
                             ))}

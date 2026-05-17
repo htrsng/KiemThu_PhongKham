@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import FullCalendar from '@fullcalendar/react'
-import type { EventClickArg } from '@fullcalendar/core'
+import type { EventClickArg, EventContentArg } from '@fullcalendar/core'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { DateClickArg } from '@fullcalendar/interaction'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -17,6 +17,7 @@ import {
     Pencil,
     Search,
     X,
+    ChevronDown,
     List,
 } from 'lucide-react'
 import { PageShell } from '../components/PageShell'
@@ -34,7 +35,7 @@ import { useConfirm } from '../contexts/ConfirmContext'
 import { useAuth } from '../contexts/AuthContext' // Import useAuth
 import { EmptyState } from '../components/EmptyState'
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
-import { formatDate, formatDateTime, formatDateTimeLocal, formatPhone, formatVND } from '../lib/formatters'
+import { formatDate, formatDateTime, formatDateTimeLocal, formatPhone, formatVND, getSpecialtyColor } from '../lib/formatters'
 
 type SubPage = 'appointments' | 'patients' | 'doctor-schedule' | 'work-shifts' | 'holidays'
 
@@ -50,10 +51,10 @@ type DoctorOnCallShift = {
     id: string // This type is already defined in mockData.ts as MockDoctorShift
     doctorId: string // It's better to use the type from mockData.ts or DataContext.tsx
     doctorName: string // Let's stick to the existing type for consistency.
-    // The type `DoctorOnCallShift` is defined here and used locally.
     date: string // YYYY-MM-DD (local)
     startTime: string // HH:mm
     endTime: string // HH:mm
+    status: 'Đã đăng ký' | 'Đã hủy'
 }
 
 const PAGE_SIZE = 10
@@ -527,7 +528,7 @@ function DoctorScheduleView({
     deleteShift,
     currentUser, // Accept currentUser prop
 }: {
-    doctors: MockDoctor[]
+    doctors: MockDoctor[];
     shifts: DoctorOnCallShift[]
     holidays: MockClinicHoliday[]
     isLoading: boolean
@@ -537,19 +538,22 @@ function DoctorScheduleView({
     currentUser: MockAccount | null
 }) {
     const [searchTerm, setSearchTerm] = useState('')
-    const [isModalOpen, setIsModalOpen] = useState(false)
-    const [editingId, setEditingId] = useState<string | null>(null)
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingId, setEditingId] = useState<string | null>(null);
     const [formState, setFormState] = useState<{
         doctorId: string
         date: string
         startTime: string
         endTime: string
+        status: 'Đã đăng ký' | 'Đã hủy'
     }>({
         doctorId: '',
         date: '',
         startTime: '08:00',
         endTime: '17:00',
+        status: 'Đã đăng ký',
     })
+    const [doctorFilter, setDoctorFilter] = useState<string>('all');
 
     // Initialize formState.doctorId based on currentUser if Doctor
     useEffect(() => {
@@ -561,6 +565,26 @@ function DoctorScheduleView({
     const { addToast } = useToast()
     const { confirm } = useConfirm()
     const isDoctor = currentUser?.role === 'Doctor';
+
+    function renderShiftEventContent(eventInfo: EventContentArg) {
+        const shift = eventInfo.event.extendedProps as DoctorOnCallShift;
+        const isCancelled = shift.status === 'Đã hủy';
+
+        return (
+            <div className="p-1 text-xs overflow-hidden">
+                <div className="font-bold">{eventInfo.event.title}</div>
+                <div>{eventInfo.timeText}</div>
+                {isCancelled && <div className="font-semibold mt-1">ĐÃ HỦY</div>}
+            </div>
+        );
+    }
+
+    const getLocalDateKey = (date: Date) => {
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const day = String(date.getDate()).padStart(2, '0')
+        return `${year}-${month}-${day}`
+    }
 
     const toMinutes = (value: string) => {
         const [hh, mm] = value.split(':').map(Number)
@@ -576,37 +600,36 @@ function DoctorScheduleView({
         })
     }
 
-    const filteredShifts = useMemo(() => {
-        const searchValue = searchTerm.trim().toLowerCase()
-        if (!searchValue) {
-            return shifts
-        }
-        return shifts.filter((shift) => {
-            const doctor = doctors.find((d) => d.id === shift.doctorId)
-            const doctorText = doctor
-                ? `${doctor.fullName} ${doctor.specialty} ${doctor.room} ${doctor.licenseNumber}`.toLowerCase()
-                : shift.doctorName.toLowerCase()
-            return doctorText.includes(searchValue) || shift.date.includes(searchValue)
-        })
-    }, [doctors, shifts, searchTerm])
-
-    const sortedShifts = useMemo(() => {
-        let resultShifts = filteredShifts;
+    const calendarEvents = useMemo(() => {
+        let shiftsToDisplay = shifts;
         if (isDoctor && currentUser?.referenceId) {
-            resultShifts = resultShifts.filter(shift => shift.doctorId === currentUser.referenceId);
+            shiftsToDisplay = shifts.filter(s => s.doctorId === currentUser.referenceId);
+        } else if (doctorFilter !== 'all') {
+            shiftsToDisplay = shifts.filter(s => s.doctorId === doctorFilter);
         }
-        return [...resultShifts].sort((a, b) => {
-            const dateCompare = b.date.localeCompare(a.date)
-            if (dateCompare !== 0) {
-                return dateCompare
-            }
-            const doctorCompare = a.doctorName.localeCompare(b.doctorName)
-            if (doctorCompare !== 0) {
-                return doctorCompare
-            }
-            return a.startTime.localeCompare(b.startTime)
-        })
-    }, [filteredShifts])
+
+        const scheduleColors = ['#3b82f6', '#16a34a']; // blue-600, green-600
+        const scheduleBorderColors = ['#2563eb', '#15803d']; // blue-700, green-700
+
+        return shiftsToDisplay.map((shift, index) => {
+            const isCancelled = shift.status === 'Đã hủy';
+            
+            // Use alternating colors for non-cancelled shifts
+            const colorIndex = index % scheduleColors.length;
+
+            return {
+                id: shift.id,
+                title: shift.doctorName,
+                start: `${shift.date}T${shift.startTime}`,
+                end: `${shift.date}T${shift.endTime}`,
+                backgroundColor: isCancelled ? '#fecaca' : scheduleColors[colorIndex],
+                borderColor: isCancelled ? '#fca5a5' : scheduleBorderColors[colorIndex],
+                textColor: isCancelled ? '#991b1b' : '#ffffff', // red-800, white
+                extendedProps: shift,
+                classNames: isCancelled ? ['event-cancelled'] : [],
+            };
+        });
+    }, [shifts, doctors, isDoctor, currentUser, doctorFilter]);
 
     const sortedHolidays = useMemo(() => {
         return [...holidays].sort((a, b) => a.date.localeCompare(b.date))
@@ -614,8 +637,9 @@ function DoctorScheduleView({
 
     const resetModal = () => {
         setIsModalOpen(false)
-        setEditingId(null)
-        setFormState({ doctorId: '', date: '', startTime: '08:00', endTime: '17:00' })
+        setEditingId(null);
+        const defaultDoctorId = isDoctor && currentUser?.referenceId ? currentUser.referenceId : '';
+        setFormState({ doctorId: defaultDoctorId, date: '', startTime: '08:00', endTime: '17:00', status: 'Đã đăng ký' });
     }
 
     const openCreateModal = () => {
@@ -624,7 +648,7 @@ function DoctorScheduleView({
             ? currentUser.referenceId
             : doctors.find((doctor) => doctor.status === 'active')?.id ?? doctors[0]?.id ?? '';
 
-        setFormState({ doctorId: defaultDoctorId, date: '', startTime: '08:00', endTime: '17:00' })
+        setFormState({ doctorId: defaultDoctorId, date: '', startTime: '08:00', endTime: '17:00', status: 'Đã đăng ký' })
         setIsModalOpen(true)
     }
 
@@ -635,9 +659,27 @@ function DoctorScheduleView({
             date: shift.date,
             startTime: shift.startTime,
             endTime: shift.endTime,
+            status: shift.status,
         })
         setIsModalOpen(true)
     }
+
+    const handleDateClick = (arg: DateClickArg) => {
+        const holiday = isHolidayKey(getLocalDateKey(arg.date));
+        if (holiday) {
+            addToast('error', `Ngày ${formatDate(arg.date)} là ngày nghỉ: ${holiday.name}.`);
+            return;
+        }
+        openCreateModal();
+        setFormState(prev => ({
+            ...prev,
+            date: arg.dateStr.split('T')[0], // Lấy phần date YYYY-MM-DD
+        }));
+    };
+
+    const handleEventClick = (arg: EventClickArg) => {
+        openEditModal(arg.event.extendedProps as DoctorOnCallShift);
+    };
 
     const handleSave = () => {
         const doctor = doctors.find((d) => d.id === formState.doctorId)
@@ -685,6 +727,7 @@ function DoctorScheduleView({
                     date: formState.date,
                     startTime: formState.startTime,
                     endTime: formState.endTime,
+                    status: formState.status,
                 }
             })
         } else {
@@ -694,57 +737,93 @@ function DoctorScheduleView({
                 date: formState.date,
                 startTime: formState.startTime,
                 endTime: formState.endTime,
+                status: 'Đã đăng ký',
             })
         }
         resetModal()
     }
 
-    const handleDelete = async (shift: DoctorOnCallShift) => {
+    const handleCancelShift = async () => {
+        if (!editingId) return;
+        const shift = shifts.find(s => s.id === editingId);
+        if (!shift) return;
+
         const confirmed = await confirm({
-            title: 'Xóa ca trực',
-            message: `Bạn có chắc muốn xóa ca trực của "${shift.doctorName}" ngày ${formatDate(shift.date)}?`,
+            title: 'Hủy ca trực',
+            message: `Bạn có chắc muốn hủy ca trực của "${shift.doctorName}" vào ngày ${formatDate(shift.date)}? Ca trực sẽ được giữ lại với trạng thái "Đã hủy".`,
             isDangerous: true,
-        })
-        if (!confirmed) {
-            return
+            confirmLabel: 'Đồng ý hủy'
+        });
+
+        if (confirmed) {
+            updateShift({ id: editingId, data: { status: 'Đã hủy' } });
+            resetModal();
         }
-        deleteShift(shift.id)
+    };
+
+    const handleDeletePermanently = async () => {
+        if (!editingId) return;
+        const shift = shifts.find(s => s.id === editingId);
+        if (!shift) return;
+
+        const confirmed = await confirm({
+            title: 'Xóa ca trực vĩnh viễn',
+            message: `Hành động này không thể hoàn tác. Bạn có chắc muốn XÓA vĩnh viễn ca trực này?`,
+            isDangerous: true,
+            confirmLabel: 'Xóa vĩnh viễn'
+        });
+
+        if (confirmed) {
+            deleteShift(editingId);
+            resetModal();
+        }
+    };
+
+    const handleDelete = async (shift: DoctorOnCallShift) => {
+        await handleDeletePermanently();
     }
 
     return (
         <div className="space-y-4">
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm">
-                <div className="font-semibold text-slate-900">Ngày nghỉ phòng khám</div>
-                {sortedHolidays.length === 0 ? (
-                    <div className="mt-1 text-slate-600">Chưa có ngày nghỉ. Vui lòng cấu hình ở mục "Cài đặt ngày nghỉ".</div>
-                ) : (
-                    <div className="mt-2 space-y-1 text-slate-700">
-                        {sortedHolidays.slice(0, 6).map((h) => (
-                            <div key={h.id} className="flex flex-wrap items-center justify-between gap-2">
-                                <span className="font-medium">{h.name}</span>
-                                <span className="text-slate-600">{formatDate(h.date)}{h.isRecurring ? ' (lặp lại)' : ''}</span>
-                            </div>
-                        ))}
-                        {sortedHolidays.length > 6 ? (
-                            <div className="pt-1 text-xs text-slate-500">+{sortedHolidays.length - 6} ngày nghỉ khác</div>
-                        ) : null}
-                        <div className="pt-2 text-xs text-slate-500">
-                            Lưu ý: Ngày nghỉ là nghỉ toàn phòng khám; lịch trực theo thứ vẫn giữ nguyên nhưng các ngày nghỉ sẽ được loại trừ khi đặt lịch hẹn.
-                        </div>
+            <details className="group rounded-2xl border border-slate-200 bg-white text-sm open:shadow-sm">
+                <summary className="cursor-pointer list-none p-4 font-semibold text-slate-900">
+                    <div className="flex items-center justify-between">
+                        <span>Thông tin ngày nghỉ (tham khảo)</span>
+                        <ChevronDown className="h-5 w-5 shrink-0 transition-transform duration-200 group-open:rotate-180" />
                     </div>
-                )}
-            </div>
+                </summary>
+                <div className="border-t border-slate-200 p-4 pt-3">
+                    {sortedHolidays.length === 0 ? (
+                        <div className="text-slate-600">Chưa có ngày nghỉ. Vui lòng cấu hình ở mục "Cài đặt ngày nghỉ".</div>
+                    ) : (
+                        <div className="space-y-2 text-slate-700">
+                            {sortedHolidays.slice(0, 6).map((h) => (
+                                <div key={h.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-slate-50 p-2">
+                                    <span className="font-medium">{h.name}</span>
+                                    <span className="text-slate-600">{formatDate(h.date)}{h.isRecurring ? ' (lặp lại)' : ''}</span>
+                                </div>
+                            ))}
+                            {sortedHolidays.length > 6 ? (
+                                <div className="pt-1 text-xs text-slate-500">+{sortedHolidays.length - 6} ngày nghỉ khác</div>
+                            ) : null}
+                            <div className="pt-2 text-xs text-slate-500">
+                                Lưu ý: Hệ thống sẽ không cho phép đăng ký ca trực hoặc tạo lịch hẹn vào các ngày nghỉ này.
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </details>
 
             <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 md:flex-row md:items-center md:justify-between">
-                <div className="relative w-full md:max-w-sm">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <input
-                        value={searchTerm}
-                        onChange={(event) => setSearchTerm(event.target.value)}
-                        placeholder={isDoctor ? "Tìm theo ngày (YYYY-MM-DD)" : "Tìm theo tên bác sĩ hoặc ngày (YYYY-MM-DD)"}
-                        className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3 text-sm"
-                    />
-                </div>
+                <select
+                    value={doctorFilter}
+                    onChange={e => setDoctorFilter(e.target.value)}
+                    className="h-10 rounded-xl border bg-white px-3 text-sm"
+                    disabled={isDoctor}
+                >
+                    <option value="all">Tất cả bác sĩ</option>
+                    {doctors.map(d => <option key={d.id} value={d.id}>{d.fullName}</option>)}
+                </select>
                 <button
                     onClick={openCreateModal}
                     className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-900 px-4 text-sm font-semibold text-white"
@@ -756,61 +835,34 @@ function DoctorScheduleView({
 
             {isLoading ? (
                 <div className="rounded-2xl border border-slate-200 bg-white p-6"><TableLoadingSkeleton rows={10} /></div>
-            ) : sortedShifts.length === 0 ? (
-                <EmptyState title="Chưa có ca trực" />
             ) : (
-                <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
-                    <table className="min-w-full text-left text-sm">
-                        <thead>
-                            <tr className="border-b bg-slate-50">
-                                <th className="px-4 py-3 font-semibold text-slate-700">Ngày</th>
-                                <th className="px-4 py-3 font-semibold text-slate-700">Bác sĩ</th>
-                                <th className="px-4 py-3 font-semibold text-slate-700">Giờ trực</th>
-                                <th className="px-4 py-3 text-right font-semibold text-slate-700">Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-200">
-                            {sortedShifts.map((shift) => (
-                                <tr key={shift.id} className="hover:bg-slate-50">
-                                    <td className="px-4 py-3 text-slate-700">
-                                        <div className="font-medium text-slate-900">{formatDate(shift.date)}</div>
-                                        <div className="text-xs text-slate-500">{shift.date}</div>
-                                    </td>
-                                    <td className="px-4 py-3">
-                                        <div className="font-medium text-slate-900">{shift.doctorName}</div>
-                                        {(() => {
-                                            const doctor = doctors.find((d) => d.id === shift.doctorId)
-                                            if (!doctor) {
-                                                return null
-                                            }
-                                            return <div className="text-xs text-slate-500">{doctor.specialty} • {doctor.room} • {formatPhone(doctor.phone)}</div>
-                                        })()}
-                                    </td>
-                                    <td className="px-4 py-3 text-slate-700">{shift.startTime} - {shift.endTime}</td>
-                                    <td className="px-4 py-3">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <button
-                                                onClick={() => openEditModal(shift)} // Doctor can edit their own shifts
-                                                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border text-slate-600 hover:text-blue-600"
-                                                title="Sửa"
-                                                disabled={isDoctor && shift.doctorId !== currentUser?.referenceId}
-                                            >
-                                                <Pencil className="h-4 w-4" />
-                                            </button>
-                                            <button
-                                                onClick={() => void handleDelete(shift)}
-                                                disabled={isDoctor && shift.doctorId !== currentUser?.referenceId} // Doctor can delete their own shifts
-                                                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border text-slate-600 hover:text-rose-600"
-                                                title="Xóa"
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                    <FullCalendar
+                        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                        initialView="timeGridWeek"
+                        headerToolbar={{
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                        }}
+                        events={calendarEvents}
+                        locale="vi"
+                        buttonText={{
+                            today: 'Hôm nay',
+                            month: 'Tháng',
+                            week: 'Tuần',
+                            day: 'Ngày',
+                        }}
+                        allDaySlot={false}
+                        slotMinTime="07:00:00"
+                        slotMaxTime="21:00:00"
+                        editable={false} // Editing via modal is safer
+                        selectable={true}
+                        dateClick={handleDateClick}
+                        eventClick={handleEventClick}
+                        eventContent={renderShiftEventContent}
+                        height="auto"
+                    />
                 </div>
             )}
 
@@ -844,9 +896,9 @@ function DoctorScheduleView({
                                 <label className="block text-sm font-medium">Bác sĩ *</label>
                                 <select
                                     value={formState.doctorId}
-                                    onChange={(event) => setFormState((state) => ({ ...state, doctorId: event.target.value }))}
+                                    onChange={(event) => setFormState((state) => ({ ...state, doctorId: event.target.value, doctorName: doctors.find(d => d.id === event.target.value)?.fullName ?? '' }))}
                                     className="mt-1 w-full rounded-lg border bg-white p-2 text-sm"
-                                    disabled={isDoctor} // Disable doctor selection for doctors
+                                    disabled={isDoctor && !editingId} // Bác sĩ có thể đổi ca cho người khác khi chỉnh sửa
                                 >
                                     <option value="">Chọn bác sĩ</option>
                                     {doctors.map((doctor) => (
@@ -891,11 +943,31 @@ function DoctorScheduleView({
                             </div>
                         </div>
 
-                        <div className="mt-6 flex justify-end gap-3">
-                            <button onClick={resetModal} className="rounded-lg border px-4 py-2 text-sm font-medium">Hủy</button>
-                            <button onClick={handleSave} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white">
-                                {editingId ? 'Cập nhật' : 'Đăng ký'}
-                            </button>
+                        <div className="mt-6 flex items-center justify-between">
+                            <div>
+                                {editingId && currentUser?.role === 'Admin' && (
+                                    <button
+                                        onClick={handleDeletePermanently}
+                                        className="text-sm font-medium text-rose-600 hover:text-rose-800 transition-colors"
+                                    >
+                                        Xóa vĩnh viễn
+                                    </button>
+                                )}
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <button onClick={resetModal} className="rounded-lg border px-4 py-2 text-sm font-medium">Hủy</button>
+                                {editingId && formState.status === 'Đã đăng ký' && (
+                                    <button
+                                        onClick={handleCancelShift}
+                                        className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600"
+                                    >
+                                        Hủy ca trực
+                                    </button>
+                                )}
+                                <button onClick={handleSave} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white">
+                                    {editingId ? 'Lưu thay đổi' : 'Đăng ký'}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -904,7 +976,6 @@ function DoctorScheduleView({
     )
 }
 // #endregion
-
 // #region Simple CRUD View (for Shifts and Holidays)
 type CrudItem = { id: string; [key: string]: unknown }
 type FieldConfig = {
@@ -1227,17 +1298,37 @@ function AppointmentBookingView({
         return `${hh}:${mm}`
     }
 
-    const isWithinDoctorShift = (doctorId: string, startTime: Date, endTime: Date) => {
+    const isWithinDoctorShift = (doctor: MockDoctor, startTime: Date, endTime: Date) => {
         const dateKey = getLocalDateKey(startTime)
         const startMinutes = toMinutes(getTimeKey(startTime))
         const endMinutes = toMinutes(getTimeKey(endTime))
 
-        const candidates = doctorShifts.filter((shift) => shift.doctorId === doctorId && shift.date === dateKey)
-        return candidates.some((shift) => {
-            const shiftStart = toMinutes(shift.startTime)
-            const shiftEnd = toMinutes(shift.endTime)
-            return startMinutes >= shiftStart && endMinutes <= shiftEnd
-        })
+        // 1. Check for specific, registered shifts first (these can override the recurring schedule)
+        const specificShifts = doctorShifts.filter((shift) => shift.doctorId === doctor.id && shift.date === dateKey)
+        if (specificShifts.length > 0) {
+            return specificShifts.some((shift) => {
+                const shiftStart = toMinutes(shift.startTime)
+                const shiftEnd = toMinutes(shift.endTime)
+                return startMinutes >= shiftStart && endMinutes <= shiftEnd
+            })
+        }
+
+        // 2. If no specific shift, check the doctor's recurring weekly schedule from DoctorManagementPage
+        if (!doctor.schedule) {
+            return false; // No recurring schedule defined
+        }
+
+        const dayKeys = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+        const dayKeyOfWeek = dayKeys[startTime.getDay()];
+        const recurringShift = doctor.schedule[dayKeyOfWeek];
+
+        if (recurringShift?.enabled) {
+            const shiftStart = toMinutes(recurringShift.startTime);
+            const shiftEnd = toMinutes(recurringShift.endTime);
+            return startMinutes >= shiftStart && endMinutes <= shiftEnd;
+        }
+
+        return false // Not available in specific shifts or recurring schedule
     }
 
     const filteredAppointments = useMemo(() => {
@@ -1369,8 +1460,8 @@ function AppointmentBookingView({
                 return
             }
 
-            if (!isWithinDoctorShift(doctor.id, startTime, endTime)) {
-                addToast('error', `Bác sĩ chưa đăng ký ca trực cho ${formatDate(startTime)} (khung giờ ${getTimeKey(startTime)}-${getTimeKey(endTime)}).`)
+            if (!isWithinDoctorShift(doctor, startTime, endTime)) {
+                addToast('error', `Bác sĩ không có lịch làm việc hoặc ca trực cho ${formatDate(startTime)} (khung giờ ${getTimeKey(startTime)}-${getTimeKey(endTime)}).`)
                 return
             }
 
