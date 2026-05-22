@@ -99,7 +99,7 @@ for (let day = 1; day <= daysInCurrentMonth; day++) {
 
 // 5. Appointments
 const seedAppointments = [];
-const appointmentStatuses = ['Đã hoàn thành', 'Đã lên lịch', 'Đã hủy'];
+const appointmentStatuses = ['Đã hoàn thành', 'Đã lên lịch', 'Đã hủy', 'Đã đến', 'Đang điều trị'];
 const patientNames = ['Nguyễn Văn An', 'Trần Thị Bình', 'Lê Minh Cường', 'Phạm Thuỳ Dung', 'Hoàng Văn Em'];
 for (let i = 0; i < 50; i++) {
     const doctor = activeDoctors[i % activeDoctors.length];
@@ -121,6 +121,7 @@ for (let i = 0; i < 50; i++) {
         endTime: toISO(endTime),
         status: status,
         notes: status === 'Đã hủy' ? 'Bệnh nhân báo bận' : (i % 4 === 0 ? 'Bệnh nhân có tiền sử dị ứng' : ''),
+        checkInTime: status === 'Đã đến' ? toISO(new Date(startTime.getTime() - 5 * 60000)) : null,
     });
 }
 
@@ -143,6 +144,7 @@ for (let i = 0; i < 30; i++) {
         gender: genders[i % genders.length],
         address: `${i + 1} Đường ABC, ${cities[i % cities.length]}`,
         createdAt: createdAt.toISOString(),
+        allergies: i % 10 === 0 ? ['Penicillin'] : [],
     });
 }
 
@@ -178,6 +180,33 @@ for (let i = 0; i < 20; i++) {
     });
 }
 
+const MODULES = ['Dashboard', 'Tài khoản', 'Bác sĩ', 'Dịch vụ', 'Lịch hẹn', 'Phân quyền', 'Cấu hình', 'Báo cáo'];
+const ACTIONS = ['View', 'Create', 'Edit', 'Delete', 'Export'];
+
+function createDefaultPermissions(role) {
+  const perms = {};
+  for (const mod of MODULES) {
+    perms[mod] = {};
+    for (const act of ACTIONS) {
+      if (role === 'Admin') {
+        perms[mod][act] = true;
+      } else {
+        perms[mod][act] = false;
+      }
+    }
+  }
+  return perms;
+}
+
+const seedRolePermissions = [
+  { role: 'Admin', permissions: createDefaultPermissions('Admin') },
+  { role: 'Doctor', permissions: createDefaultPermissions('Doctor') },
+  { role: 'Reception', permissions: createDefaultPermissions('Reception') },
+];
+
+const seedInvoices = [];
+const seedMedicalRecords = [];
+
 const resourceConfigs = [
   { path: '/api/accounts', collectionName: 'accounts', seed: seedAccounts },
   { path: '/api/doctors', collectionName: 'doctors', seed: seedDoctors },
@@ -188,6 +217,9 @@ const resourceConfigs = [
   { path: '/api/work-shifts', collectionName: 'work_shifts', seed: seedWorkShifts },
   { path: '/api/holidays', collectionName: 'holidays', seed: seedHolidays },
   { path: '/api/audit-logs', collectionName: 'audit_logs', seed: seedAuditLogs },
+  { path: '/api/role_permissions', collectionName: 'role_permissions', seed: seedRolePermissions },
+  { path: '/api/invoices', collectionName: 'invoices', seed: seedInvoices },
+  { path: '/api/medical-records', collectionName: 'medical_records', seed: seedMedicalRecords },
   {
     path: '/api/roles',
     collectionName: 'roles',
@@ -288,16 +320,20 @@ function sanitizeBody(body) {
 }
 
 async function seedCollection(collection, seed) {
-  if (!seed || seed.length === 0) return;
-  const count = await collection.countDocuments();
-  if (count > 0) return;
+  // LƯU Ý: Đoạn code sau sẽ xóa toàn bộ dữ liệu trong collection mỗi khi server khởi động.
+  // Điều này hữu ích cho môi trường phát triển để đảm bảo dữ liệu luôn mới.
+  // Để giữ lại dữ liệu cũ, hãy comment (//) dòng `await collection.deleteMany({});`
+  await collection.deleteMany({});
 
-  const now = new Date().toISOString();
-  await collection.insertMany(seed.map((doc) => ({
-    ...doc,
-    createdAt: now,
-    updatedAt: now,
-  })));
+  if (seed && seed.length > 0) {
+    const now = new Date().toISOString();
+    await collection.insertMany(seed.map((doc) => ({
+      ...doc,
+      createdAt: now,
+      updatedAt: now,
+    })));
+    console.log(`[Seed] Đã nạp ${seed.length} bản ghi vào collection '${collection.collectionName}'.`);
+  }
 }
 
 async function initializeDatabase() {
@@ -417,6 +453,282 @@ function registerResourceRoutes(resourceConfig) {
     } catch (error) {
       next(error);
     }
+  });
+}
+
+function registerCustomRoutes() {
+  const appointments = getCollection('appointments');
+  const rolePermissions = getCollection('role_permissions');
+  const invoices = getCollection('invoices');
+
+  // Dashboard route
+  app.get('/api/dashboard', async (req, res, next) => {
+    try {
+      // Dùng thời gian nội bộ local vì app chỉ chạy ở local
+      const now = new Date();
+      // YYYY-MM-DD local
+      const todayString = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+      // Tính số ca đặt lịch hôm nay (chứa date hoặc bắt đầu vào hôm nay)
+      const appsTodayList = await appointments.find({
+        startTime: { $regex: '^' + todayString }
+      }).toArray();
+      const appsToday = appsTodayList.length;
+
+      // Tính số ca vãng lai hôm nay (notes == 'Bệnh nhân vãng lai' hoac checkInTime hoac tu default logic)
+      let walkInsToday = 0;
+      let completedApps = [];
+      let serviceCounts = {};
+
+      const periodsCount = {
+        'Sáng (8h-12h)': 0,
+        'Trưa (12h-14h)': 0,
+        'Chiều (14h-18h)': 0,
+        'Tối (18h-20h)': 0,
+      };
+
+      for (const app of appsTodayList) {
+        if (app.notes && app.notes.toLowerCase().includes('vãng lai')) {
+          walkInsToday++;
+        }
+        if (app.status === 'Đã hoàn thành') {
+            completedApps.push(app);
+        }
+
+        // Tỷ lệ dịch vụ
+        if (app.serviceName) {
+            serviceCounts[app.serviceName] = (serviceCounts[app.serviceName] || 0) + 1;
+        }
+
+        // Khung giờ
+        const ds = new Date(app.startTime);
+        const h = ds.getHours();
+        if (h >= 8 && h < 12) periodsCount['Sáng (8h-12h)']++;
+        else if (h >= 12 && h < 14) periodsCount['Trưa (12h-14h)']++;
+        else if (h >= 14 && h < 18) periodsCount['Chiều (14h-18h)']++;
+        else if (h >= 18 && h <= 20) periodsCount['Tối (18h-20h)']++;
+      }
+
+      // Calculate best doctor
+      const doctorCounts = {};
+      let maxCases = 0;
+      let bestDocName = 'Chưa có thông tin';
+      for (const app of completedApps) {
+        const dId = app.doctorId;
+        doctorCounts[dId] = (doctorCounts[dId] || 0) + 1;
+        if (doctorCounts[dId] >= maxCases) {
+            maxCases = doctorCounts[dId];
+            bestDocName = app.doctorName;
+        }
+      }
+
+      // Calculate service ratio
+      const totalServices = appsTodayList.length > 0 ? appsTodayList.length : 1;
+      const serviceRatio = Object.keys(serviceCounts).map(name => {
+         return {
+             name,
+             value: Math.round((serviceCounts[name] / totalServices) * 100)
+         };
+      });
+
+      // Filter to only retain top 5 services if there are many to avoid PieChart mess
+      if (serviceRatio.length === 0) {
+          serviceRatio.push({ name: 'Chưa có dịch vụ', value: 100 });
+      }
+
+      // Rút trích tổng doanh thu hôm nay
+      const invsToday = await invoices.find({
+        // Lọc các hóa đơn được thanh toán trong ngày hôm nay
+        updatedAt: { $regex: '^' + todayString },
+        status: 'Đã thanh toán'
+      }).toArray();
+      const revenueToday = invsToday.reduce((sum, inv) => sum + (inv.finalAmount || inv.totalAmount || 0), 0);
+      
+      // Lấy hoạt động gần đây
+      const recentAppointmentsToday = await appointments.find({
+          updatedAt: { $regex: '^' + todayString }
+      }).sort({ updatedAt: -1 }).limit(5).toArray();
+
+      const recentLogsToday = await getCollection('audit_logs').find({
+          timestamp: { $regex: '^' + todayString }
+      }).sort({ timestamp: -1 }).limit(5).toArray();
+
+      const combinedActivities = [];
+
+      recentAppointmentsToday.forEach(app => {
+          let description = '';
+          let icon = 'Calendar';
+          if (app.status === 'Đã đến') {
+              description = `BN <strong>${app.patientName}</strong> đã check-in.`;
+              icon = 'UserCheck';
+          } else if (app.status === 'Đã hoàn thành') {
+              description = `Hoàn thành ca khám cho BN <strong>${app.patientName}</strong>.`;
+              icon = 'CheckCircle';
+          } else if (app.status === 'Đã hủy') {
+              description = `Hủy lịch hẹn của BN <strong>${app.patientName}</strong>.`;
+              icon = 'XCircle';
+          } else if (app.status === 'Đã lên lịch') {
+              description = `Lịch hẹn mới: BN <strong>${app.patientName}</strong>.`;
+              icon = 'CalendarPlus';
+          }
+
+          if(description) {
+            combinedActivities.push({
+                type: 'appointment',
+                timestamp: app.updatedAt,
+                description: description,
+                actor: app.doctorName || 'Lễ tân',
+                icon: icon
+            });
+          }
+      });
+
+      recentLogsToday.forEach(log => {
+          if (log.action === 'Đăng nhập') {
+              combinedActivities.push({
+                  type: 'log',
+                  timestamp: log.timestamp,
+                  description: `Tài khoản <strong>${log.account}</strong> đã đăng nhập.`,
+                  actor: log.account,
+                  icon: 'LogIn'
+              });
+          }
+      });
+
+      const recentActivities = combinedActivities
+          .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+          .slice(0, 7); // Lấy 7 hoạt động mới nhất
+
+      const dashboardData = {
+        kpi: {
+            appointmentsToday: appsToday,
+            walkInsToday: walkInsToday,
+            revenueToday: revenueToday,
+            bestDoctor: {
+                name: bestDocName,
+                completedCases: maxCases
+            }
+        },
+        queueCapacity: [
+            { time: 'Sáng (8h-12h)', count: periodsCount['Sáng (8h-12h)'] },
+            { time: 'Trưa (12h-14h)', count: periodsCount['Trưa (12h-14h)'] },
+            { time: 'Chiều (14h-18h)', count: periodsCount['Chiều (14h-18h)'] },
+            { time: 'Tối (18h-20h)', count: periodsCount['Tối (18h-20h)'] }
+        ],
+        serviceRatio: serviceRatio.sort((a,b) => b.value - a.value).slice(0, 5), // top 5
+        recentActivities: recentActivities,
+      };
+
+      return res.json({ data: dashboardData });
+    } catch (error) { 
+      next(error); 
+    }
+  });
+
+  // Role permissions routes
+  app.get('/api/permissions/roles/:role', async (req, res, next) => {
+    try {
+      const doc = await rolePermissions.findOne({ role: req.params.role });
+      if (!doc) return res.status(404).json({ error: 'Role permissions not found.' });
+      return res.json({ data: toPublicDocument(doc) });
+    } catch (error) { next(error); }
+  });
+
+  app.put('/api/permissions/roles/:role', async (req, res, next) => {
+    try {
+      const { permissions } = req.body;
+      if (!permissions) return res.status(400).json({ error: 'Missing permissions payload.' });
+
+      const result = await rolePermissions.findOneAndUpdate(
+        { role: req.params.role },
+        { $set: { permissions: permissions, updatedAt: new Date().toISOString() } },
+        { returnDocument: 'after' }
+      );
+      if (!result) return res.status(404).json({ error: 'Role permissions not found.' });
+      return res.json({ data: toPublicDocument(result) });
+    } catch (error) { next(error); }
+  });
+
+  // UC3.1: Check-in for an appointment
+  app.patch('/api/appointments/:id/checkin', async (req, res, next) => {
+    try {
+      if (!ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ error: 'Invalid document id.' });
+      }
+      const result = await appointments.updateOne(
+        { _id: new ObjectId(req.params.id), status: 'Đã lên lịch' },
+        { $set: { status: 'Đã đến', checkInTime: new Date().toISOString(), updatedAt: new Date().toISOString() } }
+      );
+      if (result.matchedCount === 0) return res.status(404).json({ error: 'Appointment not found or already checked in.' });
+      const updated = await appointments.findOne({ _id: new ObjectId(req.params.id) });
+      return res.json({ data: toPublicDocument(updated) });
+    } catch (error) { next(error); }
+  });
+
+  const patients = getCollection('patients');
+  const services = getCollection('services');
+  const doctors = getCollection('doctors');
+
+  // UC3.1: Tạo hồ sơ vãng lai và check-in ngay lập tức
+  app.post('/api/appointments/walk-in', async (req, res, next) => {
+    try {
+      const { patientPhone, patientName, patientAge, allergies, doctorId, serviceId } = req.body;
+      let patientId;
+      
+      // Tìm hoặc tạo bệnh nhân
+      const existingPatient = await patients.findOne({ phone: patientPhone });
+      if (existingPatient) {
+        patientId = existingPatient._id.toString();
+        // Cập nhật dị ứng nếu có bổ sung
+        if (allergies && allergies.length > 0) {
+          await patients.updateOne(
+            { _id: existingPatient._id },
+            { $addToSet: { allergies: { $each: allergies } } }
+          );
+        }
+      } else {
+        const patientCount = await patients.countDocuments();
+        const ptResult = await patients.insertOne({
+          fullName: patientName,
+          phone: patientPhone,
+          dateOfBirth: new Date(new Date().getFullYear() - (patientAge || 30), 0, 1).toISOString(),
+          gender: 'Không xác định',
+          address: 'Bệnh nhân vãng lai',
+          createdAt: new Date().toISOString(),
+          allergies: allergies || [],
+          patientCode: `PAT-V${String(patientCount + 1).padStart(3, '0')}`
+        });
+        patientId = ptResult.insertedId.toString();
+      }
+
+      const doctor = await doctors.findOne({ _id: new ObjectId(doctorId) });
+      const service = await services.findOne({ _id: new ObjectId(serviceId) });
+
+      if(!doctor || !service) return res.status(400).json({ error: 'Doctor or Service not found' });
+
+      // Lập lịch và đánh dấu Đã đến
+      const startTime = new Date();
+      const endTime = new Date(startTime.getTime() + (service.duration || 30) * 60000);
+
+      const aptResult = await appointments.insertOne({
+        patientId,
+        patientName: patientName,
+        doctorId: doctor._id.toString(),
+        doctorName: doctor.fullName,
+        serviceId: service._id.toString(),
+        serviceName: service.name,
+        startTime: startTime.toISOString(),
+        endTime: endTime.toISOString(),
+        status: 'Đã đến',
+        notes: 'Bệnh nhân vãng lai',
+        checkInTime: startTime.toISOString(),
+        createdAt: startTime.toISOString(),
+        updatedAt: startTime.toISOString(),
+      });
+
+      const updated = await appointments.findOne({ _id: aptResult.insertedId });
+      return res.json({ data: toPublicDocument(updated) });
+    } catch (error) { next(error); }
   });
 }
 
@@ -590,6 +902,7 @@ async function main() {
       registerResourceRoutes(resourceConfig);
     }
     registerAuthRoutes();
+    registerCustomRoutes();
     registerMetaRoutes();
     registerErrorHandler();
 

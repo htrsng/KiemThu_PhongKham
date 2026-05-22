@@ -9,28 +9,28 @@ import { PermissionManagementPage } from '../pages/PermissionManagementPage'
 import { ServiceCategoryPage } from '../pages/ServiceCategoryPage'
 import { LoginPage } from '../pages/LoginPage'
 import { ProtectedRoute } from './ProtectedRoute'
+import { DoctorExaminationPage } from '../pages/DoctorExaminationPage'
+import { PaymentManagementPage } from '../pages/PaymentManagementPage'
+import { RevenueStatisticsPage } from '../pages/RevenueStatisticsPage'
 
 export function AppRouter() {
     return (
         <BrowserRouter>
             <Routes>
-                {/* Route công khai, không cần đăng nhập */}
-                <Route path="/login" element={<LoginPage />} />
-
-                {/* Các route được bảo vệ, yêu cầu đăng nhập */}
+                <Route path='/login' element={<LoginPage />} />
                 <Route element={<ProtectedRoute />}>
                     <Route index element={<DashboardPage />} />
-                    <Route path="accounts" element={<AccountManagementPage />} />
-                    <Route path="appointments" element={<AppointmentManagementPage />} />
-                    <Route path="doctors" element={<DoctorManagementPage />} />
-                    <Route path="payroll" element={<DoctorPayrollPage />} />
-                    <Route path="services" element={<ServiceCategoryPage />} />
-                    <Route path="permissions" element={<PermissionManagementPage />} />
-                    <Route path="settings" element={<GeneralSettingsPage />} />
+                    <Route path='accounts' element={<AccountManagementPage />} />
+                    <Route path='appointments' element={<AppointmentManagementPage />} />
+                    <Route path='doctors' element={<DoctorManagementPage />} />
+                    <Route path='payroll' element={<DoctorPayrollPage />} />
+                    <Route path='services' element={<ServiceCategoryPage />} />
+                    <Route path='permissions' element={<PermissionManagementPage />} />
+                    <Route path='settings' element={<GeneralSettingsPage />} />
+                    <Route path='examination' element={<DoctorExaminationPage />} />
+                    <Route path='payment' element={<PaymentManagementPage />} />
+                    <Route path='revenue' element={<RevenueStatisticsPage />} />
                 </Route>
-
-                {/* Route dự phòng, nếu người dùng truy cập đường dẫn không tồn tại */}
-                <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
         </BrowserRouter>
     )

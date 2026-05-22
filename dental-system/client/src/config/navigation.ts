@@ -7,6 +7,8 @@ import {
     Users,
     Calendar,
     Banknote,
+    CreditCard,
+    BarChart3,
 } from 'lucide-react'
 
 export type NavigationItem = {
@@ -66,6 +68,15 @@ export const navigationItems: NavigationItem[] = [
         allowedRoles: ['Admin', 'Reception'],
     },
     {
+        id: 'payment',
+        label: 'Thanh toán',
+        path: '/payment',
+        icon: CreditCard,
+        description: 'Quản lý hóa đơn & thanh toán',
+        testId: 'nav-payment',
+        allowedRoles: ['Admin', 'Reception'],
+    },
+    {
         id: 'payroll',
         label: 'Bảng lương',
         path: '/payroll',
@@ -82,6 +93,15 @@ export const navigationItems: NavigationItem[] = [
         description: 'Ma trận quyền truy cập',
         testId: 'nav-permissions',
         allowedRoles: ['Admin'],
+    },
+    {
+        id: 'revenue',
+        label: 'Thống kê doanh thu',
+        path: '/revenue',
+        icon: BarChart3,
+        description: 'Báo cáo doanh thu & Chốt ca',
+        testId: 'nav-revenue',
+        allowedRoles: ['Admin', 'Reception'],
     },
     {
         id: 'settings',

@@ -18,6 +18,7 @@ import {
     Search,
     X,
     ChevronDown,
+    AlertTriangle,
     List,
 } from 'lucide-react'
 import { PageShell } from '../components/PageShell'
@@ -30,7 +31,7 @@ import type {
     MockService,
 } from '../lib/mockData'
 import { useToast } from '../contexts/ToastContext'
-import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse } from '../lib/api'
+import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse, type MockAccount } from '../lib/api'
 import { useConfirm } from '../contexts/ConfirmContext'
 import { useAuth } from '../contexts/AuthContext' // Import useAuth
 import { EmptyState } from '../components/EmptyState'
@@ -91,6 +92,49 @@ export function AppointmentManagementPage() {
         },
         onError: (err) => addToast('error', `Lỗi khi cập nhật lịch hẹn: ${err.message}`),
     });
+
+    const { mutate: checkInAppointment } = useMutation<MockAppointment, Error, string>({
+        mutationFn: async (id) => (await api.patch<ApiItemResponse<MockAppointment>>(`/appointments/${id}/checkin`)).data.data,
+        onSuccess: (updatedApt) => {
+            queryClient.invalidateQueries({ queryKey: ['appointments'] });
+            addToast('success', `Đã check-in cho bệnh nhân ${updatedApt.patientName}.`);
+        },
+        onError: (err) => addToast('error', `Lỗi khi check-in: ${err.message}`),
+    });
+
+    const { mutate: createWalkIn } = useMutation<MockAppointment, Error, any>({
+        mutationFn: async (data) => (await api.post<ApiItemResponse<MockAppointment>>(`/appointments/walk-in`, data)).data.data,
+        onSuccess: (updatedApt) => {
+            queryClient.invalidateQueries({ queryKey: ['appointments'] });
+            queryClient.invalidateQueries({ queryKey: ['patients'] }); // Refresh patients in case new one was created
+            addToast('success', `Đã tiếp nhận và check-in cho khách vãng lai: ${updatedApt.patientName}.`);
+        },
+        onError: (err) => addToast('error', `Lỗi tạo vãng lai: ${err.message}`),
+    });
+
+    const { mutate: deleteAppointment } = useMutation<ApiDeleteResponse, Error, string>({
+        mutationFn: async (id) => (await api.delete<ApiDeleteResponse>(`/appointments/${id}`)).data,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['appointments'] });
+            addToast('success', 'Đã xóa vĩnh viễn lịch hẹn.');
+        },
+        onError: (err) => {
+            addToast('error', `Lỗi khi xóa lịch hẹn: ${err.message}`);
+        },
+    });
+
+
+    const { mutate: createInvoice } = useMutation<any, Error, any>({
+        mutationFn: async (invoiceData) => (await api.post('/invoices', invoiceData)).data.data,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['invoices'] });
+            addToast('info', 'Đã tạo hóa đơn chờ thanh toán.');
+        },
+        onError: (err) => {
+            addToast('error', `Lỗi tạo hóa đơn: ${err.message}`);
+        },
+    });
+
 
     // Data states
     // --- Server-side data for Doctor Shifts ---
@@ -258,6 +302,10 @@ export function AppointmentManagementPage() {
                         createAppointment={createAppointment}
                         currentUser={currentUser} // Pass currentUser
                         updateAppointment={updateAppointment}
+                        checkInAppointment={checkInAppointment}
+                        createWalkIn={createWalkIn}
+                        createInvoice={createInvoice}
+                        deleteAppointment={deleteAppointment}
                     />
                 )
         }
@@ -1216,7 +1264,11 @@ function AppointmentBookingView({
     doctorShifts,
     createAppointment,
     updateAppointment,
+    checkInAppointment,
     currentUser, // Accept currentUser prop
+    createWalkIn,
+    createInvoice,
+    deleteAppointment,
 }: {
     isLoading: boolean
     appointments: MockAppointment[]
@@ -1227,13 +1279,45 @@ function AppointmentBookingView({
     doctorShifts: DoctorOnCallShift[]
     createAppointment: (data: Omit<MockAppointment, 'id'>) => void
     updateAppointment: (params: { id: string; data: Partial<MockAppointment> }) => void
+    checkInAppointment: (id: string) => void
     currentUser: MockAccount | null
+    createWalkIn: (data: any) => void
+    createInvoice: (data: any) => void
 }) {
     const [doctorFilter, setDoctorFilter] = useState<string>('all')
     const [statusFilter, setStatusFilter] = useState<string>('all')
     const [page, setPage] = useState(1)
+    
+    // Walk-in modal
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isWalkInModalOpen, setIsWalkInModalOpen] = useState(false)
     const [editingId, setEditingId] = useState<string | null>(null)
+    const [dateFilter, setDateFilter] = useState<'all' | 'today'>('all')
+
+    const initialWalkInState = {
+        patientPhone: '',
+        patientName: '',
+        patientAge: '',
+        allergiesRaw: '',
+        doctorId: '',
+        serviceId: ''
+    }
+    const [walkInState, setWalkInState] = useState(initialWalkInState)
+    
+    // Auto fill walk in name if phone exists
+    useEffect(() => {
+        if(walkInState.patientPhone && walkInState.patientPhone.length >= 10) {
+            const foundPat = patients.find(p => p.phone === walkInState.patientPhone)
+            if(foundPat) {
+                setWalkInState(s => ({
+                    ...s, 
+                    patientName: foundPat.fullName,
+                    patientAge: new Date().getFullYear() - new Date(foundPat.dateOfBirth).getFullYear() + '',
+                    allergiesRaw: foundPat.allergies ? foundPat.allergies.join(', ') : ''
+                }))
+            }
+        }
+    }, [walkInState.patientPhone, patients])
     const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar')
 
     const { addToast } = useToast()
@@ -1332,7 +1416,14 @@ function AppointmentBookingView({
     }
 
     const filteredAppointments = useMemo(() => {
-        let result = appointments
+        let result = appointments;
+
+        if (dateFilter === 'today') {
+            const todayString = new Date().toDateString();
+            result = result.filter(a => new Date(a.startTime).toDateString() === todayString);
+        }
+
+        result = result
             .filter(a => doctorFilter === 'all' || a.doctorId === doctorFilter)
             .filter(a => statusFilter === 'all' || a.status === statusFilter)
             .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime())
@@ -1342,7 +1433,7 @@ function AppointmentBookingView({
         }
 
         return result;
-    }, [appointments, doctorFilter, statusFilter])
+    }, [appointments, doctorFilter, statusFilter, dateFilter, isDoctor, currentUser])
 
     const totalPages = Math.max(1, Math.ceil(filteredAppointments.length / PAGE_SIZE))
     const paginatedAppointments = useMemo(() => {
@@ -1375,9 +1466,27 @@ function AppointmentBookingView({
         })
     }, [filteredAppointments])
 
+    function renderEventContent(eventInfo: any) {
+        const apt = eventInfo.event.extendedProps;
+        const patient = patients.find(p => p.id === apt.patientId);
+        const hasAllergy = patient?.allergies && patient.allergies.length > 0;
+        
+        return (
+            <div className="flex flex-col p-1 text-xs overflow-hidden h-full" title={eventInfo.event.title + (hasAllergy ? ' (Dị ứng: ' + patient.allergies.join(', ') + ')' : '')}>
+                <div className="font-bold whitespace-nowrap overflow-hidden text-ellipsis flex items-center gap-1">
+                    {apt.patientName} {hasAllergy && <AlertTriangle className="h-3 w-3 text-rose-300 flex-shrink-0" />}
+                </div>
+                <div className="whitespace-nowrap overflow-hidden text-ellipsis opacity-90">{apt.serviceName}</div>
+                <div className="font-semibold mt-auto truncate">{apt.status}</div>
+            </div>
+        )
+    }
+
     const getStatusBadgeClass = (status: MockAppointment['status']) => {
         switch (status) {
             case 'Đã hoàn thành': return 'bg-emerald-100 text-emerald-900'
+            case 'Đã đến': return 'bg-sky-100 text-sky-900'
+            case 'Đang điều trị': return 'bg-amber-100 text-amber-900'
             case 'Đã hủy': return 'bg-rose-100 text-rose-900'
             case 'Đã lên lịch':
             default:
@@ -1388,7 +1497,7 @@ function AppointmentBookingView({
     const resetModal = () => {
         setIsModalOpen(false)
         setEditingId(null)
-        setFormState(initialFormState as U)
+        setFormState(initialFormState)
     }
 
     const openCreateModal = () => {
@@ -1492,6 +1601,27 @@ function AppointmentBookingView({
                 startTime: startTime.toISOString(),
                 endTime: endTime.toISOString(),
             }})
+
+            const statusChangedToCompleted = original?.status !== 'Đã hoàn thành' && formState.status === 'Đã hoàn thành';
+            if (statusChangedToCompleted) {
+                const amount = service ? service.basePrice : 0;
+
+                if (amount > 0) {
+                    createInvoice({
+                        appointmentId: editingId,
+                        patientId: patient.id,
+                        patientName: patient.fullName,
+                        doctorId: doctor.id,
+                        doctorName: doctor.fullName,
+                        serviceIds: [service.id],
+                        totalAmount: amount,
+                        status: 'Chưa thanh toán',
+                    });
+                } else {
+                    addToast('warning', 'Không thể tạo hóa đơn vì không tìm thấy giá dịch vụ.');
+                }
+            }
+
         } else {
             createAppointment({
                 patientId: patient.id,
@@ -1509,6 +1639,19 @@ function AppointmentBookingView({
         resetModal()
     }
 
+    const handleSaveWalkIn = () => {
+        if (!walkInState.patientPhone || !walkInState.patientName || !walkInState.doctorId || !walkInState.serviceId) {
+            addToast('error', 'Vui lòng điền SĐT, Tên, Bác sĩ và Dịch vụ.');
+            return;
+        }
+        const dataToSend = {
+            ...walkInState,
+            allergies: walkInState.allergiesRaw.split(',').map(s => s.trim()).filter(Boolean)
+        };
+        createWalkIn(dataToSend);
+        setIsWalkInModalOpen(false);
+    };
+
     const handleUpdateStatus = async (apt: MockAppointment, status: MockAppointment['status']) => {
         const confirmed = await confirm({
             title: `${status} lịch hẹn`,
@@ -1517,8 +1660,40 @@ function AppointmentBookingView({
         })
         if (confirmed) {
             updateAppointment({ id: apt.id, data: { status } })
+
+            if (status === 'Đã hoàn thành') {
+                const service = services.find(s => s.id === apt.serviceId);
+                const amount = service ? service.basePrice : 0;
+
+                if (amount > 0) {
+                    createInvoice({
+                        appointmentId: apt.id,
+                        patientId: apt.patientId,
+                        patientName: apt.patientName,
+                        doctorId: apt.doctorId,
+                        doctorName: apt.doctorName,
+                        serviceIds: [apt.serviceId],
+                        totalAmount: amount,
+                        status: 'Chưa thanh toán',
+                    });
+                } else {
+                    addToast('warning', 'Không thể tạo hóa đơn vì không tìm thấy giá dịch vụ.');
+                }
+            }
         }
     }
+
+    const handleDeleteAppointment = async (apt: MockAppointment) => {
+        const confirmed = await confirm({
+            title: 'Xóa vĩnh viễn lịch hẹn',
+            message: `Bạn có chắc muốn xóa vĩnh viễn lịch hẹn của "${apt.patientName}"? Hành động này không thể hoàn tác.`,
+            isDangerous: true,
+        });
+        if (confirmed) {
+            deleteAppointment(apt.id);
+        }
+    };
+
 
     return (
         <div className="space-y-4">
@@ -1531,6 +1706,13 @@ function AppointmentBookingView({
                     >
                         {viewMode === 'calendar' ? <List className="h-4 w-4" /> : <CalendarIcon className="h-4 w-4" />}
                         <span className="hidden sm:inline">{viewMode === 'calendar' ? 'Dạng danh sách' : 'Dạng lịch'}</span>
+                    </button>
+
+                    <button
+                        onClick={() => setDateFilter(dateFilter === 'all' ? 'today' : 'all')}
+                        className={`inline-flex h-10 items-center justify-center gap-2 rounded-xl border px-3 text-sm font-medium ${dateFilter === 'today' ? 'bg-blue-50 text-blue-700' : 'bg-white text-slate-700'}`}
+                    >
+                        {dateFilter === 'today' ? 'Lịch hẹn hôm nay' : 'Tất cả lịch hẹn'}
                     </button>
 
                     <select
@@ -1549,14 +1731,20 @@ function AppointmentBookingView({
                     >
                         <option value="all">Tất cả trạng thái</option>
                         <option>Đã lên lịch</option>
+                        <option>Đã đến</option>
+                        <option>Đang điều trị</option>
                         <option>Đã hoàn thành</option>
                         <option>Đã hủy</option>
                     </select>
                 </div>
-                <button onClick={openCreateModal} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-900 px-4 text-sm font-semibold text-white">
-                    <Plus className="h-4 w-4" /> Tạo lịch hẹn
-                    {/* Doctors can create appointments for their own schedule */}
-                </button>
+                <div className="flex gap-2">
+                    <button onClick={() => setIsWalkInModalOpen(true)} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-blue-900 bg-white px-4 text-sm font-semibold text-blue-900 transition-colors hover:bg-slate-50">
+                        <Users className="h-4 w-4" /> Khách vãng lai
+                    </button>
+                    <button onClick={openCreateModal} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-900 px-4 text-sm font-semibold text-white transition-colors hover:bg-blue-800">
+                        <Plus className="h-4 w-4" /> Tạo lịch hẹn
+                    </button>
+                </div>
             </div>
 
             {viewMode === 'calendar' ? (
@@ -1609,8 +1797,14 @@ function AppointmentBookingView({
                                 <tbody className="divide-y">
                                     {paginatedAppointments.map(apt => (
                                         <tr key={apt.id} className="hover:bg-slate-50">
-                                            <td className="px-4 py-3 font-medium text-slate-900">{formatDateTime(apt.startTime)}</td>
-                                            <td className="px-4 py-3">{apt.patientName}</td>
+                                            <td className="px-4 py-3 font-medium text-slate-900">{formatDateTime(apt.startTime)}</td><td className="px-4 py-3">
+                                                <div className="flex items-center gap-2">
+                                                    <span>{apt.patientName}</span>
+                                                    {patients.find(p => p.id === apt.patientId)?.allergies && patients.find(p => p.id === apt.patientId)?.allergies.length > 0 && (
+                                                        <AlertTriangle className="h-4 w-4 text-rose-500" title={`Dị ứng: ${patients.find(p => p.id === apt.patientId).allergies.join(', ')}`} />
+                                                    )}
+                                                </div>
+                                            </td>
                                             <td className="px-4 py-3">{apt.doctorName}</td>
                                             <td className="px-4 py-3">{apt.serviceName}</td>
                                             <td className="px-4 py-3">
@@ -1621,13 +1815,30 @@ function AppointmentBookingView({
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <button onClick={() => openEditModal(apt)} className="inline-flex h-8 w-8 items-center justify-center rounded-lg border text-slate-600 hover:text-blue-600"><Pencil className="h-4 w-4" /></button>
-                                                    {/* Doctors can only update status for their own appointments */}
-                                                    {apt.status === 'Đã lên lịch' && (!isDoctor || apt.doctorId === currentUser?.referenceId) && (
-                                                        <>
-                                                            {/* Only Admin/Reception or the doctor themselves can mark as complete/cancel */}
-                                                            <button onClick={() => handleUpdateStatus(apt, 'Đã hoàn thành')} className="inline-flex h-8 items-center rounded-lg border bg-emerald-50 px-2 text-xs text-emerald-700">Hoàn thành</button>
-                                                            <button onClick={() => handleUpdateStatus(apt, 'Đã hủy')} className="inline-flex h-8 items-center rounded-lg border bg-rose-50 px-2 text-xs text-rose-700">Hủy</button>
-                                                        </>
+                                                    {apt.status === 'Đã lên lịch' && !isDoctor && (
+                                                        <button onClick={() => checkInAppointment(apt.id)} className="inline-flex h-8 items-center rounded-lg border bg-sky-50 px-2 text-xs text-sky-700">
+                                                            Check-in
+                                                        </button>
+                                                    )}
+                                                    {apt.status === 'Đã đến' && (
+                                                        <span className="text-xs text-slate-500">
+                                                            Đến lúc: {formatDateTime(apt.checkInTime || '')}
+                                                        </span>
+                                                    )}
+                                                    {/* Complete Button */}
+                                                    {['Đã lên lịch', 'Đã đến', 'Đang điều trị'].includes(apt.status) && (!isDoctor || apt.doctorId === currentUser?.referenceId) && (
+                                                        <button onClick={() => handleUpdateStatus(apt, 'Đã hoàn thành')} className="inline-flex h-8 items-center rounded-lg border bg-emerald-50 px-2 text-xs text-emerald-700">Hoàn thành</button>
+                                                    )}
+                                                    {['Đã lên lịch', 'Đã đến'].includes(apt.status) && (!isDoctor || apt.doctorId === currentUser?.referenceId) && (
+                                                        <button onClick={() => handleUpdateStatus(apt, 'Đã hủy')} className="inline-flex h-8 items-center rounded-lg border bg-rose-50 px-2 text-xs text-rose-700">Hủy</button>
+                                                    )}
+                                                    {/* Delete Button for cancelled appointments */}
+                                                    {apt.status === 'Đã hủy' && (
+                                                        <button 
+                                                            onClick={() => handleDeleteAppointment(apt)} 
+                                                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:text-rose-600"
+                                                            title="Xóa vĩnh viễn"
+                                                        ><Trash2 className="h-4 w-4" /></button>
                                                     )}
                                                 </div>
                                             </td>
@@ -1703,6 +1914,8 @@ function AppointmentBookingView({
                                         className="mt-1 w-full rounded-lg border bg-white p-2 text-sm"
                                     >
                                         <option>Đã lên lịch</option>
+                                        <option>Đã đến</option>
+                                        <option>Đang điều trị</option>
                                         <option>Đã hoàn thành</option>
                                         <option>Đã hủy</option>
                                     </select>
@@ -1712,6 +1925,56 @@ function AppointmentBookingView({
                         <div className="mt-6 flex justify-end gap-3">
                             <button onClick={resetModal} className="rounded-lg border px-4 py-2 text-sm font-medium">Hủy</button>
                             <button onClick={handleSave} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white">{editingId ? 'Cập nhật' : 'Tạo mới'}</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Walk-in Modal */}
+            {isWalkInModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
+                        <div className="mb-4 flex items-center justify-between">
+                            <h3 className="text-xl font-semibold">Tiếp nhận khách vãng lai</h3>
+                            <button onClick={() => setIsWalkInModalOpen(false)} className="text-slate-400 hover:text-slate-600"><X className="h-5 w-5" /></button>
+                        </div>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium">Số điện thoại *</label>
+                                <input type="tel" value={walkInState.patientPhone} onChange={e => setWalkInState(s => ({ ...s, patientPhone: e.target.value }))} className="mt-1 w-full rounded-lg border p-2 text-sm" placeholder="Nhập SĐT để tìm hoặc tạo mới..." />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium">Họ tên bệnh nhân *</label>
+                                <input type="text" value={walkInState.patientName} onChange={e => setWalkInState(s => ({ ...s, patientName: e.target.value }))} className="mt-1 w-full rounded-lg border p-2 text-sm" />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium">Tuổi (ước tính)</label>
+                                    <input type="number" value={walkInState.patientAge} onChange={e => setWalkInState(s => ({ ...s, patientAge: e.target.value }))} className="mt-1 w-full rounded-lg border p-2 text-sm" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium">Dị ứng (cách nhau bởi dấu phẩy)</label>
+                                    <input type="text" value={walkInState.allergiesRaw} onChange={e => setWalkInState(s => ({ ...s, allergiesRaw: e.target.value }))} className="mt-1 w-full rounded-lg border p-2 text-sm" />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium">Dịch vụ khám *</label>
+                                <select value={walkInState.serviceId} onChange={e => setWalkInState(s => ({ ...s, serviceId: e.target.value }))} className="mt-1 w-full rounded-lg border bg-white p-2 text-sm">
+                                    <option value="">Chọn dịch vụ</option>
+                                    {services.filter(s => s.status === 'active').map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium">Bác sĩ khám *</label>
+                                <select value={walkInState.doctorId} onChange={e => setWalkInState(s => ({ ...s, doctorId: e.target.value }))} className="mt-1 w-full rounded-lg border bg-white p-2 text-sm">
+                                    <option value="">Chọn bác sĩ</option>
+                                    {doctors.filter(d => d.status === 'active').map(d => <option key={d.id} value={d.id}>{d.fullName}</option>)}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="mt-6 flex justify-end gap-3">
+                            <button onClick={() => setIsWalkInModalOpen(false)} className="rounded-lg border px-4 py-2 text-sm font-medium">Hủy</button>
+                            <button onClick={handleSaveWalkIn} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white">Tiếp nhận & Check-in</button>
                         </div>
                     </div>
                 </div>
