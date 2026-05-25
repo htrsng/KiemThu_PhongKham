@@ -761,7 +761,7 @@ function AppointmentBookingView({
                         disabled={isDoctor} // Disable doctor filter for doctors
                     >
                         <option value="all">Tất cả bác sĩ</option>
-                        {doctors.map(d => <option key={d.id} value={d.id}>{d.fullName}</option>)}
+                        {doctors.map(d => <option key={d.id} value={d.id}>{d.fullName} ({d.specialty})</option>)}
                     </select>
                     <select
                         value={statusFilter}
@@ -1016,7 +1016,7 @@ function AppointmentBookingView({
                                 <label className="block text-sm font-medium">Bác sĩ khám *</label>
                                 <select value={walkInState.doctorId} onChange={e => setWalkInState(s => ({ ...s, doctorId: e.target.value }))} className="mt-1 w-full rounded-lg border bg-white p-2 text-sm">
                                     <option value="">Chọn bác sĩ</option>
-                                    {doctors.filter(d => d.status === 'active').map(d => <option key={d.id} value={d.id}>{d.fullName}</option>)}
+                                    {doctors.filter(d => d.status === 'active').map(d => <option key={d.id} value={d.id}>{d.fullName} ({d.specialty})</option>)}
                                 </select>
                             </div>
                         </div>
@@ -1031,4 +1031,4 @@ function AppointmentBookingView({
     )
 }
 // #endregion
-
+
