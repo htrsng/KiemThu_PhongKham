@@ -139,19 +139,19 @@ export function GeneralSettingsPage() {
                     type="button"
                     data-testid="settings-tab-clinic-info"
                     onClick={() => setActiveTab('clinic-info')}
-                    className={`inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition ${activeTab === 'clinic-info' ? 'bg-blue-900 text-white' : 'text-slate-600'}`}
+                    className={`inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition ${activeTab === 'clinic-info' ? 'bg-blue-600 text-white shadow-md shadow-blue-200' : 'text-slate-600 hover:bg-slate-50'}`}
                 >
                     <Building2 className="h-4 w-4" />
-                    Clinic Info
+                    Thông tin phòng khám
                 </button>
                 <button
                     type="button"
                     data-testid="settings-tab-business-hours"
                     onClick={() => setActiveTab('business-hours')}
-                    className={`inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition ${activeTab === 'business-hours' ? 'bg-blue-900 text-white' : 'text-slate-600'}`}
+                    className={`inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition ${activeTab === 'business-hours' ? 'bg-blue-600 text-white shadow-md shadow-blue-200' : 'text-slate-600 hover:bg-slate-50'}`}
                 >
                     <Clock3 className="h-4 w-4" />
-                    Business Hours
+                    Giờ làm việc
                 </button>
             </div>
 
@@ -167,7 +167,7 @@ export function GeneralSettingsPage() {
                             <input
                                 data-testid="settings-clinic-name"
                                 value={clinicInfoForm.clinicName || ''}
-                                onChange={(event) => setClinicInfoForm((prev) => ({ ...prev, clinicName: event.target.value }))}
+                                onChange={(event) => setClinicInfoForm((prev) => prev ? { ...prev, clinicName: event.target.value } : null)}
                                 className="h-11 w-full rounded-2xl border border-slate-200 px-3 outline-none ring-blue-200 transition focus:ring"
                             />
                         </label>
@@ -177,7 +177,7 @@ export function GeneralSettingsPage() {
                             <input
                                 data-testid="settings-hotline"
                                 value={clinicInfoForm.hotline || ''}
-                                onChange={(event) => setClinicInfoForm((prev) => ({ ...prev, hotline: event.target.value }))}
+                                onChange={(event) => setClinicInfoForm((prev) => prev ? { ...prev, hotline: event.target.value } : null)}
                                 className="h-11 w-full rounded-2xl border border-slate-200 px-3 outline-none ring-blue-200 transition focus:ring"
                             />
                         </label>
@@ -187,7 +187,7 @@ export function GeneralSettingsPage() {
                             <input
                                 data-testid="settings-address"
                                 value={clinicInfoForm.address || ''}
-                                onChange={(event) => setClinicInfoForm((prev) => ({ ...prev, address: event.target.value }))}
+                                onChange={(event) => setClinicInfoForm((prev) => prev ? { ...prev, address: event.target.value } : null)}
                                 className="h-11 w-full rounded-2xl border border-slate-200 px-3 outline-none ring-blue-200 transition focus:ring"
                             />
                         </label>
@@ -197,7 +197,7 @@ export function GeneralSettingsPage() {
                             <input
                                 data-testid="settings-email"
                                 value={clinicInfoForm.email || ''}
-                                onChange={(event) => setClinicInfoForm((prev) => ({ ...prev, email: event.target.value }))}
+                                onChange={(event) => setClinicInfoForm((prev) => prev ? { ...prev, email: event.target.value } : null)}
                                 className="h-11 w-full rounded-2xl border border-slate-200 px-3 outline-none ring-blue-200 transition focus:ring"
                             />
                         </label>
@@ -207,7 +207,7 @@ export function GeneralSettingsPage() {
                             <input
                                 data-testid="settings-currency"
                                 value={clinicInfoForm.currency || ''}
-                                onChange={(event) => setClinicInfoForm((prev) => ({ ...prev, currency: event.target.value }))}
+                                onChange={(event) => setClinicInfoForm((prev) => prev ? { ...prev, currency: event.target.value } : null)}
                                 className="h-11 w-full rounded-2xl border border-slate-200 px-3 outline-none ring-blue-200 transition focus:ring"
                             />
                         </label>
@@ -234,7 +234,7 @@ export function GeneralSettingsPage() {
                             <input
                                 data-testid="settings-weekdays"
                                 value={businessHoursForm.weekdays || ''}
-                                onChange={(event) => setBusinessHoursForm((prev) => ({ ...prev, weekdays: event.target.value }))}
+                                onChange={(event) => setBusinessHoursForm((prev) => prev ? { ...prev, weekdays: event.target.value } : null)}
                                 className="h-11 w-full rounded-2xl border border-slate-200 px-3 outline-none ring-blue-200 transition focus:ring"
                                 placeholder="08:00-20:00"
                             />
@@ -245,7 +245,7 @@ export function GeneralSettingsPage() {
                             <input
                                 data-testid="settings-saturday"
                                 value={businessHoursForm.saturday || ''}
-                                onChange={(event) => setBusinessHoursForm((prev) => ({ ...prev, saturday: event.target.value }))}
+                                onChange={(event) => setBusinessHoursForm((prev) => prev ? { ...prev, saturday: event.target.value } : null)}
                                 className="h-11 w-full rounded-2xl border border-slate-200 px-3 outline-none ring-blue-200 transition focus:ring"
                                 placeholder="08:00-17:00"
                             />
@@ -256,7 +256,7 @@ export function GeneralSettingsPage() {
                             <input
                                 data-testid="settings-sunday"
                                 value={businessHoursForm.sunday || ''}
-                                onChange={(event) => setBusinessHoursForm((prev) => ({ ...prev, sunday: event.target.value }))}
+                                onChange={(event) => setBusinessHoursForm((prev) => prev ? { ...prev, sunday: event.target.value } : null)}
                                 className="h-11 w-full rounded-2xl border border-slate-200 px-3 outline-none ring-blue-200 transition focus:ring"
                                 placeholder="08:00-12:00"
                             />

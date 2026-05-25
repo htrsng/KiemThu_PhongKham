@@ -58,7 +58,7 @@ export function PayrollDetailModal({ isOpen, onClose, report, services, targetMo
                         <h4 className="font-semibold text-slate-800 mb-3">Chi tiết Lương Ca Trực</h4>
                         <div className="flex justify-between items-center bg-slate-100 p-3 rounded-lg mb-3 text-sm">
                             <div>
-                                <span className="font-medium">Tổng số giờ trực: </span>
+                                <span className="font-medium">Tổng số giờ quy đổi: </span>
                                 <span className="font-bold text-blue-600">{report.totalHours} giờ</span>
                             </div>
                             <div>
@@ -73,7 +73,9 @@ export function PayrollDetailModal({ isOpen, onClose, report, services, targetMo
                                         <th className="py-2 px-3 font-semibold">Ngày</th>
                                         <th className="py-2 px-3 font-semibold">Bắt đầu</th>
                                         <th className="py-2 px-3 font-semibold">Kết thúc</th>
-                                        <th className="py-2 px-3 font-semibold text-right">Số giờ</th>
+                                        <th className="py-2 px-3 font-semibold text-right">Giờ thực tế</th>
+                                        <th className="py-2 px-3 font-semibold text-right">Giờ quy đổi</th>
+                                        <th className="py-2 px-3 font-semibold text-right">Lương ca</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">
@@ -82,12 +84,18 @@ export function PayrollDetailModal({ isOpen, onClose, report, services, targetMo
                                             <td className="py-2 px-3">{shift.date}</td>
                                             <td className="py-2 px-3">{shift.startTime}</td>
                                             <td className="py-2 px-3">{shift.endTime}</td>
-                                            <td className="py-2 px-3 text-right font-medium">
+                                            <td className="py-2 px-3 text-right">
                                                 {(((new Date(`1970-01-01T${shift.endTime}:00Z`).getTime() - new Date(`1970-01-01T${shift.startTime}:00Z`).getTime()) / 3600000)).toFixed(2)}h
+                                            </td>
+                                            <td className="py-2 px-3 text-right font-medium">
+                                                {shift.calculatedHours?.toFixed(2) || '0.00'}h
+                                            </td>
+                                            <td className="py-2 px-3 text-right font-medium text-blue-600">
+                                                {formatVND(shift.shiftSalary || 0)}
                                             </td>
                                         </tr>
                                     )) : (
-                                        <tr><td colSpan={4} className="py-4 text-center text-slate-500">Không có ca trực trong kỳ.</td></tr>
+                                        <tr><td colSpan={6} className="py-4 text-center text-slate-500">Không có ca trực trong kỳ.</td></tr>
                                     )}
                                 </tbody>
                             </table>

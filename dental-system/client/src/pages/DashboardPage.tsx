@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'; // Tải thư viện React và các công cụ quản lý trạng thái (useState, useEffect)
-import { Calendar, User, DollarSign, Award, AlertCircle, UserCheck, CheckCircle, XCircle, CalendarPlus, LogIn, Activity } from 'lucide-react'; // Tải các biểu tượng từ thư viện lucide-react
+import { useState, useEffect } from 'react';
+import { Calendar, User, DollarSign, Award, AlertCircle } from 'lucide-react'; // Tải các biểu tượng từ thư viện lucide-react
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as PieTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as BarTooltip } from 'recharts'; // Tải các công cụ vẽ biểu đồ từ thư viện recharts
 import { api } from '../lib/api'; // Tải công cụ gọi API Axios 
 import { formatVND } from '../lib/formatters'; // Tải công cụ định dạng tiền VND
@@ -57,16 +57,6 @@ export function DashboardPage() {
 
     // Tạo mảng gồm 5 mã màu sắc để tô cho 5 phần tương ứng của biểu đồ tròn bánh Donut
     const PIE_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
-
-    const iconMap: { [key: string]: React.ElementType } = {
-        UserCheck,
-        CheckCircle,
-        XCircle,
-        CalendarPlus,
-        LogIn,
-        Calendar,
-        Activity
-    };
 
     // 3. XUẤT GIAO DIỆN HIỂN THỊ RA MÀN HÌNH (RENDER)
     
@@ -200,7 +190,7 @@ export function DashboardPage() {
                                     dataKey="value"  // Lấy dữ liệu thuộc tính value
                                 >
                                     {/* Giải lệnh quy định mâm màu từng mảnh biểu đồ */}
-                                    {data.serviceRatio.map((entry, index) => (
+                                    {data.serviceRatio.map((_, index) => (
                                         <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
                                     ))}
                                 </Pie>

@@ -8,7 +8,7 @@ import { useAuth } from '../contexts/AuthContext' // Import useAuth
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
 import { EmptyState } from '../components/EmptyState'
 import { formatDateTime, getRelativeTime } from '../lib/formatters'
-import { validateUsername, validateEmail, validatePassword, validateRequired } from '../lib/validators'
+import { validateUsername, validateEmail, validatePassword, validateRequired } from '../lib/validations'
 import { type MockAccount, type MockAuditLog } from '../lib/mockData'
 import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse } from '../lib/api'
 
@@ -86,7 +86,7 @@ export function AccountManagementPage() {
         queryFn: async () => (await api.get<ApiListResponse<MockAuditLog>>('/audit-logs')).data.data,
     });
 
-    const { mutate: createAccount } = useMutation<MockAccount, Error, Omit<MockAccount, 'id' | 'lastLogin' | 'createdAt'>>({
+    const { mutate: createAccount } = useMutation<MockAccount, Error, Omit<MockAccount, 'id' | 'lastLoginAt' | 'createdAt'>>({
         mutationFn: async (newAccount) => (await api.post<ApiItemResponse<MockAccount>>('/accounts', newAccount)).data.data,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['accounts'] });
@@ -434,7 +434,7 @@ export function AccountManagementPage() {
                                                 </span>
                                             </td>
                                             <td className="px-4 py-3 text-slate-600 text-xs">
-                                                {getRelativeTime(account.lastLogin)}
+                                                {account.lastLoginAt ? getRelativeTime(account.lastLoginAt) : 'Chưa đăng nhập'}
                                             </td>
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-2">

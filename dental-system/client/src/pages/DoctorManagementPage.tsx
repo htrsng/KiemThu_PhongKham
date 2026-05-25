@@ -13,7 +13,6 @@ import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
 import type { Doctor, DoctorPayload } from '../contexts/DataContext'
 
 const SPECIALTIES: Doctor['specialty'][] = ['Nha khoa tổng quát', 'Niềng răng', 'Implant', 'Nhổ răng', 'Nha chu']
-const ROOMS: Doctor['room'][] = Array.from({ length: 205 }, (_, i) => `Phòng ${101 + i}`) // Phòng 101 - Phòng 305
 const SCHEDULE_DAYS = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']
 const SCHEDULE_DAY_NAMES = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật']
 
@@ -54,6 +53,14 @@ export function DoctorManagementPage() {
         queryKey: ['doctors'],
         queryFn: async () => {
             const response = await api.get<ApiListResponse<Doctor>>('/doctors');
+            return response.data.data;
+        },
+    });
+
+    const { data: holidays = [] } = useQuery<{_id: string, date: string, name: string}[], Error>({
+        queryKey: ['holidays'],
+        queryFn: async () => {
+            const response = await api.get('/holidays');
             return response.data.data;
         },
     });
@@ -124,7 +131,6 @@ export function DoctorManagementPage() {
     const [searchTerm, setSearchTerm] = useState('')
     const [specialtyFilter, setSpecialtyFilter] = useState<Doctor['specialty'] | null>(null)
     const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all')
-    const [roomFilter, setRoomFilter] = useState<Doctor['room'] | null>(null)
     const [sortBy, setSortBy] = useState<'name' | 'fee' | 'experience'>('name')
     const isDoctor = currentUser?.role === 'Doctor';
 
@@ -158,11 +164,6 @@ export function DoctorManagementPage() {
             result = result.filter((d) => d.status === statusFilter) // Giờ sẽ hoạt động đúng
         }
 
-        // Room filter
-        if (roomFilter) {
-            result = result.filter((d) => d.room === roomFilter)
-        }
-
         // Sort
         result.sort((a, b) => {
             if (sortBy === 'name') return a.fullName.localeCompare(b.fullName)
@@ -172,7 +173,7 @@ export function DoctorManagementPage() {
         })
 
         return result
-    }, [doctors, searchTerm, specialtyFilter, statusFilter, roomFilter, sortBy])
+    }, [doctors, searchTerm, specialtyFilter, statusFilter, sortBy])
 
     // Pagination
     const totalPages = Math.ceil(filteredDoctors.length / itemsPerPage)
@@ -264,8 +265,7 @@ export function DoctorManagementPage() {
                     </button>
                 </div>
 
-                {/* Filters */}
-                <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
                     <select
                         value={specialtyFilter || ''}
                         onChange={(e) => {
@@ -301,24 +301,6 @@ export function DoctorManagementPage() {
                     </select>
 
                     <select
-                        value={roomFilter || ''}
-                        onChange={(e) => {
-                            const nextValue = e.target.value
-                            setRoomFilter(nextValue ? (nextValue as Doctor['room']) : null)
-                            setCurrentPage(1)
-                            if (isDoctor) setRoomFilter(null); // Doctors cannot filter by room if only seeing their own
-                        }}
-                        className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none ring-blue-200 transition focus:ring"
-                    >
-                        <option value="">Tất cả phòng</option>
-                        {ROOMS.map((room) => (
-                            <option key={room} value={room}>
-                                {room}
-                            </option>
-                        ))}
-                    </select>
-
-                    <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
                         className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none ring-blue-200 transition focus:ring"
@@ -334,7 +316,6 @@ export function DoctorManagementPage() {
                             setSearchTerm('')
                             setSpecialtyFilter(null)
                             setStatusFilter('all')
-                            setRoomFilter(null)
                             setSortBy('name')
                             setCurrentPage(1)
                             if (isDoctor) { /* No need to clear filters if they are already disabled/filtered */ }
@@ -518,14 +499,25 @@ export function DoctorManagementPage() {
                         </div>
 
                         <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
-                            {SCHEDULE_DAYS.map((day, idx) => (
-                                <div key={day} className="rounded-xl border border-slate-200 bg-white p-4">
+                            {SCHEDULE_DAYS.map((day, idx) => {
+                                const currentDate = addDays(scheduleWeekStartDate, idx);
+                                // Set to beginning of day in local timezone to avoid timezone shift matching
+                                const dStr = new Date(currentDate.getTime() - (currentDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+                                const isHoliday = holidays.find(h => h.date.startsWith(dStr));
+
+                                return (
+                                <div key={day} className={`rounded-xl border border-slate-200 p-4 ${isHoliday ? 'bg-slate-50' : 'bg-white'}`}>
                                     <div className="flex items-center justify-between">
                                         <div>
-                                            <span className="font-bold text-slate-900">{SCHEDULE_DAY_NAMES[idx]}</span>
+                                            <span className={`font-bold ${isHoliday ? 'text-slate-500' : 'text-slate-900'}`}>{SCHEDULE_DAY_NAMES[idx]}</span>
                                             <div className="text-xs text-slate-500">
-                                                {formatDate(addDays(scheduleWeekStartDate, idx), 'short')}
+                                                {formatDate(currentDate, 'short')}
                                             </div>
+                                            {isHoliday && (
+                                                <div className="mt-1 inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-[10px] font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                                                    Nghỉ lễ: {isHoliday.name}
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="flex items-center gap-3">
                                             <label htmlFor={`enabled-${day}`} className="text-sm font-medium text-slate-700">Làm việc</label>
@@ -586,7 +578,7 @@ export function DoctorManagementPage() {
                                         </div>
                                     )}
                                 </div>
-                            ))}
+                            )})}
                         </div>
 
                         <div className="mt-6 flex justify-end gap-3">

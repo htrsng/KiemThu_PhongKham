@@ -9,6 +9,8 @@ import {
     Banknote,
     CreditCard,
     BarChart3,
+    CalendarDays,
+    UserRound,
 } from 'lucide-react'
 
 export type NavigationItem = {
@@ -18,6 +20,7 @@ export type NavigationItem = {
     icon: typeof LayoutDashboard
     description: string
     testId: string
+    group: 'Chung' | 'Lâm sàng' | 'Hành chính' | 'Hệ thống'
     allowedRoles: ('Admin' | 'Doctor' | 'Reception')[]
 }
 
@@ -29,24 +32,7 @@ export const navigationItems: NavigationItem[] = [
         icon: LayoutDashboard,
         description: 'Tổng quan hoạt động',
         testId: 'nav-dashboard',
-        allowedRoles: ['Admin', 'Doctor', 'Reception'],
-    },
-    {
-        id: 'accounts',
-        label: 'Quản lý tài khoản',
-        path: '/accounts',
-        icon: Users,
-        description: 'Tài khoản và trạng thái',
-        testId: 'nav-accounts',
-        allowedRoles: ['Admin'], // Chỉ Admin có thể quản lý tài khoản
-    },
-    {
-        id: 'doctors',
-        label: 'Quản lý bác sĩ',
-        path: '/doctors',
-        icon: Stethoscope,
-        description: 'Hồ sơ chuyên môn',
-        testId: 'nav-doctors', // Admin quản lý tất cả, Bác sĩ xem/sửa hồ sơ của mình
+        group: 'Chung',
         allowedRoles: ['Admin', 'Doctor', 'Reception'],
     },
     {
@@ -54,8 +40,39 @@ export const navigationItems: NavigationItem[] = [
         label: 'Quản lý Lịch hẹn',
         path: '/appointments',
         icon: Calendar,
-        description: 'Lịch hẹn và lịch làm việc',
-        testId: 'nav-appointments', // Admin/Lễ tân quản lý tất cả, Bác sĩ quản lý lịch của mình
+        description: 'Lịch hẹn đặt trước',
+        testId: 'nav-appointments', 
+        group: 'Lâm sàng',
+        allowedRoles: ['Admin', 'Doctor', 'Reception'],
+    },
+    {
+        id: 'patients',
+        label: 'Quản lý Bệnh nhân',
+        path: '/patients',
+        icon: UserRound,
+        description: 'Hồ sơ bệnh án và lịch sử khám',
+        testId: 'nav-patients', 
+        group: 'Lâm sàng',
+        allowedRoles: ['Admin', 'Reception', 'Doctor'],
+    },
+    {
+        id: 'schedule',
+        label: 'Quản lý Lịch trực',
+        path: '/schedule',
+        icon: CalendarDays,
+        description: 'Ca làm việc và ngày nghỉ',
+        testId: 'nav-schedule', 
+        group: 'Hành chính',
+        allowedRoles: ['Admin', 'Reception', 'Doctor'],
+    },
+    {
+        id: 'doctors',
+        label: 'Quản lý bác sĩ',
+        path: '/doctors',
+        icon: Stethoscope,
+        description: 'Hồ sơ chuyên môn',
+        testId: 'nav-doctors', 
+        group: 'Hệ thống',
         allowedRoles: ['Admin', 'Doctor', 'Reception'],
     },
     {
@@ -65,6 +82,7 @@ export const navigationItems: NavigationItem[] = [
         icon: ClipboardList,
         description: 'Giá và lịch sử',
         testId: 'nav-services',
+        group: 'Hệ thống',
         allowedRoles: ['Admin', 'Reception'],
     },
     {
@@ -74,6 +92,17 @@ export const navigationItems: NavigationItem[] = [
         icon: CreditCard,
         description: 'Quản lý hóa đơn & thanh toán',
         testId: 'nav-payment',
+        group: 'Hành chính',
+        allowedRoles: ['Admin', 'Reception'],
+    },
+    {
+        id: 'revenue',
+        label: 'Thống kê doanh thu',
+        path: '/revenue',
+        icon: BarChart3,
+        description: 'Báo cáo doanh thu & Chốt ca',
+        testId: 'nav-revenue',
+        group: 'Hành chính',
         allowedRoles: ['Admin', 'Reception'],
     },
     {
@@ -83,7 +112,18 @@ export const navigationItems: NavigationItem[] = [
         icon: Banknote,
         description: 'Tính lương bác sĩ',
         testId: 'nav-payroll',
+        group: 'Hành chính',
         allowedRoles: ['Admin', 'Doctor'],
+    },
+    {
+        id: 'accounts',
+        label: 'Quản lý tài khoản',
+        path: '/accounts',
+        icon: Users,
+        description: 'Tài khoản và trạng thái',
+        testId: 'nav-accounts',
+        group: 'Hệ thống',
+        allowedRoles: ['Admin'], 
     },
     {
         id: 'permissions',
@@ -92,16 +132,8 @@ export const navigationItems: NavigationItem[] = [
         icon: ShieldCheck,
         description: 'Ma trận quyền truy cập',
         testId: 'nav-permissions',
+        group: 'Hệ thống',
         allowedRoles: ['Admin'],
-    },
-    {
-        id: 'revenue',
-        label: 'Thống kê doanh thu',
-        path: '/revenue',
-        icon: BarChart3,
-        description: 'Báo cáo doanh thu & Chốt ca',
-        testId: 'nav-revenue',
-        allowedRoles: ['Admin', 'Reception'],
     },
     {
         id: 'settings',
@@ -110,6 +142,7 @@ export const navigationItems: NavigationItem[] = [
         icon: Settings2,
         description: 'Thông tin và giờ làm việc',
         testId: 'nav-settings',
+        group: 'Hệ thống',
         allowedRoles: ['Admin'],
     },
 ]

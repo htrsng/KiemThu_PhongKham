@@ -1,18 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../lib/api'; 
 import { formatVND } from '../lib/formatters'; 
 import { BarChart3, Download, Filter, Bell, User } from 'lucide-react'; 
-import { LineChart, Line, PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { LineChart, Line, PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, XAxis, YAxis, CartesianGrid, BarChart, Bar } from 'recharts';
 
 export function RevenueStatisticsPage() {
     // ---- PHẦN 1: TẠO CÁC BIẾN TRẠNG THÁI (STATE) ĐỂ LƯU DỮ LIỆU ----
 
     // Biến data dùng để lưu toàn bộ số liệu biểu đồ mà Server sẽ trả về 
-    const [data, setData] = useState({
+    const [data, setData] = useState<{
+        summary: { totalRevenue: number; transactionCount: number; averagePerTransaction: number; totalDebt: number };
+        revenueByDate: any[];
+        paymentMethods: any[];
+        revenueByDoctor: any[];
+        recentTransactions: any[];
+    }>({
         summary: { totalRevenue: 0, transactionCount: 0, averagePerTransaction: 0, totalDebt: 0 },
         revenueByDate: [],
         paymentMethods: [],
+        revenueByDoctor: [],
         recentTransactions: []
     });
     
@@ -92,6 +99,15 @@ export function RevenueStatisticsPage() {
                     serviceName: tx.serviceIds?.map((id: string) => servicesMap.get(id)).filter(Boolean).join(', ') || 'Dịch vụ tổng hợp'
                 }));
 
+                // Tính doanh thu theo bác sĩ
+                const doctorRevenueMap = new Map<string, number>();
+                paidInvoices.forEach((inv: any) => {
+                    const docName = inv.doctorName || 'Khác';
+                    doctorRevenueMap.set(docName, (doctorRevenueMap.get(docName) || 0) + (inv.finalAmount || inv.totalAmount || 0));
+                });
+                const revenueByDoctor = Array.from(doctorRevenueMap, ([name, value]) => ({ name, value }))
+                    .sort((a, b) => b.value - a.value).slice(0, 5); // Top 5
+
                 // 4. Lưu lại toàn bộ dữ liệu vào state React
                 setData({
                     summary: {
@@ -102,6 +118,7 @@ export function RevenueStatisticsPage() {
                     },
                     revenueByDate,
                     paymentMethods: Array.from(methodMap, ([method, value]) => ({ method, value })),
+                    revenueByDoctor,
                     recentTransactions,
                 });
                 
@@ -125,8 +142,8 @@ export function RevenueStatisticsPage() {
             {/* 1. HEADER CHÍNH */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-2xl border border-slate-200 shadow-sm gap-4">
                 <div>
-                    <div className="text-xs text-slate-500 font-medium mb-1">Dashboard &gt; Thống kê doanh thu</div>
-                    <h1 className="text-2xl font-bold text-slate-800 tracking-tight">SmileCare Dental Clinic</h1>
+                    <div className="text-xs text-slate-500 font-medium mb-1">Bảng điều khiển &gt; Thống kê doanh thu</div>
+                    <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Nha Khoa SmileCare</h1>
                 </div>
                 <div className="flex items-center gap-4">
                     <button className="p-2 bg-slate-100 rounded-full hover:bg-slate-200 relative transition-colors">
@@ -135,7 +152,7 @@ export function RevenueStatisticsPage() {
                     </button>
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full border border-blue-100 cursor-pointer hover:bg-blue-100">
                         <User className="w-5 h-5" />
-                        <span className="font-semibold text-sm">Admin</span>
+                        <span className="font-semibold text-sm">Quản trị viên</span>
                     </div>
                 </div>
             </div>
@@ -196,61 +213,81 @@ export function RevenueStatisticsPage() {
             ) : (
                 <>
                     {/* 3. CÁC THẺ SỐ LIỆU TỔNG QUAN */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div className="bg-gradient-to-r from-blue-600 to-sky-500 p-6 rounded-2xl shadow-md text-white border border-blue-400">
-                            <div className="text-blue-100 font-medium text-sm mb-2 opacity-90">Tổng Doanh Thu (Đã thu)</div>
-                            <div className="text-3xl font-bold truncate tracking-tight">{formatVND(data.summary.totalRevenue)}</div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="bg-gradient-to-r from-blue-600 to-sky-500 p-4 rounded-xl shadow-sm text-white">
+                            <div className="text-blue-100 font-medium text-xs mb-1 opacity-90">Tổng Doanh Thu (Đã thu)</div>
+                            <div className="text-2xl font-bold truncate tracking-tight">{formatVND(data.summary.totalRevenue)}</div>
                         </div>
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                            <div className="text-slate-500 font-medium text-sm mb-2">Số giao dịch thanh toán</div>
-                            <div className="text-3xl font-bold text-slate-800 tracking-tight">{data.summary.transactionCount}</div>
+                        <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                            <div className="text-slate-500 font-medium text-xs mb-1">Số giao dịch thanh toán</div>
+                            <div className="text-2xl font-bold text-slate-800 tracking-tight">{data.summary.transactionCount}</div>
                         </div>
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                            <div className="text-slate-500 font-medium text-sm mb-2">Trung bình mỗi giao dịch</div>
-                            <div className="text-3xl font-bold text-slate-800 tracking-tight">{formatVND(data.summary.averagePerTransaction)}</div>
+                        <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                            <div className="text-slate-500 font-medium text-xs mb-1">Trung bình mỗi giao dịch</div>
+                            <div className="text-2xl font-bold text-slate-800 tracking-tight">{formatVND(data.summary.averagePerTransaction)}</div>
                         </div>
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                            <div className="text-rose-500 font-medium text-sm mb-2">Tổng công nợ</div>
-                            <div className="text-3xl font-bold text-rose-600 tracking-tight">{formatVND(data.summary.totalDebt)}</div>
+                        <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                            <div className="text-rose-500 font-medium text-xs mb-1">Tổng công nợ</div>
+                            <div className="text-2xl font-bold text-rose-600 tracking-tight">{formatVND(data.summary.totalDebt)}</div>
                         </div>
                     </div>
 
                     {/* 4. KHU VỰC BIỂU ĐỒ */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2">
-                            <h3 className="font-bold text-slate-800 mb-6 flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center"><BarChart3 className="w-4 h-4 text-blue-600" /></div> 
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 lg:col-span-2">
+                            <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2 text-sm">
+                                <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center"><BarChart3 className="w-3 h-3 text-blue-600" /></div> 
                                 Biểu đồ doanh thu
                             </h3>
-                            <div className="h-80 w-full">
+                            <div className="h-64 w-full">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <LineChart data={data.revenueByDate} margin={{ top: 5, right: 20, bottom: 5, left: -20 }}>
                                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                                         <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} dy={15} />
                                         <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} tickFormatter={(val) => `${val/1000000}M`} />
-                                        <Tooltip formatter={(value: number) => formatVND(value)} labelStyle={{color: '#0f172a', fontWeight: 'bold'}} />
+                                        <Tooltip formatter={(value: any) => formatVND(value)} labelStyle={{color: '#0f172a', fontWeight: 'bold'}} />
                                         <Line type="monotone" dataKey="revenue" name="Doanh thu" stroke="#2563eb" strokeWidth={3.5} dot={{r: 5, fill: '#fff', strokeWidth: 2.5, stroke: '#2563eb'}} />
                                     </LineChart>
                                 </ResponsiveContainer>
                             </div>
                         </div>
 
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                            <h3 className="font-bold text-slate-800 mb-6 flex items-center gap-2">
+                        <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                            <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2 text-sm">
                                 Tỷ trọng PT Thanh toán
                             </h3>
-                            <div className="h-72 w-full mt-4">
+                            <div className="h-64 w-full mt-2">
                                 <ResponsiveContainer width="100%" height="100%">
                                     {data.paymentMethods.length > 0 ? (
                                         <PieChart>
                                             <Pie data={data.paymentMethods} dataKey="value" nameKey="method" cx="50%" cy="50%" innerRadius={65} outerRadius={90} paddingAngle={6}>
-                                                {data.paymentMethods.map((entry, index) => (
+                                                {data.paymentMethods.map((_, index) => (
                                                     <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} stroke="none" />
                                                 ))}
                                             </Pie>
-                                            <Tooltip formatter={(value: number) => formatVND(value)} />
+                                            <Tooltip formatter={(value: any) => formatVND(value)} />
                                             <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{fontSize: '13px', color: '#475569'}} />
                                         </PieChart>
+                                    ) : (
+                                        <div className="flex h-full items-center justify-center text-slate-400 font-medium italic">Chưa có dữ liệu</div>
+                                    )}
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+                        <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 lg:col-span-3">
+                            <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2 text-sm">
+                                Top Doanh thu theo Bác sĩ
+                            </h3>
+                            <div className="h-64 w-full mt-2">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    {data.revenueByDoctor.length > 0 ? (
+                                        <BarChart data={data.revenueByDoctor} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
+                                            <XAxis type="number" axisLine={false} tickLine={false} tickFormatter={(val) => `${val/1000000}M`} tick={{fill: '#94a3b8', fontSize: 12}} />
+                                            <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{fill: '#475569', fontSize: 13, fontWeight: 500}} width={150} />
+                                            <Tooltip formatter={(value: any) => formatVND(value)} cursor={{fill: '#f8fafc'}} />
+                                            <Bar dataKey="value" name="Doanh thu" fill="#10b981" radius={[0, 4, 4, 0]} barSize={24} />
+                                        </BarChart>
                                     ) : (
                                         <div className="flex h-full items-center justify-center text-slate-400 font-medium italic">Chưa có dữ liệu</div>
                                     )}

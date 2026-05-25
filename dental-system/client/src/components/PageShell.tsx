@@ -20,11 +20,7 @@ export function PageShell({ title, description, testId, children }: PageShellPro
                 <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{description}</p>
             </div>
 
-            {children ? children : (
-            <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500 shadow-sm">
-                Nội dung chi tiết của module sẽ được triển khai ở bước tiếp theo với mock data, bảng biểu và modal.
-            </div>
-            )}
+            {children}
         </section>
     )
 }

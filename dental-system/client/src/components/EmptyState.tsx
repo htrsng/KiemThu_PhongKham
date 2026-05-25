@@ -5,6 +5,7 @@ type EmptyStateProps = {
     description?: string
     onClearFilters?: () => void
     showClearButton?: boolean
+    icon?: React.ElementType
 }
 
 export function EmptyState({
@@ -12,11 +13,12 @@ export function EmptyState({
     description = 'Không có dữ liệu để hiển thị',
     onClearFilters,
     showClearButton = false,
+    icon: Icon = Search,
 }: EmptyStateProps) {
     return (
         <div className="flex flex-col items-center justify-center rounded-2xl bg-slate-50 px-6 py-16">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-200">
-                <Search className="h-8 w-8 text-slate-400" />
+                <Icon className="h-8 w-8 text-slate-400" strokeWidth={1.5} />
             </div>
             <h3 className="mt-4 text-lg font-semibold text-slate-900">{title}</h3>
             <p className="mt-2 text-sm text-slate-600">{description}</p>

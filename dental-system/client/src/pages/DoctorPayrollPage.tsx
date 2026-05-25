@@ -79,8 +79,9 @@ export function DoctorPayrollPage() {
                 testId="page-payroll"
             />
 
+
             {/* Summary Cards */}
-            <div className={`grid gap-4 ${currentUser?.role === 'Doctor' ? 'md:grid-cols-1' : 'md:grid-cols-3'}`}>
+            <div className={`grid gap-4 mt-8 ${currentUser?.role === 'Doctor' ? 'md:grid-cols-1' : 'md:grid-cols-3'}`}>
                 <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                     <div className="flex items-center gap-4">
                         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
@@ -158,7 +159,7 @@ export function DoctorPayrollPage() {
                         <thead>
                             <tr className="border-b border-slate-200 bg-slate-50/50">
                                 <th className="px-6 py-4 font-bold text-slate-700">Bác sĩ</th>
-                                <th className="px-6 py-4 font-bold text-slate-700 text-center">Giờ trực</th>
+                                <th className="px-6 py-4 font-bold text-slate-700 text-center">Giờ quy đổi</th>
                                 <th className="px-6 py-4 font-bold text-slate-700">Lương ca trực</th>
                                 <th className="px-6 py-4 font-bold text-slate-700 text-center">Ca khám</th>
                                 <th className="px-6 py-4 font-bold text-slate-700">Hoa hồng (Khám + DV)</th>

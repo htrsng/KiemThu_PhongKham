@@ -1,19 +1,14 @@
 import { useState, useEffect } from 'react'
+import { Check, X } from 'lucide-react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { PageShell } from '../components/PageShell'
 import { useToast } from '../contexts/ToastContext'
 import { useAuth } from '../contexts/AuthContext' // Import useAuth
 import { EmptyState } from '../components/EmptyState'
-import { api, type ApiItemResponse } from '../lib/api'
+import { api, type ApiListResponse } from '../lib/api'
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
 
-type RolePermissionMatrix = {
-    [role: string]: {
-        [module: string]: {
-            [action: string]: boolean
-        }
-    }
-}
+
 
 type PermissionMatrix = {
     [module: string]: {
@@ -46,10 +41,10 @@ export function PermissionManagementPage() {
     const { data: rolePermissionsData, isLoading, isError } = useQuery({
         queryKey: ['permissions', activeRole],
         queryFn: async (): Promise<PermissionMatrix> => {
-            const res = await api.get<ApiItemResponse<{ role: string, permissions: PermissionMatrix }>>(`/permissions/roles/${activeRole}`);
-            return res.data.data.permissions;
+            const res = await api.get<ApiListResponse<{ id: string, role: string, permissions: PermissionMatrix }>>(`/role_permissions?role=${activeRole}`);
+            return res.data.data[0]?.permissions || {};
         },
-        keepPreviousData: true,
+        placeholderData: (prev) => prev,
     });
 
     // Update local state when fetched data changes
@@ -60,9 +55,16 @@ export function PermissionManagementPage() {
     }, [rolePermissionsData]);
 
     // Mutation to save permissions
-    const { mutate: savePermissions, isLoading: isSaving } = useMutation<any, Error, PermissionMatrix>({
-        mutationFn: (updatedPermissions: PermissionMatrix) => {
-            return api.put(`/permissions/roles/${activeRole}`, { permissions: updatedPermissions });
+    const { mutate: savePermissions, isPending: isSaving } = useMutation<any, Error, PermissionMatrix>({
+        mutationFn: async (updatedPermissions: PermissionMatrix) => {
+            // Lấy id của role_permission hiện tại để PUT
+            const res = await api.get<ApiListResponse<{ id: string, role: string, permissions: PermissionMatrix }>>(`/role_permissions?role=${activeRole}`);
+            const rolePermId = res.data.data[0]?.id;
+            if (rolePermId) {
+                return api.put(`/role_permissions/${rolePermId}`, { permissions: updatedPermissions });
+            } else {
+                return api.post(`/role_permissions`, { role: activeRole, permissions: updatedPermissions });
+            }
         },
         onSuccess: () => {
             addToast('success', 'Cập nhật cấu hình quyền hạn thành công');
@@ -163,49 +165,46 @@ export function PermissionManagementPage() {
 
             {/* Permission Matrix */}
             {isLoading ? (
-                <div className="rounded-2xl border border-slate-200 bg-white p-6"><TableLoadingSkeleton rows={MODULES.length} cols={ACTIONS.length + 1} /></div>
+                <div className="rounded-2xl border border-slate-200 bg-white p-6"><TableLoadingSkeleton rows={MODULES.length} /></div>
             ) : isError ? (
                 <EmptyState title="Lỗi tải dữ liệu" description="Không thể tải cấu hình quyền. Vui lòng thử lại." />
             ) : permissions && (
                 <>
-                    <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
-                        <table className="min-w-full text-left text-sm">
-                            <thead>
-                                <tr className="border-b border-slate-200 bg-slate-50">
-                                    <th className="sticky left-0 z-10 bg-slate-50 px-4 py-4 font-semibold text-slate-700">Module</th>
-                                    {ACTIONS.map((action) => (
-                                        <th key={action} className="px-4 py-4 text-center font-semibold text-slate-700 whitespace-nowrap">
-                                            {action}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-200">
-                                {MODULES.map((module) => (
-                                    <tr key={module} className="hover:bg-slate-50">
-                                        <td className="sticky left-0 z-10 bg-white px-4 py-4 font-medium text-slate-900 hover:bg-slate-50">
-                                            {module}
-                                        </td>
-                                        {ACTIONS.map((action) => (
-                                            <td key={action} className="px-4 py-4 text-center">
-                                                <label className="flex items-center justify-center cursor-pointer">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={permissions[module]?.[action] || false}
-                                                        onChange={() => togglePermission(module, action)}
-                                                        className="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                                                    />
-                                                </label>
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {MODULES.map((module) => (
+                            <div key={module} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm flex flex-col hover:border-blue-200 transition">
+                                <h3 className="text-lg font-bold text-slate-800 mb-4 pb-3 border-b border-slate-100">{module}</h3>
+                                <div className="space-y-3 flex-1">
+                                    {ACTIONS.map((action) => {
+                                        const hasPermission = permissions[module]?.[action] || false;
+                                        return (
+                                            <div 
+                                                key={action} 
+                                                onClick={() => togglePermission(module, action)}
+                                                className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all ${
+                                                    hasPermission 
+                                                    ? 'bg-blue-50/70 border border-blue-100' 
+                                                    : 'bg-slate-50 border border-transparent hover:bg-slate-100'
+                                                }`}
+                                            >
+                                                <span className={`text-sm font-medium ${hasPermission ? 'text-blue-800' : 'text-slate-600'}`}>
+                                                    {action}
+                                                </span>
+                                                <div className={`w-6 h-6 rounded-md flex items-center justify-center transition-colors ${
+                                                    hasPermission ? 'bg-blue-500 text-white' : 'bg-slate-200 text-slate-400'
+                                                }`}>
+                                                    {hasPermission ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        ))}
                     </div>
 
                     {/* Summary */}
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm flex justify-between items-center mt-6">
                         <p className="text-sm text-slate-700">
                             <span className="font-semibold">Tổng quyền:</span>{' '}
                             {Object.values(permissions)

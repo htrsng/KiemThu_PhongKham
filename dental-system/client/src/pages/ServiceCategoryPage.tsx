@@ -5,6 +5,7 @@ import { PageShell } from '../components/PageShell'
 import { useToast } from '../contexts/ToastContext'
 import { useConfirm } from '../contexts/ConfirmContext'
 import { formatVND, formatDate } from '../lib/formatters'
+import { validateRequired, validateNumberRange, validateDateRange } from '../lib/validations'
 import { useAuth } from '../contexts/AuthContext' // Import useAuth
 import { type MockService, type MockPricingPolicy } from '../lib/mockData'
 import { EmptyState } from '../components/EmptyState'
@@ -187,9 +188,9 @@ export function ServiceCategoryPage() {
 
     function validateServiceForm(): boolean {
         const errors: ServiceFormErrors = {}
-        if (!serviceFormState.name.trim()) errors.name = 'Tên dịch vụ không được để trống'
-        if (serviceFormState.basePrice <= 0) errors.basePrice = 'Giá cơ bản phải lớn hơn 0'
-        if (serviceFormState.duration <= 0) errors.duration = 'Thời gian phải lớn hơn 0'
+        if (!validateRequired(serviceFormState.name, 'Tên dịch vụ').valid) errors.name = validateRequired(serviceFormState.name, 'Tên dịch vụ').error
+        if (!validateNumberRange(serviceFormState.basePrice, 1, Infinity, 'Giá cơ bản').valid) errors.basePrice = 'Giá cơ bản phải lớn hơn 0'
+        if (!validateNumberRange(serviceFormState.duration, 1, Infinity, 'Thời gian').valid) errors.duration = 'Thời gian phải lớn hơn 0'
         setServiceFormErrors(errors)
         return Object.keys(errors).length === 0
     }
@@ -246,10 +247,10 @@ export function ServiceCategoryPage() {
 
     function validatePricingForm(): boolean {
         const errors: PricingFormErrors = {}
-        if (!pricingFormState.serviceId) errors.serviceId = 'Vui lòng chọn dịch vụ'
-        if (pricingFormState.price <= 0) errors.price = 'Giá phải lớn hơn 0'
-        if (new Date(pricingFormState.expiryDate) <= new Date(pricingFormState.effectiveDate)) {
-            errors.expiryDate = 'Ngày hết hạn phải sau ngày áp dụng'
+        if (!validateRequired(pricingFormState.serviceId, 'Dịch vụ').valid) errors.serviceId = 'Vui lòng chọn dịch vụ'
+        if (!validateNumberRange(pricingFormState.price, 1, Infinity, 'Giá').valid) errors.price = 'Giá phải lớn hơn 0'
+        if (!validateDateRange(pricingFormState.effectiveDate, pricingFormState.expiryDate).valid) {
+            errors.expiryDate = validateDateRange(pricingFormState.effectiveDate, pricingFormState.expiryDate).error
         }
         setPricingFormErrors(errors)
         return Object.keys(errors).length === 0

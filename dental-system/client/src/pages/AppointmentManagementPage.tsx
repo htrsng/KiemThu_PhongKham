@@ -1,67 +1,49 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import FullCalendar from '@fullcalendar/react'
-import type { EventClickArg, EventContentArg } from '@fullcalendar/core'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import type { EventClickArg } from '@fullcalendar/core'
 import type { DateClickArg } from '@fullcalendar/interaction'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import viLocale from '@fullcalendar/core/locales/vi'
 import {
-    Calendar as CalendarIcon,
-    Users,
-    Clock,
-    CalendarOff,
-    SlidersHorizontal,
     Plus,
     Trash2,
     Pencil,
-    Search,
     X,
-    ChevronDown,
+    Users,
     AlertTriangle,
-    List,
+    Search,
+    CalendarHeart,
+    Clock,
+    Wallet
 } from 'lucide-react'
 import { PageShell } from '../components/PageShell'
-import type { 
-    MockPatient,
-    MockAppointment,
-    MockWorkShift,
-    MockClinicHoliday,
-    MockDoctor,
-    MockService,
-} from '../lib/mockData'
+import type { MockAppointment, MockPatient, MockDoctor, MockService, MockClinicHoliday, MockAccount } from '../lib/mockData'
 import { useToast } from '../contexts/ToastContext'
-import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse, type MockAccount } from '../lib/api'
+import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse } from '../lib/api'
 import { useConfirm } from '../contexts/ConfirmContext'
 import { useAuth } from '../contexts/AuthContext' // Import useAuth
 import { EmptyState } from '../components/EmptyState'
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
-import { formatDate, formatDateTime, formatDateTimeLocal, formatPhone, formatVND, getSpecialtyColor } from '../lib/formatters'
+import { formatDate, formatDateTime, formatDateTimeLocal, formatVND } from '../lib/formatters'
 
-type SubPage = 'appointments' | 'patients' | 'doctor-schedule' | 'work-shifts' | 'holidays'
 
-const menuItems: { id: SubPage; label: string; icon: React.ElementType }[] = [
-    { id: 'appointments', label: 'Lịch hẹn', icon: CalendarIcon },
-    { id: 'patients', label: 'Quản lý Bệnh nhân', icon: Users },
-    { id: 'doctor-schedule', label: 'Lịch trực bác sĩ', icon: Clock },
-    { id: 'work-shifts', label: 'Cài đặt ca làm việc', icon: SlidersHorizontal },
-    { id: 'holidays', label: 'Cài đặt ngày nghỉ', icon: CalendarOff },
-]
+const PAGE_SIZE = 10;
 
 type DoctorOnCallShift = {
-    id: string // This type is already defined in mockData.ts as MockDoctorShift
-    doctorId: string // It's better to use the type from mockData.ts or DataContext.tsx
-    doctorName: string // Let's stick to the existing type for consistency.
-    date: string // YYYY-MM-DD (local)
-    startTime: string // HH:mm
-    endTime: string // HH:mm
+    id: string 
+    doctorId: string 
+    doctorName: string 
+    date: string 
+    startTime: string 
+    endTime: string 
     status: 'Đã đăng ký' | 'Đã hủy'
 }
 
-const PAGE_SIZE = 10
-
 export function AppointmentManagementPage() {
-    const [activeSubPage, setActiveSubPage] = useState<SubPage>('doctor-schedule')
+
     const { currentUser } = useAuth() // Get current user
     const queryClient = useQueryClient()
     const { addToast } = useToast()
@@ -85,7 +67,7 @@ export function AppointmentManagementPage() {
         mutationFn: async ({ id, data }) => (await api.put<ApiItemResponse<MockAppointment>>(`/appointments/${id}`, data)).data.data,
         onSuccess: (updatedApt) => {
             // Optimistically update the cache
-            queryClient.setQueryData<MockAppointment[]>(['appointments'], (oldData) => 
+            queryClient.setQueryData<MockAppointment[]>(['appointments'], (oldData) =>
                 oldData ? oldData.map(apt => apt.id === updatedApt.id ? updatedApt : apt) : []
             );
             addToast('success', 'Cập nhật lịch hẹn thành công');
@@ -143,1115 +125,54 @@ export function AppointmentManagementPage() {
         queryFn: async () => (await api.get<ApiListResponse<DoctorOnCallShift>>('/shifts')).data.data,
     });
 
-    const { mutate: createShift } = useMutation<DoctorOnCallShift, Error, Omit<DoctorOnCallShift, 'id'>>({
-        mutationFn: async (newShift) => (await api.post<ApiItemResponse<DoctorOnCallShift>>('/shifts', newShift)).data.data,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['doctorShifts'] });
-            addToast('success', 'Đăng ký ca trực thành công');
-        },
-        onError: (err) => addToast('error', `Lỗi khi đăng ký ca trực: ${err.message}`),
-    });
-
-    const { mutate: updateShift } = useMutation<DoctorOnCallShift, Error, { id: string; data: Partial<Omit<DoctorOnCallShift, 'id'>> }>({
-        mutationFn: async ({ id, data }) => (await api.put<ApiItemResponse<DoctorOnCallShift>>(`/shifts/${id}`, data)).data.data,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['doctorShifts'] });
-            addToast('success', 'Cập nhật ca trực thành công');
-        },
-        onError: (err) => addToast('error', `Lỗi khi cập nhật ca trực: ${err.message}`),
-    });
-
-    const { mutate: deleteShift } = useMutation<ApiDeleteResponse, Error, string>({
-        mutationFn: async (id) => (await api.delete<ApiDeleteResponse>(`/shifts/${id}`)).data,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['doctorShifts'] });
-            addToast('success', 'Đã xóa ca trực');
-        },
-        onError: (err) => addToast('error', `Lỗi khi xóa ca trực: ${err.message}`),
-    });
-
-    // --- Server-side data for Doctors ---
     const { data: doctors = [], isLoading: doctorsIsLoading } = useQuery<MockDoctor[], Error>({
         queryKey: ['doctors'],
         queryFn: async () => (await api.get<ApiListResponse<MockDoctor>>('/doctors')).data.data,
     });
 
-    // --- Server-side data for Patients ---
     const { data: patients = [], isLoading: patientsIsLoading } = useQuery<MockPatient[], Error>({
         queryKey: ['patients'],
         queryFn: async () => (await api.get<ApiListResponse<MockPatient>>('/patients')).data.data,
     });
 
-    const { mutate: savePatient } = useMutation<MockPatient, Error, { id?: string; data: Partial<Omit<MockPatient, 'id' | 'createdAt'>> }>({
-        mutationFn: async ({ id, data }) => {
-            const url = id ? `/patients/${id}` : '/patients';
-            const method = id ? 'put' : 'post';
-            return (await api[method]<ApiItemResponse<MockPatient>>(url, data)).data.data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['patients'] });
-            addToast('success', 'Lưu thông tin bệnh nhân thành công');
-        },
-        onError: (err) => addToast('error', `Lỗi: ${err.message}`),
-    });
-
-    const { mutate: deletePatient } = useMutation<ApiDeleteResponse, Error, string>({
-        mutationFn: async (id) => (await api.delete(`/patients/${id}`)).data,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['patients'] });
-            addToast('success', 'Xóa bệnh nhân thành công');
-        },
-        onError: (err) => addToast('error', `Lỗi: ${err.message}`),
-    });
-
-    // --- Server-side data for Work Shifts ---
-    const { data: workShifts = [], isLoading: workShiftsIsLoading } = useQuery<MockWorkShift[], Error>({
-        queryKey: ['work-shifts'],
-        queryFn: async () => (await api.get<ApiListResponse<MockWorkShift>>('/work-shifts')).data.data,
-    });
-
-    const { mutate: saveWorkShift } = useMutation<MockWorkShift, Error, { id?: string; data: Omit<MockWorkShift, 'id'> }>({
-        mutationFn: async ({ id, data }) => (await api[id ? 'put' : 'post']<ApiItemResponse<MockWorkShift>>(id ? `/work-shifts/${id}` : '/work-shifts', data)).data.data,
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['work-shifts'] }),
-    });
-
-    const { mutate: deleteWorkShift } = useMutation<ApiDeleteResponse, Error, string>({
-        mutationFn: async (id) => (await api.delete(`/work-shifts/${id}`)).data,
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['work-shifts'] }),
-    });
-
-    // --- Server-side data for Holidays ---
-    const { data: holidays = [], isLoading: holidaysIsLoading } = useQuery<MockClinicHoliday[], Error>({
-        queryKey: ['holidays'],
-        queryFn: async () => (await api.get<ApiListResponse<MockClinicHoliday>>('/holidays')).data.data,
-    });
-
-    const { mutate: saveHoliday } = useMutation<MockClinicHoliday, Error, { id?: string; data: Omit<MockClinicHoliday, 'id'> }>({
-        mutationFn: async ({ id, data }) => (await api[id ? 'put' : 'post']<ApiItemResponse<MockClinicHoliday>>(id ? `/holidays/${id}` : '/holidays', data)).data.data,
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['holidays'] }),
-    });
-
-    const { mutate: deleteHoliday } = useMutation<ApiDeleteResponse, Error, string>({
-        mutationFn: async (id) => (await api.delete(`/holidays/${id}`)).data,
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['holidays'] }),
-    });
-
-    // --- Server-side data for Services ---
     const { data: services = [], isLoading: servicesIsLoading } = useQuery<MockService[], Error>({
         queryKey: ['services'],
         queryFn: async () => (await api.get<ApiListResponse<MockService>>('/services')).data.data,
     });
 
-    // Filter menu items based on user role
-    const filteredMenuItems = useMemo(() => {
-        if (currentUser?.role === 'Doctor') {
-            // Doctors can only see their appointments and schedule
-            return menuItems.filter(item => item.id === 'appointments' || item.id === 'doctor-schedule');
-        }
-        return menuItems;
-    }, [currentUser]);
-
-    const renderContent = () => {
-        switch (activeSubPage) {
-            case 'patients': // Only Admin/Reception should see this
-                if (currentUser?.role === 'Doctor') return <EmptyState title="Bạn không có quyền truy cập mục này." />
-                return <PatientManagementView 
-                    data={patients} 
-                    isLoading={patientsIsLoading} 
-                    savePatient={savePatient} 
-                    deletePatient={deletePatient} 
-                />
-            case 'doctor-schedule':
-                return <DoctorScheduleView 
-                    doctors={doctors} 
-                    shifts={doctorShifts} 
-                    holidays={holidays} 
-                    isLoading={shiftsIsLoading || doctorsIsLoading || holidaysIsLoading}
-                    createShift={createShift}
-                    updateShift={updateShift}
-                    deleteShift={deleteShift}
-                    currentUser={currentUser} // Pass currentUser
-                />
-            case 'work-shifts': // Only Admin/Reception should see this
-                if (currentUser?.role === 'Doctor') return <EmptyState title="Bạn không có quyền truy cập mục này." />
-                return <WorkShiftSettingsView 
-                    data={workShifts} 
-                    isLoading={workShiftsIsLoading} 
-                    saveWorkShift={saveWorkShift} 
-                    deleteWorkShift={deleteWorkShift} 
-                />
-            case 'holidays': // Only Admin/Reception should see this
-                if (currentUser?.role === 'Doctor') return <EmptyState title="Bạn không có quyền truy cập mục này." />
-                return <HolidaySettingsView 
-                    data={holidays} 
-                    isLoading={holidaysIsLoading} 
-                    saveHoliday={saveHoliday} 
-                    deleteHoliday={deleteHoliday} 
-                />
-            case 'appointments':
-            default:
-                return (
-                    <AppointmentBookingView
-                        isLoading={appointmentsIsLoading || patientsIsLoading || doctorsIsLoading || servicesIsLoading || holidaysIsLoading || shiftsIsLoading}
-                        appointments={appointments}
-                        patients={patients}
-                        doctors={doctors}
-                        services={services}
-                        holidays={holidays}
-                        doctorShifts={doctorShifts}
-                        createAppointment={createAppointment}
-                        currentUser={currentUser} // Pass currentUser
-                        updateAppointment={updateAppointment}
-                        checkInAppointment={checkInAppointment}
-                        createWalkIn={createWalkIn}
-                        createInvoice={createInvoice}
-                        deleteAppointment={deleteAppointment}
-                    />
-                )
-        }
-    }
+    const { data: holidays = [], isLoading: holidaysIsLoading } = useQuery<MockClinicHoliday[], Error>({
+        queryKey: ['holidays'],
+        queryFn: async () => (await api.get<ApiListResponse<MockClinicHoliday>>('/holidays')).data.data,
+    });
 
     return (
         <section>
             <PageShell
                 title="Quản lý Lịch hẹn"
-                description="Quản lý lịch hẹn, thông tin bệnh nhân và các cài đặt liên quan đến lịch làm việc."
+                description="Quản lý lịch hẹn và các cài đặt liên quan đến lịch làm việc."
                 testId="page-appointments"
             />
-
-            <div className="mt-6 flex flex-col gap-8 md:flex-row">
-                {/* Left Menu */}
-                <aside className="w-full md:w-1/4 lg:w-1/5">
-                    <nav className="flex flex-col gap-2">
-                        {filteredMenuItems.map((item) => (
-                            <button
-                                key={item.id}
-                                onClick={() => setActiveSubPage(item.id)}
-                                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                                    activeSubPage === item.id
-                                        ? 'bg-blue-50 text-blue-700'
-                                        : 'text-slate-600 hover:bg-slate-100'
-                                }`}
-                            >
-                                <item.icon className="h-4 w-4" />
-                                <span>{item.label}</span>
-                            </button>
-                        ))}
-                    </nav>
-                </aside>
-
-                {/* Right Content */}
-                <main className="flex-1">{renderContent()}</main>
+            <div className="mt-6">
+                <AppointmentBookingView
+                    isLoading={appointmentsIsLoading || patientsIsLoading || doctorsIsLoading || servicesIsLoading || holidaysIsLoading || shiftsIsLoading}
+                    appointments={appointments}
+                    patients={patients}
+                    doctors={doctors}
+                    services={services}
+                    holidays={holidays}
+                    doctorShifts={doctorShifts}
+                    createAppointment={createAppointment}
+                    currentUser={currentUser}
+                    updateAppointment={updateAppointment}
+                    checkInAppointment={checkInAppointment}
+                    createWalkIn={createWalkIn}
+                    createInvoice={createInvoice}
+                    deleteAppointment={deleteAppointment}
+                />
             </div>
         </section>
     )
 }
-
-// #region Patient Management View
-function PatientManagementView({ 
-    data, 
-    isLoading,
-    savePatient,
-    deletePatient,
-}: { 
-    data: MockPatient[]; isLoading: boolean; savePatient: (params: { id?: string; data: Partial<Omit<MockPatient, 'id' | 'createdAt'>> }) => void; deletePatient: (id: string) => void 
-}) {
-    type PatientFormState = {
-        fullName: string
-        phone: string
-        dateOfBirth: string
-        gender: MockPatient['gender']
-        address: string
-    }
-
-    const [searchTerm, setSearchTerm] = useState('')
-    const [page, setPage] = useState(1)
-    const [isModalOpen, setIsModalOpen] = useState(false)
-    const [editingId, setEditingId] = useState<string | null>(null)
-    const [formState, setFormState] = useState<PatientFormState>({ fullName: '', phone: '', dateOfBirth: '', gender: 'Nam', address: '' })
-    const [formErrors, setFormErrors] = useState<Partial<PatientFormState>>({})
-
-    const { addToast } = useToast()
-    const { confirm } = useConfirm()
-
-    const filteredData = useMemo(() => {
-        return data.filter(p => 
-            p.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            p.phone.includes(searchTerm)
-        )
-    }, [data, searchTerm])
-
-    const totalPages = Math.max(1, Math.ceil(filteredData.length / PAGE_SIZE))
-    const paginatedData = useMemo(() => {
-        const start = (page - 1) * PAGE_SIZE
-        return filteredData.slice(start, start + PAGE_SIZE)
-    }, [filteredData, page])
-
-    const resetModal = () => {
-        setIsModalOpen(false)
-        setEditingId(null)
-        setFormState({ fullName: '', phone: '', dateOfBirth: '', gender: 'Nam', address: '' })
-        setFormErrors({})
-    }
-
-    const openCreateModal = () => {
-        resetModal()
-        setIsModalOpen(true)
-    }
-
-    const openEditModal = (patient: MockPatient) => {
-        setEditingId(patient.id)
-        setFormState({
-            fullName: patient.fullName,
-            phone: patient.phone,
-            dateOfBirth: new Date(patient.dateOfBirth).toISOString().split('T')[0],
-            gender: patient.gender,
-            address: patient.address,
-        })
-        setIsModalOpen(true)
-    }
-
-    const validate = () => {
-        const errors: Partial<PatientFormState> = {}
-        if (!formState.fullName.trim()) errors.fullName = 'Họ tên không được để trống'
-        if (!formState.phone.match(/^0\d{9}$/)) errors.phone = 'Số điện thoại không hợp lệ'
-        if (!formState.dateOfBirth) errors.dateOfBirth = 'Ngày sinh không được để trống'
-        setFormErrors(errors)
-        return Object.keys(errors).length === 0
-    }
-
-    const handleSave = () => {
-        if (!validate()) return
-
-        if (editingId) {
-            savePatient({ id: editingId, data: { ...formState, dateOfBirth: new Date(formState.dateOfBirth).toISOString() } });
-        } else {
-            savePatient({ data: {
-                ...formState,
-                dateOfBirth: new Date(formState.dateOfBirth).toISOString(),
-            }});
-        }
-        resetModal()
-    }
-
-    const handleDelete = async (patient: MockPatient) => {
-        const confirmed = await confirm({ title: 'Xóa bệnh nhân', message: `Bạn có chắc muốn xóa bệnh nhân "${patient.fullName}"?`, isDangerous: true })
-        if (confirmed) {
-            deletePatient(patient.id);
-        }
-    }
-
-    return (
-        <div className="space-y-4">
-            <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 md:flex-row md:items-center md:justify-between">
-                <div className="relative w-full md:max-w-sm">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <input
-                        value={searchTerm}
-                        onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
-                        placeholder="Tìm theo tên hoặc SĐT..."
-                        className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3 text-sm"
-                    />
-                </div>
-                <button onClick={openCreateModal} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-900 px-4 text-sm font-semibold text-white">
-                    <Plus className="h-4 w-4" /> Thêm bệnh nhân
-                </button>
-            </div>
-
-            {isLoading ? (
-                <div className="rounded-2xl border border-slate-200 bg-white p-6"><TableLoadingSkeleton rows={PAGE_SIZE} /></div>
-            ) : paginatedData.length === 0 ? (
-                <EmptyState title="Không tìm thấy bệnh nhân" />
-            ) : (
-                <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
-                    <table className="min-w-full text-left text-sm">
-                        <thead>
-                            <tr className="border-b bg-slate-50">
-                                <th className="px-4 py-3 font-semibold text-slate-700">Họ tên</th>
-                                <th className="px-4 py-3 font-semibold text-slate-700">Số điện thoại</th>
-                                <th className="px-4 py-3 font-semibold text-slate-700">Ngày sinh</th>
-                                <th className="px-4 py-3 font-semibold text-slate-700">Giới tính</th>
-                                <th className="px-4 py-3 font-semibold text-slate-700">Địa chỉ</th>
-                                <th className="px-4 py-3 text-right font-semibold text-slate-700">Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-200">
-                            {paginatedData.map(p => (
-                                <tr key={p.id} className="hover:bg-slate-50">
-                                    <td className="px-4 py-3 font-medium text-slate-900">{p.fullName}</td>
-                                    <td className="px-4 py-3 text-slate-700">{formatPhone(p.phone)}</td>
-                                    <td className="px-4 py-3 text-slate-700">{formatDate(p.dateOfBirth)}</td>
-                                    <td className="px-4 py-3 text-slate-700">{p.gender}</td>
-                                    <td className="px-4 py-3 text-slate-700 truncate max-w-xs">{p.address}</td>
-                                    <td className="px-4 py-3">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <button onClick={() => openEditModal(p)} className="inline-flex h-8 w-8 items-center justify-center rounded-lg border text-slate-600 hover:text-blue-600"><Pencil className="h-4 w-4" /></button>
-                                            <button onClick={() => handleDelete(p)} className="inline-flex h-8 w-8 items-center justify-center rounded-lg border text-slate-600 hover:text-rose-600"><Trash2 className="h-4 w-4" /></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
-
-            {/* Pagination */}
-            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
-                <span className="text-slate-600">Trang {page}/{totalPages} - Tổng {filteredData.length} bệnh nhân</span>
-                <div className="flex gap-2">
-                    <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="rounded-lg border px-3 py-2 disabled:opacity-50">Trước</button>
-                    <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="rounded-lg border px-3 py-2 disabled:opacity-50">Tiếp</button>
-                </div>
-            </div>
-
-            {/* Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
-                        <div className="mb-4 flex items-center justify-between">
-                            <h3 className="text-xl font-semibold">{editingId ? 'Sửa thông tin bệnh nhân' : 'Thêm bệnh nhân mới'}</h3>
-                            <button onClick={resetModal} className="text-slate-400 hover:text-slate-600"><X className="h-5 w-5" /></button>
-                        </div>
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium">Họ tên *</label>
-                                <input type="text" value={formState.fullName} onChange={e => setFormState(s => ({ ...s, fullName: e.target.value }))} className="mt-1 w-full rounded-lg border p-2 text-sm" />
-                                {formErrors.fullName && <p className="mt-1 text-xs text-rose-600">{formErrors.fullName}</p>}
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium">Số điện thoại *</label>
-                                <input type="text" value={formState.phone} onChange={e => setFormState(s => ({ ...s, phone: e.target.value }))} className="mt-1 w-full rounded-lg border p-2 text-sm" />
-                                {formErrors.phone && <p className="mt-1 text-xs text-rose-600">{formErrors.phone}</p>}
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium">Ngày sinh *</label>
-                                    <input type="date" value={formState.dateOfBirth} onChange={e => setFormState(s => ({ ...s, dateOfBirth: e.target.value }))} className="mt-1 w-full rounded-lg border p-2 text-sm" />
-                                    {formErrors.dateOfBirth && <p className="mt-1 text-xs text-rose-600">{formErrors.dateOfBirth}</p>}
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium">Giới tính</label>
-                                    <select
-                                        value={formState.gender}
-                                        onChange={(e) =>
-                                            setFormState((s) => ({
-                                                ...s,
-                                                gender: e.target.value as MockPatient['gender'],
-                                            }))
-                                        }
-                                        className="mt-1 w-full rounded-lg border bg-white p-2 text-sm"
-                                    >
-                                        <option>Nam</option>
-                                        <option>Nữ</option>
-                                        <option>Khác</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium">Địa chỉ</label>
-                                <input type="text" value={formState.address} onChange={e => setFormState(s => ({ ...s, address: e.target.value }))} className="mt-1 w-full rounded-lg border p-2 text-sm" />
-                            </div>
-                        </div>
-                        <div className="mt-6 flex justify-end gap-3">
-                            <button onClick={resetModal} className="rounded-lg border px-4 py-2 text-sm font-medium">Hủy</button>
-                            <button onClick={handleSave} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white">{editingId ? 'Cập nhật' : 'Tạo mới'}</button>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
-    )
-}
-// #endregion
-
-// #region Doctor Schedule View
-function DoctorScheduleView({
-    doctors,
-    shifts,
-    holidays,
-    isLoading,
-    createShift,
-    updateShift,
-    deleteShift,
-    currentUser, // Accept currentUser prop
-}: {
-    doctors: MockDoctor[];
-    shifts: DoctorOnCallShift[]
-    holidays: MockClinicHoliday[]
-    isLoading: boolean
-    createShift: (data: Omit<DoctorOnCallShift, 'id'>) => void
-    updateShift: (params: { id: string; data: Partial<Omit<DoctorOnCallShift, 'id'>> }) => void
-    deleteShift: (id: string) => void
-    currentUser: MockAccount | null
-}) {
-    const [searchTerm, setSearchTerm] = useState('')
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingId, setEditingId] = useState<string | null>(null);
-    const [formState, setFormState] = useState<{
-        doctorId: string
-        date: string
-        startTime: string
-        endTime: string
-        status: 'Đã đăng ký' | 'Đã hủy'
-    }>({
-        doctorId: '',
-        date: '',
-        startTime: '08:00',
-        endTime: '17:00',
-        status: 'Đã đăng ký',
-    })
-    const [doctorFilter, setDoctorFilter] = useState<string>('all');
-
-    // Initialize formState.doctorId based on currentUser if Doctor
-    useEffect(() => {
-        if (currentUser?.role === 'Doctor' && currentUser.referenceId) {
-            setFormState(prev => ({ ...prev, doctorId: currentUser.referenceId }));
-        }
-    }, [currentUser]);
-
-    const { addToast } = useToast()
-    const { confirm } = useConfirm()
-    const isDoctor = currentUser?.role === 'Doctor';
-
-    function renderShiftEventContent(eventInfo: EventContentArg) {
-        const shift = eventInfo.event.extendedProps as DoctorOnCallShift;
-        const isCancelled = shift.status === 'Đã hủy';
-
-        return (
-            <div className="p-1 text-xs overflow-hidden">
-                <div className="font-bold">{eventInfo.event.title}</div>
-                <div>{eventInfo.timeText}</div>
-                {isCancelled && <div className="font-semibold mt-1">ĐÃ HỦY</div>}
-            </div>
-        );
-    }
-
-    const getLocalDateKey = (date: Date) => {
-        const year = date.getFullYear()
-        const month = String(date.getMonth() + 1).padStart(2, '0')
-        const day = String(date.getDate()).padStart(2, '0')
-        return `${year}-${month}-${day}`
-    }
-
-    const toMinutes = (value: string) => {
-        const [hh, mm] = value.split(':').map(Number)
-        return (hh ?? 0) * 60 + (mm ?? 0)
-    }
-
-    const isHolidayKey = (dateKey: string) => {
-        return holidays.find((h) => {
-            if (h.isRecurring) {
-                return h.date.slice(5) === dateKey.slice(5)
-            }
-            return h.date === dateKey
-        })
-    }
-
-    const calendarEvents = useMemo(() => {
-        let shiftsToDisplay = shifts;
-        if (isDoctor && currentUser?.referenceId) {
-            shiftsToDisplay = shifts.filter(s => s.doctorId === currentUser.referenceId);
-        } else if (doctorFilter !== 'all') {
-            shiftsToDisplay = shifts.filter(s => s.doctorId === doctorFilter);
-        }
-
-        const scheduleColors = ['#3b82f6', '#16a34a']; // blue-600, green-600
-        const scheduleBorderColors = ['#2563eb', '#15803d']; // blue-700, green-700
-
-        return shiftsToDisplay.map((shift, index) => {
-            const isCancelled = shift.status === 'Đã hủy';
-            
-            // Use alternating colors for non-cancelled shifts
-            const colorIndex = index % scheduleColors.length;
-
-            return {
-                id: shift.id,
-                title: shift.doctorName,
-                start: `${shift.date}T${shift.startTime}`,
-                end: `${shift.date}T${shift.endTime}`,
-                backgroundColor: isCancelled ? '#fecaca' : scheduleColors[colorIndex],
-                borderColor: isCancelled ? '#fca5a5' : scheduleBorderColors[colorIndex],
-                textColor: isCancelled ? '#991b1b' : '#ffffff', // red-800, white
-                extendedProps: shift,
-                classNames: isCancelled ? ['event-cancelled'] : [],
-            };
-        });
-    }, [shifts, doctors, isDoctor, currentUser, doctorFilter]);
-
-    const sortedHolidays = useMemo(() => {
-        return [...holidays].sort((a, b) => a.date.localeCompare(b.date))
-    }, [holidays])
-
-    const resetModal = () => {
-        setIsModalOpen(false)
-        setEditingId(null);
-        const defaultDoctorId = isDoctor && currentUser?.referenceId ? currentUser.referenceId : '';
-        setFormState({ doctorId: defaultDoctorId, date: '', startTime: '08:00', endTime: '17:00', status: 'Đã đăng ký' });
-    }
-
-    const openCreateModal = () => {
-        setEditingId(null)
-        const defaultDoctorId = isDoctor && currentUser?.referenceId
-            ? currentUser.referenceId
-            : doctors.find((doctor) => doctor.status === 'active')?.id ?? doctors[0]?.id ?? '';
-
-        setFormState({ doctorId: defaultDoctorId, date: '', startTime: '08:00', endTime: '17:00', status: 'Đã đăng ký' })
-        setIsModalOpen(true)
-    }
-
-    const openEditModal = (shift: DoctorOnCallShift) => {
-        setEditingId(shift.id)
-        setFormState({
-            doctorId: shift.doctorId,
-            date: shift.date,
-            startTime: shift.startTime,
-            endTime: shift.endTime,
-            status: shift.status,
-        })
-        setIsModalOpen(true)
-    }
-
-    const handleDateClick = (arg: DateClickArg) => {
-        const holiday = isHolidayKey(getLocalDateKey(arg.date));
-        if (holiday) {
-            addToast('error', `Ngày ${formatDate(arg.date)} là ngày nghỉ: ${holiday.name}.`);
-            return;
-        }
-        openCreateModal();
-        setFormState(prev => ({
-            ...prev,
-            date: arg.dateStr.split('T')[0], // Lấy phần date YYYY-MM-DD
-        }));
-    };
-
-    const handleEventClick = (arg: EventClickArg) => {
-        openEditModal(arg.event.extendedProps as DoctorOnCallShift);
-    };
-
-    const handleSave = () => {
-        const doctor = doctors.find((d) => d.id === formState.doctorId)
-        if (!doctor || !formState.date || !formState.startTime || !formState.endTime) {
-            addToast('error', 'Vui lòng điền đầy đủ thông tin bắt buộc.')
-            return
-        }
-
-        const holiday = isHolidayKey(formState.date)
-        if (holiday) {
-            addToast('error', `Không thể đăng ký lịch trực vào ngày nghỉ: ${holiday.name} (${formatDate(formState.date)}).`)
-            return
-        }
-
-        const startMinutes = toMinutes(formState.startTime)
-        const endMinutes = toMinutes(formState.endTime)
-        if (endMinutes <= startMinutes) {
-            addToast('error', 'Giờ kết thúc phải sau giờ bắt đầu.')
-            return
-        }
-
-        const overlaps = shifts.some((shift) => {
-            if (editingId && shift.id === editingId) {
-                return false
-            }
-            if (shift.doctorId !== formState.doctorId || shift.date !== formState.date) {
-                return false
-            }
-            const existingStart = toMinutes(shift.startTime)
-            const existingEnd = toMinutes(shift.endTime)
-            return startMinutes < existingEnd && endMinutes > existingStart
-        })
-
-        if (overlaps) {
-            addToast('error', 'Ca trực bị trùng với ca trực khác của bác sĩ trong ngày này.')
-            return
-        }
-
-        if (editingId) {
-            updateShift({
-                id: editingId,
-                data: {
-                    doctorId: doctor.id,
-                    doctorName: doctor.fullName,
-                    date: formState.date,
-                    startTime: formState.startTime,
-                    endTime: formState.endTime,
-                    status: formState.status,
-                }
-            })
-        } else {
-            createShift({
-                doctorId: doctor.id,
-                doctorName: doctor.fullName,
-                date: formState.date,
-                startTime: formState.startTime,
-                endTime: formState.endTime,
-                status: 'Đã đăng ký',
-            })
-        }
-        resetModal()
-    }
-
-    const handleCancelShift = async () => {
-        if (!editingId) return;
-        const shift = shifts.find(s => s.id === editingId);
-        if (!shift) return;
-
-        const confirmed = await confirm({
-            title: 'Hủy ca trực',
-            message: `Bạn có chắc muốn hủy ca trực của "${shift.doctorName}" vào ngày ${formatDate(shift.date)}? Ca trực sẽ được giữ lại với trạng thái "Đã hủy".`,
-            isDangerous: true,
-            confirmLabel: 'Đồng ý hủy'
-        });
-
-        if (confirmed) {
-            updateShift({ id: editingId, data: { status: 'Đã hủy' } });
-            resetModal();
-        }
-    };
-
-    const handleDeletePermanently = async () => {
-        if (!editingId) return;
-        const shift = shifts.find(s => s.id === editingId);
-        if (!shift) return;
-
-        const confirmed = await confirm({
-            title: 'Xóa ca trực vĩnh viễn',
-            message: `Hành động này không thể hoàn tác. Bạn có chắc muốn XÓA vĩnh viễn ca trực này?`,
-            isDangerous: true,
-            confirmLabel: 'Xóa vĩnh viễn'
-        });
-
-        if (confirmed) {
-            deleteShift(editingId);
-            resetModal();
-        }
-    };
-
-    const handleDelete = async (shift: DoctorOnCallShift) => {
-        await handleDeletePermanently();
-    }
-
-    return (
-        <div className="space-y-4">
-            <details className="group rounded-2xl border border-slate-200 bg-white text-sm open:shadow-sm">
-                <summary className="cursor-pointer list-none p-4 font-semibold text-slate-900">
-                    <div className="flex items-center justify-between">
-                        <span>Thông tin ngày nghỉ (tham khảo)</span>
-                        <ChevronDown className="h-5 w-5 shrink-0 transition-transform duration-200 group-open:rotate-180" />
-                    </div>
-                </summary>
-                <div className="border-t border-slate-200 p-4 pt-3">
-                    {sortedHolidays.length === 0 ? (
-                        <div className="text-slate-600">Chưa có ngày nghỉ. Vui lòng cấu hình ở mục "Cài đặt ngày nghỉ".</div>
-                    ) : (
-                        <div className="space-y-2 text-slate-700">
-                            {sortedHolidays.slice(0, 6).map((h) => (
-                                <div key={h.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-slate-50 p-2">
-                                    <span className="font-medium">{h.name}</span>
-                                    <span className="text-slate-600">{formatDate(h.date)}{h.isRecurring ? ' (lặp lại)' : ''}</span>
-                                </div>
-                            ))}
-                            {sortedHolidays.length > 6 ? (
-                                <div className="pt-1 text-xs text-slate-500">+{sortedHolidays.length - 6} ngày nghỉ khác</div>
-                            ) : null}
-                            <div className="pt-2 text-xs text-slate-500">
-                                Lưu ý: Hệ thống sẽ không cho phép đăng ký ca trực hoặc tạo lịch hẹn vào các ngày nghỉ này.
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </details>
-
-            <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 md:flex-row md:items-center md:justify-between">
-                <select
-                    value={doctorFilter}
-                    onChange={e => setDoctorFilter(e.target.value)}
-                    className="h-10 rounded-xl border bg-white px-3 text-sm"
-                    disabled={isDoctor}
-                >
-                    <option value="all">Tất cả bác sĩ</option>
-                    {doctors.map(d => <option key={d.id} value={d.id}>{d.fullName}</option>)}
-                </select>
-                <button
-                    onClick={openCreateModal}
-                    className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-900 px-4 text-sm font-semibold text-white"
-                    disabled={isDoctor && !currentUser?.referenceId} // Disable if doctor and no referenceId
-                >
-                    <Plus className="h-4 w-4" /> Đăng ký lịch trực
-                </button>
-            </div>
-
-            {isLoading ? (
-                <div className="rounded-2xl border border-slate-200 bg-white p-6"><TableLoadingSkeleton rows={10} /></div>
-            ) : (
-                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                    <FullCalendar
-                        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                        initialView="timeGridWeek"
-                        headerToolbar={{
-                            left: 'prev,next today',
-                            center: 'title',
-                            right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                        }}
-                        events={calendarEvents}
-                        locale="vi"
-                        buttonText={{
-                            today: 'Hôm nay',
-                            month: 'Tháng',
-                            week: 'Tuần',
-                            day: 'Ngày',
-                        }}
-                        allDaySlot={false}
-                        slotMinTime="07:00:00"
-                        slotMaxTime="21:00:00"
-                        editable={false} // Editing via modal is safer
-                        selectable={true}
-                        dateClick={handleDateClick}
-                        eventClick={handleEventClick}
-                        eventContent={renderShiftEventContent}
-                        height="auto"
-                    />
-                </div>
-            )}
-
-            {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl">
-                        <div className="mb-4 flex items-center justify-between">
-                            <h3 className="text-xl font-semibold">{editingId ? 'Sửa lịch trực bác sĩ' : 'Đăng ký lịch trực bác sĩ'}</h3>
-                            <button onClick={resetModal} className="text-slate-400 hover:text-slate-600"><X className="h-5 w-5" /></button>
-                        </div>
-
-                        {sortedHolidays.length > 0 ? (
-                            <div className="mb-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                                <div className="text-sm font-semibold text-slate-900">Ngày nghỉ phòng khám (tham chiếu)</div>
-                                <div className="mt-2 grid gap-2 md:grid-cols-2">
-                                    {sortedHolidays.slice(0, 4).map((h) => (
-                                        <div key={h.id} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700">
-                                            <div className="font-medium text-slate-900">{h.name}</div>
-                                            <div className="mt-0.5 text-slate-600">{formatDate(h.date)}{h.isRecurring ? ' (lặp lại)' : ''}</div>
-                                        </div>
-                                    ))}
-                                </div>
-                                {sortedHolidays.length > 4 ? (
-                                    <div className="mt-2 text-xs text-slate-500">+{sortedHolidays.length - 4} ngày nghỉ khác</div>
-                                ) : null}
-                            </div>
-                        ) : null}
-
-                        <div className="space-y-5">
-                            <div>
-                                <label className="block text-sm font-medium">Bác sĩ *</label>
-                                <select
-                                    value={formState.doctorId}
-                                    onChange={(event) => setFormState((state) => ({ ...state, doctorId: event.target.value, doctorName: doctors.find(d => d.id === event.target.value)?.fullName ?? '' }))}
-                                    className="mt-1 w-full rounded-lg border bg-white p-2 text-sm"
-                                    disabled={isDoctor && !editingId} // Bác sĩ có thể đổi ca cho người khác khi chỉnh sửa
-                                >
-                                    <option value="">Chọn bác sĩ</option>
-                                    {doctors.map((doctor) => (
-                                        <option key={doctor.id} value={doctor.id}>
-                                            {doctor.fullName} - {doctor.specialty}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="grid gap-4 md:grid-cols-2">
-                                <div>
-                                    <label className="block text-sm font-medium">Ngày trực *</label>
-                                    <input
-                                        type="date"
-                                        value={formState.date}
-                                        onChange={(event) => setFormState((state) => ({ ...state, date: event.target.value }))}
-                                        className="mt-1 w-full rounded-lg border p-2 text-sm"
-                                    />
-                                    <div className="mt-1 text-xs text-slate-500">Lưu theo ngày cụ thể; không tự lặp tuần sau.</div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label className="block text-sm font-medium">Giờ bắt đầu *</label>
-                                        <input
-                                            type="time"
-                                            value={formState.startTime}
-                                            onChange={(event) => setFormState((state) => ({ ...state, startTime: event.target.value }))}
-                                            className="mt-1 w-full rounded-lg border p-2 text-sm"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium">Giờ kết thúc *</label>
-                                        <input
-                                            type="time"
-                                            value={formState.endTime}
-                                            onChange={(event) => setFormState((state) => ({ ...state, endTime: event.target.value }))}
-                                            className="mt-1 w-full rounded-lg border p-2 text-sm"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-6 flex items-center justify-between">
-                            <div>
-                                {editingId && currentUser?.role === 'Admin' && (
-                                    <button
-                                        onClick={handleDeletePermanently}
-                                        className="text-sm font-medium text-rose-600 hover:text-rose-800 transition-colors"
-                                    >
-                                        Xóa vĩnh viễn
-                                    </button>
-                                )}
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <button onClick={resetModal} className="rounded-lg border px-4 py-2 text-sm font-medium">Hủy</button>
-                                {editingId && formState.status === 'Đã đăng ký' && (
-                                    <button
-                                        onClick={handleCancelShift}
-                                        className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600"
-                                    >
-                                        Hủy ca trực
-                                    </button>
-                                )}
-                                <button onClick={handleSave} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white">
-                                    {editingId ? 'Lưu thay đổi' : 'Đăng ký'}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
-    )
-}
-// #endregion
-// #region Simple CRUD View (for Shifts and Holidays)
-type CrudItem = { id: string; [key: string]: unknown }
-type FieldConfig = {
-    key: string
-    label: string
-    type: 'text' | 'time' | 'date' | 'checkbox'
-    placeholder?: string
-}
-
-function SimpleCrudView<T extends CrudItem, U extends Omit<T, 'id'>>({
-    title,
-    data,
-    isLoading,
-    saveMutation,
-    deleteMutation,
-    columns,
-    fields,
-    initialFormState,
-}: {
-    title: string
-    data: T[]
-    isLoading: boolean
-    saveMutation: (params: { id?: string; data: U }) => void
-    deleteMutation: (id: string) => void
-    columns: { key: keyof T; label: string; render?: (item: T) => React.ReactNode }[]
-    fields: FieldConfig[]
-    initialFormState: Omit<T, 'id'>
-}) {
-    const [isModalOpen, setIsModalOpen] = useState(false)
-    const [editingId, setEditingId] = useState<string | null>(null)
-    const [formState, setFormState] = useState<U>(initialFormState as U)
-
-    const { addToast } = useToast()
-    const { confirm } = useConfirm()
-
-    const resetModal = () => {
-        setIsModalOpen(false)
-        setEditingId(null)
-        setFormState(initialFormState)
-    }
-
-    const openCreateModal = () => {
-        resetModal()
-        setIsModalOpen(true)
-    }
-
-    const openEditModal = (item: T) => {
-        setEditingId(item.id)
-        const { id: _id, ...rest } = item as unknown as { id: string } & Record<string, unknown>
-        void _id
-        const stateToEdit: Record<string, unknown> = { ...rest }
-        fields.forEach((field) => {
-            if (field.type === 'date' && stateToEdit[field.key]) {
-                const raw = stateToEdit[field.key]
-                if (typeof raw === 'string' || typeof raw === 'number' || raw instanceof Date) {
-                    stateToEdit[field.key] = new Date(raw).toISOString().split('T')[0]
-                }
-            }
-        })
-        setFormState(stateToEdit as U)
-        setIsModalOpen(true)
-    }
-
-    const handleSave = () => {
-        if (editingId) {
-            saveMutation({ id: editingId, data: formState });
-        } else {
-            saveMutation({ data: formState });
-        }
-        resetModal()
-    }
-
-    const handleDelete = async (item: T) => {
-        const confirmed = await confirm({ title: `Xóa ${title}`, message: `Bạn có chắc muốn xóa "${item.name || item.id}"?`, isDangerous: true })
-        if (confirmed) {
-            deleteMutation(item.id);
-        }
-    }
-
-    return (
-        <div className="space-y-4">
-            <div className="flex justify-end">
-                <button onClick={openCreateModal} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-900 px-4 text-sm font-semibold text-white">
-                    <Plus className="h-4 w-4" /> Thêm {title}
-                </button>
-            </div>
-
-            {isLoading ? (
-                <div className="rounded-2xl border border-slate-200 bg-white p-6"><TableLoadingSkeleton rows={5} /></div>
-            ) : data.length === 0 ? (
-                <EmptyState title={`Chưa có ${title.toLowerCase()}`} />
-            ) : (
-                <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
-                    <table className="min-w-full text-left text-sm">
-                        <thead>
-                            <tr className="border-b bg-slate-50">
-                                {columns.map(col => <th key={String(col.key)} className="px-4 py-3 font-semibold text-slate-700">{col.label}</th>)}
-                                <th className="px-4 py-3 text-right font-semibold text-slate-700">Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-200">
-                            {data.map(item => (
-                                <tr key={item.id} className="hover:bg-slate-50">
-                                    {columns.map(col => (
-                                        <td key={`${item.id}-${String(col.key)}`} className="px-4 py-3 text-slate-700">
-                                            {col.render ? col.render(item) : String(item[col.key] ?? '')}
-                                        </td>
-                                    ))}
-                                    <td className="px-4 py-3">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <button onClick={() => openEditModal(item)} className="inline-flex h-8 w-8 items-center justify-center rounded-lg border text-slate-600 hover:text-blue-600"><Pencil className="h-4 w-4" /></button>
-                                            <button onClick={() => handleDelete(item)} className="inline-flex h-8 w-8 items-center justify-center rounded-lg border text-slate-600 hover:text-rose-600"><Trash2 className="h-4 w-4" /></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
-
-            {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-                        <div className="mb-4 flex items-center justify-between">
-                            <h3 className="text-xl font-semibold">{editingId ? `Sửa ${title}` : `Thêm ${title}`}</h3>
-                            <button onClick={resetModal} className="text-slate-400 hover:text-slate-600"><X className="h-5 w-5" /></button>
-                        </div>
-                        <div className="space-y-4">
-                            {fields.map(field => (
-                                <div key={field.key}>
-                                    <label className="block text-sm font-medium">
-                                        {field.type === 'checkbox' ? (
-                                            <div className="flex items-center gap-2">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={!!formState[field.key]}
-                                                    onChange={e => setFormState(s => ({ ...s, [field.key]: e.target.checked }))}
-                                                />
-                                                <span>{field.label}</span>
-                                            </div>
-                                        ) : (
-                                            <>
-                                                {field.label}
-                                                <input
-                                                    type={field.type}
-                                                    value={String(formState[field.key] ?? '')}
-                                                    onChange={e => setFormState(s => ({ ...s, [field.key]: e.target.value }))}
-                                                    className="mt-1 w-full rounded-lg border p-2 text-sm"
-                                                    placeholder={field.placeholder}
-                                                />
-                                            </>
-                                        )}
-                                    </label>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="mt-6 flex justify-end gap-3">
-                            <button onClick={resetModal} className="rounded-lg border px-4 py-2 text-sm font-medium">Hủy</button>
-                            <button onClick={handleSave} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white">{editingId ? 'Cập nhật' : 'Tạo mới'}</button>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
-    )
-}
-
-function WorkShiftSettingsView({ 
-    data, 
-    isLoading,
-    saveWorkShift,
-    deleteWorkShift,
-}: { 
-    data: MockWorkShift[]; isLoading: boolean; saveWorkShift: (params: { id?: string; data: Omit<MockWorkShift, 'id'> }) => void; deleteWorkShift: (id: string) => void 
-}) {
-    return (
-        <SimpleCrudView<MockWorkShift, Omit<MockWorkShift, 'id'>>
-            title="Ca làm việc"
-            data={data}
-            isLoading={isLoading}
-            saveMutation={saveWorkShift}
-            deleteMutation={deleteWorkShift}
-            columns={[
-                { key: 'name', label: 'Tên ca' },
-                { key: 'startTime', label: 'Giờ bắt đầu' },
-                { key: 'endTime', label: 'Giờ kết thúc' },
-            ]}
-            fields={[
-                { key: 'name', label: 'Tên ca', type: 'text' },
-                { key: 'startTime', label: 'Giờ bắt đầu', type: 'time' },
-                { key: 'endTime', label: 'Giờ kết thúc', type: 'time' },
-            ]}
-            initialFormState={{ name: '', startTime: '08:00', endTime: '17:00' }}
-        />
-    )
-}
-
-function HolidaySettingsView({ 
-    data, 
-    isLoading,
-    saveHoliday,
-    deleteHoliday,
-}: { 
-    data: MockClinicHoliday[]; isLoading: boolean; saveHoliday: (params: { id?: string; data: Omit<MockClinicHoliday, 'id'> }) => void; deleteHoliday: (id: string) => void 
-}) {
-    return (
-        <SimpleCrudView<MockClinicHoliday, Omit<MockClinicHoliday, 'id'>>
-            title="Ngày nghỉ"
-            data={data}
-            isLoading={isLoading}
-            saveMutation={saveHoliday}
-            deleteMutation={deleteHoliday}
-            columns={[
-                { key: 'name', label: 'Tên ngày nghỉ' },
-                { key: 'date', label: 'Ngày', render: (item) => formatDate(item.date) },
-                { key: 'isRecurring', label: 'Lặp lại hàng năm', render: (item) => item.isRecurring ? 'Có' : 'Không' },
-            ]}
-            fields={[
-                { key: 'name', label: 'Tên ngày nghỉ', type: 'text' },
-                { key: 'date', label: 'Ngày', type: 'date' },
-                { key: 'isRecurring', label: 'Lặp lại hàng năm', type: 'checkbox' },
-            ]}
-            initialFormState={{ name: '', date: new Date().toISOString().split('T')[0], isRecurring: false }}
-        />
-    )
-}
-// #endregion
 
 // #region Appointment Booking View
 function AppointmentBookingView({
@@ -1283,16 +204,18 @@ function AppointmentBookingView({
     currentUser: MockAccount | null
     createWalkIn: (data: any) => void
     createInvoice: (data: any) => void
+    deleteAppointment: (id: string) => void
 }) {
     const [doctorFilter, setDoctorFilter] = useState<string>('all')
     const [statusFilter, setStatusFilter] = useState<string>('all')
     const [page, setPage] = useState(1)
-    
+
     // Walk-in modal
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isWalkInModalOpen, setIsWalkInModalOpen] = useState(false)
     const [editingId, setEditingId] = useState<string | null>(null)
     const [dateFilter, setDateFilter] = useState<'all' | 'today'>('all')
+    const [searchTerm, setSearchTerm] = useState('')
 
     const initialWalkInState = {
         patientPhone: '',
@@ -1303,14 +226,14 @@ function AppointmentBookingView({
         serviceId: ''
     }
     const [walkInState, setWalkInState] = useState(initialWalkInState)
-    
+
     // Auto fill walk in name if phone exists
     useEffect(() => {
-        if(walkInState.patientPhone && walkInState.patientPhone.length >= 10) {
+        if (walkInState.patientPhone && walkInState.patientPhone.length >= 10) {
             const foundPat = patients.find(p => p.phone === walkInState.patientPhone)
-            if(foundPat) {
+            if (foundPat) {
                 setWalkInState(s => ({
-                    ...s, 
+                    ...s,
                     patientName: foundPat.fullName,
                     patientAge: new Date().getFullYear() - new Date(foundPat.dateOfBirth).getFullYear() + '',
                     allergiesRaw: foundPat.allergies ? foundPat.allergies.join(', ') : ''
@@ -1330,6 +253,7 @@ function AppointmentBookingView({
         serviceId: string
         startTime: string
         notes: string
+        difficulty: number
         status: MockAppointment['status']
     }
 
@@ -1339,13 +263,14 @@ function AppointmentBookingView({
         serviceId: '',
         startTime: '',
         notes: '',
+        difficulty: 0,
         status: 'Đã lên lịch',
     }
 
     // Initialize formState.doctorId based on currentUser if Doctor
     useEffect(() => {
         if (isDoctor && currentUser?.referenceId) {
-            setFormState(prev => ({ ...prev, doctorId: currentUser.referenceId }));
+            setFormState(prev => ({ ...prev, doctorId: currentUser.referenceId || '' }));
         }
     }, [isDoctor, currentUser]);
     const [formState, setFormState] = useState<AppointmentFormState>(initialFormState)
@@ -1416,16 +341,24 @@ function AppointmentBookingView({
     }
 
     const filteredAppointments = useMemo(() => {
-        let result = appointments;
-
-        if (dateFilter === 'today') {
-            const todayString = new Date().toDateString();
-            result = result.filter(a => new Date(a.startTime).toDateString() === todayString);
-        }
-
-        result = result
-            .filter(a => doctorFilter === 'all' || a.doctorId === doctorFilter)
+        let result = appointments
+            .filter(a => {
+                if (dateFilter === 'today') {
+                    const today = new Date();
+                    const aptDate = new Date(a.startTime);
+                    return today.getDate() === aptDate.getDate() &&
+                           today.getMonth() === aptDate.getMonth() &&
+                           today.getFullYear() === aptDate.getFullYear();
+                }
+                return true;
+            })
             .filter(a => statusFilter === 'all' || a.status === statusFilter)
+            .filter(a => {
+                if (!searchTerm) return true;
+                const lowerSearch = searchTerm.toLowerCase();
+                return a.patientName.toLowerCase().includes(lowerSearch) || 
+                       a.serviceName.toLowerCase().includes(lowerSearch);
+            })
             .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime())
 
         if (isDoctor && currentUser?.referenceId) {
@@ -1443,23 +376,44 @@ function AppointmentBookingView({
 
     const calendarEvents = useMemo(() => {
         return filteredAppointments.map(apt => {
-            let color = '#3b82f6' // blue-500 for 'Đã lên lịch'
-            let textColor = '#ffffff'
-            if (apt.status === 'Đã hoàn thành') {
-                color = '#10b981' // emerald-500
-            }
-            if (apt.status === 'Đã hủy') {
-                color = '#fecaca' // rose-200
-                textColor = '#991b1b' // rose-800
-            }
+            // Base colors by Status
+            let color = '#f0fdfa' // teal-50 (Khám tổng quát/Mặc định)
+            let textColor = '#0f766e' // teal-700
+            let borderColor = '#ccfbf1' // teal-100
             
+            // Override colors by Service (categorization)
+            if (apt.serviceName.includes('Implant') || apt.serviceName.includes('Nhổ')) {
+                color = '#fff1f2' // rose-50
+                textColor = '#be123c' // rose-700
+                borderColor = '#ffe4e6'
+            } else if (apt.serviceName.includes('Niềng') || apt.serviceName.includes('Chỉnh nha')) {
+                color = '#fdf4ff' // fuchsia-50
+                textColor = '#a21caf' // fuchsia-700
+                borderColor = '#fae8ff'
+            } else if (apt.serviceName.includes('Tẩy trắng') || apt.serviceName.includes('Thẩm mỹ')) {
+                color = '#f0f9ff' // sky-50
+                textColor = '#0369a1' // sky-700
+                borderColor = '#e0f2fe'
+            }
+
+            // Status overrides color if completed or cancelled
+            if (apt.status === 'Đã hoàn thành') {
+                color = '#f8fafc' // slate-50
+                textColor = '#475569' // slate-600
+                borderColor = '#e2e8f0'
+            } else if (apt.status === 'Đã hủy') {
+                color = '#fef2f2' // red-50
+                textColor = '#b91c1c' // red-700
+                borderColor = '#fee2e2'
+            }
+
             return {
                 id: apt.id,
                 title: `${apt.patientName} - ${apt.serviceName}`,
                 start: apt.startTime,
                 end: apt.endTime,
                 backgroundColor: color,
-                borderColor: color,
+                borderColor: borderColor,
                 textColor: textColor,
                 extendedProps: apt,
             }
@@ -1470,14 +424,29 @@ function AppointmentBookingView({
         const apt = eventInfo.event.extendedProps;
         const patient = patients.find(p => p.id === apt.patientId);
         const hasAllergy = patient?.allergies && patient.allergies.length > 0;
-        
+        const title = eventInfo.event.title + (hasAllergy && patient?.allergies ? ' (Dị ứng: ' + patient.allergies.join(', ') + ')' : '');
+
         return (
-            <div className="flex flex-col p-1 text-xs overflow-hidden h-full" title={eventInfo.event.title + (hasAllergy ? ' (Dị ứng: ' + patient.allergies.join(', ') + ')' : '')}>
-                <div className="font-bold whitespace-nowrap overflow-hidden text-ellipsis flex items-center gap-1">
-                    {apt.patientName} {hasAllergy && <AlertTriangle className="h-3 w-3 text-rose-300 flex-shrink-0" />}
+            <div 
+                className="group relative flex h-full flex-col overflow-hidden rounded-xl border p-1.5 text-xs shadow-sm transition-all duration-200 hover:-translate-y-[1px] hover:shadow-md dark:border-slate-700 dark:bg-slate-800" 
+                style={{ 
+                    borderColor: eventInfo.event.borderColor, 
+                    backgroundColor: eventInfo.event.backgroundColor,
+                    color: eventInfo.event.textColor
+                }}
+                title={title}
+            >
+                <div className="flex items-start justify-between gap-1">
+                    <div className="font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
+                        {apt.patientName}
+                    </div>
+                    {hasAllergy && <AlertTriangle className="h-3 w-3 text-rose-500 flex-shrink-0" />}
                 </div>
-                <div className="whitespace-nowrap overflow-hidden text-ellipsis opacity-90">{apt.serviceName}</div>
-                <div className="font-semibold mt-auto truncate">{apt.status}</div>
+                <div className="whitespace-nowrap overflow-hidden text-ellipsis opacity-90 mt-0.5">{apt.serviceName}</div>
+                <div className="mt-auto truncate text-[10px] font-medium opacity-80 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: eventInfo.event.textColor }}></span>
+                    {apt.status}
+                </div>
             </div>
         )
     }
@@ -1512,7 +481,8 @@ function AppointmentBookingView({
             doctorId: apt.doctorId,
             serviceId: apt.serviceId,
             startTime: formatDateTimeLocal(apt.startTime),
-            notes: apt.notes,
+            notes: apt.notes || '',
+            difficulty: apt.difficulty || 0,
             status: apt.status,
         })
         setIsModalOpen(true)
@@ -1593,14 +563,17 @@ function AppointmentBookingView({
         }
 
         if (editingId) {
-            updateAppointment({ id: editingId, data: {
-                ...formState,
-                patientName: patient.fullName,
-                doctorName: doctor.fullName,
-                serviceName: service.name,
-                startTime: startTime.toISOString(),
-                endTime: endTime.toISOString(),
-            }})
+            updateAppointment({
+                id: editingId, data: {
+                    ...formState,
+                    patientName: patient.fullName,
+                    doctorName: doctor.fullName,
+                    serviceName: service.name,
+                    startTime: startTime.toISOString(),
+                    endTime: endTime.toISOString(),
+                    difficulty: formState.difficulty,
+                }
+            })
 
             const statusChangedToCompleted = original?.status !== 'Đã hoàn thành' && formState.status === 'Đã hoàn thành';
             if (statusChangedToCompleted) {
@@ -1633,6 +606,7 @@ function AppointmentBookingView({
                 startTime: startTime.toISOString(),
                 endTime: endTime.toISOString(),
                 notes: formState.notes,
+                difficulty: formState.difficulty,
                 status: 'Đã lên lịch',
             })
         }
@@ -1694,17 +668,82 @@ function AppointmentBookingView({
         }
     };
 
+    // Calculate Quick Stats
+    const todayAppointments = useMemo(() => {
+        const today = new Date().setHours(0,0,0,0);
+        return appointments.filter(a => new Date(a.startTime).setHours(0,0,0,0) === today);
+    }, [appointments]);
+
+    const newPatientsCount = todayAppointments.length; // Simplified
+    const pendingAppointments = appointments.filter(a => a.status === 'Đã lên lịch').length;
+    const todayRevenue = todayAppointments.filter(a => a.status === 'Đã hoàn thành').reduce((acc, apt) => {
+        const svc = services.find(s => s.id === apt.serviceId);
+        return acc + (svc ? svc.basePrice : 0);
+    }, 0);
 
     return (
-        <div className="space-y-4">
-            <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 md:flex-row md:items-center md:justify-between">
-                <div className="flex flex-wrap gap-2">
+        <div className="space-y-6">
+            {/* Quick Stats Cards */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+                        <CalendarHeart className="h-6 w-6" />
+                    </div>
+                    <div>
+                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Lịch hẹn hôm nay</p>
+                        <p className="text-2xl font-bold text-slate-900 dark:text-white">{todayAppointments.length}</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
+                        <Users className="h-6 w-6" />
+                    </div>
+                    <div>
+                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Bệnh nhân hôm nay</p>
+                        <p className="text-2xl font-bold text-slate-900 dark:text-white">{newPatientsCount}</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
+                        <Clock className="h-6 w-6" />
+                    </div>
+                    <div>
+                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Lịch chờ xử lý</p>
+                        <p className="text-2xl font-bold text-slate-900 dark:text-white">{pendingAppointments}</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
+                        <Wallet className="h-6 w-6" />
+                    </div>
+                    <div>
+                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Doanh thu dự kiến (HN)</p>
+                        <p className="text-2xl font-bold text-slate-900 dark:text-white">{formatVND(todayRevenue)}</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Toolbar */}
+            <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex flex-wrap items-center gap-3 flex-1">
+                    <div className="relative max-w-xs flex-1">
+                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <Search className="h-4 w-4 text-slate-400" />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Tìm bệnh nhân, dịch vụ..."
+                            value={searchTerm}
+                            onChange={e => setSearchTerm(e.target.value)}
+                            className="block w-full rounded-xl border-slate-200 pl-10 pr-3 py-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-400"
+                        />
+                    </div>
+                    
                     <button
                         onClick={() => setViewMode(viewMode === 'calendar' ? 'list' : 'calendar')}
-                        className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border bg-white px-3 text-sm font-medium text-slate-700"
+                        className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
                         title={viewMode === 'calendar' ? 'Chuyển sang dạng danh sách' : 'Chuyển sang dạng lịch'}
                     >
-                        {viewMode === 'calendar' ? <List className="h-4 w-4" /> : <CalendarIcon className="h-4 w-4" />}
                         <span className="hidden sm:inline">{viewMode === 'calendar' ? 'Dạng danh sách' : 'Dạng lịch'}</span>
                     </button>
 
@@ -1737,18 +776,18 @@ function AppointmentBookingView({
                         <option>Đã hủy</option>
                     </select>
                 </div>
-                <div className="flex gap-2">
-                    <button onClick={() => setIsWalkInModalOpen(true)} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-blue-900 bg-white px-4 text-sm font-semibold text-blue-900 transition-colors hover:bg-slate-50">
+                <div className="flex gap-3">
+                    <button onClick={() => setIsWalkInModalOpen(true)} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border-2 border-blue-600 bg-white px-4 text-sm font-semibold text-blue-700 transition-colors hover:bg-blue-50 dark:border-blue-500 dark:bg-slate-900 dark:text-blue-400 dark:hover:bg-blue-900/30">
                         <Users className="h-4 w-4" /> Khách vãng lai
                     </button>
-                    <button onClick={openCreateModal} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-900 px-4 text-sm font-semibold text-white transition-colors hover:bg-blue-800">
-                        <Plus className="h-4 w-4" /> Tạo lịch hẹn
+                    <button onClick={openCreateModal} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md active:scale-95">
+                        <Plus className="h-5 w-5" /> Tạo lịch hẹn
                     </button>
                 </div>
             </div>
 
             {viewMode === 'calendar' ? (
-                 <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                     <FullCalendar
                         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                         initialView="timeGridWeek"
@@ -1758,13 +797,8 @@ function AppointmentBookingView({
                             right: 'dayGridMonth,timeGridWeek,timeGridDay'
                         }}
                         events={calendarEvents}
-                        locale="vi"
-                        buttonText={{
-                            today: 'Hôm nay',
-                            month: 'Tháng',
-                            week: 'Tuần',
-                            day: 'Ngày',
-                        }}
+                        locale={viLocale}
+                        eventContent={renderEventContent}
                         allDaySlot={false}
                         slotMinTime="07:00:00"
                         slotMaxTime="21:00:00"
@@ -1800,8 +834,10 @@ function AppointmentBookingView({
                                             <td className="px-4 py-3 font-medium text-slate-900">{formatDateTime(apt.startTime)}</td><td className="px-4 py-3">
                                                 <div className="flex items-center gap-2">
                                                     <span>{apt.patientName}</span>
-                                                    {patients.find(p => p.id === apt.patientId)?.allergies && patients.find(p => p.id === apt.patientId)?.allergies.length > 0 && (
-                                                        <AlertTriangle className="h-4 w-4 text-rose-500" title={`Dị ứng: ${patients.find(p => p.id === apt.patientId).allergies.join(', ')}`} />
+                                                    {patients.find(p => p.id === apt.patientId)?.allergies && (patients.find(p => p.id === apt.patientId)?.allergies?.length || 0) > 0 && (
+                                                        <span title={`Dị ứng: ${patients.find(p => p.id === apt.patientId)?.allergies?.join(', ')}`}>
+                                                            <AlertTriangle className="h-4 w-4 text-rose-500" />
+                                                        </span>
                                                     )}
                                                 </div>
                                             </td>
@@ -1834,8 +870,8 @@ function AppointmentBookingView({
                                                     )}
                                                     {/* Delete Button for cancelled appointments */}
                                                     {apt.status === 'Đã hủy' && (
-                                                        <button 
-                                                            onClick={() => handleDeleteAppointment(apt)} 
+                                                        <button
+                                                            onClick={() => handleDeleteAppointment(apt)}
                                                             className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:text-rose-600"
                                                             title="Xóa vĩnh viễn"
                                                         ><Trash2 className="h-4 w-4" /></button>
@@ -1878,7 +914,15 @@ function AppointmentBookingView({
                             </div>
                             <div>
                                 <label className="block text-sm font-medium">Dịch vụ *</label>
-                                <select value={formState.serviceId} onChange={e => setFormState(s => ({ ...s, serviceId: e.target.value }))} className="mt-1 w-full rounded-lg border bg-white p-2 text-sm">
+                                <select value={formState.serviceId} onChange={e => {
+                                    const serviceId = e.target.value;
+                                    const selectedService = services.find(s => s.id === serviceId);
+                                    setFormState(s => ({ 
+                                        ...s, 
+                                        serviceId,
+                                        difficulty: selectedService?.difficulty || 0 
+                                    }))
+                                }} className="mt-1 w-full rounded-lg border bg-white p-2 text-sm">
                                     <option value="">Chọn dịch vụ</option>
                                     {services.map(s => <option key={s.id} value={s.id}>{s.name} ({formatVND(s.basePrice)})</option>)}
                                 </select>
@@ -1894,6 +938,10 @@ function AppointmentBookingView({
                             <div>
                                 <label className="block text-sm font-medium">Ngày & Giờ hẹn *</label>
                                 <input type="datetime-local" value={formState.startTime} onChange={e => setFormState(s => ({ ...s, startTime: e.target.value }))} className="mt-1 w-full rounded-lg border p-2 text-sm" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium">Mức độ khó (Hệ số bệnh nhân)</label>
+                                <input type="number" step="0.1" min="0" max="1" value={formState.difficulty} onChange={e => setFormState(s => ({ ...s, difficulty: parseFloat(e.target.value) || 0 }))} className="mt-1 w-full rounded-lg border p-2 text-sm" />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium">Ghi chú</label>
@@ -1983,3 +1031,4 @@ function AppointmentBookingView({
     )
 }
 // #endregion
+

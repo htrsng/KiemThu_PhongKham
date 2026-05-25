@@ -6,7 +6,7 @@ export type MockAccount = {
     email: string
     role: 'Admin' | 'Doctor' | 'Reception'
     status: 'Hoat dong' | 'Bi khoa'
-    lastLogin: string
+    lastLoginAt?: string
     createdAt: string
     dateOfBirth?: string
     hometown?: string
@@ -33,11 +33,10 @@ export type MockDoctor = {
     phone: string
     email: string
     specialty: 'Nha khoa tổng quát' | 'Niềng răng' | 'Implant' | 'Nhổ răng' | 'Nha chu'
-    degree: 'Bác sĩ' | 'Thạc sĩ' | 'Tiến sĩ' | 'Phó Giáo sư' | 'Giáo sư'
+    degree: 'Đại học' | 'Thạc sỹ' | 'Tiến sỹ' | 'Phó giáo sư' | 'Giáo sư'
     experience: number
-    room: string
     consultationFee: number
-    hourlyRate?: number
+    hourlyRate: number
     serviceCommissionRate?: number
     status: 'active' | 'inactive'
     schedule: Record<string, { enabled: boolean; startTime: string; endTime: string }>
@@ -51,6 +50,7 @@ export type MockService = {
     category: 'Khám' | 'Điều trị' | 'Phẫu thuật' | 'Thẩm mỹ' | 'Vệ sinh'
     unit: 'răng' | 'hàm' | 'lần' | 'liệu trình'
     duration: number
+    difficulty: number
     basePrice: number
     status: 'active' | 'inactive'
     description: string
@@ -75,6 +75,7 @@ export type MockDoctorShift = {
     date: string
     startTime: string
     endTime: string
+    coefficient: number
 }
 
 // Patient mock data
@@ -100,9 +101,11 @@ export type MockWorkShift = {
 // Clinic Holiday mock data
 export type MockClinicHoliday = {
     id: string
+    date: string
     name: string
-    date: string // ISO string (date only)
-    isRecurring: boolean
+    description?: string
+    isRecurring?: boolean
+    type?: 'HOLIDAY' | 'MAINTENANCE' | 'TRAINING' | 'SYSTEM_CLOSED'
 }
 
 // Appointment mock data
@@ -117,7 +120,8 @@ export type MockAppointment = {
     startTime: string // ISO string
     endTime: string // ISO string
     status: 'Đã lên lịch' | 'Đã đến' | 'Đang điều trị' | 'Đã hoàn thành' | 'Đã hủy'
-    notes: string
+    notes?: string
+    difficulty: number
     checkInTime?: string // ISO string
 }
 

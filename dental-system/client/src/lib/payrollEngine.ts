@@ -14,10 +14,22 @@ export type SalaryReport = {
     consultationBonus: number
     serviceBonus: number
     totalSalary: number
-    detailedShifts: (MockDoctorShift & { isRecurring?: boolean })[]
+    detailedShifts: (MockDoctorShift & { isRecurring?: boolean, calculatedHours?: number, shiftSalary?: number })[]
     detailedAppointments: MockAppointment[]
     hourlyRateUsed: number
     commissionRateUsed: number
+}
+
+// Hàm lấy Hệ số bác sĩ
+function getDoctorCoefficient(degree: string): number {
+    switch (degree) {
+        case 'Đại học': return 1.3;
+        case 'Thạc sỹ': return 1.5;
+        case 'Tiến sỹ': return 1.7;
+        case 'Phó giáo sư': return 2.0;
+        case 'Giáo sư': return 2.5;
+        default: return 1.0; // Dự phòng
+    }
 }
 
 export function calculateDoctorSalary(
@@ -72,6 +84,7 @@ export function calculateDoctorSalary(
                     startTime: recurringShift.startTime,
                     endTime: recurringShift.endTime,
                     isRecurring: true, // Đánh dấu đây là ca từ lịch cố định
+                    coefficient: 1.0 // Mặc định hệ số 1.0 cho ca hành chính/đăng ký
                 });
             }
         }
@@ -83,20 +96,49 @@ export function calculateDoctorSalary(
         a.status === 'Đã hoàn thành'
     );
 
-    // Tính tổng số giờ làm việc từ danh sách đã tổng hợp
-    const totalHours = allEffectiveShifts.reduce((acc, shift) => {
-        const [startH, startM] = shift.startTime.split(':').map(Number);
-        const [endH, endM] = shift.endTime.split(':').map(Number);
-        const hours = (endH - startH) + (endM - startM) / 60;
-        return acc + hours;
-    }, 0);
-
-    // Tính lương theo giờ, hoa hồng khám và hoa hồng dịch vụ
+    const doctorCoefficient = getDoctorCoefficient(doctor.degree);
     const hourlyRateUsed = doctor.hourlyRate || DEFAULT_HOURLY_RATE;
     const commissionRateUsed = doctor.serviceCommissionRate || DEFAULT_COMMISSION_RATE;
 
-    const shiftSalary = totalHours * hourlyRateUsed;
-    const consultationBonus = monthAppointments.length * doctor.consultationFee;
+    // --- Tính tiền lương theo từng ca ---
+    let totalHours = 0;
+    let totalConvertedHours = 0;
+    let shiftSalary = 0;
+
+    const detailedShifts = allEffectiveShifts.map(shift => {
+        // 1. Tính số giờ làm việc thực tế của ca
+        const [startH, startM] = shift.startTime.split(':').map(Number);
+        const [endH, endM] = shift.endTime.split(':').map(Number);
+        const hours = (endH - startH) + (endM - startM) / 60;
+        totalHours += hours;
+
+        // 2. Tìm các bệnh nhân/lịch hẹn thuộc ca này (so sánh ngày)
+        // Giả sử lịch hẹn trùng ngày với ca làm việc
+        const shiftDateAppointments = monthAppointments.filter(a => a.startTime.split('T')[0] === shift.date);
+        
+        // 3. Tính Tổng_hệ_số_bệnh_nhân
+        const totalPatientCoefficient = shiftDateAppointments.reduce((acc, apt) => acc + (apt.difficulty || 0), 0);
+
+        // 4. Lấy hệ số ca
+        const shiftCoefficient = shift.coefficient || 1.0;
+
+        // 5. Tính Số_giờ_quy_đổi
+        const convertedHours = hours * (shiftCoefficient + totalPatientCoefficient);
+
+        // 6. Tính Tiền làm thêm một ca
+        const currentShiftSalary = convertedHours * doctorCoefficient * hourlyRateUsed;
+
+        totalConvertedHours += convertedHours;
+        shiftSalary += currentShiftSalary;
+
+        return {
+            ...shift,
+            calculatedHours: convertedHours,
+            shiftSalary: currentShiftSalary
+        };
+    });
+
+    const consultationBonus = monthAppointments.length * (doctor.consultationFee || 0);
     
     const serviceBonus = monthAppointments.reduce((acc, apt) => {
         const service = services.find(s => s.id === apt.serviceId);
@@ -107,13 +149,13 @@ export function calculateDoctorSalary(
         doctorId: doctor.id,
         doctorName: doctor.fullName,
         specialty: doctor.specialty,
-        totalHours: parseFloat(totalHours.toFixed(2)), // Làm tròn để hiển thị đẹp hơn
+        totalHours: parseFloat(totalConvertedHours.toFixed(2)), // Sử dụng giờ đã quy đổi
         shiftSalary,
         completedAppointments: monthAppointments.length,
         consultationBonus,
         serviceBonus,
         totalSalary: shiftSalary + consultationBonus + serviceBonus,
-        detailedShifts: allEffectiveShifts,
+        detailedShifts,
         detailedAppointments: monthAppointments,
         hourlyRateUsed,
         commissionRateUsed,

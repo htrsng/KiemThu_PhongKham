@@ -12,6 +12,7 @@ export function PaymentManagementPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
     const [discount, setDiscount] = useState<number>(0);
+    const [discountType, setDiscountType] = useState<'VND' | 'PERCENT'>('VND');
     const [paymentMethod, setPaymentMethod] = useState<string>('Tiền mặt');
     
     // Additional services (Mock)
@@ -36,6 +37,7 @@ export function PaymentManagementPage() {
             addToast('success', 'Thanh toán thành công!');
             setSelectedInvoice(null);
             setDiscount(0);
+            setDiscountType('VND');
             setExtraCharge(0);
             setExtraNote('');
         }
@@ -44,7 +46,8 @@ export function PaymentManagementPage() {
     const handlePayment = () => {
         if (!selectedInvoice) return;
         
-        const finalCost = selectedInvoice.totalAmount + extraCharge - discount;
+        const calculatedDiscount = discountType === 'PERCENT' ? (selectedInvoice.totalAmount * discount) / 100 : discount;
+        const finalCost = selectedInvoice.totalAmount + extraCharge - calculatedDiscount;
         if (finalCost < 0) {
             addToast('error', 'Giảm giá không được vượt quá tổng tiền!');
             return;
@@ -99,6 +102,7 @@ export function PaymentManagementPage() {
                                 onClick={() => {
                                     setSelectedInvoice(inv);
                                     setDiscount(0);
+                                    setDiscountType('VND');
                                     setExtraCharge(0);
                                     setExtraNote('');
                                 }}
@@ -166,8 +170,12 @@ export function PaymentManagementPage() {
                                         )}
                                         {discount > 0 && (
                                             <tr>
-                                                <td className="py-4 font-medium text-rose-600 print:text-black">Giảm giá / Khuyến mãi</td>
-                                                <td className="py-4 text-right font-medium text-rose-600 print:text-black">-{formatVND(discount)}</td>
+                                                <td className="py-4 font-medium text-rose-600 print:text-black">
+                                                    Giảm giá / Khuyến mãi {discountType === 'PERCENT' ? `(${discount}%)` : ''}
+                                                </td>
+                                                <td className="py-4 text-right font-medium text-rose-600 print:text-black">
+                                                    -{formatVND(discountType === 'PERCENT' ? (selectedInvoice.totalAmount * discount) / 100 : discount)}
+                                                </td>
                                             </tr>
                                         )}
                                     </tbody>
@@ -175,7 +183,7 @@ export function PaymentManagementPage() {
                                         <tr className="border-t-2 border-slate-200 print:border-black text-xl font-bold bg-slate-50 print:bg-transparent">
                                             <td className="py-4 px-2 print:text-black">TỔNG CỘNG</td>
                                             <td className="py-4 px-2 text-right text-blue-700 print:text-black">
-                                                {formatVND(selectedInvoice.totalAmount + extraCharge - discount)}
+                                                {formatVND(selectedInvoice.totalAmount + extraCharge - (discountType === 'PERCENT' ? (selectedInvoice.totalAmount * discount) / 100 : discount))}
                                             </td>
                                         </tr>
                                     </tfoot>
@@ -188,14 +196,27 @@ export function PaymentManagementPage() {
                                     
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-sm font-semibold text-slate-700 mb-1 flex items-center gap-1"><Ticket className="w-4 h-4"/> Giảm giá (VND)</label>
-                                            <input 
-                                                type="number" 
-                                                value={discount} 
-                                                onChange={(e) => setDiscount(Number(e.target.value) || 0)}
-                                                className="w-full border-slate-300 rounded-xl"
-                                                min="0"
-                                            />
+                                            <label className="block text-sm font-semibold text-slate-700 mb-1 flex items-center gap-1">
+                                                <Ticket className="w-4 h-4"/> Mức giảm giá
+                                            </label>
+                                            <div className="flex gap-2">
+                                                <select 
+                                                    value={discountType} 
+                                                    onChange={(e) => setDiscountType(e.target.value as 'VND' | 'PERCENT')}
+                                                    className="border-slate-300 rounded-xl"
+                                                >
+                                                    <option value="VND">VND</option>
+                                                    <option value="PERCENT">%</option>
+                                                </select>
+                                                <input 
+                                                    type="number" 
+                                                    value={discount} 
+                                                    onChange={(e) => setDiscount(Number(e.target.value) || 0)}
+                                                    className="flex-1 border-slate-300 rounded-xl"
+                                                    min="0"
+                                                    max={discountType === 'PERCENT' ? 100 : undefined}
+                                                />
+                                            </div>
                                         </div>
                                         <div>
                                             <label className="block text-sm font-semibold text-slate-700 mb-1">Phương thức</label>
@@ -266,7 +287,7 @@ export function PaymentManagementPage() {
                                 <CreditCard className="w-12 h-12 text-slate-300" />
                             </div>
                             <div className="text-xl font-bold text-slate-600 mb-2">Thanh Toán & Hóa Đơn</div>
-                            <p className="text-slate-500 text-center max-w-sm">Chọn một hóa đơn từ danh sách bên trái để hỗ trợ khách hàng thanh toán hoặc in biên lai lại.</p>
+                            <p className="text-slate-500 text-center max-w-sm">Vui lòng chọn một hóa đơn từ danh sách bên trái để xem chi tiết thanh toán.</p>
                         </div>
                     )}
                 </div>

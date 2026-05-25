@@ -1,0 +1,435 @@
+﻿Test Case ID,Module,Chức năng,Loại kiểm thử,Mô tả Test Case,Các bước thực hiện,Dữ liệu đầu vào,Kết quả mong đợi,Trạng thái,Kết quả thực tế,Người test,Ngày test,Ghi chú/Bug ID
+TC_QLBS_001,Quản lý Bác sĩ,Thêm Bác sĩ,CRUD Testing,Thêm mới Bác sĩ thành công,"1. Vào trang Thêm Bác sĩ
+2. Nhập đầy đủ thông tin hợp lệ
+3. Nhấn Lưu",Dữ liệu hợp lệ tất cả các trường,Hệ thống thông báo thêm thành công. Dữ liệu Bác sĩ hiển thị chính xác trong danh sách,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLBS_002,Quản lý Bác sĩ,Xem chi tiết Bác sĩ,CRUD Testing,Xem chi tiết Bác sĩ,"1. Chọn 1 Bác sĩ trong danh sách
+2. Nhấn nút Xem chi tiết",Bản ghi có sẵn,Hệ thống hiển thị đúng và đầy đủ thông tin chi tiết của Bác sĩ đó,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLBS_003,Quản lý Bác sĩ,Sửa Bác sĩ,CRUD Testing,Sửa Bác sĩ thành công,"1. Chọn 1 Bác sĩ
+2. Nhấn Sửa
+3. Thay đổi thông tin (VD: Cập nhật tên/địa chỉ)
+4. Nhấn Lưu",Dữ liệu mới hợp lệ,Hệ thống thông báo cập nhật thành công. Dữ liệu mới được lưu lại và hiển thị đúng,Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLBS_004,Quản lý Bác sĩ,Xóa Bác sĩ,CRUD Testing,Xóa Bác sĩ thành công (không có ràng buộc),"1. Chọn 1 Bác sĩ không có ràng buộc
+2. Nhấn Xóa
+3. Xác nhận Xóa",Bản ghi có sẵn,Thông báo xóa thành công. Bản ghi biến mất hoàn toàn khỏi danh sách,Blocked,Không thể thực thi do bị lỗi ở chức năng liên quan,Trang,30/04/2026,BUG-791
+TC_QLBS_005,Quản lý Bác sĩ,Xóa Bác sĩ,CRUD Testing,Hủy thao tác Xóa Bác sĩ,"1. Chọn 1 Bác sĩ
+2. Nhấn Xóa
+3. Chọn Hủy/Cancel trên popup",Bản ghi có sẵn,"Bản ghi không bị xóa, cửa sổ đóng lại và dữ liệu vẫn hiển thị bình thường",Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,27/04/2026,BUG-618
+TC_QLBS_006,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Validation Testing,Bỏ trống trường bắt buộc 'Mã bác sĩ',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Mã bác sĩ'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Mã bác sĩ = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Mã bác sĩ không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLBS_007,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Boundary Value Analysis,Nhập 'Mã bác sĩ' dưới giới hạn tối thiểu (3),"1. Nhập 'Mã bác sĩ' với độ dài hoặc giá trị nhỏ hơn 3
+2. Nhấn Lưu",Mã bác sĩ = 'BS',Hệ thống báo lỗi không đạt giới hạn tối thiểu của 'Mã bác sĩ',Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLBS_008,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Boundary Value Analysis,Nhập 'Mã bác sĩ' đúng bằng giới hạn tối thiểu (3),"1. Nhập 'Mã bác sĩ' bằng chính xác 3
+2. Nhấn Lưu",Mã bác sĩ = Giá trị hợp lệ tối thiểu,Hệ thống chấp nhận và lưu thành công,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLBS_009,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Boundary Value Analysis,Nhập 'Mã bác sĩ' vượt quá giới hạn tối đa (10),"1. Nhập 'Mã bác sĩ' lớn hơn 10
+2. Nhấn Lưu",Mã bác sĩ = 'BS000000001',Hệ thống báo lỗi vượt quá giới hạn tối đa hoặc tự động chặn không cho gõ thêm ký tự,Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLBS_010,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Boundary Value Analysis,Nhập 'Mã bác sĩ' đúng bằng giới hạn tối đa (10),"1. Nhập 'Mã bác sĩ' bằng chính xác 10
+2. Nhấn Lưu",Mã bác sĩ = Giá trị hợp lệ tối đa,Hệ thống chấp nhận và lưu thành công,Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLBS_011,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Equivalence Partitioning,Nhập 'Mã bác sĩ' sai định dạng: chứa dấu cách,"1. Nhập 'Mã bác sĩ' = 'BS 01'
+2. Nhấn Lưu",Mã bác sĩ = 'BS 01',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLBS_012,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Duplicate Data Testing,Nhập 'Mã bác sĩ' bị trùng lặp dữ liệu,"1. Nhập 'Mã bác sĩ' đã có sẵn trong CSDL
+2. Nhấn Lưu",Mã bác sĩ = Giá trị đã tồn tại,"Hệ thống báo lỗi 'Mã bác sĩ đã tồn tại trong hệ thống, vui lòng nhập giá trị khác'",Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLBS_013,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra bảo mật XSS ở trường 'Mã bác sĩ',"1. Nhập 'Mã bác sĩ' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Mã bác sĩ = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLBS_014,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra SQL Injection ở trường 'Mã bác sĩ',"1. Nhập 'Mã bác sĩ' = ""' OR 1=1 --""
+2. Nhấn Lưu","Mã bác sĩ = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLBS_015,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Validation Testing,Bỏ trống trường bắt buộc 'Tên bác sĩ',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Tên bác sĩ'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Tên bác sĩ = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Tên bác sĩ không được bỏ trống', không cho phép lưu",Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,28/04/2026,BUG-301
+TC_QLBS_016,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Boundary Value Analysis,Nhập 'Tên bác sĩ' dưới giới hạn tối thiểu (2),"1. Nhập 'Tên bác sĩ' với độ dài hoặc giá trị nhỏ hơn 2
+2. Nhấn Lưu",Tên bác sĩ = 'A',Hệ thống báo lỗi không đạt giới hạn tối thiểu của 'Tên bác sĩ',Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,29/04/2026,BUG-887
+TC_QLBS_017,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Boundary Value Analysis,Nhập 'Tên bác sĩ' đúng bằng giới hạn tối thiểu (2),"1. Nhập 'Tên bác sĩ' bằng chính xác 2
+2. Nhấn Lưu",Tên bác sĩ = Giá trị hợp lệ tối thiểu,Hệ thống chấp nhận và lưu thành công,Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLBS_018,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Boundary Value Analysis,Nhập 'Tên bác sĩ' vượt quá giới hạn tối đa (50),"1. Nhập 'Tên bác sĩ' lớn hơn 50
+2. Nhấn Lưu",Tên bác sĩ = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',Hệ thống báo lỗi vượt quá giới hạn tối đa hoặc tự động chặn không cho gõ thêm ký tự,Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLBS_019,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Boundary Value Analysis,Nhập 'Tên bác sĩ' đúng bằng giới hạn tối đa (50),"1. Nhập 'Tên bác sĩ' bằng chính xác 50
+2. Nhấn Lưu",Tên bác sĩ = Giá trị hợp lệ tối đa,Hệ thống chấp nhận và lưu thành công,Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLBS_020,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Equivalence Partitioning,Nhập 'Tên bác sĩ' sai định dạng: chứa chữ số,"1. Nhập 'Tên bác sĩ' = 'Nguyễn Văn 1'
+2. Nhấn Lưu",Tên bác sĩ = 'Nguyễn Văn 1',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLBS_021,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Equivalence Partitioning,Nhập 'Tên bác sĩ' sai định dạng: chứa ký tự đặc biệt,"1. Nhập 'Tên bác sĩ' = 'Bác sĩ @#'
+2. Nhấn Lưu",Tên bác sĩ = 'Bác sĩ @#',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLBS_022,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra bảo mật XSS ở trường 'Tên bác sĩ',"1. Nhập 'Tên bác sĩ' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Tên bác sĩ = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLBS_023,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra SQL Injection ở trường 'Tên bác sĩ',"1. Nhập 'Tên bác sĩ' = ""' OR 1=1 --""
+2. Nhấn Lưu","Tên bác sĩ = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,25/04/2026,BUG-896
+TC_QLBS_024,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Validation Testing,Bỏ trống trường bắt buộc 'Số điện thoại',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Số điện thoại'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Số điện thoại = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Số điện thoại không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLBS_025,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Boundary Value Analysis,Nhập 'Số điện thoại' dưới giới hạn tối thiểu (10),"1. Nhập 'Số điện thoại' với độ dài hoặc giá trị nhỏ hơn 10
+2. Nhấn Lưu",Số điện thoại = '090123456',Hệ thống báo lỗi không đạt giới hạn tối thiểu của 'Số điện thoại',Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLBS_026,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Boundary Value Analysis,Nhập 'Số điện thoại' đúng bằng giới hạn tối thiểu (10),"1. Nhập 'Số điện thoại' bằng chính xác 10
+2. Nhấn Lưu",Số điện thoại = Giá trị hợp lệ tối thiểu,Hệ thống chấp nhận và lưu thành công,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,29/04/2026,BUG-133
+TC_QLBS_027,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Boundary Value Analysis,Nhập 'Số điện thoại' vượt quá giới hạn tối đa (11),"1. Nhập 'Số điện thoại' lớn hơn 11
+2. Nhấn Lưu",Số điện thoại = '090123456789',Hệ thống báo lỗi vượt quá giới hạn tối đa hoặc tự động chặn không cho gõ thêm ký tự,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLBS_028,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Boundary Value Analysis,Nhập 'Số điện thoại' đúng bằng giới hạn tối đa (11),"1. Nhập 'Số điện thoại' bằng chính xác 11
+2. Nhấn Lưu",Số điện thoại = Giá trị hợp lệ tối đa,Hệ thống chấp nhận và lưu thành công,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,26/04/2026,BUG-262
+TC_QLBS_029,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Equivalence Partitioning,Nhập 'Số điện thoại' sai định dạng: chứa chữ cái,"1. Nhập 'Số điện thoại' = '0901234abc'
+2. Nhấn Lưu",Số điện thoại = '0901234abc',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLBS_030,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Equivalence Partitioning,Nhập 'Số điện thoại' sai định dạng: sai đầu số mạng,"1. Nhập 'Số điện thoại' = '1234567890'
+2. Nhấn Lưu",Số điện thoại = '1234567890',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLBS_031,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Duplicate Data Testing,Nhập 'Số điện thoại' bị trùng lặp dữ liệu,"1. Nhập 'Số điện thoại' đã có sẵn trong CSDL
+2. Nhấn Lưu",Số điện thoại = Giá trị đã tồn tại,"Hệ thống báo lỗi 'Số điện thoại đã tồn tại trong hệ thống, vui lòng nhập giá trị khác'",Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLBS_032,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra bảo mật XSS ở trường 'Số điện thoại',"1. Nhập 'Số điện thoại' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Số điện thoại = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLBS_033,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra SQL Injection ở trường 'Số điện thoại',"1. Nhập 'Số điện thoại' = ""' OR 1=1 --""
+2. Nhấn Lưu","Số điện thoại = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,26/04/2026,BUG-918
+TC_QLBS_034,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Validation Testing,Bỏ trống trường bắt buộc 'Email',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Email'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Email = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Email không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLBS_035,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Equivalence Partitioning,Nhập 'Email' sai định dạng: thiếu ký tự @,"1. Nhập 'Email' = 'bacsigmail.com'
+2. Nhấn Lưu",Email = 'bacsigmail.com',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLBS_036,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Equivalence Partitioning,Nhập 'Email' sai định dạng: thiếu domain .com/.vn,"1. Nhập 'Email' = 'bacsi@gmail'
+2. Nhấn Lưu",Email = 'bacsi@gmail',Hệ thống báo lỗi định dạng không hợp lệ,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,30/04/2026,BUG-376
+TC_QLBS_037,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Duplicate Data Testing,Nhập 'Email' bị trùng lặp dữ liệu,"1. Nhập 'Email' đã có sẵn trong CSDL
+2. Nhấn Lưu",Email = Giá trị đã tồn tại,"Hệ thống báo lỗi 'Email đã tồn tại trong hệ thống, vui lòng nhập giá trị khác'",Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLBS_038,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra bảo mật XSS ở trường 'Email',"1. Nhập 'Email' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Email = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLBS_039,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra SQL Injection ở trường 'Email',"1. Nhập 'Email' = ""' OR 1=1 --""
+2. Nhấn Lưu","Email = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,25/04/2026,BUG-222
+TC_QLBS_040,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra bảo mật XSS ở trường 'Học vị',"1. Nhập 'Học vị' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Học vị = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLBS_041,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra SQL Injection ở trường 'Học vị',"1. Nhập 'Học vị' = ""' OR 1=1 --""
+2. Nhấn Lưu","Học vị = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLBS_042,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Validation Testing,Bỏ trống trường bắt buộc 'Chuyên khoa',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Chuyên khoa'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Chuyên khoa = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Chuyên khoa không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLBS_043,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra bảo mật XSS ở trường 'Chuyên khoa',"1. Nhập 'Chuyên khoa' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Chuyên khoa = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLBS_044,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra SQL Injection ở trường 'Chuyên khoa',"1. Nhập 'Chuyên khoa' = ""' OR 1=1 --""
+2. Nhấn Lưu","Chuyên khoa = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLBS_045,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Validation Testing,Bỏ trống trường bắt buộc 'Hệ số lương',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Hệ số lương'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Hệ số lương = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Hệ số lương không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLBS_046,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Boundary Value Analysis,Nhập 'Hệ số lương' dưới giới hạn tối thiểu (1),"1. Nhập 'Hệ số lương' với độ dài hoặc giá trị nhỏ hơn 1
+2. Nhấn Lưu",Hệ số lương = '0.9',Hệ thống báo lỗi không đạt giới hạn tối thiểu của 'Hệ số lương',Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLBS_047,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Boundary Value Analysis,Nhập 'Hệ số lương' đúng bằng giới hạn tối thiểu (1),"1. Nhập 'Hệ số lương' bằng chính xác 1
+2. Nhấn Lưu",Hệ số lương = Giá trị hợp lệ tối thiểu,Hệ thống chấp nhận và lưu thành công,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,27/04/2026,BUG-326
+TC_QLBS_048,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Boundary Value Analysis,Nhập 'Hệ số lương' vượt quá giới hạn tối đa (5),"1. Nhập 'Hệ số lương' lớn hơn 5
+2. Nhấn Lưu",Hệ số lương = '6.0',Hệ thống báo lỗi vượt quá giới hạn tối đa hoặc tự động chặn không cho gõ thêm ký tự,Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLBS_049,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Boundary Value Analysis,Nhập 'Hệ số lương' đúng bằng giới hạn tối đa (5),"1. Nhập 'Hệ số lương' bằng chính xác 5
+2. Nhấn Lưu",Hệ số lương = Giá trị hợp lệ tối đa,Hệ thống chấp nhận và lưu thành công,Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLBS_050,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Equivalence Partitioning,Nhập 'Hệ số lương' sai định dạng: số âm,"1. Nhập 'Hệ số lương' = '-1.5'
+2. Nhấn Lưu",Hệ số lương = '-1.5',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLBS_051,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Equivalence Partitioning,Nhập 'Hệ số lương' sai định dạng: chữ cái,"1. Nhập 'Hệ số lương' = 'abc'
+2. Nhấn Lưu",Hệ số lương = 'abc',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLBS_052,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra bảo mật XSS ở trường 'Hệ số lương',"1. Nhập 'Hệ số lương' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Hệ số lương = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLBS_053,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra SQL Injection ở trường 'Hệ số lương',"1. Nhập 'Hệ số lương' = ""' OR 1=1 --""
+2. Nhấn Lưu","Hệ số lương = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Blocked,Không thể thực thi do bị lỗi ở chức năng liên quan,Trang,30/04/2026,BUG-235
+TC_QLBS_054,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Validation Testing,Bỏ trống trường bắt buộc 'Giới tính',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Giới tính'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Giới tính = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Giới tính không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLBS_055,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra bảo mật XSS ở trường 'Giới tính',"1. Nhập 'Giới tính' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Giới tính = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLBS_056,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra SQL Injection ở trường 'Giới tính',"1. Nhập 'Giới tính' = ""' OR 1=1 --""
+2. Nhấn Lưu","Giới tính = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLBS_057,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Validation Testing,Bỏ trống trường bắt buộc 'Ngày sinh',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Ngày sinh'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Ngày sinh = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Ngày sinh không được bỏ trống', không cho phép lưu",Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,28/04/2026,BUG-734
+TC_QLBS_058,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Equivalence Partitioning,Nhập 'Ngày sinh' sai định dạng: sai định dạng dd/mm/yyyy,"1. Nhập 'Ngày sinh' = '1990/01/01'
+2. Nhấn Lưu",Ngày sinh = '1990/01/01',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLBS_059,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Equivalence Partitioning,Nhập 'Ngày sinh' sai định dạng: tuổi chưa đủ 18,"1. Nhập 'Ngày sinh' = '01/01/2015'
+2. Nhấn Lưu",Ngày sinh = '01/01/2015',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLBS_060,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Equivalence Partitioning,Nhập 'Ngày sinh' sai định dạng: ngày ở tương lai,"1. Nhập 'Ngày sinh' = '01/01/2050'
+2. Nhấn Lưu",Ngày sinh = '01/01/2050',Hệ thống báo lỗi định dạng không hợp lệ,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,27/04/2026,BUG-708
+TC_QLBS_061,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra bảo mật XSS ở trường 'Ngày sinh',"1. Nhập 'Ngày sinh' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Ngày sinh = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLBS_062,Quản lý Bác sĩ,Thêm/Sửa Bác sĩ,Security Testing,Kiểm tra SQL Injection ở trường 'Ngày sinh',"1. Nhập 'Ngày sinh' = ""' OR 1=1 --""
+2. Nhấn Lưu","Ngày sinh = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLBS_063,Quản lý Bác sĩ,Tìm kiếm Bác sĩ,Functional Testing,Tìm kiếm theo từ khóa đúng có trong dữ liệu,"1. Nhập từ khóa tồn tại vào ô tìm kiếm
+2. Nhấn nút Tìm kiếm hoặc Enter",Từ khóa hợp lệ,Lưới dữ liệu hiển thị chính xác các kết quả chứa từ khóa,Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLBS_064,Quản lý Bác sĩ,Tìm kiếm Bác sĩ,Functional Testing,Tìm kiếm theo từ khóa không tồn tại,"1. Nhập từ khóa random không có trong CSDL
+2. Nhấn Tìm kiếm",Từ khóa ngẫu nhiên (vd: xyz123),Hiển thị thông báo 'Không tìm thấy dữ liệu phù hợp',Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLBS_065,Quản lý Bác sĩ,Tìm kiếm Bác sĩ,Functional Testing,Tìm kiếm với ô tìm kiếm bỏ trống,"1. Xóa trắng ô tìm kiếm
+2. Nhấn Tìm kiếm",Bỏ trống ô tìm kiếm,Lưới dữ liệu hiển thị toàn bộ danh sách (reset kết quả tìm kiếm),Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLBS_066,Quản lý Bác sĩ,Phân trang Bác sĩ,Functional Testing,Kiểm tra chức năng thay đổi số dòng/trang,"1. Mở danh sách
+2. Chọn hiển thị 10, 20, 50 dòng/trang",Đổi page size thành 50,Danh sách hiển thị tối đa 50 dòng trên 1 trang,Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLBS_067,Quản lý Bác sĩ,Phân trang Bác sĩ,Functional Testing,Kiểm tra chức năng chuyển trang (Next/Prev),"1. Mở danh sách có nhiều trang
+2. Nhấn nút Trang kế tiếp (Next)
+3. Nhấn nút Trang trước (Prev)",Click Next / Prev,Chuyển sang trang tương ứng và dữ liệu hiển thị đúng trang đó,Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLBS_068,Quản lý Bác sĩ,Bảo mật Bác sĩ,Authorization Testing,Truy cập URL không qua đăng nhập,"1. Copy URL trang Bác sĩ
+2. Mở trình duyệt ẩn danh
+3. Truy cập URL",URL trang Bác sĩ,Hệ thống tự động chuyển hướng người dùng về trang Đăng nhập,Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLBS_069,Quản lý Bác sĩ,Phân quyền Bác sĩ,Authorization Testing,Tài khoản không đủ quyền truy cập Bác sĩ,"1. Đăng nhập với tài khoản có role thấp (VD: Lễ tân)
+2. Cố gắng truy cập vào chức năng Bác sĩ",Tài khoản Lễ tân,Hệ thống báo lỗi '403 Access Denied' hoặc ẩn hoàn toàn menu chức năng này,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLBS_070,Quản lý Bác sĩ,Giao diện Bác sĩ,UI Testing,Kiểm tra hiển thị Bác sĩ trên thiết bị di động (Responsive),"1. Mở trang Bác sĩ
+2. Thu nhỏ màn hình trình duyệt hoặc giả lập thiết bị Mobile",Responsive breakpoint < 768px,"Layout tự động thu gọn dạng thẻ (card) hoặc cuộn ngang, không vỡ layout",Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLBS_071,Quản lý Bác sĩ,Ngoại lệ Bác sĩ,Exception Testing,Mất kết nối mạng khi đang thực hiện lưu Bác sĩ,"1. Nhập đầy đủ dữ liệu trên form
+2. Tắt kết nối internet của máy tính/điện thoại
+3. Nhấn nút Lưu",Mất kết nối mạng,"Hệ thống hiển thị cảnh báo 'Lỗi kết nối mạng, vui lòng thử lại', ứng dụng không bị crash",Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,27/04/2026,BUG-550
+TC_QLBS_072,Quản lý Bác sĩ,Ngoại lệ Bác sĩ,Exception Testing,Click đúp (Double click) vào nút Lưu để chống spam,"1. Điền form hợp lệ
+2. Click đúp thật nhanh vào nút Lưu",Double click,Chỉ tạo ra 1 bản ghi duy nhất trong CSDL (Nút lưu tự động disable sau click đầu tiên),Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLBS_073,Quản lý Bác sĩ,Xóa Bác sĩ,Exception Testing,Xóa bác sĩ đã có lịch khám/hóa đơn,"1. Chọn bác sĩ đang có lịch khám
+2. Nhấn Xóa",Bác sĩ đã phát sinh dữ liệu,Hệ thống chặn xóa và báo lỗi 'Không thể xóa vì bác sĩ đang có lịch khám/dịch vụ',Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLBS_074,Quản lý Bác sĩ,Export/Import,Functional Testing,Xuất danh sách bác sĩ ra file Excel,"1. Mở danh sách bác sĩ
+2. Nhấn nút Xuất Excel",Dữ liệu hiện tại,Hệ thống tải xuống file Excel (.xlsx) chứa đầy đủ thông tin bác sĩ hiển thị trên lưới,Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLND_001,Quản lý Người dùng,Đăng nhập,Authentication,Đăng nhập thành công,"1. Nhập username đúng
+2. Nhập password đúng
+3. Nhấn Đăng nhập",Dữ liệu đúng,"Đăng nhập thành công, chuyển hướng vào Dashboard",Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLND_002,Quản lý Người dùng,Đăng nhập,Authentication,Sai mật khẩu,"1. Nhập username đúng
+2. Nhập password sai
+3. Nhấn Đăng nhập",Mật khẩu sai,Báo lỗi 'Tên đăng nhập hoặc mật khẩu không đúng',Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLND_003,Quản lý Người dùng,Đăng nhập,Authentication,Tài khoản bị khóa,"1. Nhập username của tài khoản bị khóa
+2. Nhấn Đăng nhập",Tài khoản status=Locked,"Báo lỗi 'Tài khoản của bạn đã bị khóa, liên hệ Admin'",Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLND_004,Quản lý Người dùng,Đăng nhập,Authentication,Bỏ trống Tên đăng nhập,"1. Để trống Tên đăng nhập
+2. Nhấn Đăng nhập",Tên ĐN = '',Báo lỗi 'Vui lòng nhập tên đăng nhập',Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLND_005,Quản lý Người dùng,Session,Security,Hết hạn phiên đăng nhập (Session Timeout),"1. Đăng nhập thành công
+2. Treo máy không thao tác 30 phút
+3. Nhấn vào menu bất kỳ",Timeout 30 phút,Hệ thống tự động đăng xuất và yêu cầu Đăng nhập lại,Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLND_006,Quản lý Người dùng,Đổi mật khẩu,Functional Testing,Đổi mật khẩu thành công,"1. Nhập mật khẩu hiện tại
+2. Nhập mật khẩu mới hợp lệ
+3. Nhập lại mật khẩu mới
+4. Nhấn Lưu",Dữ liệu hợp lệ,Đổi mật khẩu thành công. Cần đăng nhập lại bằng mật khẩu mới,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLND_007,Quản lý Người dùng,Đổi mật khẩu,Validation Testing,Xác nhận mật khẩu mới không khớp,"1. Nhập mật khẩu mới 1 kiểu
+2. Ô xác nhận nhập kiểu khác
+3. Nhấn Lưu",Pass1 != Pass2,Báo lỗi 'Mật khẩu xác nhận không khớp',Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLND_008,Quản lý Người dùng,Thêm Người dùng,CRUD Testing,Thêm mới Người dùng thành công,"1. Vào trang Thêm Người dùng
+2. Nhập đầy đủ thông tin hợp lệ
+3. Nhấn Lưu",Dữ liệu hợp lệ tất cả các trường,Hệ thống thông báo thêm thành công. Dữ liệu Người dùng hiển thị chính xác trong danh sách,Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLND_009,Quản lý Người dùng,Xem chi tiết Người dùng,CRUD Testing,Xem chi tiết Người dùng,"1. Chọn 1 Người dùng trong danh sách
+2. Nhấn nút Xem chi tiết",Bản ghi có sẵn,Hệ thống hiển thị đúng và đầy đủ thông tin chi tiết của Người dùng đó,Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLND_010,Quản lý Người dùng,Sửa Người dùng,CRUD Testing,Sửa Người dùng thành công,"1. Chọn 1 Người dùng
+2. Nhấn Sửa
+3. Thay đổi thông tin (VD: Cập nhật tên/địa chỉ)
+4. Nhấn Lưu",Dữ liệu mới hợp lệ,Hệ thống thông báo cập nhật thành công. Dữ liệu mới được lưu lại và hiển thị đúng,Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLND_011,Quản lý Người dùng,Xóa Người dùng,CRUD Testing,Xóa Người dùng thành công (không có ràng buộc),"1. Chọn 1 Người dùng không có ràng buộc
+2. Nhấn Xóa
+3. Xác nhận Xóa",Bản ghi có sẵn,Thông báo xóa thành công. Bản ghi biến mất hoàn toàn khỏi danh sách,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,30/04/2026,BUG-723
+TC_QLND_012,Quản lý Người dùng,Xóa Người dùng,CRUD Testing,Hủy thao tác Xóa Người dùng,"1. Chọn 1 Người dùng
+2. Nhấn Xóa
+3. Chọn Hủy/Cancel trên popup",Bản ghi có sẵn,"Bản ghi không bị xóa, cửa sổ đóng lại và dữ liệu vẫn hiển thị bình thường",Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLND_013,Quản lý Người dùng,Thêm/Sửa Người dùng,Validation Testing,Bỏ trống trường bắt buộc 'Tên đăng nhập',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Tên đăng nhập'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Tên đăng nhập = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Tên đăng nhập không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLND_014,Quản lý Người dùng,Thêm/Sửa Người dùng,Boundary Value Analysis,Nhập 'Tên đăng nhập' dưới giới hạn tối thiểu (5),"1. Nhập 'Tên đăng nhập' với độ dài hoặc giá trị nhỏ hơn 5
+2. Nhấn Lưu",Tên đăng nhập = 'admi',Hệ thống báo lỗi không đạt giới hạn tối thiểu của 'Tên đăng nhập',Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLND_015,Quản lý Người dùng,Thêm/Sửa Người dùng,Boundary Value Analysis,Nhập 'Tên đăng nhập' đúng bằng giới hạn tối thiểu (5),"1. Nhập 'Tên đăng nhập' bằng chính xác 5
+2. Nhấn Lưu",Tên đăng nhập = Giá trị hợp lệ tối thiểu,Hệ thống chấp nhận và lưu thành công,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,25/04/2026,BUG-327
+TC_QLND_016,Quản lý Người dùng,Thêm/Sửa Người dùng,Boundary Value Analysis,Nhập 'Tên đăng nhập' vượt quá giới hạn tối đa (20),"1. Nhập 'Tên đăng nhập' lớn hơn 20
+2. Nhấn Lưu",Tên đăng nhập = 'aaaaaaaaaaaaaaaaaaaaa',Hệ thống báo lỗi vượt quá giới hạn tối đa hoặc tự động chặn không cho gõ thêm ký tự,Blocked,Không thể thực thi do bị lỗi ở chức năng liên quan,Trang,27/04/2026,BUG-360
+TC_QLND_017,Quản lý Người dùng,Thêm/Sửa Người dùng,Boundary Value Analysis,Nhập 'Tên đăng nhập' đúng bằng giới hạn tối đa (20),"1. Nhập 'Tên đăng nhập' bằng chính xác 20
+2. Nhấn Lưu",Tên đăng nhập = Giá trị hợp lệ tối đa,Hệ thống chấp nhận và lưu thành công,Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLND_018,Quản lý Người dùng,Thêm/Sửa Người dùng,Equivalence Partitioning,Nhập 'Tên đăng nhập' sai định dạng: chứa dấu cách,"1. Nhập 'Tên đăng nhập' = 'admin 123'
+2. Nhấn Lưu",Tên đăng nhập = 'admin 123',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLND_019,Quản lý Người dùng,Thêm/Sửa Người dùng,Equivalence Partitioning,Nhập 'Tên đăng nhập' sai định dạng: chứa tiếng Việt có dấu,"1. Nhập 'Tên đăng nhập' = 'adminđăngnhập'
+2. Nhấn Lưu",Tên đăng nhập = 'adminđăngnhập',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLND_020,Quản lý Người dùng,Thêm/Sửa Người dùng,Duplicate Data Testing,Nhập 'Tên đăng nhập' bị trùng lặp dữ liệu,"1. Nhập 'Tên đăng nhập' đã có sẵn trong CSDL
+2. Nhấn Lưu",Tên đăng nhập = Giá trị đã tồn tại,"Hệ thống báo lỗi 'Tên đăng nhập đã tồn tại trong hệ thống, vui lòng nhập giá trị khác'",Blocked,Không thể thực thi do bị lỗi ở chức năng liên quan,Trang,27/04/2026,BUG-964
+TC_QLND_021,Quản lý Người dùng,Thêm/Sửa Người dùng,Security Testing,Kiểm tra bảo mật XSS ở trường 'Tên đăng nhập',"1. Nhập 'Tên đăng nhập' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Tên đăng nhập = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLND_022,Quản lý Người dùng,Thêm/Sửa Người dùng,Security Testing,Kiểm tra SQL Injection ở trường 'Tên đăng nhập',"1. Nhập 'Tên đăng nhập' = ""' OR 1=1 --""
+2. Nhấn Lưu","Tên đăng nhập = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLND_023,Quản lý Người dùng,Thêm/Sửa Người dùng,Validation Testing,Bỏ trống trường bắt buộc 'Mật khẩu',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Mật khẩu'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Mật khẩu = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Mật khẩu không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLND_024,Quản lý Người dùng,Thêm/Sửa Người dùng,Boundary Value Analysis,Nhập 'Mật khẩu' dưới giới hạn tối thiểu (8),"1. Nhập 'Mật khẩu' với độ dài hoặc giá trị nhỏ hơn 8
+2. Nhấn Lưu",Mật khẩu = 'Pass@12',Hệ thống báo lỗi không đạt giới hạn tối thiểu của 'Mật khẩu',Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLND_025,Quản lý Người dùng,Thêm/Sửa Người dùng,Boundary Value Analysis,Nhập 'Mật khẩu' đúng bằng giới hạn tối thiểu (8),"1. Nhập 'Mật khẩu' bằng chính xác 8
+2. Nhấn Lưu",Mật khẩu = Giá trị hợp lệ tối thiểu,Hệ thống chấp nhận và lưu thành công,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLND_026,Quản lý Người dùng,Thêm/Sửa Người dùng,Equivalence Partitioning,Nhập 'Mật khẩu' sai định dạng: thiếu chữ hoa,"1. Nhập 'Mật khẩu' = 'pass@1234'
+2. Nhấn Lưu",Mật khẩu = 'pass@1234',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLND_027,Quản lý Người dùng,Thêm/Sửa Người dùng,Equivalence Partitioning,Nhập 'Mật khẩu' sai định dạng: thiếu ký tự đặc biệt,"1. Nhập 'Mật khẩu' = 'Pass12345'
+2. Nhấn Lưu",Mật khẩu = 'Pass12345',Hệ thống báo lỗi định dạng không hợp lệ,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,30/04/2026,BUG-744
+TC_QLND_028,Quản lý Người dùng,Thêm/Sửa Người dùng,Equivalence Partitioning,Nhập 'Mật khẩu' sai định dạng: thiếu chữ số,"1. Nhập 'Mật khẩu' = 'Password@'
+2. Nhấn Lưu",Mật khẩu = 'Password@',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLND_029,Quản lý Người dùng,Thêm/Sửa Người dùng,Security Testing,Kiểm tra bảo mật XSS ở trường 'Mật khẩu',"1. Nhập 'Mật khẩu' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Mật khẩu = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,28/04/2026,BUG-829
+TC_QLND_030,Quản lý Người dùng,Thêm/Sửa Người dùng,Security Testing,Kiểm tra SQL Injection ở trường 'Mật khẩu',"1. Nhập 'Mật khẩu' = ""' OR 1=1 --""
+2. Nhấn Lưu","Mật khẩu = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLND_031,Quản lý Người dùng,Thêm/Sửa Người dùng,Validation Testing,Bỏ trống trường bắt buộc 'Email',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Email'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Email = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Email không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLND_032,Quản lý Người dùng,Thêm/Sửa Người dùng,Equivalence Partitioning,Nhập 'Email' sai định dạng: sai định dạng email,"1. Nhập 'Email' = 'userphongkham.com'
+2. Nhấn Lưu",Email = 'userphongkham.com',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLND_033,Quản lý Người dùng,Thêm/Sửa Người dùng,Duplicate Data Testing,Nhập 'Email' bị trùng lặp dữ liệu,"1. Nhập 'Email' đã có sẵn trong CSDL
+2. Nhấn Lưu",Email = Giá trị đã tồn tại,"Hệ thống báo lỗi 'Email đã tồn tại trong hệ thống, vui lòng nhập giá trị khác'",Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLND_034,Quản lý Người dùng,Thêm/Sửa Người dùng,Security Testing,Kiểm tra bảo mật XSS ở trường 'Email',"1. Nhập 'Email' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Email = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLND_035,Quản lý Người dùng,Thêm/Sửa Người dùng,Security Testing,Kiểm tra SQL Injection ở trường 'Email',"1. Nhập 'Email' = ""' OR 1=1 --""
+2. Nhấn Lưu","Email = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLND_036,Quản lý Người dùng,Thêm/Sửa Người dùng,Validation Testing,Bỏ trống trường bắt buộc 'Họ và tên',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Họ và tên'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Họ và tên = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Họ và tên không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLND_037,Quản lý Người dùng,Thêm/Sửa Người dùng,Boundary Value Analysis,Nhập 'Họ và tên' dưới giới hạn tối thiểu (2),"1. Nhập 'Họ và tên' với độ dài hoặc giá trị nhỏ hơn 2
+2. Nhấn Lưu",Họ và tên = 'T',Hệ thống báo lỗi không đạt giới hạn tối thiểu của 'Họ và tên',Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLND_038,Quản lý Người dùng,Thêm/Sửa Người dùng,Boundary Value Analysis,Nhập 'Họ và tên' đúng bằng giới hạn tối thiểu (2),"1. Nhập 'Họ và tên' bằng chính xác 2
+2. Nhấn Lưu",Họ và tên = Giá trị hợp lệ tối thiểu,Hệ thống chấp nhận và lưu thành công,Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLND_039,Quản lý Người dùng,Thêm/Sửa Người dùng,Boundary Value Analysis,Nhập 'Họ và tên' vượt quá giới hạn tối đa (50),"1. Nhập 'Họ và tên' lớn hơn 50
+2. Nhấn Lưu",Họ và tên = 'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',Hệ thống báo lỗi vượt quá giới hạn tối đa hoặc tự động chặn không cho gõ thêm ký tự,Blocked,Không thể thực thi do bị lỗi ở chức năng liên quan,Trang,30/04/2026,BUG-583
+TC_QLND_040,Quản lý Người dùng,Thêm/Sửa Người dùng,Boundary Value Analysis,Nhập 'Họ và tên' đúng bằng giới hạn tối đa (50),"1. Nhập 'Họ và tên' bằng chính xác 50
+2. Nhấn Lưu",Họ và tên = Giá trị hợp lệ tối đa,Hệ thống chấp nhận và lưu thành công,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLND_041,Quản lý Người dùng,Thêm/Sửa Người dùng,Security Testing,Kiểm tra bảo mật XSS ở trường 'Họ và tên',"1. Nhập 'Họ và tên' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Họ và tên = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLND_042,Quản lý Người dùng,Thêm/Sửa Người dùng,Security Testing,Kiểm tra SQL Injection ở trường 'Họ và tên',"1. Nhập 'Họ và tên' = ""' OR 1=1 --""
+2. Nhấn Lưu","Họ và tên = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLND_043,Quản lý Người dùng,Thêm/Sửa Người dùng,Validation Testing,Bỏ trống trường bắt buộc 'Vai trò (Role)',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Vai trò (Role)'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Vai trò (Role) = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Vai trò (Role) không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLND_044,Quản lý Người dùng,Thêm/Sửa Người dùng,Security Testing,Kiểm tra bảo mật XSS ở trường 'Vai trò (Role)',"1. Nhập 'Vai trò (Role)' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Vai trò (Role) = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLND_045,Quản lý Người dùng,Thêm/Sửa Người dùng,Security Testing,Kiểm tra SQL Injection ở trường 'Vai trò (Role)',"1. Nhập 'Vai trò (Role)' = ""' OR 1=1 --""
+2. Nhấn Lưu","Vai trò (Role) = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,29/04/2026,BUG-458
+TC_QLND_046,Quản lý Người dùng,Thêm/Sửa Người dùng,Validation Testing,Bỏ trống trường bắt buộc 'Trạng thái',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Trạng thái'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Trạng thái = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Trạng thái không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLND_047,Quản lý Người dùng,Thêm/Sửa Người dùng,Security Testing,Kiểm tra bảo mật XSS ở trường 'Trạng thái',"1. Nhập 'Trạng thái' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Trạng thái = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,26/04/2026,BUG-868
+TC_QLND_048,Quản lý Người dùng,Thêm/Sửa Người dùng,Security Testing,Kiểm tra SQL Injection ở trường 'Trạng thái',"1. Nhập 'Trạng thái' = ""' OR 1=1 --""
+2. Nhấn Lưu","Trạng thái = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLND_049,Quản lý Người dùng,Tìm kiếm Người dùng,Functional Testing,Tìm kiếm theo từ khóa đúng có trong dữ liệu,"1. Nhập từ khóa tồn tại vào ô tìm kiếm
+2. Nhấn nút Tìm kiếm hoặc Enter",Từ khóa hợp lệ,Lưới dữ liệu hiển thị chính xác các kết quả chứa từ khóa,Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLND_050,Quản lý Người dùng,Tìm kiếm Người dùng,Functional Testing,Tìm kiếm theo từ khóa không tồn tại,"1. Nhập từ khóa random không có trong CSDL
+2. Nhấn Tìm kiếm",Từ khóa ngẫu nhiên (vd: xyz123),Hiển thị thông báo 'Không tìm thấy dữ liệu phù hợp',Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLND_051,Quản lý Người dùng,Tìm kiếm Người dùng,Functional Testing,Tìm kiếm với ô tìm kiếm bỏ trống,"1. Xóa trắng ô tìm kiếm
+2. Nhấn Tìm kiếm",Bỏ trống ô tìm kiếm,Lưới dữ liệu hiển thị toàn bộ danh sách (reset kết quả tìm kiếm),Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLND_052,Quản lý Người dùng,Phân trang Người dùng,Functional Testing,Kiểm tra chức năng thay đổi số dòng/trang,"1. Mở danh sách
+2. Chọn hiển thị 10, 20, 50 dòng/trang",Đổi page size thành 50,Danh sách hiển thị tối đa 50 dòng trên 1 trang,Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLND_053,Quản lý Người dùng,Phân trang Người dùng,Functional Testing,Kiểm tra chức năng chuyển trang (Next/Prev),"1. Mở danh sách có nhiều trang
+2. Nhấn nút Trang kế tiếp (Next)
+3. Nhấn nút Trang trước (Prev)",Click Next / Prev,Chuyển sang trang tương ứng và dữ liệu hiển thị đúng trang đó,Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLND_054,Quản lý Người dùng,Bảo mật Người dùng,Authorization Testing,Truy cập URL không qua đăng nhập,"1. Copy URL trang Người dùng
+2. Mở trình duyệt ẩn danh
+3. Truy cập URL",URL trang Người dùng,Hệ thống tự động chuyển hướng người dùng về trang Đăng nhập,Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLND_055,Quản lý Người dùng,Phân quyền Người dùng,Authorization Testing,Tài khoản không đủ quyền truy cập Người dùng,"1. Đăng nhập với tài khoản có role thấp (VD: Lễ tân)
+2. Cố gắng truy cập vào chức năng Người dùng",Tài khoản Lễ tân,Hệ thống báo lỗi '403 Access Denied' hoặc ẩn hoàn toàn menu chức năng này,Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLND_056,Quản lý Người dùng,Giao diện Người dùng,UI Testing,Kiểm tra hiển thị Người dùng trên thiết bị di động (Responsive),"1. Mở trang Người dùng
+2. Thu nhỏ màn hình trình duyệt hoặc giả lập thiết bị Mobile",Responsive breakpoint < 768px,"Layout tự động thu gọn dạng thẻ (card) hoặc cuộn ngang, không vỡ layout",Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLND_057,Quản lý Người dùng,Ngoại lệ Người dùng,Exception Testing,Mất kết nối mạng khi đang thực hiện lưu Người dùng,"1. Nhập đầy đủ dữ liệu trên form
+2. Tắt kết nối internet của máy tính/điện thoại
+3. Nhấn nút Lưu",Mất kết nối mạng,"Hệ thống hiển thị cảnh báo 'Lỗi kết nối mạng, vui lòng thử lại', ứng dụng không bị crash",Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLND_058,Quản lý Người dùng,Ngoại lệ Người dùng,Exception Testing,Click đúp (Double click) vào nút Lưu để chống spam,"1. Điền form hợp lệ
+2. Click đúp thật nhanh vào nút Lưu",Double click,Chỉ tạo ra 1 bản ghi duy nhất trong CSDL (Nút lưu tự động disable sau click đầu tiên),Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLDV_001,Quản lý Dịch vụ,Thêm Dịch vụ,CRUD Testing,Thêm mới Dịch vụ thành công,"1. Vào trang Thêm Dịch vụ
+2. Nhập đầy đủ thông tin hợp lệ
+3. Nhấn Lưu",Dữ liệu hợp lệ tất cả các trường,Hệ thống thông báo thêm thành công. Dữ liệu Dịch vụ hiển thị chính xác trong danh sách,Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLDV_002,Quản lý Dịch vụ,Xem chi tiết Dịch vụ,CRUD Testing,Xem chi tiết Dịch vụ,"1. Chọn 1 Dịch vụ trong danh sách
+2. Nhấn nút Xem chi tiết",Bản ghi có sẵn,Hệ thống hiển thị đúng và đầy đủ thông tin chi tiết của Dịch vụ đó,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLDV_003,Quản lý Dịch vụ,Sửa Dịch vụ,CRUD Testing,Sửa Dịch vụ thành công,"1. Chọn 1 Dịch vụ
+2. Nhấn Sửa
+3. Thay đổi thông tin (VD: Cập nhật tên/địa chỉ)
+4. Nhấn Lưu",Dữ liệu mới hợp lệ,Hệ thống thông báo cập nhật thành công. Dữ liệu mới được lưu lại và hiển thị đúng,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLDV_004,Quản lý Dịch vụ,Xóa Dịch vụ,CRUD Testing,Xóa Dịch vụ thành công (không có ràng buộc),"1. Chọn 1 Dịch vụ không có ràng buộc
+2. Nhấn Xóa
+3. Xác nhận Xóa",Bản ghi có sẵn,Thông báo xóa thành công. Bản ghi biến mất hoàn toàn khỏi danh sách,Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLDV_005,Quản lý Dịch vụ,Xóa Dịch vụ,CRUD Testing,Hủy thao tác Xóa Dịch vụ,"1. Chọn 1 Dịch vụ
+2. Nhấn Xóa
+3. Chọn Hủy/Cancel trên popup",Bản ghi có sẵn,"Bản ghi không bị xóa, cửa sổ đóng lại và dữ liệu vẫn hiển thị bình thường",Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLDV_006,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Validation Testing,Bỏ trống trường bắt buộc 'Mã dịch vụ',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Mã dịch vụ'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Mã dịch vụ = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Mã dịch vụ không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLDV_007,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Boundary Value Analysis,Nhập 'Mã dịch vụ' dưới giới hạn tối thiểu (3),"1. Nhập 'Mã dịch vụ' với độ dài hoặc giá trị nhỏ hơn 3
+2. Nhấn Lưu",Mã dịch vụ = 'DV',Hệ thống báo lỗi không đạt giới hạn tối thiểu của 'Mã dịch vụ',Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLDV_008,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Boundary Value Analysis,Nhập 'Mã dịch vụ' đúng bằng giới hạn tối thiểu (3),"1. Nhập 'Mã dịch vụ' bằng chính xác 3
+2. Nhấn Lưu",Mã dịch vụ = Giá trị hợp lệ tối thiểu,Hệ thống chấp nhận và lưu thành công,Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLDV_009,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Boundary Value Analysis,Nhập 'Mã dịch vụ' vượt quá giới hạn tối đa (10),"1. Nhập 'Mã dịch vụ' lớn hơn 10
+2. Nhấn Lưu",Mã dịch vụ = 'DV000000001',Hệ thống báo lỗi vượt quá giới hạn tối đa hoặc tự động chặn không cho gõ thêm ký tự,Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLDV_010,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Boundary Value Analysis,Nhập 'Mã dịch vụ' đúng bằng giới hạn tối đa (10),"1. Nhập 'Mã dịch vụ' bằng chính xác 10
+2. Nhấn Lưu",Mã dịch vụ = Giá trị hợp lệ tối đa,Hệ thống chấp nhận và lưu thành công,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,30/04/2026,BUG-237
+TC_QLDV_011,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Duplicate Data Testing,Nhập 'Mã dịch vụ' bị trùng lặp dữ liệu,"1. Nhập 'Mã dịch vụ' đã có sẵn trong CSDL
+2. Nhấn Lưu",Mã dịch vụ = Giá trị đã tồn tại,"Hệ thống báo lỗi 'Mã dịch vụ đã tồn tại trong hệ thống, vui lòng nhập giá trị khác'",Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLDV_012,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Security Testing,Kiểm tra bảo mật XSS ở trường 'Mã dịch vụ',"1. Nhập 'Mã dịch vụ' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Mã dịch vụ = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLDV_013,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Security Testing,Kiểm tra SQL Injection ở trường 'Mã dịch vụ',"1. Nhập 'Mã dịch vụ' = ""' OR 1=1 --""
+2. Nhấn Lưu","Mã dịch vụ = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Blocked,Không thể thực thi do bị lỗi ở chức năng liên quan,Trang,27/04/2026,BUG-939
+TC_QLDV_014,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Validation Testing,Bỏ trống trường bắt buộc 'Tên dịch vụ',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Tên dịch vụ'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Tên dịch vụ = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Tên dịch vụ không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLDV_015,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Boundary Value Analysis,Nhập 'Tên dịch vụ' dưới giới hạn tối thiểu (5),"1. Nhập 'Tên dịch vụ' với độ dài hoặc giá trị nhỏ hơn 5
+2. Nhấn Lưu",Tên dịch vụ = 'Khám',Hệ thống báo lỗi không đạt giới hạn tối thiểu của 'Tên dịch vụ',Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLDV_016,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Boundary Value Analysis,Nhập 'Tên dịch vụ' đúng bằng giới hạn tối thiểu (5),"1. Nhập 'Tên dịch vụ' bằng chính xác 5
+2. Nhấn Lưu",Tên dịch vụ = Giá trị hợp lệ tối thiểu,Hệ thống chấp nhận và lưu thành công,Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLDV_017,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Boundary Value Analysis,Nhập 'Tên dịch vụ' vượt quá giới hạn tối đa (100),"1. Nhập 'Tên dịch vụ' lớn hơn 100
+2. Nhấn Lưu",Tên dịch vụ = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',Hệ thống báo lỗi vượt quá giới hạn tối đa hoặc tự động chặn không cho gõ thêm ký tự,Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLDV_018,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Boundary Value Analysis,Nhập 'Tên dịch vụ' đúng bằng giới hạn tối đa (100),"1. Nhập 'Tên dịch vụ' bằng chính xác 100
+2. Nhấn Lưu",Tên dịch vụ = Giá trị hợp lệ tối đa,Hệ thống chấp nhận và lưu thành công,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,28/04/2026,BUG-462
+TC_QLDV_019,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Duplicate Data Testing,Nhập 'Tên dịch vụ' bị trùng lặp dữ liệu,"1. Nhập 'Tên dịch vụ' đã có sẵn trong CSDL
+2. Nhấn Lưu",Tên dịch vụ = Giá trị đã tồn tại,"Hệ thống báo lỗi 'Tên dịch vụ đã tồn tại trong hệ thống, vui lòng nhập giá trị khác'",Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLDV_020,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Security Testing,Kiểm tra bảo mật XSS ở trường 'Tên dịch vụ',"1. Nhập 'Tên dịch vụ' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Tên dịch vụ = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLDV_021,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Security Testing,Kiểm tra SQL Injection ở trường 'Tên dịch vụ',"1. Nhập 'Tên dịch vụ' = ""' OR 1=1 --""
+2. Nhấn Lưu","Tên dịch vụ = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLDV_022,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Validation Testing,Bỏ trống trường bắt buộc 'Giá dịch vụ',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Giá dịch vụ'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Giá dịch vụ = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Giá dịch vụ không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLDV_023,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Boundary Value Analysis,Nhập 'Giá dịch vụ' dưới giới hạn tối thiểu (1000),"1. Nhập 'Giá dịch vụ' với độ dài hoặc giá trị nhỏ hơn 1000
+2. Nhấn Lưu",Giá dịch vụ = '999',Hệ thống báo lỗi không đạt giới hạn tối thiểu của 'Giá dịch vụ',Blocked,Không thể thực thi do bị lỗi ở chức năng liên quan,Trang,28/04/2026,BUG-371
+TC_QLDV_024,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Boundary Value Analysis,Nhập 'Giá dịch vụ' đúng bằng giới hạn tối thiểu (1000),"1. Nhập 'Giá dịch vụ' bằng chính xác 1000
+2. Nhấn Lưu",Giá dịch vụ = Giá trị hợp lệ tối thiểu,Hệ thống chấp nhận và lưu thành công,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,27/04/2026,BUG-981
+TC_QLDV_025,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Boundary Value Analysis,Nhập 'Giá dịch vụ' vượt quá giới hạn tối đa (100000000),"1. Nhập 'Giá dịch vụ' lớn hơn 100000000
+2. Nhấn Lưu",Giá dịch vụ = '100000001',Hệ thống báo lỗi vượt quá giới hạn tối đa hoặc tự động chặn không cho gõ thêm ký tự,Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLDV_026,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Boundary Value Analysis,Nhập 'Giá dịch vụ' đúng bằng giới hạn tối đa (100000000),"1. Nhập 'Giá dịch vụ' bằng chính xác 100000000
+2. Nhấn Lưu",Giá dịch vụ = Giá trị hợp lệ tối đa,Hệ thống chấp nhận và lưu thành công,Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLDV_027,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Equivalence Partitioning,Nhập 'Giá dịch vụ' sai định dạng: nhập số âm,"1. Nhập 'Giá dịch vụ' = '-50000'
+2. Nhấn Lưu",Giá dịch vụ = '-50000',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLDV_028,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Equivalence Partitioning,Nhập 'Giá dịch vụ' sai định dạng: nhập chữ cái,"1. Nhập 'Giá dịch vụ' = 'Năm trăm ngàn'
+2. Nhấn Lưu",Giá dịch vụ = 'Năm trăm ngàn',Hệ thống báo lỗi định dạng không hợp lệ,Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLDV_029,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Security Testing,Kiểm tra bảo mật XSS ở trường 'Giá dịch vụ',"1. Nhập 'Giá dịch vụ' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Giá dịch vụ = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLDV_030,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Security Testing,Kiểm tra SQL Injection ở trường 'Giá dịch vụ',"1. Nhập 'Giá dịch vụ' = ""' OR 1=1 --""
+2. Nhấn Lưu","Giá dịch vụ = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLDV_031,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Validation Testing,Bỏ trống trường bắt buộc 'Danh mục',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Danh mục'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Danh mục = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Danh mục không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLDV_032,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Security Testing,Kiểm tra bảo mật XSS ở trường 'Danh mục',"1. Nhập 'Danh mục' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Danh mục = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLDV_033,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Security Testing,Kiểm tra SQL Injection ở trường 'Danh mục',"1. Nhập 'Danh mục' = ""' OR 1=1 --""
+2. Nhấn Lưu","Danh mục = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLDV_034,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Validation Testing,Bỏ trống trường bắt buộc 'Đơn vị tính',"1. Mở form Thêm/Sửa
+2. Bỏ trống trường 'Đơn vị tính'
+3. Nhập các trường khác hợp lệ
+4. Nhấn Lưu",Đơn vị tính = '',"Hệ thống highlight ô nhập liệu và báo lỗi 'Đơn vị tính không được bỏ trống', không cho phép lưu",Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLDV_035,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Security Testing,Kiểm tra bảo mật XSS ở trường 'Đơn vị tính',"1. Nhập 'Đơn vị tính' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Đơn vị tính = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLDV_036,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Security Testing,Kiểm tra SQL Injection ở trường 'Đơn vị tính',"1. Nhập 'Đơn vị tính' = ""' OR 1=1 --""
+2. Nhấn Lưu","Đơn vị tính = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLDV_037,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Boundary Value Analysis,Nhập 'Mô tả' vượt quá giới hạn tối đa (500),"1. Nhập 'Mô tả' lớn hơn 500
+2. Nhấn Lưu",Mô tả = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',Hệ thống báo lỗi vượt quá giới hạn tối đa hoặc tự động chặn không cho gõ thêm ký tự,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,25/04/2026,BUG-363
+TC_QLDV_038,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Boundary Value Analysis,Nhập 'Mô tả' đúng bằng giới hạn tối đa (500),"1. Nhập 'Mô tả' bằng chính xác 500
+2. Nhấn Lưu",Mô tả = Giá trị hợp lệ tối đa,Hệ thống chấp nhận và lưu thành công,Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLDV_039,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Security Testing,Kiểm tra bảo mật XSS ở trường 'Mô tả',"1. Nhập 'Mô tả' = '<script>alert(1)</script>'
+2. Nhấn Lưu",Mô tả = '<script>alert(1)</script>',"Hệ thống encode ký tự đặc biệt hoặc báo lỗi, không thực thi mã JavaScript",Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLDV_040,Quản lý Dịch vụ,Thêm/Sửa Dịch vụ,Security Testing,Kiểm tra SQL Injection ở trường 'Mô tả',"1. Nhập 'Mô tả' = ""' OR 1=1 --""
+2. Nhấn Lưu","Mô tả = ""' OR 1=1 --""",Hệ thống ngăn chặn chuỗi SQL Injection hoặc xử lý như văn bản bình thường,Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLDV_041,Quản lý Dịch vụ,Tìm kiếm Dịch vụ,Functional Testing,Tìm kiếm theo từ khóa đúng có trong dữ liệu,"1. Nhập từ khóa tồn tại vào ô tìm kiếm
+2. Nhấn nút Tìm kiếm hoặc Enter",Từ khóa hợp lệ,Lưới dữ liệu hiển thị chính xác các kết quả chứa từ khóa,Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLDV_042,Quản lý Dịch vụ,Tìm kiếm Dịch vụ,Functional Testing,Tìm kiếm theo từ khóa không tồn tại,"1. Nhập từ khóa random không có trong CSDL
+2. Nhấn Tìm kiếm",Từ khóa ngẫu nhiên (vd: xyz123),Hiển thị thông báo 'Không tìm thấy dữ liệu phù hợp',Pass,Hoạt động đúng như kết quả mong đợi,Trang,27/04/2026,
+TC_QLDV_043,Quản lý Dịch vụ,Tìm kiếm Dịch vụ,Functional Testing,Tìm kiếm với ô tìm kiếm bỏ trống,"1. Xóa trắng ô tìm kiếm
+2. Nhấn Tìm kiếm",Bỏ trống ô tìm kiếm,Lưới dữ liệu hiển thị toàn bộ danh sách (reset kết quả tìm kiếm),Pass,Hoạt động đúng như kết quả mong đợi,Trang,25/04/2026,
+TC_QLDV_044,Quản lý Dịch vụ,Phân trang Dịch vụ,Functional Testing,Kiểm tra chức năng thay đổi số dòng/trang,"1. Mở danh sách
+2. Chọn hiển thị 10, 20, 50 dòng/trang",Đổi page size thành 50,Danh sách hiển thị tối đa 50 dòng trên 1 trang,Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,29/04/2026,BUG-753
+TC_QLDV_045,Quản lý Dịch vụ,Phân trang Dịch vụ,Functional Testing,Kiểm tra chức năng chuyển trang (Next/Prev),"1. Mở danh sách có nhiều trang
+2. Nhấn nút Trang kế tiếp (Next)
+3. Nhấn nút Trang trước (Prev)",Click Next / Prev,Chuyển sang trang tương ứng và dữ liệu hiển thị đúng trang đó,Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,
+TC_QLDV_046,Quản lý Dịch vụ,Bảo mật Dịch vụ,Authorization Testing,Truy cập URL không qua đăng nhập,"1. Copy URL trang Dịch vụ
+2. Mở trình duyệt ẩn danh
+3. Truy cập URL",URL trang Dịch vụ,Hệ thống tự động chuyển hướng người dùng về trang Đăng nhập,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLDV_047,Quản lý Dịch vụ,Phân quyền Dịch vụ,Authorization Testing,Tài khoản không đủ quyền truy cập Dịch vụ,"1. Đăng nhập với tài khoản có role thấp (VD: Lễ tân)
+2. Cố gắng truy cập vào chức năng Dịch vụ",Tài khoản Lễ tân,Hệ thống báo lỗi '403 Access Denied' hoặc ẩn hoàn toàn menu chức năng này,Pass,Hoạt động đúng như kết quả mong đợi,Trang,29/04/2026,
+TC_QLDV_048,Quản lý Dịch vụ,Giao diện Dịch vụ,UI Testing,Kiểm tra hiển thị Dịch vụ trên thiết bị di động (Responsive),"1. Mở trang Dịch vụ
+2. Thu nhỏ màn hình trình duyệt hoặc giả lập thiết bị Mobile",Responsive breakpoint < 768px,"Layout tự động thu gọn dạng thẻ (card) hoặc cuộn ngang, không vỡ layout",Fail,"Kết quả không khớp với kịch bản, hệ thống xử lý sai",Trang,26/04/2026,BUG-852
+TC_QLDV_049,Quản lý Dịch vụ,Ngoại lệ Dịch vụ,Exception Testing,Mất kết nối mạng khi đang thực hiện lưu Dịch vụ,"1. Nhập đầy đủ dữ liệu trên form
+2. Tắt kết nối internet của máy tính/điện thoại
+3. Nhấn nút Lưu",Mất kết nối mạng,"Hệ thống hiển thị cảnh báo 'Lỗi kết nối mạng, vui lòng thử lại', ứng dụng không bị crash",Pass,Hoạt động đúng như kết quả mong đợi,Trang,30/04/2026,
+TC_QLDV_050,Quản lý Dịch vụ,Ngoại lệ Dịch vụ,Exception Testing,Click đúp (Double click) vào nút Lưu để chống spam,"1. Điền form hợp lệ
+2. Click đúp thật nhanh vào nút Lưu",Double click,Chỉ tạo ra 1 bản ghi duy nhất trong CSDL (Nút lưu tự động disable sau click đầu tiên),Pass,Hoạt động đúng như kết quả mong đợi,Trang,26/04/2026,
+TC_QLDV_051,Quản lý Dịch vụ,Xóa Dịch vụ,Exception Testing,Xóa dịch vụ đã được sử dụng trong hóa đơn/phiếu điều trị,"1. Chọn dịch vụ đã có người dùng
+2. Nhấn Xóa",Dịch vụ đang sử dụng,Hệ thống chặn xóa và báo lỗi 'Không thể xóa do dịch vụ đã phát sinh giao dịch/hóa đơn',Pass,Hoạt động đúng như kết quả mong đợi,Trang,28/04/2026,

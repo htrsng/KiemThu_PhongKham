@@ -13,10 +13,10 @@ const doctorSchema = z.object({
     phone: z.string().regex(/^0\d{9}$/, 'Số điện thoại không hợp lệ (0xxxxxxxxx)'),
     email: z.string().email('Email không hợp lệ'),
     specialty: z.enum(['Nha khoa tổng quát', 'Niềng răng', 'Implant', 'Nhổ răng', 'Nha chu']),
-    degree: z.enum(['Bác sĩ', 'Thạc sĩ', 'Tiến sĩ', 'Phó Giáo sư', 'Giáo sư']),
+    degree: z.enum(['Đại học', 'Thạc sỹ', 'Tiến sỹ', 'Phó giáo sư', 'Giáo sư']),
     experience: z.number().min(0, 'Kinh nghiệm phải lớn hơn 0').max(50, 'Kinh nghiệm phải nhỏ hơn 50'),
-    room: z.string().min(1, 'Vui lòng chọn phòng'),
-    consultationFee: z.number().positive('Giá khám phải lớn hơn 0'),
+    consultationFee: z.number().min(0, 'Phí khám phải lớn hơn hoặc bằng 0'),
+    hourlyRate: z.number().min(0, 'Lương cơ bản/giờ phải lớn hơn hoặc bằng 0'),
     status: z.enum(['active', 'inactive']),
 })
 
@@ -24,8 +24,7 @@ const doctorSchema = z.object({
 export type DoctorFormData = z.infer<typeof doctorSchema>
 
 const SPECIALTIES: Doctor['specialty'][] = ['Nha khoa tổng quát', 'Niềng răng', 'Implant', 'Nhổ răng', 'Nha chu']
-const DEGREES: Doctor['degree'][] = ['Bác sĩ', 'Thạc sĩ', 'Tiến sĩ', 'Phó Giáo sư', 'Giáo sư']
-const ROOMS: string[] = Array.from({ length: 205 }, (_, i) => `Phòng ${101 + i}`)
+const DEGREES: Doctor['degree'][] = ['Đại học', 'Thạc sỹ', 'Tiến sỹ', 'Phó giáo sư', 'Giáo sư']
 
 interface DoctorFormModalProps {
     isOpen: boolean
@@ -55,10 +54,10 @@ export function DoctorFormModal({ isOpen, onClose, onSave, editingDoctor }: Doct
                 phone: '',
                 email: '',
                 specialty: 'Nha khoa tổng quát',
-                degree: 'Bác sĩ',
+                degree: 'Đại học',
                 experience: 0,
-                room: 'Phòng 101',
                 consultationFee: 0,
+                hourlyRate: 0,
                 status: 'active',
             })
         }
@@ -131,15 +130,14 @@ export function DoctorFormModal({ isOpen, onClose, onSave, editingDoctor }: Doct
                             {errors.experience && <p className="mt-1 text-xs text-rose-600">{errors.experience.message}</p>}
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-900">Phòng</label>
-                            <select {...register('room')} className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring">
-                                {ROOMS.map((room) => <option key={room} value={room}>{room}</option>)}
-                            </select>
-                        </div>
-                        <div>
                             <label className="block text-sm font-medium text-slate-900">Phí khám (VND) *</label>
                             <input type="number" {...register('consultationFee', { valueAsNumber: true })} placeholder="0" className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring" />
                             {errors.consultationFee && <p className="mt-1 text-xs text-rose-600">{errors.consultationFee.message}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-slate-900">Lương cơ bản/giờ *</label>
+                            <input type="number" {...register('hourlyRate', { valueAsNumber: true })} placeholder="0" className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring" />
+                            {errors.hourlyRate && <p className="mt-1 text-xs text-rose-600">{errors.hourlyRate.message}</p>}
                         </div>
                     </div>
 

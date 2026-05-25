@@ -1,91 +1,82 @@
-import { NavLink, useNavigate, type NavLinkRenderProps } from 'react-router-dom'
-import { ChevronRight, HeartPulse, LogOut } from 'lucide-react'
+import { NavLink, useLocation, type NavLinkRenderProps } from 'react-router-dom'
+import { ChevronRight, HeartPulse } from 'lucide-react'
 import { navigationItems } from '../config/navigation'
 import { useAuth } from '../contexts/AuthContext'
 
 export function Sidebar() {
-    const { currentUser, logout } = useAuth()
-    const navigate = useNavigate()
-
-    const handleLogout = () => {
-        logout()
-        navigate('/login')
-    }
+    const { currentUser } = useAuth()
+    const location = useLocation()
 
     const allowedNavItems = navigationItems.filter(item => currentUser?.role && item.allowedRoles.includes(currentUser.role));
 
+    // Group items
+    const groupedItems = allowedNavItems.reduce((acc, item) => {
+        if (!acc[item.group]) {
+            acc[item.group] = []
+        }
+        acc[item.group].push(item)
+        return acc
+    }, {} as Record<string, typeof allowedNavItems>)
+
+    const groupOrder = ['Chung', 'Lâm sàng', 'Hành chính', 'Hệ thống']
+
     return (
-        <aside className="flex h-full w-80 flex-col border-r border-slate-200/80 bg-white/90 px-4 py-5 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl">
-            <div className="mb-8 flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-900 to-slate-700 text-white shadow-lg shadow-blue-950/20">
+        <aside className="flex h-full w-72 flex-col border-r border-slate-200/80 bg-white/90 px-4 py-5 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl overflow-y-auto dark:border-slate-800/80 dark:bg-slate-900/90">
+            <div className="mb-6 flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm dark:border-slate-800 dark:bg-slate-800/50">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-900 to-slate-700 text-white shadow-lg shadow-blue-950/20 dark:from-blue-600 dark:to-blue-900 dark:shadow-blue-900/40">
                     <HeartPulse className="h-5 w-5" />
                 </div>
                 <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">SmileCare</p>
-                    <p className="text-sm font-semibold text-slate-900">Dental Clinic Management</p>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">SmileCare</p>
+                    <p className="text-sm font-semibold text-slate-900 dark:text-white">Nha Khoa</p>
                 </div>
             </div>
 
-            <nav className="flex-1 space-y-2" aria-label="Primary navigation">
-                {allowedNavItems.map((item) => {
-                    const Icon = item.icon
+            <nav className="flex-1 space-y-6" aria-label="Primary navigation">
+                {groupOrder.map((group) => {
+                    const items = groupedItems[group]
+                    if (!items || items.length === 0) return null
 
                     return (
-                        <NavLink
-                            key={item.id}
-                            to={item.path}
-                            end={item.path === '/'}
-                            data-testid={item.testId}
-                            className={({ isActive }: NavLinkRenderProps) => {
-                                return [
-                                    'group flex items-center gap-3 rounded-2xl px-4 py-3 transition-all duration-200',
-                                    isActive
-                                        ? 'bg-blue-900 text-white shadow-lg shadow-blue-900/20'
-                                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950',
-                                ].join(' ')
-                            }}
-                        >
-                            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 ring-1 ring-inset ring-white/15 transition-transform duration-200 group-hover:scale-[1.03]">
-                                <Icon className="h-4 w-4" />
-                            </span>
+                        <div key={group}>
+                            <h3 className="mb-2 px-4 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                {group}
+                            </h3>
+                            <div className="space-y-1">
+                                {items.map((item) => {
+                                    const Icon = item.icon
+                                    return (
+                                        <NavLink
+                                            key={item.id}
+                                            to={item.path}
+                                            end={item.path === '/'}
+                                            data-testid={item.testId}
+                                            className={({ isActive }: NavLinkRenderProps) => {
+                                                return [
+                                                    'group flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 border-l-4',
+                                                    isActive
+                                                        ? 'border-blue-600 bg-blue-50/80 text-blue-700 shadow-sm dark:border-blue-500 dark:bg-blue-900/20 dark:text-blue-400'
+                                                        : 'border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-slate-200',
+                                                ].join(' ')
+                                            }}
+                                        >
+                                            <span className={['flex h-8 w-8 items-center justify-center rounded-lg shadow-sm transition-transform duration-200 group-hover:scale-105', item.path === location.pathname ? 'bg-blue-600 text-white' : 'bg-white ring-1 ring-slate-200 dark:bg-slate-800 dark:ring-slate-700'].join(' ')}>
+                                                <Icon className="h-4 w-4" />
+                                            </span>
 
-                            <span className="min-w-0 flex-1">
-                                <span className="block text-sm font-semibold">{item.label}</span>
-                                <span className="block text-xs text-slate-500">{item.description}</span>
-                            </span>
+                                            <span className="min-w-0 flex-1">
+                                                <span className="block text-sm font-medium">{item.label}</span>
+                                            </span>
 
-                            <ChevronRight className="h-4 w-4 opacity-50 transition-transform duration-200 group-hover:translate-x-0.5" />
-                        </NavLink>
+                                            <ChevronRight className="h-4 w-4 opacity-0 transition-all duration-200 group-hover:opacity-50 group-hover:translate-x-0.5" />
+                                        </NavLink>
+                                    )
+                                })}
+                            </div>
+                        </div>
                     )
                 })}
             </nav>
-
-            {/* Logout Button */}
-            <div className="mt-4">
-                <button
-                    onClick={handleLogout}
-                    className="group flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 transition-all duration-200 hover:bg-rose-50 hover:text-rose-700"
-                >
-                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 ring-1 ring-inset ring-slate-200 transition-transform duration-200 group-hover:scale-[1.03] group-hover:bg-rose-100 group-hover:ring-rose-200">
-                        <LogOut className="h-4 w-4" />
-                    </span>
-                    <span className="min-w-0 flex-1 text-left">
-                        <span className="block text-sm font-semibold">Đăng xuất</span>
-                        <span className="block text-xs text-slate-500">Thoát khỏi hệ thống</span>
-                    </span>
-                </button>
-            </div>
-
-            <div className="mt-6 rounded-3xl bg-gradient-to-br from-slate-900 to-blue-950 p-4 text-white shadow-lg shadow-slate-950/20">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-200/80">System Status</p>
-                <p className="mt-2 text-sm leading-6 text-slate-200">
-                    Frontend shell đã sẵn sàng cho các module quản trị phòng khám.
-                </p>
-                <div className="mt-4 flex items-center gap-2 text-xs text-emerald-300">
-                    <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                    Mock data enabled
-                </div>
-            </div>
         </aside>
     )
 }

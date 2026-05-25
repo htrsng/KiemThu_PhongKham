@@ -1,7 +1,9 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AccountManagementPage } from '../pages/AccountManagementPage'
 import { DashboardPage } from '../pages/DashboardPage'
 import { AppointmentManagementPage } from '../pages/AppointmentManagementPage'
+import { PatientManagementPage } from '../pages/PatientManagementPage'
+import { ScheduleManagementPage } from '../pages/ScheduleManagementPage'
 import { DoctorManagementPage } from '../pages/DoctorManagementPage'
 import { DoctorPayrollPage } from '../pages/DoctorPayrollPage'
 import { GeneralSettingsPage } from '../pages/GeneralSettingsPage'
@@ -22,6 +24,8 @@ export function AppRouter() {
                     <Route index element={<DashboardPage />} />
                     <Route path='accounts' element={<AccountManagementPage />} />
                     <Route path='appointments' element={<AppointmentManagementPage />} />
+                    <Route path='patients' element={<PatientManagementPage />} />
+                    <Route path='schedule' element={<ScheduleManagementPage />} />
                     <Route path='doctors' element={<DoctorManagementPage />} />
                     <Route path='payroll' element={<DoctorPayrollPage />} />
                     <Route path='services' element={<ServiceCategoryPage />} />

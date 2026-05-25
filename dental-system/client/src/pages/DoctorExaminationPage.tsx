@@ -5,6 +5,7 @@ import { api, type ApiListResponse } from '../lib/api';
 import { useToast } from '../contexts/ToastContext';
 import { useAuth } from '../contexts/AuthContext';
 import { AlertTriangle, Clock, CalendarIcon, CheckCircle2, Pill, Activity, Syringe, Save } from 'lucide-react';
+import { ToothChart, type ToothData, type ToothStatus } from '../components/ToothChart';
 
 interface DentalRecord {
     diagnosis: string;
@@ -28,7 +29,19 @@ export function DoctorExaminationPage() {
         prescription: '',
         notes: ''
     });
+    const [teethData, setTeethData] = useState<ToothData[]>([]);
     const [recallDays, setRecallDays] = useState<string>('0');
+    const [selectedMaterials, setSelectedMaterials] = useState<{materialId: string, name: string, quantity: number}[]>([]);
+
+    const handleToothUpdate = (id: number, status: ToothStatus) => {
+        setTeethData(prev => {
+            const existing = prev.find(t => t.id === id);
+            if (existing) {
+                return prev.map(t => t.id === id ? { ...t, status } : t);
+            }
+            return [...prev, { id, status }];
+        });
+    };
 
     // Fetch dependencies
     const { data: patients = [] } = useQuery({
@@ -47,7 +60,15 @@ export function DoctorExaminationPage() {
         }
     });
 
-    // Fetch appointments that are in 'Đã đến' or 'Đang điều trị' state for this doctor
+    const { data: materials = [] } = useQuery({
+        queryKey: ['materials'],
+        queryFn: async () => {
+            const res = await api.get<ApiListResponse<any>>('/materials');
+            return res.data.data;
+        }
+    });
+
+    // Fetch appointments that are in 'Đã đến' hoặc 'Đang điều trị'
     const { data: appointments = [], isLoading } = useQuery({
         queryKey: ['appointments', 'doctorQueue'],
         queryFn: async () => {
@@ -87,6 +108,15 @@ export function DoctorExaminationPage() {
         }
    });
 
+   const { mutate: deductMaterials } = useMutation({
+        mutationFn: async (payload: { appointmentId: string, materialsUsed: any[] }) => {
+            return api.post('/inventory/deduct', payload);
+        },
+        onSuccess: () => {
+            console.log('Trừ kho thành công');
+        }
+   });
+
     const handleStartExam = (apt: any) => {
         updateStatus({ id: apt.id, status: 'Đang điều trị' });
         setSelectedApt(apt);
@@ -98,7 +128,9 @@ export function DoctorExaminationPage() {
             prescription: '',
             notes: apt.notes || ''
         });
+        setTeethData([]); // Reset teeth data when starting a new exam
         setRecallDays('0');
+        setSelectedMaterials([]);
     };
 
     const handleFinishExam = () => {
@@ -107,11 +139,16 @@ export function DoctorExaminationPage() {
         const service = services.find(s => s.id === selectedApt.serviceId);
         const amount = service ? service.basePrice : 500000;
 
+        const teethNotes = teethData.length > 0 
+            ? `[Tình trạng răng]:\n` + teethData.map(t => `- Răng ${t.id}: ${t.status}`).join('\n')
+            : '';
+
         const combinedNotes = `
 [Chẩn đoán]: ${dentalRecord.diagnosis}
 [Thủ thuật]: ${dentalRecord.treatment}
-[Vật liệu]: ${dentalRecord.materials}
+[Vật liệu]: ${selectedMaterials.map(m => `${m.name} x${m.quantity}`).join(', ') || dentalRecord.materials}
 [Đơn thuốc]: ${dentalRecord.prescription}
+${teethNotes}
 [Ghi chú thêm]: ${dentalRecord.notes}
         `.trim();
 
@@ -129,6 +166,14 @@ export function DoctorExaminationPage() {
             status: 'Chưa thanh toán',
             createdAt: new Date().toISOString()
         });
+
+        // Trừ kho vật tư nếu có
+        if (selectedMaterials.length > 0) {
+            deductMaterials({
+                appointmentId: selectedApt.id,
+                materialsUsed: selectedMaterials.map(m => ({ materialId: m.materialId, quantity: m.quantity }))
+            });
+        }
 
         // Tạo nhắc tái khám (nếu có)
         if (recallDays !== '0') {
@@ -230,18 +275,8 @@ export function DoctorExaminationPage() {
                                     </div>
                                 </div>
 
-                                <div className="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm">
-                                    <h3 className="font-bold text-slate-800 mb-3">Sơ đồ răng (Dental Chart nhanh)</h3>
-                                    <div className="grid grid-cols-8 gap-1.5 text-center text-xs">
-                                        {/* Maxillary */}
-                                        {[18,17,16,15,14,13,12,11].map((r) => <div key={r} className="border p-2 bg-slate-50 rounded-lg font-medium text-slate-600 cursor-pointer hover:bg-blue-100 hover:text-blue-700 transition">{r}</div>)}
-                                        {[21,22,23,24,25,26,27,28].map((r) => <div key={r} className="border p-2 bg-slate-50 rounded-lg font-medium text-slate-600 cursor-pointer hover:bg-blue-100 hover:text-blue-700 transition">{r}</div>)}
-                                        {/* Mandibular */}
-                                        <div className="col-span-8 h-2"></div>
-                                        {[48,47,46,45,44,43,42,41].map((r) => <div key={r} className="border p-2 bg-slate-50 rounded-lg font-medium text-slate-600 cursor-pointer hover:bg-blue-100 hover:text-blue-700 transition">{r}</div>)}
-                                        {[31,32,33,34,35,36,37,38].map((r) => <div key={r} className="border p-2 bg-slate-50 rounded-lg font-medium text-slate-600 cursor-pointer hover:bg-blue-100 hover:text-blue-700 transition">{r}</div>)}
-                                    </div>
-                                    <div className="text-[10px] text-slate-400 mt-3 text-center uppercase tracking-wider font-semibold">* Click vào răng để ghi chú nhanh thủ thuật</div>
+                                <div className="mt-6 md:col-span-2">
+                                    <ToothChart teethData={teethData} onToothUpdate={handleToothUpdate} />
                                 </div>
                             </div>
 
@@ -259,8 +294,62 @@ export function DoctorExaminationPage() {
                                         <textarea value={dentalRecord.treatment} onChange={(e) => setDentalRecord({...dentalRecord, treatment: e.target.value})} className="w-full border-slate-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 h-24" placeholder="VD: Trám Composite D27, Lấy tủy D46..." />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-1 flex items-center gap-1"><Syringe className="w-4 h-4 text-slate-500"/> Vật liệu sử dụng</label>
-                                        <textarea value={dentalRecord.materials} onChange={(e) => setDentalRecord({...dentalRecord, materials: e.target.value})} className="w-full border-slate-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 h-24" placeholder="VD: Composite 3M, Côn Gutta Percha..." />
+                                        <label className="block text-sm font-semibold text-slate-700 mb-1 flex items-center gap-1"><Syringe className="w-4 h-4 text-slate-500"/> Vật liệu sử dụng (Kho)</label>
+                                        <div className="flex gap-2 mb-2">
+                                            <select 
+                                                id="material-select"
+                                                className="border-slate-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 flex-1 text-sm"
+                                            >
+                                                <option value="">Chọn vật tư...</option>
+                                                {materials.map((m: any) => (
+                                                    <option key={m.id} value={m.id}>{m.name} (Tồn: {m.quantity})</option>
+                                                ))}
+                                            </select>
+                                            <button 
+                                                onClick={() => {
+                                                    const select = document.getElementById('material-select') as HTMLSelectElement;
+                                                    const selectedId = select.value;
+                                                    if(!selectedId) return;
+                                                    const mat = materials.find((m:any) => m.id === selectedId);
+                                                    if(mat) {
+                                                        const existing = selectedMaterials.find(sm => sm.materialId === mat.id);
+                                                        if(existing) {
+                                                            setSelectedMaterials(prev => prev.map(sm => sm.materialId === mat.id ? {...sm, quantity: sm.quantity + 1} : sm));
+                                                        } else {
+                                                            setSelectedMaterials(prev => [...prev, {materialId: mat.id, name: mat.name, quantity: 1}]);
+                                                        }
+                                                    }
+                                                }}
+                                                className="bg-slate-100 text-slate-700 px-3 py-2 rounded-xl text-sm font-medium border hover:bg-slate-200"
+                                            >Thêm</button>
+                                        </div>
+                                        {selectedMaterials.length > 0 ? (
+                                            <div className="space-y-2 mb-2 max-h-24 overflow-y-auto">
+                                                {selectedMaterials.map((m, idx) => (
+                                                    <div key={idx} className="flex justify-between items-center bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 text-sm">
+                                                        <span className="truncate flex-1">{m.name}</span>
+                                                        <div className="flex items-center gap-2">
+                                                            <input 
+                                                                type="number" 
+                                                                min="1" 
+                                                                value={m.quantity}
+                                                                onChange={(e) => {
+                                                                    const val = parseInt(e.target.value) || 1;
+                                                                    setSelectedMaterials(prev => prev.map(sm => sm.materialId === m.materialId ? {...sm, quantity: val} : sm));
+                                                                }}
+                                                                className="w-16 h-7 text-xs border-blue-200 rounded text-center"
+                                                            />
+                                                            <button 
+                                                                onClick={() => setSelectedMaterials(prev => prev.filter(sm => sm.materialId !== m.materialId))}
+                                                                className="text-rose-500 hover:text-rose-700 font-bold px-1"
+                                                            >×</button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <textarea value={dentalRecord.materials} onChange={(e) => setDentalRecord({...dentalRecord, materials: e.target.value})} className="w-full border-slate-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 h-16 text-sm" placeholder="Hoặc nhập text: Composite 3M..." />
+                                        )}
                                     </div>
                                 </div>
 
