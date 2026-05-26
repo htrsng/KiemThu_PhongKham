@@ -45,18 +45,42 @@ exports.getDashboardSummary = async (req, res, next) => {
         { name: 'Nha khoa thẩm mỹ', value: 15 }
     ];
 
+    // Best doctor today: doctor with most completed appointments today
+    const bestDoctorAgg = await Appointment.aggregate([
+      {
+        $match: {
+          status: 'Đã hoàn thành',
+          startTime: { $gte: todayStart, $lte: todayEnd }
+        }
+      },
+      {
+        $group: {
+          _id: '$doctorId',
+          doctorName: { $first: '$doctorName' },
+          completedCases: { $sum: 1 }
+        }
+      },
+      { $sort: { completedCases: -1 } },
+      { $limit: 1 }
+    ]);
+
+    const bestDoctor = bestDoctorAgg.length > 0
+      ? { name: bestDoctorAgg[0].doctorName, completedCases: bestDoctorAgg[0].completedCases }
+      : { name: '—', completedCases: 0 };
+
     res.json({
       data: {
         kpi: {
             appointmentsToday,
             walkInsToday,
             revenueToday,
-            bestDoctor: { name: 'Dr. John Doe', completedCases: 5 }
+            bestDoctor
         },
         queueCapacity,
         serviceRatio
       }
     });
+
   } catch (error) {
     next(error);
   }

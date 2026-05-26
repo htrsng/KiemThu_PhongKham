@@ -5,11 +5,13 @@ import { api, type ApiListResponse } from '../lib/api';
 import { useToast } from '../contexts/ToastContext';
 import { formatVND } from '../lib/formatters';
 import { CreditCard, Printer, Search, CheckCircle, Ticket, Plus } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 export function PaymentManagementPage() {
     const queryClient = useQueryClient();
     const { addToast } = useToast();
-    const [searchTerm, setSearchTerm] = useState('');
+    const location = useLocation();
+    const [searchTerm, setSearchTerm] = useState(location.state?.searchTerm || '');
     const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
     const [discount, setDiscount] = useState<number>(0);
     const [discountType, setDiscountType] = useState<'VND' | 'PERCENT'>('VND');

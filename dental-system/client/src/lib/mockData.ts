@@ -81,13 +81,43 @@ export type MockDoctorShift = {
 // Patient mock data
 export type MockPatient = {
     id: string
+    patientCode?: string
     fullName: string
     phone: string
     dateOfBirth: string // ISO string
-    gender: 'Nam' | 'Nữ' | 'Khác'
+    gender: 'Nam' | 'Nữ' | 'Khác' | string
     address: string
-    createdAt: string // ISO string
+    createdAt?: string // ISO string
+    
+    // Additional identity
+    cccd?: string
+    email?: string
+    avatarUrl?: string
+    
+    // Medical Info
+    bloodType?: string
     allergies?: string[]
+    backgroundDisease?: string
+    surgicalHistory?: string
+    currentMedication?: string
+    height?: number
+    weight?: number
+    bmi?: number
+    
+    // Emergency Contact
+    emergencyContactName?: string
+    emergencyContactRelation?: string
+    emergencyContactPhone?: string
+    
+    // Insurance
+    insuranceNumber?: string
+    insurancePlace?: string
+    insuranceExpirationDate?: string // ISO string
+
+    // System Info
+    updatedAt?: string
+    updatedBy?: string
+    doctorNotes?: string
 }
 
 // Work Shift mock data

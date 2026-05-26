@@ -14,6 +14,7 @@ import { ProtectedRoute } from './ProtectedRoute'
 import { DoctorExaminationPage } from '../pages/DoctorExaminationPage'
 import { PaymentManagementPage } from '../pages/PaymentManagementPage'
 import { RevenueStatisticsPage } from '../pages/RevenueStatisticsPage'
+import { ReceptionPage } from '../pages/ReceptionPage'
 
 export function AppRouter() {
     return (
@@ -34,6 +35,7 @@ export function AppRouter() {
                     <Route path='examination' element={<DoctorExaminationPage />} />
                     <Route path='payment' element={<PaymentManagementPage />} />
                     <Route path='revenue' element={<RevenueStatisticsPage />} />
+                    <Route path='reception' element={<ReceptionPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>

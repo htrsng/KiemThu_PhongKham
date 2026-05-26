@@ -9,6 +9,7 @@ import type { MockPatient } from '../lib/mockData'
 import { useToast } from '../contexts/ToastContext'
 import { useConfirm } from '../contexts/ConfirmContext'
 import { formatDate, formatPhone } from '../lib/formatters'
+import { useLocation } from 'react-router-dom'
 
 const PAGE_SIZE = 10
 
@@ -18,6 +19,42 @@ type PatientFormState = {
     dateOfBirth: string
     gender: MockPatient['gender']
     address: string
+    
+    // Additional identity
+    cccd: string
+    email: string
+    avatarUrl: string
+    
+    // Medical Info
+    bloodType: string
+    allergies: string
+    backgroundDisease: string
+    surgicalHistory: string
+    currentMedication: string
+    height: string
+    weight: string
+    
+    // Emergency Contact
+    emergencyContactName: string
+    emergencyContactRelation: string
+    emergencyContactPhone: string
+    
+    // Insurance Config
+    insuranceNumber: string
+    insurancePlace: string
+    insuranceExpirationDate: string
+
+    // System Info
+    doctorNotes: string
+}
+
+const initialFormState: PatientFormState = {
+    fullName: '', phone: '', dateOfBirth: '', gender: 'Nam', address: '',
+    cccd: '', email: '', avatarUrl: '',
+    bloodType: '', allergies: '', backgroundDisease: '', surgicalHistory: '', currentMedication: '', height: '', weight: '',
+    emergencyContactName: '', emergencyContactRelation: '', emergencyContactPhone: '',
+    insuranceNumber: '', insurancePlace: '', insuranceExpirationDate: '',
+    doctorNotes: ''
 }
 
 export function PatientManagementPage() {
@@ -54,12 +91,14 @@ export function PatientManagementPage() {
     })
 
     // States
-    const [searchTerm, setSearchTerm] = useState('')
+    const location = useLocation()
+    const [searchTerm, setSearchTerm] = useState(location.state?.searchTerm || '')
     const [page, setPage] = useState(1)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [editingId, setEditingId] = useState<string | null>(null)
-    const [formState, setFormState] = useState<PatientFormState>({ fullName: '', phone: '', dateOfBirth: '', gender: 'Nam', address: '' })
+    const [formState, setFormState] = useState<PatientFormState>(initialFormState)
     const [formErrors, setFormErrors] = useState<Partial<PatientFormState>>({})
+    const [isFormDirty, setIsFormDirty] = useState(false)
 
     // Pagination & Filtering
     const filteredData = useMemo(() => {
@@ -76,11 +115,20 @@ export function PatientManagementPage() {
     }, [filteredData, page])
 
     // Handlers
+    const handleCloseModal = async () => {
+        if (isFormDirty) {
+            const confirmed = await confirm({ title: 'Xác nhận đóng', message: 'Bạn có những thay đổi chưa lưu. Bạn có chắc chắn muốn đóng và hủy bỏ?', isDangerous: true })
+            if (!confirmed) return
+        }
+        resetModal()
+    }
+
     const resetModal = () => {
         setIsModalOpen(false)
         setEditingId(null)
-        setFormState({ fullName: '', phone: '', dateOfBirth: '', gender: 'Nam', address: '' })
+        setFormState(initialFormState)
         setFormErrors({})
+        setIsFormDirty(false)
     }
 
     const openCreateModal = () => {
@@ -93,18 +141,51 @@ export function PatientManagementPage() {
         setFormState({
             fullName: patient.fullName,
             phone: patient.phone,
-            dateOfBirth: new Date(patient.dateOfBirth).toISOString().split('T')[0],
+            dateOfBirth: patient.dateOfBirth ? new Date(patient.dateOfBirth).toISOString().split('T')[0] : '',
             gender: patient.gender,
             address: patient.address,
+            cccd: patient.cccd || '',
+            email: patient.email || '',
+            avatarUrl: patient.avatarUrl || '',
+            bloodType: patient.bloodType || '',
+            allergies: patient.allergies?.join(', ') || '',
+            backgroundDisease: patient.backgroundDisease || '',
+            surgicalHistory: patient.surgicalHistory || '',
+            currentMedication: patient.currentMedication || '',
+            height: patient.height?.toString() || '',
+            weight: patient.weight?.toString() || '',
+            emergencyContactName: patient.emergencyContactName || '',
+            emergencyContactRelation: patient.emergencyContactRelation || '',
+            emergencyContactPhone: patient.emergencyContactPhone || '',
+            insuranceNumber: patient.insuranceNumber || '',
+            insurancePlace: patient.insurancePlace || '',
+            insuranceExpirationDate: patient.insuranceExpirationDate ? new Date(patient.insuranceExpirationDate).toISOString().split('T')[0] : '',
+            doctorNotes: patient.doctorNotes || ''
         })
         setIsModalOpen(true)
+        setIsFormDirty(false)
+    }
+
+    const updateFormField = (field: keyof PatientFormState, value: any) => {
+        setFormState(s => ({ ...s, [field]: value }))
+        setIsFormDirty(true)
     }
 
     const validate = () => {
         const errors: Partial<PatientFormState> = {}
         if (!formState.fullName.trim()) errors.fullName = 'Họ tên không được để trống'
-        if (!formState.phone.match(/^0\d{9}$/)) errors.phone = 'Số điện thoại không hợp lệ (Bắt đầu bằng 0 và gồm 10 số)'
-        if (!formState.dateOfBirth) errors.dateOfBirth = 'Ngày sinh không được để trống'
+        if (!formState.phone.match(/^(0|\+84)\d{9}$/)) errors.phone = 'Số điện thoại không hợp lệ'
+        
+        if (!formState.dateOfBirth) {
+            errors.dateOfBirth = 'Ngày sinh không được để trống'
+        } else {
+            const dob = new Date(formState.dateOfBirth)
+            const today = new Date()
+            if (dob > today) {
+                errors.dateOfBirth = 'Ngày sinh không được vượt quá hiện tại'
+            }
+        }
+
         setFormErrors(errors)
         return Object.keys(errors).length === 0
     }
@@ -112,13 +193,19 @@ export function PatientManagementPage() {
     const handleSave = () => {
         if (!validate()) return
 
+        const payload: Partial<Omit<MockPatient, 'id' | 'createdAt'>> = {
+            ...formState,
+            dateOfBirth: new Date(formState.dateOfBirth).toISOString(),
+            allergies: formState.allergies ? formState.allergies.split(',').map(s => s.trim()).filter(Boolean) : [],
+            height: formState.height ? parseFloat(formState.height) : undefined,
+            weight: formState.weight ? parseFloat(formState.weight) : undefined,
+            insuranceExpirationDate: formState.insuranceExpirationDate ? new Date(formState.insuranceExpirationDate).toISOString() : undefined,
+        }
+
         if (editingId) {
-            savePatient({ id: editingId, data: { ...formState, dateOfBirth: new Date(formState.dateOfBirth).toISOString() } })
+            savePatient({ id: editingId, data: payload })
         } else {
-            savePatient({ data: {
-                ...formState,
-                dateOfBirth: new Date(formState.dateOfBirth).toISOString(),
-            }})
+            savePatient({ data: payload })
         }
         resetModal()
     }
@@ -214,48 +301,175 @@ export function PatientManagementPage() {
             {/* Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm">
-                    <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
-                        <div className="mb-6 flex items-center justify-between border-b pb-4">
+                    <div className="flex w-full max-w-4xl max-h-[90vh] flex-col rounded-2xl bg-white shadow-2xl">
+                        <div className="flex items-center justify-between border-b p-6 pb-4">
                             <h3 className="text-lg font-bold text-slate-900">{editingId ? 'Cập nhật hồ sơ bệnh nhân' : 'Thêm bệnh nhân mới'}</h3>
-                            <button onClick={resetModal} className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"><X className="h-5 w-5" /></button>
+                            <button onClick={handleCloseModal} className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"><X className="h-5 w-5" /></button>
                         </div>
-                        <div className="space-y-5">
+                        <div className="flex-1 overflow-y-auto p-6 space-y-8">
+                            {/* Section 1: Thông tin định danh */}
                             <div>
-                                <label className="mb-1 block text-sm font-semibold text-slate-700">Họ tên <span className="text-rose-500">*</span></label>
-                                <input type="text" value={formState.fullName} onChange={e => setFormState(s => ({ ...s, fullName: e.target.value }))} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="VD: Nguyễn Văn A" />
-                                {formErrors.fullName && <p className="mt-1 text-xs text-rose-600">{formErrors.fullName}</p>}
-                            </div>
-                            <div>
-                                <label className="mb-1 block text-sm font-semibold text-slate-700">Số điện thoại <span className="text-rose-500">*</span></label>
-                                <input type="text" value={formState.phone} onChange={e => setFormState(s => ({ ...s, phone: e.target.value }))} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="VD: 0912345678" />
-                                {formErrors.phone && <p className="mt-1 text-xs text-rose-600">{formErrors.phone}</p>}
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="mb-1 block text-sm font-semibold text-slate-700">Ngày sinh <span className="text-rose-500">*</span></label>
-                                    <input type="date" value={formState.dateOfBirth} onChange={e => setFormState(s => ({ ...s, dateOfBirth: e.target.value }))} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
-                                    {formErrors.dateOfBirth && <p className="mt-1 text-xs text-rose-600">{formErrors.dateOfBirth}</p>}
+                                <h4 className="mb-4 text-base font-semibold text-blue-800 border-b pb-2">Thông tin định danh</h4>
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                    <div className="col-span-full md:col-span-2">
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Mã bệnh nhân</label>
+                                        <input type="text" value={editingId ? 'Auto-generated' : 'Sẽ tự động tạo'} disabled className="w-full rounded-xl border border-slate-200 p-2.5 text-sm bg-slate-100 text-slate-500 cursor-not-allowed" />
+                                    </div>
+                                    <div className="col-span-1 border-r pr-4 mb-4 md:mb-0 md:col-span-2 md:border-none md:pr-0">
+                                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                            <div>
+                                                <label className="mb-1 block text-sm font-medium text-slate-700">Họ tên <span className="text-rose-500">*</span></label>
+                                                <input type="text" value={formState.fullName} onChange={e => updateFormField('fullName', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-slate-400" placeholder="VD: Nguyễn Văn A" />
+                                                {formErrors.fullName && <p className="mt-1 text-xs text-rose-600">{formErrors.fullName}</p>}
+                                            </div>
+                                            <div>
+                                                <label className="mb-1 block text-sm font-medium text-slate-700">Số điện thoại <span className="text-rose-500">*</span></label>
+                                                <input type="tel" value={formState.phone} onChange={e => updateFormField('phone', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-slate-400" placeholder="VD: 0912..." />
+                                                {formErrors.phone && <p className="mt-1 text-xs text-rose-600">{formErrors.phone}</p>}
+                                            </div>
+                                            <div>
+                                                <label className="mb-1 block text-sm font-medium text-slate-700">Ngày sinh <span className="text-rose-500">*</span></label>
+                                                <input type="date" value={formState.dateOfBirth} onChange={e => updateFormField('dateOfBirth', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" max={new Date().toISOString().split("T")[0]} />
+                                                {formErrors.dateOfBirth && <p className="mt-1 text-xs text-rose-600">{formErrors.dateOfBirth}</p>}
+                                            </div>
+                                            <div>
+                                                <label className="mb-1 block text-sm font-medium text-slate-700">Giới tính</label>
+                                                <select value={formState.gender} onChange={(e) => updateFormField('gender', e.target.value)} className="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                                                    <option value="Nam">Nam</option>
+                                                    <option value="Nữ">Nữ</option>
+                                                    <option value="Khác">Khác</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="mb-1 block text-sm font-medium text-slate-700">CCCD/CMND</label>
+                                                <input type="text" value={formState.cccd} onChange={e => updateFormField('cccd', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-slate-400" placeholder="Số CCCD..." />
+                                            </div>
+                                            <div>
+                                                <label className="mb-1 block text-sm font-medium text-slate-700">Email</label>
+                                                <input type="email" value={formState.email} onChange={e => updateFormField('email', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-slate-400" placeholder="Mật khẩu sẽ gửi vào đây (nếu cần)" />
+                                            </div>
+                                            <div>
+                                                <label className="mb-1 block text-sm font-medium text-slate-700">Ảnh đại diện (URL)</label>
+                                                <input type="text" value={formState.avatarUrl} onChange={e => updateFormField('avatarUrl', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-slate-400" placeholder="https://..." />
+                                            </div>
+                                            <div className="col-span-full">
+                                                <label className="mb-1 block text-sm font-medium text-slate-700">Địa chỉ hiện tại</label>
+                                                <input type="text" value={formState.address} onChange={e => updateFormField('address', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-slate-400" placeholder="Số nhà, phố, phường/xã..." />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label className="mb-1 block text-sm font-semibold text-slate-700">Giới tính</label>
-                                    <select
-                                        value={formState.gender}
-                                        onChange={(e) => setFormState((s) => ({ ...s, gender: e.target.value as MockPatient['gender'] }))}
-                                        className="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                    >
-                                        <option value="Nam">Nam</option>
-                                        <option value="Nữ">Nữ</option>
-                                        <option value="Khác">Khác</option>
-                                    </select>
+                            </div>
+
+                            {/* Section 2: Thông tin y tế */}
+                            <div>
+                                <h4 className="mb-4 text-base font-semibold text-blue-800 border-b pb-2">Thông tin y tế</h4>
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Nhóm máu</label>
+                                        <select value={formState.bloodType} onChange={(e) => updateFormField('bloodType', e.target.value)} className="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                                            <option value="">Chưa rõ</option>
+                                            <option value="A+">A+</option><option value="A-">A-</option>
+                                            <option value="B+">B+</option><option value="B-">B-</option>
+                                            <option value="AB+">AB+</option><option value="AB-">AB-</option>
+                                            <option value="O+">O+</option><option value="O-">O-</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Dị ứng thuốc/thực phẩm</label>
+                                        <input type="text" value={formState.allergies} onChange={e => updateFormField('allergies', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-slate-400" placeholder="Cách nhau bằng dấu phẩy" />
+                                    </div>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Bệnh nền</label>
+                                        <input type="text" value={formState.backgroundDisease} onChange={e => updateFormField('backgroundDisease', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-slate-400" placeholder="Tiểu đường, tim mạch..." />
+                                    </div>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Tiền sử phẫu thuật</label>
+                                        <input type="text" value={formState.surgicalHistory} onChange={e => updateFormField('surgicalHistory', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-slate-400" placeholder="Phẫu thuật..." />
+                                    </div>
+                                    <div className="col-span-full">
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Thuốc đang sử dụng</label>
+                                        <input type="text" value={formState.currentMedication} onChange={e => updateFormField('currentMedication', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Các loại thuốc dùng hiện tại..." />
+                                    </div>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Chiều cao (cm)</label>
+                                        <input type="number" value={formState.height} onChange={e => updateFormField('height', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="VD: 170" />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="mb-1 block text-sm font-medium text-slate-700">Cân nặng (kg)</label>
+                                            <input type="number" value={formState.weight} onChange={e => updateFormField('weight', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="VD: 65" />
+                                        </div>
+                                        <div>
+                                            <label className="mb-1 block text-sm font-medium text-slate-700">BMI</label>
+                                            <input type="text" readOnly value={(parseFloat(formState.weight) && parseFloat(formState.height)) ? (parseFloat(formState.weight) / ((parseFloat(formState.height) / 100) ** 2)).toFixed(1) : ''} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm bg-slate-100 text-slate-500 cursor-not-allowed" placeholder="Tự tính" />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            
+                            {/* Section 3: Liên hệ khẩn cấp */}
                             <div>
-                                <label className="mb-1 block text-sm font-semibold text-slate-700">Địa chỉ hiện tại</label>
-                                <input type="text" value={formState.address} onChange={e => setFormState(s => ({ ...s, address: e.target.value }))} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Số nhà, đường, quận/huyện..." />
+                                <h4 className="mb-4 text-base font-semibold text-blue-800 border-b pb-2">Liên hệ khẩn cấp</h4>
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Người liên hệ</label>
+                                        <input type="text" value={formState.emergencyContactName} onChange={e => updateFormField('emergencyContactName', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Họ tên người liên hệ..." />
+                                    </div>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Quan hệ</label>
+                                        <input type="text" value={formState.emergencyContactRelation} onChange={e => updateFormField('emergencyContactRelation', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Cha/Mẹ/Vợ..." />
+                                    </div>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">SĐT Khẩn cấp</label>
+                                        <input type="tel" value={formState.emergencyContactPhone} onChange={e => updateFormField('emergencyContactPhone', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="VD: 09..." />
+                                    </div>
+                                </div>
                             </div>
+
+                            {/* Section 4: Thông tin bảo hiểm */}
+                            <div>
+                                <h4 className="mb-4 text-base font-semibold text-blue-800 border-b pb-2">Thông tin bảo hiểm</h4>
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Số BHYT</label>
+                                        <input type="text" value={formState.insuranceNumber} onChange={e => updateFormField('insuranceNumber', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="DN..." />
+                                    </div>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Ngày hết hạn BHYT</label>
+                                        <input type="date" value={formState.insuranceExpirationDate} onChange={e => updateFormField('insuranceExpirationDate', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                                    </div>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Nơi đăng ký KCBBBĐ</label>
+                                        <input type="text" value={formState.insurancePlace} onChange={e => updateFormField('insurancePlace', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Bệnh viện..." />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Section 5: Thông tin hệ thống */}
+                            <div>
+                                <h4 className="mb-4 text-base font-semibold text-blue-800 border-b pb-2">Thông tin hệ thống</h4>
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 mb-4">
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Người cập nhật gần nhất</label>
+                                        <input type="text" value={editingId ? 'admin (Hệ thống)' : 'Chưa có'} disabled className="w-full rounded-xl border border-slate-200 p-2.5 text-sm bg-slate-100 text-slate-500 cursor-not-allowed" />
+                                    </div>
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Ngày tạo hồ sơ</label>
+                                        <input type="text" value={editingId ? new Date().toLocaleDateString('vi-VN') : 'Sẽ tự tạo'} disabled className="w-full rounded-xl border border-slate-200 p-2.5 text-sm bg-slate-100 text-slate-500 cursor-not-allowed" />
+                                    </div>
+                                </div>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-slate-700">Ghi chú bác sĩ / Khác</label>
+                                        <textarea rows={3} value={formState.doctorNotes} onChange={e => updateFormField('doctorNotes', e.target.value)} className="w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Lưu ý điều trị..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
-                        <div className="mt-8 flex justify-end gap-3 pt-4 border-t">
-                            <button onClick={resetModal} className="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">Hủy thao tác</button>
+                        <div className="flex items-center justify-end gap-3 border-t p-6 pb-4">
+                            <button onClick={handleCloseModal} className="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">Hủy thao tác</button>
                             <button onClick={handleSave} className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 transition-colors shadow-sm">{editingId ? 'Cập nhật hồ sơ' : 'Lưu hồ sơ mới'}</button>
                         </div>
                     </div>

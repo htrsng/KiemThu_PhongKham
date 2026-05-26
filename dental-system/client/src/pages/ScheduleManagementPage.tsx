@@ -92,13 +92,19 @@ export function ScheduleManagementPage() {
     const { mutate: createShift } = useMutation<DoctorOnCallShift, Error, Omit<DoctorOnCallShift, 'id'>>({
         mutationFn: async (newShift) => (await api.post<ApiItemResponse<DoctorOnCallShift>>('/shifts', newShift)).data.data,
         onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['shifts'] }); addToast('success', 'Đăng ký lịch trực thành công') },
-        onError: (err) => addToast('error', `Lỗi đăng ký lịch trực: ${err.message}`),
+        onError: (err: any) => {
+            const msg = err?.response?.data?.error || err.message
+            addToast('error', msg)
+        },
     })
 
     const { mutate: updateShift } = useMutation<DoctorOnCallShift, Error, { id: string; data: Partial<DoctorOnCallShift> }>({
         mutationFn: async ({ id, data }) => (await api.patch<ApiItemResponse<DoctorOnCallShift>>(`/shifts/${id}`, data)).data.data,
         onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['shifts'] }); addToast('success', 'Cập nhật lịch trực thành công') },
-        onError: (err) => addToast('error', `Lỗi cập nhật lịch trực: ${err.message}`),
+        onError: (err: any) => {
+            const msg = err?.response?.data?.error || err.message
+            addToast('error', msg)
+        },
     })
 
     const { mutate: deleteShift } = useMutation<any, Error, string>({
@@ -106,6 +112,26 @@ export function ScheduleManagementPage() {
         onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['shifts'] }); addToast('success', 'Đã xóa lịch trực') },
         onError: (err) => addToast('error', `Lỗi xóa lịch trực: ${err.message}`),
     })
+
+    // ── Derive conflicting shift IDs for visual indicator ─────────────────
+    const conflictingShiftIds = useMemo(() => {
+        const conflictSet = new Set<string>()
+        const toMin = (t: string) => { const [h, m] = t.split(':').map(Number); return h * 60 + m }
+        for (let i = 0; i < doctorShifts.length; i++) {
+            for (let j = i + 1; j < doctorShifts.length; j++) {
+                const a = doctorShifts[i]
+                const b = doctorShifts[j]
+                if (a.doctorId !== b.doctorId || a.date !== b.date) continue
+                const aStart = toMin(a.startTime), aEnd = toMin(a.endTime)
+                const bStart = toMin(b.startTime), bEnd = toMin(b.endTime)
+                if (aStart < bEnd && aEnd > bStart) {
+                    conflictSet.add(a.id)
+                    conflictSet.add(b.id)
+                }
+            }
+        }
+        return conflictSet
+    }, [doctorShifts])
 
     const isLoading = doctorsIsLoading || holidaysIsLoading || workShiftsIsLoading || shiftsIsLoading
 
@@ -154,6 +180,7 @@ export function ScheduleManagementPage() {
                             updateShift={updateShift}
                             deleteShift={deleteShift}
                             currentUser={currentUser}
+                            conflictingShiftIds={conflictingShiftIds}
                         />
                     )}
                     {activeSubPage === 'work-shifts' && currentUser?.role !== 'Doctor' && (
@@ -180,7 +207,7 @@ export function ScheduleManagementPage() {
 
 // --- Views Components ---
 
-function DoctorScheduleView({ doctors, shifts, holidays, createShift, updateShift, deleteShift, currentUser }: any) {
+function DoctorScheduleView({ doctors, shifts, holidays, createShift, updateShift, deleteShift, currentUser, conflictingShiftIds }: any) {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [editingId, setEditingId] = useState<string | null>(null)
     const [formState, setFormState] = useState({ doctorId: '', date: '', startTime: '08:00', endTime: '17:00', coefficient: 1.0, status: 'Đã đăng ký' as any })
@@ -216,16 +243,17 @@ function DoctorScheduleView({ doctors, shifts, holidays, createShift, updateShif
         ]
         return shiftsToDisplay.map((shift: any, i: number) => {
             const isCancelled = shift.status === 'Đã hủy'
+            const isConflict = conflictingShiftIds?.has(shift.id)
             const color = colors[i % colors.length]
             return {
                 id: shift.id,
                 title: shift.doctorName,
                 start: `${shift.date}T${shift.startTime}`,
                 end: `${shift.date}T${shift.endTime}`,
-                backgroundColor: isCancelled ? '#f1f5f9' : color.bg,
-                borderColor: isCancelled ? '#e2e8f0' : color.border,
-                textColor: isCancelled ? '#475569' : color.text,
-                extendedProps: shift,
+                backgroundColor: isCancelled ? '#f1f5f9' : isConflict ? '#fee2e2' : color.bg,
+                borderColor: isCancelled ? '#e2e8f0' : isConflict ? '#fca5a5' : color.border,
+                textColor: isCancelled ? '#475569' : isConflict ? '#991b1b' : color.text,
+                extendedProps: { ...shift, isConflict },
             }
         })
     }, [shifts, isDoctor, currentUser, doctorFilter])
@@ -351,12 +379,16 @@ function DoctorScheduleView({ doctors, shifts, holidays, createShift, updateShif
                     eventClick={handleEventClick}
                     height="auto"
                     eventContent={(eventInfo) => {
-                        const title = `${eventInfo.event.title} (${eventInfo.timeText})`;
+                        const { isConflict } = eventInfo.event.extendedProps;
                         return (
-                            <div className="flex h-full flex-col overflow-hidden p-1 text-xs" title={title}>
-                                <div className="font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
+                            <div className="flex h-full flex-col overflow-hidden p-1 text-xs" title={eventInfo.event.title}>
+                                <div className="font-semibold whitespace-nowrap overflow-hidden text-ellipsis flex items-center gap-1">
+                                    {isConflict && <span title="Xung đột ca!">⚠️</span>}
                                     {eventInfo.event.title}
                                 </div>
+                                {isConflict && (
+                                    <div className="text-[9px] font-bold uppercase tracking-wide opacity-90">XUNG ĐỘT GIỜ</div>
+                                )}
                             </div>
                         )
                     }}

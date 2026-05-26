@@ -11,6 +11,7 @@ import {
     BarChart3,
     CalendarDays,
     UserRound,
+    MonitorCheck,
 } from 'lucide-react'
 
 export type NavigationItem = {
@@ -34,6 +35,16 @@ export const navigationItems: NavigationItem[] = [
         testId: 'nav-dashboard',
         group: 'Chung',
         allowedRoles: ['Admin', 'Doctor', 'Reception'],
+    },
+    {
+        id: 'reception',
+        label: 'Tiếp đón',
+        path: '/reception',
+        icon: MonitorCheck,
+        description: 'Tiếp nhận bệnh nhân & check-in',
+        testId: 'nav-reception',
+        group: 'Lâm sàng',
+        allowedRoles: ['Admin', 'Reception'],
     },
     {
         id: 'appointments',

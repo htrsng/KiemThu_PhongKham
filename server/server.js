@@ -30,6 +30,7 @@ const Setting = require('./src/models/Setting');
 
 // Import custom controllers
 const appointmentController = require('./src/controllers/appointmentController');
+const shiftController = require('./src/controllers/shiftController');
 const { protect } = require('./src/middlewares/auth');
 
 // Import Jobs
@@ -71,7 +72,13 @@ app.use('/api/appointments', protect, createResourceRouter(Appointment));
 app.use('/api/invoices', protect, createResourceRouter(Invoice));
 app.use('/api/materials', protect, createResourceRouter(Material));
 app.use('/api/inventory-logs', protect, createResourceRouter(InventoryLog));
-app.use('/api/shifts', protect, createResourceRouter(Shift));
+// Custom Shift Routes (with conflict detection)
+app.get('/api/shifts', protect, shiftController.getAllShifts);
+app.get('/api/shifts/:id', protect, shiftController.getShift);
+app.post('/api/shifts', protect, shiftController.createShift);
+app.put('/api/shifts/:id', protect, shiftController.updateShift);
+app.patch('/api/shifts/:id', protect, shiftController.updateShift);
+app.delete('/api/shifts/:id', protect, shiftController.deleteShift);
 app.use('/api/work-shifts', protect, createResourceRouter(WorkShift));
 app.use('/api/pricing-policies', protect, createResourceRouter(PricingPolicy));
 app.use('/api/holidays', protect, createResourceRouter(Holiday));

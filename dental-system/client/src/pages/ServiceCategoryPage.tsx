@@ -26,6 +26,7 @@ type ServiceFormState = {
     description: string
     basePrice: number
     status: 'active' | 'inactive'
+    difficulty: number
 }
 
 type ServiceFormErrors = Partial<Record<keyof ServiceFormState, string>>
@@ -56,6 +57,7 @@ export function ServiceCategoryPage() {
         description: '',
         basePrice: 0,
         status: 'active',
+        difficulty: 1.0,
     })
     const [serviceFormErrors, setServiceFormErrors] = useState<ServiceFormErrors>({})
 
@@ -165,6 +167,7 @@ export function ServiceCategoryPage() {
             description: '',
             basePrice: 0,
             status: 'active',
+            difficulty: 1.0,
         })
         setServiceFormErrors({})
         setIsServiceModalOpen(true)
@@ -180,8 +183,7 @@ export function ServiceCategoryPage() {
             duration: service.duration,
             description: service.description,
             basePrice: service.basePrice,
-            status: service.status,
-        })
+            status: service.status,            difficulty: service.difficulty || 1.0,        })
         setServiceFormErrors({})
         setIsServiceModalOpen(true)
     }
