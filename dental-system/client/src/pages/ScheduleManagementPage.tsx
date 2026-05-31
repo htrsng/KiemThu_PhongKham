@@ -512,16 +512,18 @@ function SimpleCrudView({ title, data, isLoading, saveMutation, deleteMutation, 
             {isLoading ? <div className="rounded-2xl border border-slate-200 bg-white p-6"><TableLoadingSkeleton rows={5} /></div> : (
                 <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                     <table className="min-w-full text-left text-sm">
-                        <thead className="bg-slate-50"><tr className="border-b">{columns.map((c: any) => <th key={c.key} className="px-4 py-3 font-semibold text-slate-700">{c.label}</th>)}<th className="px-4 py-3 text-right">Hành động</th></tr></thead>
-                        <tbody className="divide-y divide-slate-100">{data.map((item: any) => (
-                            <tr key={item.id} className="hover:bg-slate-50">
-                                {columns.map((c: any) => <td key={c.key} className="px-4 py-3">{c.render ? c.render(item) : item[c.key]}</td>)}
+                        <thead className="bg-slate-50"><tr className="border-b">{columns.map((c: any, idx: number) => <th key={c.key || idx} className="px-4 py-3 font-semibold text-slate-700">{c.label}</th>)}<th className="px-4 py-3 text-right">Hành động</th></tr></thead>
+                        <tbody className="divide-y divide-slate-100">{data.map((item: any, idx: number) => {
+                            const itemId = item.id || item._id || idx;
+                            return (
+                            <tr key={itemId} className="hover:bg-slate-50">
+                                {columns.map((c: any, cIdx: number) => <td key={c.key || cIdx} className="px-4 py-3">{c.render ? c.render(item) : item[c.key]}</td>)}
                                 <td className="px-4 py-3 text-right">
-                                    <button onClick={() => { setEditingId(item.id); setFormState({ ...item }); setIsModalOpen(true); }} className="mr-2 text-slate-400 hover:text-blue-600"><Pencil className="h-4 w-4 inline" /></button>
-                                    <button onClick={async () => { if (await confirm({ title: 'Xóa', message: 'Bạn có chắc chắn?', isDangerous: true })) deleteMutation(item.id) }} className="text-slate-400 hover:text-rose-600"><Trash2 className="h-4 w-4 inline" /></button>
+                                    <button onClick={() => { setEditingId(item.id || item._id); setFormState({ ...item }); setIsModalOpen(true); }} className="mr-2 text-slate-400 hover:text-blue-600"><Pencil className="h-4 w-4 inline" /></button>
+                                    <button onClick={async () => { if (await confirm({ title: 'Xóa', message: 'Bạn có chắc chắn?', isDangerous: true })) deleteMutation(item.id || item._id) }} className="text-slate-400 hover:text-rose-600"><Trash2 className="h-4 w-4 inline" /></button>
                                 </td>
                             </tr>
-                        ))}</tbody>
+                        )})}</tbody>
                     </table>
                 </div>
             )}

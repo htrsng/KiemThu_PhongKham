@@ -97,7 +97,7 @@ export function PayrollDetailModal({ isOpen = true, onClose, report }: PayrollDe
                                             <td className="py-2 text-right text-slate-500">
                                                 {formatVND(apt.serviceBonus)}
                                                 <div className="text-[10px] text-slate-400">
-                                                    {apt.services.map((s: any) => `${s.name} (${s.commissionRate * 100}%)`).join(', ')}
+                                                    {(apt.services || []).map((s: any) => `${s.name} (${s.commissionRate * 100}%)`).join(', ')}
                                                 </div>
                                             </td>
                                             <td className="py-2 text-right font-medium">{formatVND(apt.totalBonus)}</td>

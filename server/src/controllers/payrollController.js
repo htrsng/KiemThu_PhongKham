@@ -139,7 +139,11 @@ exports.calculateMonthlyPayroll = async (req, res, next) => {
 
                 return {
                     ...shift,
+                    shiftName: shift.name || 'Ca trực',
+                    durationHours: parseFloat(hours.toFixed(2)),
+                    multiplier: parseFloat((shiftCoefficient + totalPatientCoefficient).toFixed(2)),
                     calculatedHours: convertedHours,
+                    shiftPayout: currentShiftSalary,
                     shiftSalary: currentShiftSalary
                 };
             });
@@ -150,6 +154,21 @@ exports.calculateMonthlyPayroll = async (req, res, next) => {
                 const service = services.find(s => s._id.toString() === apt.serviceId?.toString());
                 return acc + (service ? service.basePrice * (commissionRateUsed / 100) : 0);
             }, 0);
+
+            const detailedAppointments = appointments.map(apt => {
+                const service = services.find(s => s._id.toString() === apt.serviceId?.toString());
+                const aptConsultationBonus = (doctor.consultationFee || payrollConfig.defaultConsultationFee || 0);
+                const aptServiceBonus = service ? service.basePrice * (commissionRateUsed / 100) : 0;
+                return {
+                    date: apt.startTime,
+                    patientName: apt.patientName,
+                    difficultyMultiplier: apt.difficulty || 0,
+                    consultationBonus: aptConsultationBonus,
+                    serviceBonus: aptServiceBonus,
+                    services: service ? [{ name: service.name || apt.serviceName, commissionRate: commissionRateUsed / 100 }] : [],
+                    totalBonus: aptConsultationBonus + aptServiceBonus
+                };
+            });
 
             results.push({
                 doctorId: doctor._id,
@@ -162,7 +181,7 @@ exports.calculateMonthlyPayroll = async (req, res, next) => {
                 serviceBonus: Math.round(serviceBonus),
                 totalSalary: Math.round(shiftSalary + consultationBonus + serviceBonus),
                 detailedShifts,
-                detailedAppointments: appointments,
+                detailedAppointments: detailedAppointments,
                 hourlyRateUsed,
                 commissionRateUsed
             });
