@@ -8,6 +8,7 @@ const authRoutes = require('./src/routes/authRoutes');
 const reportRoutes = require('./src/routes/reportRoutes');
 const inventoryRoutes = require('./src/routes/inventoryRoutes');
 const dashboardRoutes = require('./src/routes/dashboardRoutes');
+const payrollRoutes = require('./src/routes/payrollRoutes');
 
 const { createResourceRouter } = require('./src/routes/resourceRoutes');
 
@@ -49,6 +50,9 @@ app.use('/api/auth', authRoutes);
 
 // Mount Report routes
 app.use('/api/reports', reportRoutes);
+
+// Mount Payroll routes
+app.use('/api/payroll', payrollRoutes);
 
 // Mount Inventory Custom routes
 app.use('/api/inventory', inventoryRoutes);

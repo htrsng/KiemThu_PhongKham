@@ -156,6 +156,16 @@ export const navigationItems: NavigationItem[] = [
         group: 'Hệ thống',
         allowedRoles: ['Admin'],
     },
+    {
+        id: 'payroll-settings',
+        label: 'Cấu hình Lương thưởng',
+        path: '/payroll-settings',
+        icon: Banknote,
+        description: 'Tham số tính lương',
+        testId: 'nav-payroll-settings',
+        group: 'Hành chính',
+        allowedRoles: ['Admin'],
+    },
 ]
 
 export const routeTitleMap = navigationItems.reduce<Record<string, string>>((accumulator, item) => {

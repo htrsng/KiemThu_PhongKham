@@ -7,6 +7,7 @@ import { ScheduleManagementPage } from '../pages/ScheduleManagementPage'
 import { DoctorManagementPage } from '../pages/DoctorManagementPage'
 import { DoctorPayrollPage } from '../pages/DoctorPayrollPage'
 import { GeneralSettingsPage } from '../pages/GeneralSettingsPage'
+import { PayrollSettingsPage } from '../pages/PayrollSettingsPage'
 import { PermissionManagementPage } from '../pages/PermissionManagementPage'
 import { ServiceCategoryPage } from '../pages/ServiceCategoryPage'
 import { LoginPage } from '../pages/LoginPage'
@@ -32,6 +33,7 @@ export function AppRouter() {
                     <Route path='services' element={<ServiceCategoryPage />} />
                     <Route path='permissions' element={<PermissionManagementPage />} />
                     <Route path='settings' element={<GeneralSettingsPage />} />
+                    <Route path='payroll-settings' element={<PayrollSettingsPage />} />
                     <Route path='examination' element={<DoctorExaminationPage />} />
                     <Route path='payment' element={<PaymentManagementPage />} />
                     <Route path='revenue' element={<RevenueStatisticsPage />} />

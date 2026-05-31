@@ -19,8 +19,6 @@ import {
     Wallet,
     Info,
     LogIn,
-    Crown,
-    FileText,
     Printer,
     MoreHorizontal,
     ArrowRight,
@@ -28,15 +26,13 @@ import {
     Timer,
     UserCheck,
     TrendingUp,
-    Wifi,
-    ChevronDown,
     Eye,
 } from 'lucide-react'
 import { useToast } from '../contexts/ToastContext'
 import { useAuth } from '../contexts/AuthContext'
 import { api, type ApiListResponse, type ApiItemResponse } from '../lib/api'
 import type { MockAppointment, MockDoctor, MockPatient, MockService, MockPricingPolicy } from '../lib/mockData'
-import { formatDateTime, formatVND, formatDate } from '../lib/formatters'
+import { formatVND, formatDate } from '../lib/formatters'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type DoctorShift = {

@@ -159,7 +159,7 @@ export function DashboardPage() {
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                     <h2 className="text-lg font-bold text-slate-800 mb-6">Biến động hàng đợi trong ngày</h2>
                     <div style={{ width: '100%', height: 260 }} className="relative mt-2">
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                             <BarChart data={data.queueCapacity} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                                 <XAxis dataKey="time" tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} />
@@ -177,7 +177,7 @@ export function DashboardPage() {
                     
                     {/* Khung chứa biểu đồ tròn của Rechart - FIX LỖI HEIGHT: Fix cứng kích thước style width/height thay vì dùng class flex */}
                     <div style={{ width: '100%', height: 260 }} className="relative mt-2">
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                             <PieChart>
                                 {/* Thuộc tính innerRadius làm bánh donut rỗng ở giữa. outerRadius là vỏ ngoài */}
                                 <Pie 

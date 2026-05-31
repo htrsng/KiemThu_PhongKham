@@ -1,23 +1,15 @@
 import { X } from 'lucide-react'
-import { type SalaryReport } from '../lib/payrollEngine'
 import { formatVND, formatDateTime } from '../lib/formatters'
-import { type MockService } from '../lib/mockData'
+import type { SalaryReport } from '../pages/DoctorPayrollPage'
 
 interface PayrollDetailModalProps {
-    isOpen: boolean
+    isOpen?: boolean // Optional since we render it conditionally anyway
     onClose: () => void
     report: SalaryReport | null
-    services: MockService[] // Needed to get service price for commission calculation display
-    targetMonth: number
-    targetYear: number
 }
 
-export function PayrollDetailModal({ isOpen, onClose, report, services, targetMonth, targetYear }: PayrollDetailModalProps) {
+export function PayrollDetailModal({ isOpen = true, onClose, report }: PayrollDetailModalProps) {
     if (!isOpen || !report) return null
-
-    const getServicePrice = (serviceId: string) => {
-        return services.find(s => s.id === serviceId)?.basePrice || 0
-    }
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
@@ -27,9 +19,6 @@ export function PayrollDetailModal({ isOpen, onClose, report, services, targetMo
                         <h3 className="text-xl font-semibold text-slate-900">
                             Chi tiết lương: {report.doctorName}
                         </h3>
-                        <p className="text-sm text-slate-500">
-                            Kỳ lương tháng {targetMonth}/{targetYear}
-                        </p>
                     </div>
                     <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
                         <X className="h-6 w-6" />
@@ -44,7 +33,7 @@ export function PayrollDetailModal({ isOpen, onClose, report, services, targetMo
                             <p className="text-lg font-bold text-blue-900">{formatVND(report.shiftSalary)}</p>
                         </div>
                         <div className="rounded-xl bg-green-50 p-4">
-                            <p className="text-sm font-medium text-green-800">Tổng hoa hồng</p>
+                            <p className="text-sm font-medium text-green-800">Tổng hoa hồng (Khám + DV)</p>
                             <p className="text-lg font-bold text-green-900">{formatVND(report.consultationBonus + report.serviceBonus)}</p>
                         </div>
                         <div className="rounded-xl bg-slate-800 text-white p-4">
@@ -55,96 +44,67 @@ export function PayrollDetailModal({ isOpen, onClose, report, services, targetMo
 
                     {/* Shift Salary Details */}
                     <div className="rounded-xl border border-slate-200 p-4">
-                        <h4 className="font-semibold text-slate-800 mb-3">Chi tiết Lương Ca Trực</h4>
-                        <div className="flex justify-between items-center bg-slate-100 p-3 rounded-lg mb-3 text-sm">
-                            <div>
-                                <span className="font-medium">Tổng số giờ quy đổi: </span>
-                                <span className="font-bold text-blue-600">{report.totalHours} giờ</span>
-                            </div>
-                            <div>
-                                <span className="font-medium">Mức lương giờ: </span>
-                                <span className="font-bold text-blue-600">{formatVND(report.hourlyRateUsed)}/giờ</span>
-                            </div>
-                        </div>
-                        <div className="max-h-48 overflow-y-auto">
-                            <table className="w-full text-left text-xs">
-                                <thead className="sticky top-0 bg-white">
-                                    <tr className="border-b">
-                                        <th className="py-2 px-3 font-semibold">Ngày</th>
-                                        <th className="py-2 px-3 font-semibold">Bắt đầu</th>
-                                        <th className="py-2 px-3 font-semibold">Kết thúc</th>
-                                        <th className="py-2 px-3 font-semibold text-right">Giờ thực tế</th>
-                                        <th className="py-2 px-3 font-semibold text-right">Giờ quy đổi</th>
-                                        <th className="py-2 px-3 font-semibold text-right">Lương ca</th>
+                        <h4 className="font-semibold text-slate-800 mb-3">Chi tiết ca trực</h4>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left text-sm">
+                                <thead>
+                                    <tr className="border-b border-slate-200 text-slate-600">
+                                        <th className="py-2 text-left">Ngày</th>
+                                        <th className="py-2 text-left">Ca</th>
+                                        <th className="py-2 text-right">Khoảng thời gian</th>
+                                        <th className="py-2 text-right">Lương ca</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-100">
-                                    {report.detailedShifts.length > 0 ? report.detailedShifts.map(shift => (
-                                        <tr key={shift.id}>
-                                            <td className="py-2 px-3">{shift.date}</td>
-                                            <td className="py-2 px-3">{shift.startTime}</td>
-                                            <td className="py-2 px-3">{shift.endTime}</td>
-                                            <td className="py-2 px-3 text-right">
-                                                {(((new Date(`1970-01-01T${shift.endTime}:00Z`).getTime() - new Date(`1970-01-01T${shift.startTime}:00Z`).getTime()) / 3600000)).toFixed(2)}h
-                                            </td>
-                                            <td className="py-2 px-3 text-right font-medium">
-                                                {shift.calculatedHours?.toFixed(2) || '0.00'}h
-                                            </td>
-                                            <td className="py-2 px-3 text-right font-medium text-blue-600">
-                                                {formatVND(shift.shiftSalary || 0)}
-                                            </td>
+                                <tbody>
+                                    {report.detailedShifts && report.detailedShifts.map((shift: any, idx: number) => (
+                                        <tr key={idx} className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
+                                            <td className="py-2">{formatDateTime(shift.date).split(' ')[0]}</td>
+                                            <td className="py-2">{shift.shiftName}</td>
+                                            <td className="py-2 text-right text-slate-500">{shift.startTime} - {shift.endTime} ({shift.durationHours}h * {shift.multiplier}x)</td>
+                                            <td className="py-2 text-right font-medium">{formatVND(shift.shiftPayout)}</td>
                                         </tr>
-                                    )) : (
-                                        <tr><td colSpan={6} className="py-4 text-center text-slate-500">Không có ca trực trong kỳ.</td></tr>
+                                    ))}
+                                    {(!report.detailedShifts || report.detailedShifts.length === 0) && (
+                                        <tr><td colSpan={4} className="py-4 text-center text-slate-500">Không có dữ liệu ca trực</td></tr>
                                     )}
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    {/* Commission Details */}
+                    {/* Appointment & Services Salary Details */}
                     <div className="rounded-xl border border-slate-200 p-4">
-                        <h4 className="font-semibold text-slate-800 mb-3">Chi tiết Hoa Hồng</h4>
-                        <div className="flex justify-between items-center bg-slate-100 p-3 rounded-lg mb-3 text-sm">
-                            <div>
-                                <span className="font-medium">Số ca khám hoàn thành: </span>
-                                <span className="font-bold text-green-600">{report.completedAppointments} ca</span>
-                            </div>
-                            <div>
-                                <span className="font-medium">Hoa hồng phí khám: </span>
-                                <span className="font-bold text-green-600">{formatVND(report.consultationBonus)}</span>
-                            </div>
-                            <div>
-                                <span className="font-medium">Hoa hồng dịch vụ ({report.commissionRateUsed}%): </span>
-                                <span className="font-bold text-green-600">{formatVND(report.serviceBonus)}</span>
-                            </div>
-                        </div>
-                        <div className="max-h-60 overflow-y-auto">
-                            <table className="w-full text-left text-xs">
-                                <thead className="sticky top-0 bg-white">
-                                    <tr className="border-b">
-                                        <th className="py-2 px-3 font-semibold">Ngày khám</th>
-                                        <th className="py-2 px-3 font-semibold">Bệnh nhân</th>
-                                        <th className="py-2 px-3 font-semibold">Dịch vụ</th>
-                                        <th className="py-2 px-3 font-semibold text-right">Doanh thu DV</th>
-                                        <th className="py-2 px-3 font-semibold text-right">Hoa hồng DV</th>
+                        <h4 className="font-semibold text-slate-800 mb-3">Chi tiết hoa hồng ca khám & dịch vụ</h4>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left text-sm">
+                                <thead>
+                                    <tr className="border-b border-slate-200 text-slate-600">
+                                        <th className="py-2 text-left">Ngày giờ</th>
+                                        <th className="py-2 text-left">Bệnh nhân</th>
+                                        <th className="py-2 text-center">Độ khó</th>
+                                        <th className="py-2 text-right">Phí khám</th>
+                                        <th className="py-2 text-right">Hoa hồng DV</th>
+                                        <th className="py-2 text-right">Tổng hoa hồng</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-100">
-                                    {report.detailedAppointments.length > 0 ? report.detailedAppointments.map(apt => {
-                                        const servicePrice = getServicePrice(apt.serviceId)
-                                        const commission = servicePrice * (report.commissionRateUsed / 100)
-                                        return (
-                                            <tr key={apt.id}>
-                                                <td className="py-2 px-3">{formatDateTime(apt.startTime)}</td>
-                                                <td className="py-2 px-3">{apt.patientName}</td>
-                                                <td className="py-2 px-3">{apt.serviceName}</td>
-                                                <td className="py-2 px-3 text-right">{formatVND(servicePrice)}</td>
-                                                <td className="py-2 px-3 text-right font-medium">{formatVND(commission)}</td>
-                                            </tr>
-                                        )
-                                    }) : (
-                                        <tr><td colSpan={5} className="py-4 text-center text-slate-500">Không có ca khám hoàn thành trong kỳ.</td></tr>
+                                <tbody>
+                                    {report.detailedAppointments && report.detailedAppointments.map((apt: any, idx: number) => (
+                                        <tr key={idx} className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
+                                            <td className="py-2">{formatDateTime(apt.date)}</td>
+                                            <td className="py-2">{apt.patientName}</td>
+                                            <td className="py-2 text-center">{apt.difficultyMultiplier}x</td>
+                                            <td className="py-2 text-right text-slate-500">{formatVND(apt.consultationBonus)}</td>
+                                            <td className="py-2 text-right text-slate-500">
+                                                {formatVND(apt.serviceBonus)}
+                                                <div className="text-[10px] text-slate-400">
+                                                    {apt.services.map((s: any) => `${s.name} (${s.commissionRate * 100}%)`).join(', ')}
+                                                </div>
+                                            </td>
+                                            <td className="py-2 text-right font-medium">{formatVND(apt.totalBonus)}</td>
+                                        </tr>
+                                    ))}
+                                    {(!report.detailedAppointments || report.detailedAppointments.length === 0) && (
+                                        <tr><td colSpan={6} className="py-4 text-center text-slate-500">Không có dữ liệu ca khám</td></tr>
                                     )}
                                 </tbody>
                             </table>
@@ -153,7 +113,10 @@ export function PayrollDetailModal({ isOpen, onClose, report, services, targetMo
                 </div>
 
                 <div className="mt-6 flex justify-end">
-                    <button onClick={onClose} className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200">
+                    <button
+                        onClick={onClose}
+                        className="rounded-xl bg-slate-100 px-4 py-2 font-semibold text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition"
+                    >
                         Đóng
                     </button>
                 </div>

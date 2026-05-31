@@ -26,6 +26,14 @@ export function RevenueStatisticsPage() {
     // Biến filters trữ thông tin bộ lọc người dùng đang chọn
     const [filters, setFilters] = useState({ dateRange: 'today', doctorId: 'all', serviceId: 'all' });
     
+    // Biến isMounted để đảm bảo chỉ render biểu đồ sau khi component đã mount hoàn toàn
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setIsMounted(true), 100);
+        return () => clearTimeout(timer);
+    }, []);
+    
     // Biến isLoading (Báo đang tải) và error (Báo lỗi mạng)
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -34,6 +42,12 @@ export function RevenueStatisticsPage() {
     const { data: services = [] } = useQuery({
         queryKey: ['services'],
         queryFn: async () => (await api.get('/services')).data.data,
+    });
+
+    // --- Server-side data for Doctors (để đổ vào dropdown lọc) ---
+    const { data: doctors = [] } = useQuery({
+        queryKey: ['doctors'],
+        queryFn: async () => (await api.get('/doctors')).data.data,
     });
 
     // ---- PHẦN 2: FETCH DỮ LIỆU TỪ SERVER MỖI KHI BỘ LỌC THAY ĐỔI ----
@@ -63,6 +77,16 @@ export function RevenueStatisticsPage() {
                         const invDate = new Date(inv.updatedAt || inv.createdAt);
                         return invDate.getMonth() === today.getMonth() && invDate.getFullYear() === today.getFullYear();
                     });
+                }
+
+                // --- LỌC DỮ LIỆU THEO BỘ LỌC BÁC SĨ ---
+                if (filters.doctorId !== 'all') {
+                    invoices = invoices.filter((inv: any) => inv.doctorId === filters.doctorId);
+                }
+
+                // --- LỌC DỮ LIỆU THEO BỘ LỌC DỊCH VỤ ---
+                if (filters.serviceId !== 'all') {
+                    invoices = invoices.filter((inv: any) => inv.serviceIds && inv.serviceIds.includes(filters.serviceId));
                 }
 
                 // --- XỬ LÝ, TÍNH TOÁN SỐ LIỆU TỪ DỮ LIỆU THÔ --- 
@@ -129,10 +153,10 @@ export function RevenueStatisticsPage() {
             }
         };
 
-        if (services.length > 0) { // Chỉ chạy khi đã có danh sách dịch vụ để lấy tên
+        if (services !== undefined && doctors !== undefined) { 
             fetchRevenueData();
         }
-    }, [filters, services]); // Thêm services vào dependency array
+    }, [filters, services, doctors]); // Thêm doctors vào dependency array
 
     const PIE_COLORS = ['#0ea5e9', '#10b981', '#f59e0b', '#f43f5e'];
 
@@ -178,8 +202,9 @@ export function RevenueStatisticsPage() {
                         onChange={(e) => setFilters(prev => ({ ...prev, doctorId: e.target.value }))}
                     >
                         <option value="all">Tất cả Bác sĩ</option>
-                        <option value="DOC-001">Dr. Nguyễn Quang Huy</option>
-                        <option value="DOC-002">Dr. Trần Minh Anh</option>
+                        {doctors.map((doc: any) => (
+                            <option key={doc.id} value={doc.id}>{doc.fullName}</option>
+                        ))}
                     </select>
 
                     <select 
@@ -188,8 +213,9 @@ export function RevenueStatisticsPage() {
                         onChange={(e) => setFilters(prev => ({ ...prev, serviceId: e.target.value }))}
                     >
                         <option value="all">Tất cả Dịch vụ</option>
-                        <option value="khám">Khám tổng quát</option>
-                        <option value="implant">Cắm Implant</option>
+                        {services.map((svc: any) => (
+                            <option key={svc.id} value={svc.id}>{svc.name}</option>
+                        ))}
                     </select>
                 </div>
                 <button className="flex items-center justify-center gap-2 bg-slate-800 text-white px-5 py-2.5 rounded-lg font-medium text-sm hover:bg-slate-700 transition shadow-sm w-full lg:w-auto">
@@ -240,15 +266,17 @@ export function RevenueStatisticsPage() {
                                 Biểu đồ doanh thu
                             </h3>
                             <div className="h-64 w-full">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <LineChart data={data.revenueByDate} margin={{ top: 5, right: 20, bottom: 5, left: -20 }}>
-                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                        <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} dy={15} />
-                                        <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} tickFormatter={(val) => `${val/1000000}M`} />
-                                        <Tooltip formatter={(value: any) => formatVND(value)} labelStyle={{color: '#0f172a', fontWeight: 'bold'}} />
-                                        <Line type="monotone" dataKey="revenue" name="Doanh thu" stroke="#2563eb" strokeWidth={3.5} dot={{r: 5, fill: '#fff', strokeWidth: 2.5, stroke: '#2563eb'}} />
-                                    </LineChart>
-                                </ResponsiveContainer>
+                                {isMounted && (
+                                    <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
+                                        <LineChart data={data.revenueByDate} margin={{ top: 5, right: 20, bottom: 5, left: -20 }}>
+                                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                            <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} dy={15} />
+                                            <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} tickFormatter={(val) => `${val/1000000}M`} />
+                                            <Tooltip formatter={(value: any) => formatVND(value)} labelStyle={{color: '#0f172a', fontWeight: 'bold'}} />
+                                            <Line type="monotone" dataKey="revenue" name="Doanh thu" stroke="#2563eb" strokeWidth={3.5} dot={{r: 5, fill: '#fff', strokeWidth: 2.5, stroke: '#2563eb'}} />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                )}
                             </div>
                         </div>
 
@@ -257,21 +285,23 @@ export function RevenueStatisticsPage() {
                                 Tỷ trọng PT Thanh toán
                             </h3>
                             <div className="h-64 w-full mt-2">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    {data.paymentMethods.length > 0 ? (
-                                        <PieChart>
-                                            <Pie data={data.paymentMethods} dataKey="value" nameKey="method" cx="50%" cy="50%" innerRadius={65} outerRadius={90} paddingAngle={6}>
-                                                {data.paymentMethods.map((_, index) => (
-                                                    <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} stroke="none" />
-                                                ))}
-                                            </Pie>
-                                            <Tooltip formatter={(value: any) => formatVND(value)} />
-                                            <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{fontSize: '13px', color: '#475569'}} />
-                                        </PieChart>
+                                {isMounted && (
+                                    data.paymentMethods.length > 0 ? (
+                                        <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
+                                            <PieChart>
+                                                <Pie data={data.paymentMethods} dataKey="value" nameKey="method" cx="50%" cy="50%" innerRadius={65} outerRadius={90} paddingAngle={6}>
+                                                    {data.paymentMethods.map((_, index) => (
+                                                        <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} stroke="none" />
+                                                    ))}
+                                                </Pie>
+                                                <Tooltip formatter={(value: any) => formatVND(value)} />
+                                                <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{fontSize: '13px', color: '#475569'}} />
+                                            </PieChart>
+                                        </ResponsiveContainer>
                                     ) : (
                                         <div className="flex h-full items-center justify-center text-slate-400 font-medium italic">Chưa có dữ liệu</div>
-                                    )}
-                                </ResponsiveContainer>
+                                    )
+                                )}
                             </div>
                         </div>
                         <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 lg:col-span-3">
@@ -279,19 +309,21 @@ export function RevenueStatisticsPage() {
                                 Top Doanh thu theo Bác sĩ
                             </h3>
                             <div className="h-64 w-full mt-2">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    {data.revenueByDoctor.length > 0 ? (
-                                        <BarChart data={data.revenueByDoctor} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
-                                            <XAxis type="number" axisLine={false} tickLine={false} tickFormatter={(val) => `${val/1000000}M`} tick={{fill: '#94a3b8', fontSize: 12}} />
-                                            <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{fill: '#475569', fontSize: 13, fontWeight: 500}} width={150} />
-                                            <Tooltip formatter={(value: any) => formatVND(value)} cursor={{fill: '#f8fafc'}} />
-                                            <Bar dataKey="value" name="Doanh thu" fill="#10b981" radius={[0, 4, 4, 0]} barSize={24} />
-                                        </BarChart>
+                                {isMounted && (
+                                    data.revenueByDoctor.length > 0 ? (
+                                        <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
+                                            <BarChart data={data.revenueByDoctor} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
+                                                <XAxis type="number" axisLine={false} tickLine={false} tickFormatter={(val) => `${val/1000000}M`} tick={{fill: '#94a3b8', fontSize: 12}} />
+                                                <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{fill: '#475569', fontSize: 13, fontWeight: 500}} width={150} />
+                                                <Tooltip formatter={(value: any) => formatVND(value)} cursor={{fill: '#f8fafc'}} />
+                                                <Bar dataKey="value" name="Doanh thu" fill="#10b981" radius={[0, 4, 4, 0]} barSize={24} />
+                                            </BarChart>
+                                        </ResponsiveContainer>
                                     ) : (
                                         <div className="flex h-full items-center justify-center text-slate-400 font-medium italic">Chưa có dữ liệu</div>
-                                    )}
-                                </ResponsiveContainer>
+                                    )
+                                )}
                             </div>
                         </div>
                     </div>
