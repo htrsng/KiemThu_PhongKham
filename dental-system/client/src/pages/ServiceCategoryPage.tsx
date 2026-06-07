@@ -120,7 +120,7 @@ export function ServiceCategoryPage() {
         queryFn: async () => (await api.get<ApiListResponse<MockPricingPolicy>>('/pricing-policies')).data.data,
     });
 
-    const { mutate: savePricingPolicy } = useMutation<MockPricingPolicy, Error, { id?: string; data: Omit<MockPricingPolicy, 'id' | 'serviceName'> }>({
+    const { mutate: savePricingPolicy } = useMutation<MockPricingPolicy, Error, { id?: string; data: Omit<MockPricingPolicy, 'id'> }>({
         mutationFn: async ({ id, data }) => {
             const url = id ? `/pricing-policies/${id}` : '/pricing-policies';
             const method = id ? 'put' : 'post';
@@ -266,7 +266,10 @@ export function ServiceCategoryPage() {
 
         savePricingPolicy({
             id: editingPricingId || undefined,
-            data: pricingFormState,
+            data: {
+                ...pricingFormState,
+                serviceName: selectedService.name,
+            },
         });
     }
 
