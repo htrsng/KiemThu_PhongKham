@@ -6,6 +6,7 @@ import { PatientManagementPage } from '../pages/PatientManagementPage'
 import { ScheduleManagementPage } from '../pages/ScheduleManagementPage'
 import { DoctorManagementPage } from '../pages/DoctorManagementPage'
 import { DoctorPayrollPage } from '../pages/DoctorPayrollPage'
+import { ShiftCoefficientPage } from '../pages/ShiftCoefficientPage'
 import { GeneralSettingsPage } from '../pages/GeneralSettingsPage'
 import { PayrollSettingsPage } from '../pages/PayrollSettingsPage'
 import { PermissionManagementPage } from '../pages/PermissionManagementPage'
@@ -30,6 +31,7 @@ export function AppRouter() {
                     <Route path='schedule' element={<ScheduleManagementPage />} />
                     <Route path='doctors' element={<DoctorManagementPage />} />
                     <Route path='payroll' element={<DoctorPayrollPage />} />
+                    <Route path='payroll/coefficients' element={<ShiftCoefficientPage />} />
                     <Route path='services' element={<ServiceCategoryPage />} />
                     <Route path='permissions' element={<PermissionManagementPage />} />
                     <Route path='settings' element={<GeneralSettingsPage />} />

@@ -1,14 +1,44 @@
+import { useState } from 'react'
 import { X } from 'lucide-react'
 import { formatVND, formatDateTime } from '../lib/formatters'
 import type { SalaryReport } from '../pages/DoctorPayrollPage'
+import { api } from '../lib/api'
+import { useToast } from '../contexts/ToastContext'
 
 interface PayrollDetailModalProps {
     isOpen?: boolean // Optional since we render it conditionally anyway
     onClose: () => void
     report: SalaryReport | null
+    month: number
+    year: number
+    onRefresh: () => void
 }
 
-export function PayrollDetailModal({ isOpen = true, onClose, report }: PayrollDetailModalProps) {
+export function PayrollDetailModal({ isOpen = true, onClose, report, month, year, onRefresh }: PayrollDetailModalProps) {
+    const { addToast } = useToast();
+
+    const handleLock = async () => {
+        if (!window.confirm('Sau khi chốt, không thể chỉnh sửa. Xác nhận?')) return;
+        
+        try {
+            const payload = {
+                doctorId: report?.doctorId,
+                month,
+                year,
+                totalSalary: report?.totalSalary,
+                totalHours: report?.totalHours,
+                hourlyRateUsed: report?.hourlyRateUsed || 0,
+                details: report?.detailedShifts
+            };
+            await api.post('/payroll/save', payload);
+            addToast('success', 'Chốt phiếu lương thành công');
+            onRefresh();
+            onClose();
+        } catch (e: any) {
+            addToast('error', e.response?.data?.error || 'Lỗi khi chốt phiếu lương');
+        }
+    };
+
     if (!isOpen || !report) return null
 
     return (
@@ -19,6 +49,9 @@ export function PayrollDetailModal({ isOpen = true, onClose, report }: PayrollDe
                         <h3 className="text-xl font-semibold text-slate-900">
                             Chi tiết lương: {report.doctorName}
                         </h3>
+                        <p className="text-sm text-slate-500 mt-1">
+                            Tháng {month}/{year} {report.isLocked && <span className="ml-2 font-bold text-emerald-600">(Đã chốt)</span>}
+                        </p>
                     </div>
                     <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
                         <X className="h-6 w-6" />
@@ -112,13 +145,28 @@ export function PayrollDetailModal({ isOpen = true, onClose, report }: PayrollDe
                     </div>
                 </div>
 
-                <div className="mt-6 flex justify-end">
+                <div className="mt-6 flex justify-end gap-3">
                     <button
                         onClick={onClose}
                         className="rounded-xl bg-slate-100 px-4 py-2 font-semibold text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition"
                     >
                         Đóng
                     </button>
+                    {!report.isLocked ? (
+                        <button
+                            onClick={handleLock}
+                            className="rounded-xl bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 transition"
+                        >
+                            Xác nhận & Chốt phiếu lương
+                        </button>
+                    ) : (
+                        <button
+                            onClick={() => window.print()}
+                            className="rounded-xl bg-slate-800 px-4 py-2 font-semibold text-white hover:bg-slate-900 transition"
+                        >
+                            In phiếu lương
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

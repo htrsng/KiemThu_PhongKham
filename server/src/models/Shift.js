@@ -7,6 +7,7 @@ const shiftSchema = new mongoose.Schema({
   startTime: { type: String, required: true }, // HH:mm
   endTime: { type: String, required: true }, // HH:mm
   coefficient: { type: Number, default: 1.0 }, // Hệ số ca làm việc
+  patientCoefficient: { type: Number, default: 0 }, // Tổng hệ số bệnh nhân của ca
 }, { timestamps: true });
 
 shiftSchema.methods.toJSON = function() {

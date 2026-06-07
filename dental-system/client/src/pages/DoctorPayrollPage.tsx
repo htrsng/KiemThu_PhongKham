@@ -2,13 +2,15 @@ import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { PageShell } from '../components/PageShell'
 import { formatVND } from '../lib/formatters'
-import { Banknote, Search, Download, Calendar } from 'lucide-react'
+import { Banknote, Search, Download, Calendar, RefreshCw } from 'lucide-react'
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
 import { useAuth } from '../contexts/AuthContext' 
 import { EmptyState } from '../components/EmptyState'
 import { useToast } from '../contexts/ToastContext'
 import { PayrollDetailModal } from '../components/PayrollDetailModal';
+import { YearlyDoctorPayrollModal } from '../components/YearlyDoctorPayrollModal';
 import { api } from '../lib/api';
+import { Link } from 'react-router-dom';
 
 export type SalaryReport = {
     doctorId: string
@@ -22,6 +24,10 @@ export type SalaryReport = {
     totalSalary: number
     detailedShifts: any[]
     detailedAppointments: any[]
+    isLocked?: boolean
+    lockedAt?: string | null
+    hourlyRateUsed?: number
+    commissionRateUsed?: number
 }
 
 export function DoctorPayrollPage() {
@@ -35,7 +41,7 @@ export function DoctorPayrollPage() {
     useToast();
 
     // Lấy dữ liệu bảng lương tháng từ server
-    const { data: monthlyData = [], isLoading: monthlyLoading } = useQuery<SalaryReport[], Error>({ 
+    const { data: monthlyData = [], isLoading: monthlyLoading, refetch: refetchMonthly } = useQuery<SalaryReport[], Error>({ 
         queryKey: ['payroll', 'monthly', targetMonth, targetYear, currentUser?.referenceId], 
         queryFn: async () => {
             const params = new URLSearchParams({ month: targetMonth.toString(), year: targetYear.toString() });
@@ -48,7 +54,7 @@ export function DoctorPayrollPage() {
     });
 
     // Lấy dữ liệu bảng lương NĂM từ server
-    const { data: yearlyData = [], isLoading: yearlyLoading } = useQuery<any[], Error>({ 
+    const { data: yearlyData = [], isLoading: yearlyLoading, refetch: refetchYearly } = useQuery<any[], Error>({ 
         queryKey: ['payroll', 'yearly', targetYear, currentUser?.referenceId], 
         queryFn: async () => {
             const params = new URLSearchParams({ year: targetYear.toString() });
@@ -76,6 +82,55 @@ export function DoctorPayrollPage() {
         return <EmptyState title="Bạn không có quyền truy cập mục này." description="Chỉ quản trị viên và bác sĩ mới có thể xem mục này." />
     }
 
+    const handleExport = () => {
+        if (displayedData.length === 0) {
+            alert('Không có dữ liệu để xuất báo cáo');
+            return;
+        }
+
+        let csvContent = '\uFEFF'; // BOM for UTF-8 Excel support
+        
+        if (viewMode === 'monthly') {
+            csvContent += `Báo cáo lương tháng ${targetMonth}/${targetYear}\n\n`;
+            csvContent += `Bác sĩ,Trạng thái,Giờ quy đổi,Lương ca trực,Ca khám,Hoa hồng (Khám + DV),Tổng nhận\n`;
+            
+            displayedData.forEach((row: any) => {
+                const status = row.isLocked ? 'Đã chốt' : 'Chưa chốt';
+                const rowStr = [
+                    `"${row.doctorName}"`,
+                    `"${status}"`,
+                    `${row.totalHours}h`,
+                    `${row.shiftSalary}`,
+                    `${row.completedAppointments}`,
+                    `${row.consultationBonus + row.serviceBonus}`,
+                    `${row.totalSalary}`
+                ].join(',');
+                csvContent += rowStr + '\n';
+            });
+        } else {
+            csvContent += `Báo cáo lương năm ${targetYear}\n\n`;
+            csvContent += `Bác sĩ,Tổng nhận cả năm,Trung bình tháng\n`;
+            
+            displayedData.forEach((row: any) => {
+                const rowStr = [
+                    `"${row.doctorName}"`,
+                    `${row.totalSalary}`,
+                    `${Math.round(row.totalSalary / 12)}`
+                ].join(',');
+                csvContent += rowStr + '\n';
+            });
+        }
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `bao_cao_luong_${viewMode}_${targetMonth}_${targetYear}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     const totalPayout = displayedData.reduce((sum: number, d: any) => sum + d.totalSalary, 0)
 
     return (
@@ -86,19 +141,26 @@ export function DoctorPayrollPage() {
                 testId="page-payroll"
             />
 
-            <div className="flex gap-2">
-                <button
-                    onClick={() => setViewMode('monthly')}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${viewMode === 'monthly' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 border border-slate-200'}`}
-                >
-                    Báo cáo Tháng
-                </button>
-                <button
-                    onClick={() => setViewMode('yearly')}
-                    className={`px-4 py-2 flex items-center gap-2 rounded-xl text-sm font-semibold transition ${viewMode === 'yearly' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 border border-slate-200'}`}
-                >
-                    <Calendar className="w-4 h-4" /> Báo cáo Năm
-                </button>
+            <div className="flex justify-between items-center">
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => setViewMode('monthly')}
+                        className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${viewMode === 'monthly' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 border border-slate-200'}`}
+                    >
+                        Báo cáo Tháng
+                    </button>
+                    <button
+                        onClick={() => setViewMode('yearly')}
+                        className={`px-4 py-2 flex items-center gap-2 rounded-xl text-sm font-semibold transition ${viewMode === 'yearly' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 border border-slate-200'}`}
+                    >
+                        <Calendar className="w-4 h-4" /> Báo cáo Năm
+                    </button>
+                </div>
+                {currentUser?.role === 'Admin' && (
+                    <Link to="/payroll/coefficients" className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-sm font-semibold transition shadow-sm">
+                        Nhập hệ số ca phức tạp
+                    </Link>
+                )}
             </div>
 
             {/* Summary Cards */}
@@ -174,9 +236,16 @@ export function DoctorPayrollPage() {
                         </div>
                     )}
                 </div>
-                <button className="flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-800 transition">
-                    <Download className="h-4 w-4" /> Xuất Excel
-                </button>
+                <div className="flex items-center gap-2">
+                    <button 
+                        onClick={() => viewMode === 'monthly' ? refetchMonthly() : refetchYearly()}
+                        className="flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 transition">
+                        <RefreshCw className="h-4 w-4" /> Làm mới
+                    </button>
+                    <button onClick={handleExport} className="flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-800 transition">
+                        <Download className="h-4 w-4" /> Xuất Excel/CSV
+                    </button>
+                </div>
             </div>
 
             {/* Payroll Table */}
@@ -188,6 +257,7 @@ export function DoctorPayrollPage() {
                                 <th className="px-6 py-4 font-bold text-slate-700">Bác sĩ</th>
                                 {viewMode === 'monthly' ? (
                                     <>
+                                        <th className="px-6 py-4 font-bold text-slate-700 text-center">Trạng thái</th>
                                         <th className="px-6 py-4 font-bold text-slate-700 text-center">Giờ quy đổi</th>
                                         <th className="px-6 py-4 font-bold text-slate-700">Lương ca trực</th>
                                         <th className="px-6 py-4 font-bold text-slate-700 text-center">Ca khám</th>
@@ -220,13 +290,24 @@ export function DoctorPayrollPage() {
                                     <tr 
                                         key={row.doctorId} 
                                         className="hover:bg-blue-50/50 transition-colors cursor-pointer"
-                                        onClick={() => viewMode === 'monthly' && setSelectedReport(row)}>
+                                        onClick={() => setSelectedReport(row)}>
                                         <td className="px-6 py-4">
                                             <p className="font-bold text-slate-900">{row.doctorName}</p>
                                             <p className="text-xs text-slate-500">{row.specialty}</p>
                                         </td>
                                         {viewMode === 'monthly' ? (
                                             <>
+                                                <td className="px-6 py-4 text-center">
+                                                    {row.isLocked ? (
+                                                        <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs font-bold text-emerald-700">
+                                                            Đã chốt
+                                                        </span>
+                                                    ) : (
+                                                        <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-1 text-xs font-bold text-amber-700">
+                                                            Nháp
+                                                        </span>
+                                                    )}
+                                                </td>
                                                 <td className="px-6 py-4 text-center text-slate-600 font-medium">
                                                     {row.totalHours}h
                                                 </td>
@@ -248,10 +329,10 @@ export function DoctorPayrollPage() {
                                             </>
                                         ) : (
                                             <>
-                                                <td colSpan={4} className="px-6 py-4 text-right font-bold text-emerald-600">
+                                                <td className="px-6 py-4 text-right font-bold text-emerald-600">
                                                     {formatVND(row.totalSalary)}
                                                 </td>
-                                                <td colSpan={1} className="px-6 py-4 text-right font-medium text-slate-700">
+                                                <td className="px-6 py-4 text-right font-medium text-slate-700">
                                                     {formatVND(Math.round(row.totalSalary / 12))}
                                                 </td>
                                             </>
@@ -264,10 +345,22 @@ export function DoctorPayrollPage() {
                 </div>
             </div>
 
-            {selectedReport && (
+            {selectedReport && viewMode === 'monthly' && (
                 <PayrollDetailModal
+                    report={selectedReport as SalaryReport}
+                    onClose={() => setSelectedReport(null)}
+                    month={targetMonth}
+                    year={targetYear}
+                    onRefresh={refetchMonthly}
+                />
+            )}
+            
+            {selectedReport && viewMode === 'yearly' && (
+                <YearlyDoctorPayrollModal
+                    isOpen={true}
                     report={selectedReport}
                     onClose={() => setSelectedReport(null)}
+                    year={targetYear}
                 />
             )}
         </section>
