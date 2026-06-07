@@ -19,7 +19,7 @@ type FormState = {
     role: 'Admin' | 'Doctor' | 'Reception'
     password: string
     confirmPassword: string
-    status: 'Hoat dong' | 'Bi khoa'
+    status: 'active' | 'locked'
 }
 
 type FormErrors = Partial<Record<keyof FormState, string>>
@@ -33,7 +33,7 @@ const defaultFormState: FormState = {
     role: 'Reception',
     password: '',
     confirmPassword: '',
-    status: 'Hoat dong',
+    status: 'active',
 }
 
 function getRoleBadgeClass(role: string): string {
@@ -50,9 +50,13 @@ function getRoleBadgeClass(role: string): string {
 }
 
 function getStatusBadgeClass(status: string): string {
-    return status === 'Hoat dong'
+    return status === 'active'
         ? 'bg-emerald-100 text-emerald-900'
         : 'bg-rose-100 text-rose-900'
+}
+
+function getStatusText(status: string): string {
+    return status === 'active' ? 'Hoạt động' : 'Bị khóa';
 }
 
 export function AccountManagementPage() {
@@ -285,7 +289,11 @@ export function AccountManagementPage() {
     }
 
     async function handleToggleLock(account: MockAccount) {
-        const newStatus = account.status === 'Hoat dong' ? 'Bi khoa' : 'Hoat dong'
+        if (account.id === currentUser?.id) {
+            addToast('error', 'Bạn không thể khóa tài khoản của chính mình!');
+            return;
+        }
+        const newStatus = account.status === 'active' ? 'locked' : 'active'
         updateAccount({ id: account.id, data: { status: newStatus } });
     }
 
@@ -430,7 +438,7 @@ export function AccountManagementPage() {
                                             </td>
                                             <td className="px-4 py-3">
                                                 <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${getStatusBadgeClass(account.status)}`}>
-                                                    {account.status}
+                                                    {getStatusText(account.status)}
                                                 </span>
                                             </td>
                                             <td className="px-4 py-3 text-slate-600 text-xs">
@@ -440,10 +448,15 @@ export function AccountManagementPage() {
                                                 <div className="flex items-center justify-end gap-2">
                                                     <button
                                                         onClick={() => handleToggleLock(account)}
-                                                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:text-amber-600"
-                                                        title={account.status === 'Hoat dong' ? 'Khóa' : 'Mở khóa'}
+                                                        disabled={account.id === currentUser?.id}
+                                                        className={`inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 transition ${
+                                                            account.id === currentUser?.id 
+                                                                ? 'text-slate-300 cursor-not-allowed bg-slate-50' 
+                                                                : 'text-slate-600 hover:text-amber-600'
+                                                        }`}
+                                                        title={account.id === currentUser?.id ? 'Không thể khóa chính mình' : (account.status === 'active' ? 'Khóa' : 'Mở khóa')}
                                                     >
-                                                        {account.status === 'Hoat dong' ? (
+                                                        {account.status === 'active' ? (
                                                             <Unlock className="h-4 w-4" />
                                                         ) : (
                                                             <Lock className="h-4 w-4" />
@@ -724,8 +737,8 @@ export function AccountManagementPage() {
                                         }
                                         className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"
                                     >
-                                        <option value="Hoat dong">Hoạt động</option>
-                                        <option value="Bi khoa">Bị khóa</option>
+                                        <option value="active">Hoạt động</option>
+                                        <option value="locked">Bị khóa</option>
                                     </select>
                                 </div>
                             </div>

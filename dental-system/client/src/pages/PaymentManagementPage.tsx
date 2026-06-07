@@ -4,7 +4,7 @@ import { PageShell } from '../components/PageShell';
 import { api, type ApiListResponse } from '../lib/api';
 import { useToast } from '../contexts/ToastContext';
 import { formatVND } from '../lib/formatters';
-import { CreditCard, Printer, Search, CheckCircle, Ticket, Plus } from 'lucide-react';
+import { CreditCard, Printer, Search, CheckCircle, Ticket, Plus, Download } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
 export function PaymentManagementPage() {
@@ -65,6 +65,39 @@ export function PaymentManagementPage() {
 
     const handlePrint = () => {
         window.print();
+    };
+
+    const handleDownloadCSV = () => {
+        if (!selectedInvoice) return;
+        
+        const calculatedDiscount = discountType === 'PERCENT' ? (selectedInvoice.totalAmount * discount) / 100 : discount;
+        const finalCost = selectedInvoice.totalAmount + extraCharge - calculatedDiscount;
+
+        const headers = ['Mã Hóa Đơn', 'Ngày', 'Khách hàng', 'Bác sĩ', 'Phương thức TT', 'Tổng tiền (VND)', 'Phụ phí (VND)', 'Khuyến mãi (VND)', 'Thành tiền (VND)', 'Trạng thái'];
+        const row = [
+            selectedInvoice.id,
+            new Date(selectedInvoice.createdAt || new Date()).toLocaleString('vi-VN'),
+            selectedInvoice.patientName,
+            selectedInvoice.doctorName || 'BS Phụ Trách',
+            selectedInvoice.paymentMethod || paymentMethod,
+            selectedInvoice.totalAmount,
+            extraCharge,
+            calculatedDiscount,
+            finalCost,
+            selectedInvoice.status
+        ];
+
+        const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
+            + headers.join(',') + '\n' 
+            + row.map(v => `"${v}"`).join(',');
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', `HoaDon_${selectedInvoice.id.substring(0,8)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     const filteredInvoices = invoices.filter(inv => 
@@ -273,13 +306,22 @@ export function PaymentManagementPage() {
                                     <div className="inline-flex items-center gap-2 text-emerald-600 bg-emerald-50 px-6 py-3 rounded-full font-bold mb-6">
                                         <CheckCircle className="w-6 h-6" /> Hóa đơn đã được thanh toán ({selectedInvoice.paymentMethod})
                                     </div>
-                                    <button 
-                                        onClick={handlePrint}
-                                        className="w-full flex items-center justify-center gap-2 bg-slate-800 text-white px-8 py-3 rounded-xl font-bold hover:bg-slate-900 shadow-lg shadow-slate-200 transition-all"
-                                    >
-                                        <Printer className="w-5 h-5" />
-                                        In Hóa Đơn
-                                    </button>
+                                    <div className="flex gap-4">
+                                        <button 
+                                            onClick={handlePrint}
+                                            className="flex-1 flex items-center justify-center gap-2 bg-slate-800 text-white px-6 py-3 rounded-xl font-bold hover:bg-slate-900 shadow-lg shadow-slate-200 transition-all"
+                                        >
+                                            <Printer className="w-5 h-5" />
+                                            In Hóa Đơn
+                                        </button>
+                                        <button 
+                                            onClick={handleDownloadCSV}
+                                            className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all"
+                                        >
+                                            <Download className="w-5 h-5" />
+                                            Tải CSV
+                                        </button>
+                                    </div>
                                 </div>
                             )}
                         </div>

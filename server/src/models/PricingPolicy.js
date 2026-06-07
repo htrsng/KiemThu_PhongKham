@@ -36,4 +36,10 @@ const pricingPolicySchema = new mongoose.Schema({
   timestamps: true
 });
 
+pricingPolicySchema.methods.toJSON = function() {
+  const obj = this.toObject();
+  obj.id = obj._id.toString();
+  return obj;
+};
+
 module.exports = mongoose.model('PricingPolicy', pricingPolicySchema);

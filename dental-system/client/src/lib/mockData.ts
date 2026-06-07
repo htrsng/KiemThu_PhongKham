@@ -5,7 +5,7 @@ export type MockAccount = {
     fullName: string
     email: string
     role: 'Admin' | 'Doctor' | 'Reception'
-    status: 'Hoat dong' | 'Bi khoa'
+    status: 'active' | 'locked'
     lastLoginAt?: string
     createdAt: string
     dateOfBirth?: string

@@ -28,6 +28,7 @@ const WorkShift = require('./src/models/WorkShift');
 const PricingPolicy = require('./src/models/PricingPolicy');
 const Holiday = require('./src/models/Holiday');
 const Setting = require('./src/models/Setting');
+const TreatmentRecord = require('./src/models/TreatmentRecord');
 
 // Import custom controllers
 const appointmentController = require('./src/controllers/appointmentController');
@@ -89,6 +90,7 @@ app.use('/api/holidays', protect, createResourceRouter(Holiday));
 app.use('/api/settings', protect, createResourceRouter(Setting));
 app.use('/api/audit-logs', protect, createResourceRouter(AuditLog));
 app.use('/api/role_permissions', protect, createResourceRouter(RolePermission));
+app.use('/api/treatment-records', protect, createResourceRouter(TreatmentRecord));
 
 // Error handling middleware
 app.use((err, req, res, next) => {

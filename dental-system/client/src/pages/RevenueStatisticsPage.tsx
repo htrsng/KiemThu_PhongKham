@@ -15,12 +15,14 @@ export function RevenueStatisticsPage() {
         paymentMethods: any[];
         revenueByDoctor: any[];
         recentTransactions: any[];
+        allTransactions: any[];
     }>({
         summary: { totalRevenue: 0, transactionCount: 0, averagePerTransaction: 0, totalDebt: 0 },
         revenueByDate: [],
         paymentMethods: [],
         revenueByDoctor: [],
-        recentTransactions: []
+        recentTransactions: [],
+        allTransactions: []
     });
     
     // Biến filters trữ thông tin bộ lọc người dùng đang chọn
@@ -116,12 +118,13 @@ export function RevenueStatisticsPage() {
                         return new Date(`${now.getFullYear()}-${monthA}-${dayA}`).getTime() - new Date(`${now.getFullYear()}-${monthB}-${dayB}`).getTime();
                     });
 
-                // Lấy tên dịch vụ cho các giao dịch gần đây
+                // Lấy tên dịch vụ cho các giao dịch
                 const servicesMap = new Map(services.map((s: any) => [s.id, s.name]));
-                const recentTransactions = invoices.slice(0, 5).map((tx: any) => ({
+                const allTransactions = invoices.map((tx: any) => ({
                     ...tx,
                     serviceName: tx.serviceIds?.map((id: string) => servicesMap.get(id)).filter(Boolean).join(', ') || 'Dịch vụ tổng hợp'
                 }));
+                const recentTransactions = allTransactions.slice(0, 5);
 
                 // Tính doanh thu theo bác sĩ
                 const doctorRevenueMap = new Map<string, number>();
@@ -144,6 +147,7 @@ export function RevenueStatisticsPage() {
                     paymentMethods: Array.from(methodMap, ([method, value]) => ({ method, value })),
                     revenueByDoctor,
                     recentTransactions,
+                    allTransactions,
                 });
                 
             } catch (err) {
@@ -159,6 +163,36 @@ export function RevenueStatisticsPage() {
     }, [filters, services, doctors]); // Thêm doctors vào dependency array
 
     const PIE_COLORS = ['#0ea5e9', '#10b981', '#f59e0b', '#f43f5e'];
+
+    const handleExportReport = () => {
+        if (!data || data.allTransactions.length === 0) {
+            alert('Không có dữ liệu để xuất báo cáo.');
+            return;
+        }
+
+        const headers = ['Ngày thanh toán', 'Bệnh nhân', 'Dịch vụ', 'Bác sĩ', 'Hình thức TT', 'Trạng thái', 'Thành tiền (VND)'];
+        const rows = data.allTransactions.map(tx => [
+            new Date(tx.updatedAt || tx.createdAt).toLocaleDateString('vi-VN'),
+            tx.patientName,
+            tx.serviceName,
+            tx.doctorName,
+            tx.paymentMethod || 'Tiền mặt',
+            tx.status,
+            tx.finalAmount || tx.totalAmount
+        ]);
+
+        const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
+            + headers.join(',') + '\n' 
+            + rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', `BaoCaoDoanhThu_${new Date().getTime()}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     // ---- PHẦN 3: XUẤT GIAO DIỆN ----
     return (
@@ -218,7 +252,10 @@ export function RevenueStatisticsPage() {
                         ))}
                     </select>
                 </div>
-                <button className="flex items-center justify-center gap-2 bg-slate-800 text-white px-5 py-2.5 rounded-lg font-medium text-sm hover:bg-slate-700 transition shadow-sm w-full lg:w-auto">
+                <button 
+                    onClick={handleExportReport}
+                    className="flex items-center justify-center gap-2 bg-slate-800 text-white px-5 py-2.5 rounded-lg font-medium text-sm hover:bg-slate-700 transition shadow-sm w-full lg:w-auto"
+                >
                     <Download className="w-4 h-4" /> Xuất báo cáo
                 </button>
             </div>

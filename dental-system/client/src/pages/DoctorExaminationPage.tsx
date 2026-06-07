@@ -117,6 +117,15 @@ export function DoctorExaminationPage() {
         }
    });
 
+   const { mutate: createTreatmentRecord } = useMutation({
+        mutationFn: async (payload: any) => {
+            return api.post('/treatment-records', payload);
+        },
+        onSuccess: () => {
+            console.log('Lưu hồ sơ điều trị thành công');
+        }
+   });
+
     const handleStartExam = (apt: any) => {
         updateStatus({ id: apt.id, status: 'Đang điều trị' });
         setSelectedApt(apt);
@@ -139,22 +148,23 @@ export function DoctorExaminationPage() {
         const service = services.find(s => s.id === selectedApt.serviceId);
         const amount = service ? service.basePrice : 500000;
 
-        const teethNotes = teethData.length > 0 
-            ? `[Tình trạng răng]:\n` + teethData.map(t => `- Răng ${t.id}: ${t.status}`).join('\n')
-            : '';
-
-        const combinedNotes = `
-[Chẩn đoán]: ${dentalRecord.diagnosis}
-[Thủ thuật]: ${dentalRecord.treatment}
-[Vật liệu]: ${selectedMaterials.map(m => `${m.name} x${m.quantity}`).join(', ') || dentalRecord.materials}
-[Đơn thuốc]: ${dentalRecord.prescription}
-${teethNotes}
-[Ghi chú thêm]: ${dentalRecord.notes}
-        `.trim();
-
         // Hoàn thành khám
-        updateStatus({ id: selectedApt.id, status: 'Đã hoàn thành', notes: combinedNotes });
+        updateStatus({ id: selectedApt.id, status: 'Đã hoàn thành', notes: dentalRecord.notes });
         
+        // Lưu hồ sơ bệnh án có cấu trúc
+        createTreatmentRecord({
+            appointmentId: selectedApt.id,
+            patientId: selectedApt.patientId,
+            doctorId: selectedApt.doctorId,
+            diagnosis: dentalRecord.diagnosis,
+            treatmentPlan: dentalRecord.treatment,
+            materials: dentalRecord.materials,
+            materialsUsed: selectedMaterials.map(m => ({ materialId: m.materialId, name: m.name, quantity: m.quantity })),
+            prescription: dentalRecord.prescription,
+            notes: dentalRecord.notes,
+            dentalChart: teethData.map(t => ({ toothId: t.id, status: t.status }))
+        });
+
         // Sinh hóa đơn tạm (Dựa trên dịch vụ đăng ký ban đầu)
         createInvoice({
             appointmentId: selectedApt.id,
