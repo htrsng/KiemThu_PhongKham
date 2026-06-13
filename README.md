@@ -19,7 +19,7 @@ Dự án được tổ chức gọn gàng thành các thành phần độc lập
  ┣ 📂 patches/          # Chứa các script vá lỗi (patch) tạm thời cho hệ thống
  ┣ 📜 cypress.config.js # Cấu hình cho bộ Automation Test Cypress
  ┣ 📜 package.json      # Danh sách thư viện và cấu hình Node.js toàn cục
- ┗ 📜 README.md         # File bạn đang đọc :)
+ ┗ 📜 README.md         
 ```
 
 ---

@@ -6,6 +6,7 @@
     "recharts": "^3.8.1"
   },
   "devDependencies": {
-    "cypress": "^15.15.0"
+    "cypress": "^15.15.0",
+    "cypress-mochawesome-reporter": "^4.0.2"
   }
 }

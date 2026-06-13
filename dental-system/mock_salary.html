@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Mock Salary System</title>
+</head>
+<body>
+    <h1>Thiết lập hệ số lương</h1>
+    
+    <label for="base-salary">Tiền cơ bản:</label>
+    <input type="number" id="base-salary" data-testid="input-base-salary">
+    <button id="save-base-salary" data-testid="btn-save-base-salary">Lưu tiền cơ bản</button>
+    <p id="msg-base-salary" data-testid="msg-base-salary" style="color:red;"></p>
+
+    <label for="shift-coefficient">Hệ số ca làm việc:</label>
+    <input type="text" id="shift-coefficient" data-testid="input-shift-coefficient">
+    <button id="save-shift" data-testid="btn-save-shift">Lưu hệ số ca</button>
+    <p id="msg-shift" data-testid="msg-shift" style="color:red;"></p>
+
+    <h2>Tính lương 1 ca</h2>
+    <label for="doctor-coefficient">Hệ số BS:</label>
+    <input type="number" id="doctor-coefficient" data-testid="input-doctor-coefficient" value="1.5">
+    
+    <label for="hours">Số giờ:</label>
+    <input type="number" id="hours" data-testid="input-hours" value="4">
+    
+    <label for="patient-coefficient">Hệ số bệnh nhân:</label>
+    <input type="number" id="patient-coefficient" data-testid="input-patient-coefficient" value="0.2">
+
+    <button id="calculate" data-testid="btn-calculate">Tính lương</button>
+    <p id="result-salary" data-testid="result-salary"></p>
+
+    <script>
+        document.getElementById('save-base-salary').addEventListener('click', () => {
+            const val = document.getElementById('base-salary').value;
+            if(!val || val < 0) document.getElementById('msg-base-salary').innerText = "Giá trị không hợp lệ";
+            else document.getElementById('msg-base-salary').innerText = "Lưu thành công";
+        });
+
+        document.getElementById('save-shift').addEventListener('click', () => {
+            const val = document.getElementById('shift-coefficient').value;
+            if(!val || val < 0) document.getElementById('msg-shift').innerText = "Giá trị không hợp lệ";
+            else document.getElementById('msg-shift').innerText = "Lưu thành công";
+        });
+
+        document.getElementById('calculate').addEventListener('click', () => {
+            const hs_bs = parseFloat(document.getElementById('doctor-coefficient').value);
+            const hours = parseFloat(document.getElementById('hours').value);
+            const hs_bn = parseFloat(document.getElementById('patient-coefficient').value);
+            // hardcode ca=1.0 and base=100000 for mock test
+            const total = (hours * (1.0 + hs_bn)) * hs_bs * 100000;
+            document.getElementById('result-salary').innerText = "Tiền = " + total;
+        });
+    </script>
+</body>
+</html>

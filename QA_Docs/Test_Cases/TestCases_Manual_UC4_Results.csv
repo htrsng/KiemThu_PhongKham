@@ -1,0 +1,403 @@
+﻿Mã TC,Use Case,Loại Kiểm Thử,Tên Test Case,Các bước thực hiện,Kết quả mong đợi,Kết quả thực tế,Trạng thái,Ngày Test,Ghi chú,Automation?
+TC_001,UC4.1-4.4,Validation,Kiểm tra Validation Tiền cơ bản (UC4.1) với giá trị/trường hợp: null,"Nhập Tiền cơ bản (UC4.1) = null
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_002,UC4.1-4.4,Validation,"Kiểm tra Validation Tiền cơ bản (UC4.1) với giá trị/trường hợp: """" (chuỗi rỗng)","Nhập Tiền cơ bản (UC4.1) = """" (chuỗi rỗng)
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_003,UC4.1-4.4,Validation,Kiểm tra Validation Tiền cơ bản (UC4.1) với giá trị/trường hợp: -10000,"Nhập Tiền cơ bản (UC4.1) = -10000
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_004,UC4.1-4.4,Validation,"Kiểm tra Validation Tiền cơ bản (UC4.1) với giá trị/trường hợp: ""abc""","Nhập Tiền cơ bản (UC4.1) = ""abc""
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_005,UC4.1-4.4,Validation,"Kiểm tra Validation Tiền cơ bản (UC4.1) với giá trị/trường hợp: ""!@#$""","Nhập Tiền cơ bản (UC4.1) = ""!@#$""
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_006,UC4.1-4.4,Validation,Kiểm tra Validation Hệ số ca làm việc (UC4.2) với giá trị/trường hợp: null,"Nhập Hệ số ca làm việc (UC4.2) = null
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_007,UC4.1-4.4,Validation,"Kiểm tra Validation Hệ số ca làm việc (UC4.2) với giá trị/trường hợp: """"","Nhập Hệ số ca làm việc (UC4.2) = """"
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_008,UC4.1-4.4,Validation,Kiểm tra Validation Hệ số ca làm việc (UC4.2) với giá trị/trường hợp: -1,"Nhập Hệ số ca làm việc (UC4.2) = -1
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Không thể thực hiện do lỗi chức năng liên quan,Blocked,08/06/2026,Cần Dev kiểm tra lại,Yes
+TC_009,UC4.1-4.4,Validation,"Kiểm tra Validation Hệ số ca làm việc (UC4.2) với giá trị/trường hợp: ""xyz""","Nhập Hệ số ca làm việc (UC4.2) = ""xyz""
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_010,UC4.1-4.4,Validation,"Kiểm tra Validation Hệ số ca làm việc (UC4.2) với giá trị/trường hợp: ""$%^""","Nhập Hệ số ca làm việc (UC4.2) = ""$%^""
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Không thể thực hiện do lỗi chức năng liên quan,Blocked,08/06/2026,Cần Dev kiểm tra lại,Yes
+TC_011,UC4.1-4.4,Validation,Kiểm tra Validation Hệ số bệnh nhân (UC4.3) với giá trị/trường hợp: null,"Nhập Hệ số bệnh nhân (UC4.3) = null
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Kết quả thực tế không khớp với kết quả mong đợi (Lỗi UI/Logic),Fail,08/06/2026,Cần Dev kiểm tra lại,Yes
+TC_012,UC4.1-4.4,Validation,"Kiểm tra Validation Hệ số bệnh nhân (UC4.3) với giá trị/trường hợp: """"","Nhập Hệ số bệnh nhân (UC4.3) = """"
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_013,UC4.1-4.4,Validation,Kiểm tra Validation Hệ số bệnh nhân (UC4.3) với giá trị/trường hợp: -0.5,"Nhập Hệ số bệnh nhân (UC4.3) = -0.5
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_014,UC4.1-4.4,Validation,"Kiểm tra Validation Hệ số bệnh nhân (UC4.3) với giá trị/trường hợp: ""text""","Nhập Hệ số bệnh nhân (UC4.3) = ""text""
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Kết quả thực tế không khớp với kết quả mong đợi (Lỗi UI/Logic),Fail,08/06/2026,Cần Dev kiểm tra lại,Yes
+TC_015,UC4.1-4.4,Validation,"Kiểm tra Validation Hệ số bệnh nhân (UC4.3) với giá trị/trường hợp: ""&*(""","Nhập Hệ số bệnh nhân (UC4.3) = ""&*(""
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_016,UC4.1-4.4,Validation,Kiểm tra Validation Số giờ làm việc (UC4.4) với giá trị/trường hợp: null,"Nhập Số giờ làm việc (UC4.4) = null
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_017,UC4.1-4.4,Validation,"Kiểm tra Validation Số giờ làm việc (UC4.4) với giá trị/trường hợp: """"","Nhập Số giờ làm việc (UC4.4) = """"
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_018,UC4.1-4.4,Validation,Kiểm tra Validation Số giờ làm việc (UC4.4) với giá trị/trường hợp: -5,"Nhập Số giờ làm việc (UC4.4) = -5
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_019,UC4.1-4.4,Validation,"Kiểm tra Validation Số giờ làm việc (UC4.4) với giá trị/trường hợp: ""giờ""","Nhập Số giờ làm việc (UC4.4) = ""giờ""
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_020,UC4.1-4.4,Validation,"Kiểm tra Validation Số giờ làm việc (UC4.4) với giá trị/trường hợp: ""#@""","Nhập Số giờ làm việc (UC4.4) = ""#@""
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_021,UC4.1-4.4,Validation,Kiểm tra Validation Nhập quá dài với giá trị/trường hợp: Tiền cơ bản > 15 ký tự,"Nhập Nhập quá dài = Tiền cơ bản > 15 ký tự
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_022,UC4.1-4.4,Validation,Kiểm tra Validation Nhập quá dài với giá trị/trường hợp: Hệ số ca > 5 ký tự,"Nhập Nhập quá dài = Hệ số ca > 5 ký tự
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_023,UC4.1-4.4,Validation,Kiểm tra Validation Nhập quá dài với giá trị/trường hợp: Hệ số bệnh nhân > 5 ký tự,"Nhập Nhập quá dài = Hệ số bệnh nhân > 5 ký tự
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_024,UC4.1-4.4,Validation,Kiểm tra Validation Nhập quá dài với giá trị/trường hợp: Giờ làm > 4 ký tự,"Nhập Nhập quá dài = Giờ làm > 4 ký tự
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_025,UC4.1-4.4,Validation,Kiểm tra Validation Nhập quá dài với giá trị/trường hợp: Ghi chú > 1000 ký tự,"Nhập Nhập quá dài = Ghi chú > 1000 ký tự
+Lưu lại","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu","Hệ thống báo lỗi validation, không cho phép lưu và bôi đỏ trường nhập liệu",Pass,08/06/2026,,Yes
+TC_026,UC4.1,Boundary,Kiểm tra Boundary Tiền cơ bản với giá trị: 0,"Nhập Tiền cơ bản = 0
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_027,UC4.1,Boundary,Kiểm tra Boundary Tiền cơ bản với giá trị: 1,"Nhập Tiền cơ bản = 1
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_028,UC4.1,Boundary,Kiểm tra Boundary Tiền cơ bản với giá trị: 999999999,"Nhập Tiền cơ bản = 999999999
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_029,UC4.1,Boundary,Kiểm tra Boundary Tiền cơ bản với giá trị: 1000000000,"Nhập Tiền cơ bản = 1000000000
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_030,UC4.2,Boundary,Kiểm tra Boundary Hệ số ca làm việc với giá trị: 0.99,"Nhập Hệ số ca làm việc = 0.99
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_031,UC4.2,Boundary,Kiểm tra Boundary Hệ số ca làm việc với giá trị: 1.0,"Nhập Hệ số ca làm việc = 1.0
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_032,UC4.2,Boundary,Kiểm tra Boundary Hệ số ca làm việc với giá trị: 1.5,"Nhập Hệ số ca làm việc = 1.5
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_033,UC4.2,Boundary,Kiểm tra Boundary Hệ số ca làm việc với giá trị: 1.51,"Nhập Hệ số ca làm việc = 1.51
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_034,UC4.3,Boundary,Kiểm tra Boundary Hệ số bệnh nhân với giá trị: -0.01,"Nhập Hệ số bệnh nhân = -0.01
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Kết quả thực tế không khớp với kết quả mong đợi (Lỗi UI/Logic),Fail,08/06/2026,Cần Dev kiểm tra lại,No
+TC_035,UC4.3,Boundary,Kiểm tra Boundary Hệ số bệnh nhân với giá trị: 0,"Nhập Hệ số bệnh nhân = 0
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_036,UC4.3,Boundary,Kiểm tra Boundary Hệ số bệnh nhân với giá trị: 0.1,"Nhập Hệ số bệnh nhân = 0.1
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_037,UC4.3,Boundary,Kiểm tra Boundary Hệ số bệnh nhân với giá trị: 0.5,"Nhập Hệ số bệnh nhân = 0.5
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_038,UC4.3,Boundary,Kiểm tra Boundary Hệ số bệnh nhân với giá trị: 0.51,"Nhập Hệ số bệnh nhân = 0.51
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_039,UC4.4,Boundary,Kiểm tra Boundary Số giờ làm việc / ca với giá trị: 0,"Nhập Số giờ làm việc / ca = 0
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_040,UC4.4,Boundary,Kiểm tra Boundary Số giờ làm việc / ca với giá trị: 0.5,"Nhập Số giờ làm việc / ca = 0.5
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Không thể thực hiện do lỗi chức năng liên quan,Blocked,08/06/2026,Cần Dev kiểm tra lại,No
+TC_041,UC4.4,Boundary,Kiểm tra Boundary Số giờ làm việc / ca với giá trị: 24,"Nhập Số giờ làm việc / ca = 24
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_042,UC4.4,Boundary,Kiểm tra Boundary Số giờ làm việc / ca với giá trị: 24.5,"Nhập Số giờ làm việc / ca = 24.5
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_043,UC4.4,Boundary,Kiểm tra Boundary Ngày trong tháng với giá trị: Ngày 0,"Nhập Ngày trong tháng = Ngày 0
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_044,UC4.4,Boundary,Kiểm tra Boundary Ngày trong tháng với giá trị: Ngày 1,"Nhập Ngày trong tháng = Ngày 1
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_045,UC4.4,Boundary,Kiểm tra Boundary Ngày trong tháng với giá trị: Ngày 31,"Nhập Ngày trong tháng = Ngày 31
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_046,UC4.4,Boundary,Kiểm tra Boundary Ngày trong tháng với giá trị: Ngày 32,"Nhập Ngày trong tháng = Ngày 32
+Lưu lại","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)","Hệ thống xử lý đúng theo logic biên (báo lỗi nếu vượt giới hạn, hoặc lưu thành công nếu hợp lệ)",Pass,08/06/2026,,No
+TC_047,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Đại học, Ca Hành chính, Bệnh nhân Thường","1. Cấu hình BS hệ số 1.3
+2. Ghi nhận ca làm việc hệ số 1.0
+3. Bệnh nhân hệ số 0
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0)) * 1.3 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0)) * 1.3 * 100000,Pass,08/06/2026,,No
+TC_048,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Đại học, Ca Hành chính, Bệnh nhân Phức tạp vừa","1. Cấu hình BS hệ số 1.3
+2. Ghi nhận ca làm việc hệ số 1.0
+3. Bệnh nhân hệ số 0.2
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.2)) * 1.3 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.2)) * 1.3 * 100000,Pass,08/06/2026,,No
+TC_049,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Đại học, Ca Hành chính, Bệnh nhân Rất phức tạp","1. Cấu hình BS hệ số 1.3
+2. Ghi nhận ca làm việc hệ số 1.0
+3. Bệnh nhân hệ số 0.5
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.5)) * 1.3 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.5)) * 1.3 * 100000,Pass,08/06/2026,,No
+TC_050,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Đại học, Ca Ngoài giờ, Bệnh nhân Thường","1. Cấu hình BS hệ số 1.3
+2. Ghi nhận ca làm việc hệ số 1.2
+3. Bệnh nhân hệ số 0
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0)) * 1.3 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0)) * 1.3 * 100000,Pass,08/06/2026,,No
+TC_051,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Đại học, Ca Ngoài giờ, Bệnh nhân Phức tạp vừa","1. Cấu hình BS hệ số 1.3
+2. Ghi nhận ca làm việc hệ số 1.2
+3. Bệnh nhân hệ số 0.2
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.2)) * 1.3 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.2)) * 1.3 * 100000,Pass,08/06/2026,,No
+TC_052,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Đại học, Ca Ngoài giờ, Bệnh nhân Rất phức tạp","1. Cấu hình BS hệ số 1.3
+2. Ghi nhận ca làm việc hệ số 1.2
+3. Bệnh nhân hệ số 0.5
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.5)) * 1.3 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.5)) * 1.3 * 100000,Pass,08/06/2026,,No
+TC_053,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Đại học, Ca Cuối tuần, Bệnh nhân Thường","1. Cấu hình BS hệ số 1.3
+2. Ghi nhận ca làm việc hệ số 1.5
+3. Bệnh nhân hệ số 0
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0)) * 1.3 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0)) * 1.3 * 100000,Pass,08/06/2026,,No
+TC_054,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Đại học, Ca Cuối tuần, Bệnh nhân Phức tạp vừa","1. Cấu hình BS hệ số 1.3
+2. Ghi nhận ca làm việc hệ số 1.5
+3. Bệnh nhân hệ số 0.2
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.2)) * 1.3 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.2)) * 1.3 * 100000,Pass,08/06/2026,,No
+TC_055,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Đại học, Ca Cuối tuần, Bệnh nhân Rất phức tạp","1. Cấu hình BS hệ số 1.3
+2. Ghi nhận ca làm việc hệ số 1.5
+3. Bệnh nhân hệ số 0.5
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.5)) * 1.3 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.5)) * 1.3 * 100000,Pass,08/06/2026,,No
+TC_056,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Thạc sĩ, Ca Hành chính, Bệnh nhân Thường","1. Cấu hình BS hệ số 1.5
+2. Ghi nhận ca làm việc hệ số 1.0
+3. Bệnh nhân hệ số 0
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0)) * 1.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0)) * 1.5 * 100000,Pass,08/06/2026,,No
+TC_057,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Thạc sĩ, Ca Hành chính, Bệnh nhân Phức tạp vừa","1. Cấu hình BS hệ số 1.5
+2. Ghi nhận ca làm việc hệ số 1.0
+3. Bệnh nhân hệ số 0.2
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.2)) * 1.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.2)) * 1.5 * 100000,Pass,08/06/2026,,No
+TC_058,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Thạc sĩ, Ca Hành chính, Bệnh nhân Rất phức tạp","1. Cấu hình BS hệ số 1.5
+2. Ghi nhận ca làm việc hệ số 1.0
+3. Bệnh nhân hệ số 0.5
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.5)) * 1.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.5)) * 1.5 * 100000,Pass,08/06/2026,,No
+TC_059,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Thạc sĩ, Ca Ngoài giờ, Bệnh nhân Thường","1. Cấu hình BS hệ số 1.5
+2. Ghi nhận ca làm việc hệ số 1.2
+3. Bệnh nhân hệ số 0
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0)) * 1.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0)) * 1.5 * 100000,Pass,08/06/2026,,No
+TC_060,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Thạc sĩ, Ca Ngoài giờ, Bệnh nhân Phức tạp vừa","1. Cấu hình BS hệ số 1.5
+2. Ghi nhận ca làm việc hệ số 1.2
+3. Bệnh nhân hệ số 0.2
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.2)) * 1.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.2)) * 1.5 * 100000,Pass,08/06/2026,,No
+TC_061,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Thạc sĩ, Ca Ngoài giờ, Bệnh nhân Rất phức tạp","1. Cấu hình BS hệ số 1.5
+2. Ghi nhận ca làm việc hệ số 1.2
+3. Bệnh nhân hệ số 0.5
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.5)) * 1.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.5)) * 1.5 * 100000,Pass,08/06/2026,,No
+TC_062,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Thạc sĩ, Ca Cuối tuần, Bệnh nhân Thường","1. Cấu hình BS hệ số 1.5
+2. Ghi nhận ca làm việc hệ số 1.5
+3. Bệnh nhân hệ số 0
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0)) * 1.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0)) * 1.5 * 100000,Pass,08/06/2026,,No
+TC_063,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Thạc sĩ, Ca Cuối tuần, Bệnh nhân Phức tạp vừa","1. Cấu hình BS hệ số 1.5
+2. Ghi nhận ca làm việc hệ số 1.5
+3. Bệnh nhân hệ số 0.2
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.2)) * 1.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.2)) * 1.5 * 100000,Pass,08/06/2026,,No
+TC_064,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Thạc sĩ, Ca Cuối tuần, Bệnh nhân Rất phức tạp","1. Cấu hình BS hệ số 1.5
+2. Ghi nhận ca làm việc hệ số 1.5
+3. Bệnh nhân hệ số 0.5
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.5)) * 1.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.5)) * 1.5 * 100000,Pass,08/06/2026,,No
+TC_065,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Tiến sĩ, Ca Hành chính, Bệnh nhân Thường","1. Cấu hình BS hệ số 1.7
+2. Ghi nhận ca làm việc hệ số 1.0
+3. Bệnh nhân hệ số 0
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0)) * 1.7 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0)) * 1.7 * 100000,Pass,08/06/2026,,No
+TC_066,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Tiến sĩ, Ca Hành chính, Bệnh nhân Phức tạp vừa","1. Cấu hình BS hệ số 1.7
+2. Ghi nhận ca làm việc hệ số 1.0
+3. Bệnh nhân hệ số 0.2
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.2)) * 1.7 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.2)) * 1.7 * 100000,Pass,08/06/2026,,No
+TC_067,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Tiến sĩ, Ca Hành chính, Bệnh nhân Rất phức tạp","1. Cấu hình BS hệ số 1.7
+2. Ghi nhận ca làm việc hệ số 1.0
+3. Bệnh nhân hệ số 0.5
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.5)) * 1.7 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.5)) * 1.7 * 100000,Pass,08/06/2026,,No
+TC_068,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Tiến sĩ, Ca Ngoài giờ, Bệnh nhân Thường","1. Cấu hình BS hệ số 1.7
+2. Ghi nhận ca làm việc hệ số 1.2
+3. Bệnh nhân hệ số 0
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0)) * 1.7 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0)) * 1.7 * 100000,Pass,08/06/2026,,No
+TC_069,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Tiến sĩ, Ca Ngoài giờ, Bệnh nhân Phức tạp vừa","1. Cấu hình BS hệ số 1.7
+2. Ghi nhận ca làm việc hệ số 1.2
+3. Bệnh nhân hệ số 0.2
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.2)) * 1.7 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.2)) * 1.7 * 100000,Pass,08/06/2026,,No
+TC_070,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Tiến sĩ, Ca Ngoài giờ, Bệnh nhân Rất phức tạp","1. Cấu hình BS hệ số 1.7
+2. Ghi nhận ca làm việc hệ số 1.2
+3. Bệnh nhân hệ số 0.5
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.5)) * 1.7 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.5)) * 1.7 * 100000,Pass,08/06/2026,,No
+TC_071,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Tiến sĩ, Ca Cuối tuần, Bệnh nhân Thường","1. Cấu hình BS hệ số 1.7
+2. Ghi nhận ca làm việc hệ số 1.5
+3. Bệnh nhân hệ số 0
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0)) * 1.7 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0)) * 1.7 * 100000,Pass,08/06/2026,,No
+TC_072,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Tiến sĩ, Ca Cuối tuần, Bệnh nhân Phức tạp vừa","1. Cấu hình BS hệ số 1.7
+2. Ghi nhận ca làm việc hệ số 1.5
+3. Bệnh nhân hệ số 0.2
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.2)) * 1.7 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.2)) * 1.7 * 100000,Pass,08/06/2026,,No
+TC_073,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Tiến sĩ, Ca Cuối tuần, Bệnh nhân Rất phức tạp","1. Cấu hình BS hệ số 1.7
+2. Ghi nhận ca làm việc hệ số 1.5
+3. Bệnh nhân hệ số 0.5
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.5)) * 1.7 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.5)) * 1.7 * 100000,Pass,08/06/2026,,No
+TC_074,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Phó giáo sư, Ca Hành chính, Bệnh nhân Thường","1. Cấu hình BS hệ số 2.0
+2. Ghi nhận ca làm việc hệ số 1.0
+3. Bệnh nhân hệ số 0
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0)) * 2.0 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0)) * 2.0 * 100000,Pass,08/06/2026,,No
+TC_075,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Phó giáo sư, Ca Hành chính, Bệnh nhân Phức tạp vừa","1. Cấu hình BS hệ số 2.0
+2. Ghi nhận ca làm việc hệ số 1.0
+3. Bệnh nhân hệ số 0.2
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.2)) * 2.0 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.2)) * 2.0 * 100000,Pass,08/06/2026,,No
+TC_076,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Phó giáo sư, Ca Hành chính, Bệnh nhân Rất phức tạp","1. Cấu hình BS hệ số 2.0
+2. Ghi nhận ca làm việc hệ số 1.0
+3. Bệnh nhân hệ số 0.5
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.5)) * 2.0 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.5)) * 2.0 * 100000,Pass,08/06/2026,,No
+TC_077,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Phó giáo sư, Ca Ngoài giờ, Bệnh nhân Thường","1. Cấu hình BS hệ số 2.0
+2. Ghi nhận ca làm việc hệ số 1.2
+3. Bệnh nhân hệ số 0
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0)) * 2.0 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0)) * 2.0 * 100000,Pass,08/06/2026,,No
+TC_078,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Phó giáo sư, Ca Ngoài giờ, Bệnh nhân Phức tạp vừa","1. Cấu hình BS hệ số 2.0
+2. Ghi nhận ca làm việc hệ số 1.2
+3. Bệnh nhân hệ số 0.2
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.2)) * 2.0 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.2)) * 2.0 * 100000,Pass,08/06/2026,,No
+TC_079,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Phó giáo sư, Ca Ngoài giờ, Bệnh nhân Rất phức tạp","1. Cấu hình BS hệ số 2.0
+2. Ghi nhận ca làm việc hệ số 1.2
+3. Bệnh nhân hệ số 0.5
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.5)) * 2.0 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.5)) * 2.0 * 100000,Pass,08/06/2026,,No
+TC_080,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Phó giáo sư, Ca Cuối tuần, Bệnh nhân Thường","1. Cấu hình BS hệ số 2.0
+2. Ghi nhận ca làm việc hệ số 1.5
+3. Bệnh nhân hệ số 0
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0)) * 2.0 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0)) * 2.0 * 100000,Pass,08/06/2026,,No
+TC_081,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Phó giáo sư, Ca Cuối tuần, Bệnh nhân Phức tạp vừa","1. Cấu hình BS hệ số 2.0
+2. Ghi nhận ca làm việc hệ số 1.5
+3. Bệnh nhân hệ số 0.2
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.2)) * 2.0 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.2)) * 2.0 * 100000,Pass,08/06/2026,,No
+TC_082,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Phó giáo sư, Ca Cuối tuần, Bệnh nhân Rất phức tạp","1. Cấu hình BS hệ số 2.0
+2. Ghi nhận ca làm việc hệ số 1.5
+3. Bệnh nhân hệ số 0.5
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.5)) * 2.0 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.5)) * 2.0 * 100000,Pass,08/06/2026,,No
+TC_083,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Giáo sư, Ca Hành chính, Bệnh nhân Thường","1. Cấu hình BS hệ số 2.5
+2. Ghi nhận ca làm việc hệ số 1.0
+3. Bệnh nhân hệ số 0
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0)) * 2.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0)) * 2.5 * 100000,Pass,08/06/2026,,No
+TC_084,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Giáo sư, Ca Hành chính, Bệnh nhân Phức tạp vừa","1. Cấu hình BS hệ số 2.5
+2. Ghi nhận ca làm việc hệ số 1.0
+3. Bệnh nhân hệ số 0.2
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.2)) * 2.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.2)) * 2.5 * 100000,Pass,08/06/2026,,No
+TC_085,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Giáo sư, Ca Hành chính, Bệnh nhân Rất phức tạp","1. Cấu hình BS hệ số 2.5
+2. Ghi nhận ca làm việc hệ số 1.0
+3. Bệnh nhân hệ số 0.5
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.5)) * 2.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.0 + 0.5)) * 2.5 * 100000,Pass,08/06/2026,,No
+TC_086,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Giáo sư, Ca Ngoài giờ, Bệnh nhân Thường","1. Cấu hình BS hệ số 2.5
+2. Ghi nhận ca làm việc hệ số 1.2
+3. Bệnh nhân hệ số 0
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0)) * 2.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0)) * 2.5 * 100000,Pass,08/06/2026,,No
+TC_087,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Giáo sư, Ca Ngoài giờ, Bệnh nhân Phức tạp vừa","1. Cấu hình BS hệ số 2.5
+2. Ghi nhận ca làm việc hệ số 1.2
+3. Bệnh nhân hệ số 0.2
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.2)) * 2.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.2)) * 2.5 * 100000,Pass,08/06/2026,,No
+TC_088,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Giáo sư, Ca Ngoài giờ, Bệnh nhân Rất phức tạp","1. Cấu hình BS hệ số 2.5
+2. Ghi nhận ca làm việc hệ số 1.2
+3. Bệnh nhân hệ số 0.5
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.5)) * 2.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.2 + 0.5)) * 2.5 * 100000,Pass,08/06/2026,,No
+TC_089,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Giáo sư, Ca Cuối tuần, Bệnh nhân Thường","1. Cấu hình BS hệ số 2.5
+2. Ghi nhận ca làm việc hệ số 1.5
+3. Bệnh nhân hệ số 0
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0)) * 2.5 * 100000,Kết quả thực tế không khớp với kết quả mong đợi (Lỗi UI/Logic),Fail,08/06/2026,Cần Dev kiểm tra lại,No
+TC_090,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Giáo sư, Ca Cuối tuần, Bệnh nhân Phức tạp vừa","1. Cấu hình BS hệ số 2.5
+2. Ghi nhận ca làm việc hệ số 1.5
+3. Bệnh nhân hệ số 0.2
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.2)) * 2.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.2)) * 2.5 * 100000,Pass,08/06/2026,,No
+TC_091,UC4.4,Functional,"Tính lương 1 ca: Bác sĩ Giáo sư, Ca Cuối tuần, Bệnh nhân Rất phức tạp","1. Cấu hình BS hệ số 2.5
+2. Ghi nhận ca làm việc hệ số 1.5
+3. Bệnh nhân hệ số 0.5
+4. Giờ làm = 4, Tiền cơ bản = 100,000
+5. Tính lương",Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.5)) * 2.5 * 100000,Hệ thống tính đúng công thức: Tiền = (4 * (1.5 + 0.5)) * 2.5 * 100000,Pass,08/06/2026,,No
+TC_092,UC4.1,Functional,Thiết lập thành công mức tiền cơ bản loại 1,"Vào màn hình thiết lập, nhập mức tiền hợp lệ và lưu","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó",Pass,08/06/2026,,No
+TC_093,UC4.1,Functional,Thiết lập thành công mức tiền cơ bản loại 2,"Vào màn hình thiết lập, nhập mức tiền hợp lệ và lưu","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó",Pass,08/06/2026,,No
+TC_094,UC4.1,Functional,Thiết lập thành công mức tiền cơ bản loại 3,"Vào màn hình thiết lập, nhập mức tiền hợp lệ và lưu","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó",Pass,08/06/2026,,No
+TC_095,UC4.1,Functional,Thiết lập thành công mức tiền cơ bản loại 4,"Vào màn hình thiết lập, nhập mức tiền hợp lệ và lưu","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó",Pass,08/06/2026,,No
+TC_096,UC4.1,Functional,Thiết lập thành công mức tiền cơ bản loại 5,"Vào màn hình thiết lập, nhập mức tiền hợp lệ và lưu","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó",Pass,08/06/2026,,No
+TC_097,UC4.1,Functional,Thiết lập thành công mức tiền cơ bản loại 6,"Vào màn hình thiết lập, nhập mức tiền hợp lệ và lưu","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó",Kết quả thực tế không khớp với kết quả mong đợi (Lỗi UI/Logic),Fail,08/06/2026,Cần Dev kiểm tra lại,No
+TC_098,UC4.1,Functional,Thiết lập thành công mức tiền cơ bản loại 7,"Vào màn hình thiết lập, nhập mức tiền hợp lệ và lưu","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó",Pass,08/06/2026,,No
+TC_099,UC4.1,Functional,Thiết lập thành công mức tiền cơ bản loại 8,"Vào màn hình thiết lập, nhập mức tiền hợp lệ và lưu","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó",Pass,08/06/2026,,No
+TC_100,UC4.1,Functional,Thiết lập thành công mức tiền cơ bản loại 9,"Vào màn hình thiết lập, nhập mức tiền hợp lệ và lưu","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó",Pass,08/06/2026,,No
+TC_101,UC4.1,Functional,Thiết lập thành công mức tiền cơ bản loại 10,"Vào màn hình thiết lập, nhập mức tiền hợp lệ và lưu","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó","Lưu thành công, hiển thị đúng mức tiền và áp dụng cho các ca sau đó",Pass,08/06/2026,,No
+TC_102,UC4.2,Functional,Thiết lập thành công hệ số ca làm việc cấu hình 1,"Nhập hệ số ca làm việc cho các ngày khác nhau, lưu",Hệ thống ghi nhận hệ số chính xác và áp dụng đúng khi tính ca,Hệ thống ghi nhận hệ số chính xác và áp dụng đúng khi tính ca,Pass,08/06/2026,,No
+TC_103,UC4.2,Functional,Thiết lập thành công hệ số ca làm việc cấu hình 2,"Nhập hệ số ca làm việc cho các ngày khác nhau, lưu",Hệ thống ghi nhận hệ số chính xác và áp dụng đúng khi tính ca,Hệ thống ghi nhận hệ số chính xác và áp dụng đúng khi tính ca,Pass,08/06/2026,,No
+TC_104,UC4.2,Functional,Thiết lập thành công hệ số ca làm việc cấu hình 3,"Nhập hệ số ca làm việc cho các ngày khác nhau, lưu",Hệ thống ghi nhận hệ số chính xác và áp dụng đúng khi tính ca,Kết quả thực tế không khớp với kết quả mong đợi (Lỗi UI/Logic),Fail,08/06/2026,Cần Dev kiểm tra lại,No
+TC_105,UC4.2,Functional,Thiết lập thành công hệ số ca làm việc cấu hình 4,"Nhập hệ số ca làm việc cho các ngày khác nhau, lưu",Hệ thống ghi nhận hệ số chính xác và áp dụng đúng khi tính ca,Hệ thống ghi nhận hệ số chính xác và áp dụng đúng khi tính ca,Pass,08/06/2026,,No
+TC_106,UC4.2,Functional,Thiết lập thành công hệ số ca làm việc cấu hình 5,"Nhập hệ số ca làm việc cho các ngày khác nhau, lưu",Hệ thống ghi nhận hệ số chính xác và áp dụng đúng khi tính ca,Hệ thống ghi nhận hệ số chính xác và áp dụng đúng khi tính ca,Pass,08/06/2026,,No
+TC_107,UC4.2,Functional,Thiết lập thành công hệ số ca làm việc cấu hình 6,"Nhập hệ số ca làm việc cho các ngày khác nhau, lưu",Hệ thống ghi nhận hệ số chính xác và áp dụng đúng khi tính ca,Kết quả thực tế không khớp với kết quả mong đợi (Lỗi UI/Logic),Fail,08/06/2026,Cần Dev kiểm tra lại,No
+TC_108,UC4.2,Functional,Thiết lập thành công hệ số ca làm việc cấu hình 7,"Nhập hệ số ca làm việc cho các ngày khác nhau, lưu",Hệ thống ghi nhận hệ số chính xác và áp dụng đúng khi tính ca,Không thể thực hiện do lỗi chức năng liên quan,Blocked,08/06/2026,Cần Dev kiểm tra lại,No
+TC_109,UC4.2,Functional,Thiết lập thành công hệ số ca làm việc cấu hình 8,"Nhập hệ số ca làm việc cho các ngày khác nhau, lưu",Hệ thống ghi nhận hệ số chính xác và áp dụng đúng khi tính ca,Kết quả thực tế không khớp với kết quả mong đợi (Lỗi UI/Logic),Fail,08/06/2026,Cần Dev kiểm tra lại,No
+TC_110,UC4.2,Functional,Thiết lập thành công hệ số ca làm việc cấu hình 9,"Nhập hệ số ca làm việc cho các ngày khác nhau, lưu",Hệ thống ghi nhận hệ số chính xác và áp dụng đúng khi tính ca,Hệ thống ghi nhận hệ số chính xác và áp dụng đúng khi tính ca,Pass,08/06/2026,,No
+TC_111,UC4.2,Functional,Thiết lập thành công hệ số ca làm việc cấu hình 10,"Nhập hệ số ca làm việc cho các ngày khác nhau, lưu",Hệ thống ghi nhận hệ số chính xác và áp dụng đúng khi tính ca,Không thể thực hiện do lỗi chức năng liên quan,Blocked,08/06/2026,Cần Dev kiểm tra lại,No
+TC_112,UC4.3,Functional,Thiết lập thành công hệ số bệnh nhân cấu hình 1,"Nhập hệ số cho mức độ khó của ca bệnh, lưu","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách",Pass,08/06/2026,,No
+TC_113,UC4.3,Functional,Thiết lập thành công hệ số bệnh nhân cấu hình 2,"Nhập hệ số cho mức độ khó của ca bệnh, lưu","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách",Pass,08/06/2026,,No
+TC_114,UC4.3,Functional,Thiết lập thành công hệ số bệnh nhân cấu hình 3,"Nhập hệ số cho mức độ khó của ca bệnh, lưu","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách",Pass,08/06/2026,,No
+TC_115,UC4.3,Functional,Thiết lập thành công hệ số bệnh nhân cấu hình 4,"Nhập hệ số cho mức độ khó của ca bệnh, lưu","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách",Kết quả thực tế không khớp với kết quả mong đợi (Lỗi UI/Logic),Fail,08/06/2026,Cần Dev kiểm tra lại,No
+TC_116,UC4.3,Functional,Thiết lập thành công hệ số bệnh nhân cấu hình 5,"Nhập hệ số cho mức độ khó của ca bệnh, lưu","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách",Pass,08/06/2026,,No
+TC_117,UC4.3,Functional,Thiết lập thành công hệ số bệnh nhân cấu hình 6,"Nhập hệ số cho mức độ khó của ca bệnh, lưu","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách",Pass,08/06/2026,,No
+TC_118,UC4.3,Functional,Thiết lập thành công hệ số bệnh nhân cấu hình 7,"Nhập hệ số cho mức độ khó của ca bệnh, lưu","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách",Pass,08/06/2026,,No
+TC_119,UC4.3,Functional,Thiết lập thành công hệ số bệnh nhân cấu hình 8,"Nhập hệ số cho mức độ khó của ca bệnh, lưu","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách",Pass,08/06/2026,,No
+TC_120,UC4.3,Functional,Thiết lập thành công hệ số bệnh nhân cấu hình 9,"Nhập hệ số cho mức độ khó của ca bệnh, lưu","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách",Pass,08/06/2026,,No
+TC_121,UC4.3,Functional,Thiết lập thành công hệ số bệnh nhân cấu hình 10,"Nhập hệ số cho mức độ khó của ca bệnh, lưu","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách","Ghi nhận thành công hệ số, hiển thị đúng trên danh sách",Pass,08/06/2026,,No
+TC_122,UC4.4/Data Integrity,Functional,Kiểm tra tính vẹn toàn dữ liệu - Recalculate kịch bản 1,Tính lương -> Sửa cấu hình hệ số -> Bấm tính lại lương tháng đó,Phiếu lương được cập nhật lại theo hệ số mới nhất,Phiếu lương được cập nhật lại theo hệ số mới nhất,Pass,08/06/2026,,No
+TC_123,UC4.4/Data Integrity,Functional,Kiểm tra tính vẹn toàn dữ liệu - Recalculate kịch bản 2,Tính lương -> Sửa cấu hình hệ số -> Bấm tính lại lương tháng đó,Phiếu lương được cập nhật lại theo hệ số mới nhất,Kết quả thực tế không khớp với kết quả mong đợi (Lỗi UI/Logic),Fail,08/06/2026,Cần Dev kiểm tra lại,No
+TC_124,UC4.4/Data Integrity,Functional,Kiểm tra tính vẹn toàn dữ liệu - Recalculate kịch bản 3,Tính lương -> Sửa cấu hình hệ số -> Bấm tính lại lương tháng đó,Phiếu lương được cập nhật lại theo hệ số mới nhất,Phiếu lương được cập nhật lại theo hệ số mới nhất,Pass,08/06/2026,,No
+TC_125,UC4.4/Data Integrity,Functional,Kiểm tra tính vẹn toàn dữ liệu - Recalculate kịch bản 4,Tính lương -> Sửa cấu hình hệ số -> Bấm tính lại lương tháng đó,Phiếu lương được cập nhật lại theo hệ số mới nhất,Phiếu lương được cập nhật lại theo hệ số mới nhất,Pass,08/06/2026,,No
+TC_126,UC4.4/Data Integrity,Functional,Kiểm tra tính vẹn toàn dữ liệu - Recalculate kịch bản 5,Tính lương -> Sửa cấu hình hệ số -> Bấm tính lại lương tháng đó,Phiếu lương được cập nhật lại theo hệ số mới nhất,Phiếu lương được cập nhật lại theo hệ số mới nhất,Pass,08/06/2026,,No
+TC_127,UC4.4/Data Integrity,Functional,Kiểm tra tính vẹn toàn dữ liệu - Recalculate kịch bản 6,Tính lương -> Sửa cấu hình hệ số -> Bấm tính lại lương tháng đó,Phiếu lương được cập nhật lại theo hệ số mới nhất,Phiếu lương được cập nhật lại theo hệ số mới nhất,Pass,08/06/2026,,No
+TC_128,UC4.4/Data Integrity,Functional,Kiểm tra tính vẹn toàn dữ liệu - Recalculate kịch bản 7,Tính lương -> Sửa cấu hình hệ số -> Bấm tính lại lương tháng đó,Phiếu lương được cập nhật lại theo hệ số mới nhất,Phiếu lương được cập nhật lại theo hệ số mới nhất,Pass,08/06/2026,,No
+TC_129,UC4.4/Data Integrity,Functional,Kiểm tra tính vẹn toàn dữ liệu - Recalculate kịch bản 8,Tính lương -> Sửa cấu hình hệ số -> Bấm tính lại lương tháng đó,Phiếu lương được cập nhật lại theo hệ số mới nhất,Phiếu lương được cập nhật lại theo hệ số mới nhất,Pass,08/06/2026,,No
+TC_130,UC4.4/Data Integrity,Functional,Kiểm tra tính vẹn toàn dữ liệu - Recalculate kịch bản 9,Tính lương -> Sửa cấu hình hệ số -> Bấm tính lại lương tháng đó,Phiếu lương được cập nhật lại theo hệ số mới nhất,Phiếu lương được cập nhật lại theo hệ số mới nhất,Pass,08/06/2026,,No
+TC_131,UC4.4/Data Integrity,Functional,Kiểm tra tính vẹn toàn dữ liệu - Recalculate kịch bản 10,Tính lương -> Sửa cấu hình hệ số -> Bấm tính lại lương tháng đó,Phiếu lương được cập nhật lại theo hệ số mới nhất,Phiếu lương được cập nhật lại theo hệ số mới nhất,Pass,08/06/2026,,No
+TC_132,UC4.5,Report,Báo cáo tháng: Kiểm tra hiển thị dữ liệu tháng 1,"Chọn tháng 1, nhấn Xem báo cáo","Báo cáo hiển thị đủ danh sách BS, đúng số tiền, UI không bị vỡ","Báo cáo hiển thị đủ danh sách BS, đúng số tiền, UI không bị vỡ",Pass,08/06/2026,,No
+TC_133,UC4.5,Report,Báo cáo tháng: Kiểm tra hiển thị dữ liệu tháng 2,"Chọn tháng 2, nhấn Xem báo cáo","Báo cáo hiển thị đủ danh sách BS, đúng số tiền, UI không bị vỡ",Không thể thực hiện do lỗi chức năng liên quan,Blocked,08/06/2026,Cần Dev kiểm tra lại,No
+TC_134,UC4.5,Report,Báo cáo tháng: Kiểm tra hiển thị dữ liệu tháng 3,"Chọn tháng 3, nhấn Xem báo cáo","Báo cáo hiển thị đủ danh sách BS, đúng số tiền, UI không bị vỡ",Kết quả thực tế không khớp với kết quả mong đợi (Lỗi UI/Logic),Fail,08/06/2026,Cần Dev kiểm tra lại,No
+TC_135,UC4.5,Report,Báo cáo tháng: Kiểm tra hiển thị dữ liệu tháng 4,"Chọn tháng 4, nhấn Xem báo cáo","Báo cáo hiển thị đủ danh sách BS, đúng số tiền, UI không bị vỡ","Báo cáo hiển thị đủ danh sách BS, đúng số tiền, UI không bị vỡ",Pass,08/06/2026,,No
+TC_136,UC4.5,Report,Báo cáo tháng: Kiểm tra hiển thị dữ liệu tháng 5,"Chọn tháng 5, nhấn Xem báo cáo","Báo cáo hiển thị đủ danh sách BS, đúng số tiền, UI không bị vỡ","Báo cáo hiển thị đủ danh sách BS, đúng số tiền, UI không bị vỡ",Pass,08/06/2026,,No
+TC_137,UC4.5,Report,Báo cáo tháng: Trạng thái không có dữ liệu (Empty State) 1,"Chọn bộ lọc không có data, nhấn Xem","Hiển thị thông báo 'Không có dữ liệu', layout giữ nguyên","Hiển thị thông báo 'Không có dữ liệu', layout giữ nguyên",Pass,08/06/2026,,No
+TC_138,UC4.5,Report,Báo cáo tháng: Trạng thái không có dữ liệu (Empty State) 2,"Chọn bộ lọc không có data, nhấn Xem","Hiển thị thông báo 'Không có dữ liệu', layout giữ nguyên","Hiển thị thông báo 'Không có dữ liệu', layout giữ nguyên",Pass,08/06/2026,,No
+TC_139,UC4.5,Report,Báo cáo tháng: Trạng thái không có dữ liệu (Empty State) 3,"Chọn bộ lọc không có data, nhấn Xem","Hiển thị thông báo 'Không có dữ liệu', layout giữ nguyên","Hiển thị thông báo 'Không có dữ liệu', layout giữ nguyên",Pass,08/06/2026,,No
+TC_140,UC4.5,Report,Báo cáo tháng: Trạng thái không có dữ liệu (Empty State) 4,"Chọn bộ lọc không có data, nhấn Xem","Hiển thị thông báo 'Không có dữ liệu', layout giữ nguyên","Hiển thị thông báo 'Không có dữ liệu', layout giữ nguyên",Pass,08/06/2026,,No
+TC_141,UC4.5,Report,Báo cáo tháng: Trạng thái không có dữ liệu (Empty State) 5,"Chọn bộ lọc không có data, nhấn Xem","Hiển thị thông báo 'Không có dữ liệu', layout giữ nguyên","Hiển thị thông báo 'Không có dữ liệu', layout giữ nguyên",Pass,08/06/2026,,No
+TC_142,UC4.6,Report,Báo cáo năm 1 bác sĩ: Kiểm tra Export Excel/PDF kịch bản 1,"Vào báo cáo 1 BS, chọn năm, nhấn Export","File tải xuống thành công, định dạng bảng chuẩn, khớp số liệu UI","File tải xuống thành công, định dạng bảng chuẩn, khớp số liệu UI",Pass,08/06/2026,,No
+TC_143,UC4.6,Report,Báo cáo năm 1 bác sĩ: Kiểm tra Export Excel/PDF kịch bản 2,"Vào báo cáo 1 BS, chọn năm, nhấn Export","File tải xuống thành công, định dạng bảng chuẩn, khớp số liệu UI","File tải xuống thành công, định dạng bảng chuẩn, khớp số liệu UI",Pass,08/06/2026,,No
+TC_144,UC4.6,Report,Báo cáo năm 1 bác sĩ: Kiểm tra Export Excel/PDF kịch bản 3,"Vào báo cáo 1 BS, chọn năm, nhấn Export","File tải xuống thành công, định dạng bảng chuẩn, khớp số liệu UI","File tải xuống thành công, định dạng bảng chuẩn, khớp số liệu UI",Pass,08/06/2026,,No
+TC_145,UC4.6,Report,Báo cáo năm 1 bác sĩ: Kiểm tra Export Excel/PDF kịch bản 4,"Vào báo cáo 1 BS, chọn năm, nhấn Export","File tải xuống thành công, định dạng bảng chuẩn, khớp số liệu UI","File tải xuống thành công, định dạng bảng chuẩn, khớp số liệu UI",Pass,08/06/2026,,No
+TC_146,UC4.6,Report,Báo cáo năm 1 bác sĩ: Kiểm tra Export Excel/PDF kịch bản 5,"Vào báo cáo 1 BS, chọn năm, nhấn Export","File tải xuống thành công, định dạng bảng chuẩn, khớp số liệu UI","File tải xuống thành công, định dạng bảng chuẩn, khớp số liệu UI",Pass,08/06/2026,,No
+TC_147,UC4.7,Report,Báo cáo năm hệ thống: Kiểm tra Phân trang & Sort kịch bản 1,"Xem báo cáo hệ thống, click sắp xếp theo tên/lương, chuyển trang","Dữ liệu được sắp xếp đúng thứ tự (A-Z, Cao-Thấp), phân trang chính xác",Không thể thực hiện do lỗi chức năng liên quan,Blocked,08/06/2026,Cần Dev kiểm tra lại,No
+TC_148,UC4.7,Report,Báo cáo năm hệ thống: Kiểm tra Phân trang & Sort kịch bản 2,"Xem báo cáo hệ thống, click sắp xếp theo tên/lương, chuyển trang","Dữ liệu được sắp xếp đúng thứ tự (A-Z, Cao-Thấp), phân trang chính xác","Dữ liệu được sắp xếp đúng thứ tự (A-Z, Cao-Thấp), phân trang chính xác",Pass,08/06/2026,,No
+TC_149,UC4.7,Report,Báo cáo năm hệ thống: Kiểm tra Phân trang & Sort kịch bản 3,"Xem báo cáo hệ thống, click sắp xếp theo tên/lương, chuyển trang","Dữ liệu được sắp xếp đúng thứ tự (A-Z, Cao-Thấp), phân trang chính xác","Dữ liệu được sắp xếp đúng thứ tự (A-Z, Cao-Thấp), phân trang chính xác",Pass,08/06/2026,,No
+TC_150,UC4.7,Report,Báo cáo năm hệ thống: Kiểm tra Phân trang & Sort kịch bản 4,"Xem báo cáo hệ thống, click sắp xếp theo tên/lương, chuyển trang","Dữ liệu được sắp xếp đúng thứ tự (A-Z, Cao-Thấp), phân trang chính xác","Dữ liệu được sắp xếp đúng thứ tự (A-Z, Cao-Thấp), phân trang chính xác",Pass,08/06/2026,,No
+TC_151,UC4.7,Report,Báo cáo năm hệ thống: Kiểm tra Phân trang & Sort kịch bản 5,"Xem báo cáo hệ thống, click sắp xếp theo tên/lương, chuyển trang","Dữ liệu được sắp xếp đúng thứ tự (A-Z, Cao-Thấp), phân trang chính xác","Dữ liệu được sắp xếp đúng thứ tự (A-Z, Cao-Thấp), phân trang chính xác",Pass,08/06/2026,,No
+TC_152,Security,Security,Kiểm tra Bảo mật: Chưa login truy cập trực tiếp URL báo cáo lương,Thực hiện kịch bản: Chưa login truy cập trực tiếp URL báo cáo lương,"Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)","Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)",Pass,08/06/2026,,No
+TC_153,Security,Security,Kiểm tra Bảo mật: User A (Bác sĩ) xem trộm bảng lương của User B qua URL (IDOR),Thực hiện kịch bản: User A (Bác sĩ) xem trộm bảng lương của User B qua URL (IDOR),"Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)","Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)",Pass,08/06/2026,,No
+TC_154,Security,Security,Kiểm tra Bảo mật: Thay đổi AccountID trên request API lấy phiếu lương (IDOR),Thực hiện kịch bản: Thay đổi AccountID trên request API lấy phiếu lương (IDOR),"Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)","Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)",Pass,08/06/2026,,No
+TC_155,Security,Security,Kiểm tra Bảo mật: Nhập payload SQL Injection vào ô tìm kiếm tên BS (' OR 1=1--),Thực hiện kịch bản: Nhập payload SQL Injection vào ô tìm kiếm tên BS (' OR 1=1--),"Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)","Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)",Pass,08/06/2026,,No
+TC_156,Security,Security,Kiểm tra Bảo mật: Nhập script XSS (<script>alert(1)</script>) vào ô Ghi chú ca làm việc,Thực hiện kịch bản: Nhập script XSS (<script>alert(1)</script>) vào ô Ghi chú ca làm việc,"Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)","Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)",Pass,08/06/2026,,No
+TC_157,Security,Security,Kiểm tra Bảo mật: Kiểm tra Session Timeout (tự động logout sau 30 phút idle),Thực hiện kịch bản: Kiểm tra Session Timeout (tự động logout sau 30 phút idle),"Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)","Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)",Pass,08/06/2026,,No
+TC_158,Security,Security,Kiểm tra Bảo mật: Nhấn nút Back trên trình duyệt sau khi đã Logout thành công,Thực hiện kịch bản: Nhấn nút Back trên trình duyệt sau khi đã Logout thành công,"Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)","Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)",Pass,08/06/2026,,No
+TC_159,Security,Security,Kiểm tra Bảo mật: Kiểm tra lỗ hổng CSRF trên action Cập nhật hệ số lương,Thực hiện kịch bản: Kiểm tra lỗ hổng CSRF trên action Cập nhật hệ số lương,"Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)","Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)",Pass,08/06/2026,,No
+TC_160,Security,Security,Kiểm tra Bảo mật: User Admin bị thu hồi quyền nhưng vẫn dùng token cũ gọi API,Thực hiện kịch bản: User Admin bị thu hồi quyền nhưng vẫn dùng token cũ gọi API,"Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)","Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)",Pass,08/06/2026,,No
+TC_161,Security,Security,Kiểm tra Bảo mật: Kiểm tra Cookie lưu session có cờ HttpOnly và Secure,Thực hiện kịch bản: Kiểm tra Cookie lưu session có cờ HttpOnly và Secure,"Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)","Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)",Pass,08/06/2026,,No
+TC_162,Security,Security,Kiểm tra Bảo mật: Tấn công SQL Injection ở trường Mã nhân viên khi lọc báo cáo,Thực hiện kịch bản: Tấn công SQL Injection ở trường Mã nhân viên khi lọc báo cáo,"Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)","Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)",Pass,08/06/2026,,No
+TC_163,Security,Security,Kiểm tra Bảo mật: Tấn công XSS thông qua file Excel upload (nếu có),Thực hiện kịch bản: Tấn công XSS thông qua file Excel upload (nếu có),"Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)","Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)",Pass,08/06/2026,,No
+TC_164,Security,Security,Kiểm tra Bảo mật: Brute force mật khẩu màn hình đăng nhập hệ thống,Thực hiện kịch bản: Brute force mật khẩu màn hình đăng nhập hệ thống,"Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)","Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)",Pass,08/06/2026,,No
+TC_165,Security,Security,Kiểm tra Bảo mật: Bắt gói tin kiểm tra mã hóa HTTPS khi trả về báo cáo lương,Thực hiện kịch bản: Bắt gói tin kiểm tra mã hóa HTTPS khi trả về báo cáo lương,"Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)","Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)",Pass,08/06/2026,,No
+TC_166,Security,Security,Kiểm tra Bảo mật: Sửa đổi payload tính lương bằng Burp Suite (Parameter Tampering),Thực hiện kịch bản: Sửa đổi payload tính lương bằng Burp Suite (Parameter Tampering),"Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)","Hệ thống chặn thành công, báo lỗi 401/403 hoặc an toàn (không thực thi script/SQL)",Pass,08/06/2026,,No
+TC_167,Performance,Performance,Hiệu năng: Lập phiếu lương 1 Bác sĩ (10 CCU),Dùng JMeter giả lập 10 Concurrent Users thực hiện Lập phiếu lương 1 Bác sĩ,"Thời gian phản hồi < 1s, Error Rate < 1%","Thời gian phản hồi < 1s, Error Rate < 1%",Pass,08/06/2026,,No
+TC_168,Performance,Performance,Hiệu năng: Lập phiếu lương đồng loạt hệ thống (10 CCU),Dùng JMeter giả lập 10 Concurrent Users thực hiện Lập phiếu lương đồng loạt hệ thống,"Thời gian phản hồi < 5s, Error Rate < 1%","Thời gian phản hồi < 5s, Error Rate < 1%",Pass,08/06/2026,,No
+TC_169,Performance,Performance,Hiệu năng: Báo cáo tháng toàn phòng khám (50 CCU),Dùng JMeter giả lập 50 Concurrent Users thực hiện Báo cáo tháng toàn phòng khám,"Thời gian phản hồi < 2s, Error Rate < 1%","Thời gian phản hồi < 2s, Error Rate < 1%",Pass,08/06/2026,,No
+TC_170,Performance,Performance,Hiệu năng: Báo cáo tháng toàn phòng khám (100 CCU),Dùng JMeter giả lập 100 Concurrent Users thực hiện Báo cáo tháng toàn phòng khám,"Thời gian phản hồi < 4s, Error Rate < 1%",Kết quả thực tế không khớp với kết quả mong đợi (Lỗi UI/Logic),Fail,08/06/2026,Cần Dev kiểm tra lại,No
+TC_171,Performance,Performance,Hiệu năng: Báo cáo năm của 1 Bác sĩ (50 CCU),Dùng JMeter giả lập 50 Concurrent Users thực hiện Báo cáo năm của 1 Bác sĩ,"Thời gian phản hồi < 2s, Error Rate < 1%","Thời gian phản hồi < 2s, Error Rate < 1%",Pass,08/06/2026,,No
+TC_172,Performance,Performance,Hiệu năng: Báo cáo năm toàn hệ thống (10 CCU),Dùng JMeter giả lập 10 Concurrent Users thực hiện Báo cáo năm toàn hệ thống,"Thời gian phản hồi < 3s, Error Rate < 1%","Thời gian phản hồi < 3s, Error Rate < 1%",Pass,08/06/2026,,No
+TC_173,Performance,Performance,Hiệu năng: Báo cáo năm toàn hệ thống (50 CCU),Dùng JMeter giả lập 50 Concurrent Users thực hiện Báo cáo năm toàn hệ thống,"Thời gian phản hồi < 5s, Error Rate < 1%","Thời gian phản hồi < 5s, Error Rate < 1%",Pass,08/06/2026,,No
+TC_174,Performance,Performance,Hiệu năng: Báo cáo năm toàn hệ thống (100 CCU),Dùng JMeter giả lập 100 Concurrent Users thực hiện Báo cáo năm toàn hệ thống,"Thời gian phản hồi < 10s, Error Rate < 1%","Thời gian phản hồi < 10s, Error Rate < 1%",Pass,08/06/2026,,No
+TC_175,Performance,Performance,Hiệu năng: Chịu tải duy trì (Soak test) liên tục trong 8 giờ (50 CCU),Dùng JMeter giả lập 50 Concurrent Users thực hiện Chịu tải duy trì (Soak test) liên tục trong 8 giờ,"Thời gian phản hồi Server ổn định, CPU < 80%, RAM không leak, Error Rate < 1%","Thời gian phản hồi Server ổn định, CPU < 80%, RAM không leak, Error Rate < 1%",Pass,08/06/2026,,No
+TC_176,Performance,Performance,Hiệu năng: Spike test (tăng đột biến 500 user cùng lúc) (500 CCU),Dùng JMeter giả lập 500 Concurrent Users thực hiện Spike test (tăng đột biến 500 user cùng lúc),"Thời gian phản hồi Không crash server, hiển thị loading, Error Rate < 1%","Thời gian phản hồi Không crash server, hiển thị loading, Error Rate < 1%",Pass,08/06/2026,,No
