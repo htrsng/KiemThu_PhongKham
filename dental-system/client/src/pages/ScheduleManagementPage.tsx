@@ -11,7 +11,7 @@ import viLocale from '@fullcalendar/core/locales/vi'
 import { PageShell } from '../components/PageShell'
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
 import { api, type ApiListResponse, type ApiItemResponse } from '../lib/api'
-import type { MockDoctor, MockClinicHoliday, MockWorkShift } from '../lib/mockData'
+import type { Doctor, ClinicHoliday, WorkShift } from '../lib/types'
 import { useToast } from '../contexts/ToastContext'
 import { useConfirm } from '../contexts/ConfirmContext'
 import { useAuth } from '../contexts/AuthContext'
@@ -37,19 +37,19 @@ export function ScheduleManagementPage() {
     const { addToast } = useToast()
 
     // --- Server-side Data ---
-    const { data: doctors = [], isLoading: doctorsIsLoading } = useQuery<MockDoctor[], Error>({
+    const { data: doctors = [], isLoading: doctorsIsLoading } = useQuery<Doctor[], Error>({
         queryKey: ['doctors'],
-        queryFn: async () => (await api.get<ApiListResponse<MockDoctor>>('/doctors')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<Doctor>>('/doctors')).data.data,
     })
 
-    const { data: holidays = [], isLoading: holidaysIsLoading } = useQuery<MockClinicHoliday[], Error>({
+    const { data: holidays = [], isLoading: holidaysIsLoading } = useQuery<ClinicHoliday[], Error>({
         queryKey: ['holidays'],
-        queryFn: async () => (await api.get<ApiListResponse<MockClinicHoliday>>('/holidays')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<ClinicHoliday>>('/holidays')).data.data,
     })
 
-    const { data: workShifts = [], isLoading: workShiftsIsLoading } = useQuery<MockWorkShift[], Error>({
+    const { data: workShifts = [], isLoading: workShiftsIsLoading } = useQuery<WorkShift[], Error>({
         queryKey: ['work-shifts'],
-        queryFn: async () => (await api.get<ApiListResponse<MockWorkShift>>('/work-shifts')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<WorkShift>>('/work-shifts')).data.data,
     })
 
     const { data: doctorShifts = [], isLoading: shiftsIsLoading } = useQuery<DoctorOnCallShift[], Error>({
@@ -59,10 +59,10 @@ export function ScheduleManagementPage() {
 
     // --- Mutations ---
     // Holidays
-    const { mutate: saveHoliday } = useMutation<MockClinicHoliday, Error, { id?: string; data: Omit<MockClinicHoliday, 'id'> }>({
+    const { mutate: saveHoliday } = useMutation<ClinicHoliday, Error, { id?: string; data: Omit<ClinicHoliday, 'id'> }>({
         mutationFn: async ({ id, data }) => {
-            if (id) return (await api.put<ApiItemResponse<MockClinicHoliday>>(`/holidays/${id}`, data)).data.data
-            return (await api.post<ApiItemResponse<MockClinicHoliday>>('/holidays', data)).data.data
+            if (id) return (await api.put<ApiItemResponse<ClinicHoliday>>(`/holidays/${id}`, data)).data.data
+            return (await api.post<ApiItemResponse<ClinicHoliday>>('/holidays', data)).data.data
         },
         onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['holidays'] }); addToast('success', 'Đã lưu ngày nghỉ') },
         onError: (err) => addToast('error', `Lỗi lưu ngày nghỉ: ${err.message}`),
@@ -74,10 +74,10 @@ export function ScheduleManagementPage() {
     })
 
     // Work Shifts
-    const { mutate: saveWorkShift } = useMutation<MockWorkShift, Error, { id?: string; data: Omit<MockWorkShift, 'id'> }>({
+    const { mutate: saveWorkShift } = useMutation<WorkShift, Error, { id?: string; data: Omit<WorkShift, 'id'> }>({
         mutationFn: async ({ id, data }) => {
-            if (id) return (await api.put<ApiItemResponse<MockWorkShift>>(`/work-shifts/${id}`, data)).data.data
-            return (await api.post<ApiItemResponse<MockWorkShift>>('/work-shifts', data)).data.data
+            if (id) return (await api.put<ApiItemResponse<WorkShift>>(`/work-shifts/${id}`, data)).data.data
+            return (await api.post<ApiItemResponse<WorkShift>>('/work-shifts', data)).data.data
         },
         onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['work-shifts'] }); addToast('success', 'Đã lưu ca làm việc') },
         onError: (err) => addToast('error', `Lỗi lưu ca làm việc: ${err.message}`),
@@ -224,7 +224,7 @@ function DoctorScheduleView({ doctors, shifts, holidays, createShift, updateShif
     }, [currentUser])
 
     const isHolidayKey = (dateKey: string) => {
-        return holidays.find((h: MockClinicHoliday) => h.isRecurring ? h.date.slice(5) === dateKey.slice(5) : h.date === dateKey)
+        return holidays.find((h: ClinicHoliday) => h.isRecurring ? h.date.slice(5) === dateKey.slice(5) : h.date === dateKey)
     }
 
     const calendarEvents = useMemo(() => {
@@ -266,7 +266,7 @@ function DoctorScheduleView({ doctors, shifts, holidays, createShift, updateShif
             SYSTEM_CLOSED: { bg: '#f3f4f6', border: '#d1d5db', text: '#374151' }
         };
 
-        return holidays.map((h: MockClinicHoliday) => {
+        return holidays.map((h: ClinicHoliday) => {
             const color = typeColors[h.type || 'HOLIDAY'] || typeColors.HOLIDAY;
             return {
                 id: h.id,

@@ -1,31 +1,31 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { api, type ApiItemResponse } from '../lib/api';
-import { type MockAccount } from '../lib/mockData';
+import { type Account } from '../lib/types';
 
 interface LoginResponse {
     token: string;
-    account: MockAccount;
+    account: Account;
 }
 
 interface AuthResult {
     success: boolean;
-    account?: MockAccount;
+    account?: Account;
     error?: string;
 }
 
 interface AuthContextType {
     isAuthenticated: boolean;
-    currentUser: MockAccount | null;
+    currentUser: Account | null;
     isLoading: boolean;
     login: (email: string, password: string) => Promise<AuthResult>;
     logout: () => void;
-    register: (data: Partial<MockAccount>) => Promise<AuthResult>;
+    register: (data: Partial<Account>) => Promise<AuthResult>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [currentUser, setCurrentUser] = useState<MockAccount | null>(null);
+    const [currentUser, setCurrentUser] = useState<Account | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
             try {
-                const response = await api.get<ApiItemResponse<MockAccount>>('/auth/me');
+                const response = await api.get<ApiItemResponse<Account>>('/auth/me');
                 if (response.data?.data) {
                     setCurrentUser(response.data.data);
                 } else {
@@ -72,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const register = async (data: Partial<MockAccount>): Promise<AuthResult> => {
+    const register = async (data: Partial<Account>): Promise<AuthResult> => {
         try {
             const response = await api.post<LoginResponse>('/auth/register', data);
             const { token, account } = response.data;

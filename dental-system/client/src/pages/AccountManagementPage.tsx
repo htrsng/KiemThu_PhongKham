@@ -9,7 +9,7 @@ import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
 import { EmptyState } from '../components/EmptyState'
 import { formatDateTime, getRelativeTime } from '../lib/formatters'
 import { validateUsername, validateEmail, validatePassword, validateRequired } from '../lib/validations'
-import { type MockAccount, type MockAuditLog } from '../lib/mockData'
+import { type Account, type AuditLog } from '../lib/types'
 import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse } from '../lib/api'
 
 type FormState = {
@@ -79,19 +79,19 @@ export function AccountManagementPage() {
     const queryClient = useQueryClient()
 
     // --- Data Fetching using TanStack Query ---
-    const { data: accounts = [], isLoading } = useQuery<MockAccount[], Error>({
+    const { data: accounts = [], isLoading } = useQuery<Account[], Error>({
         queryKey: ['accounts'],
-        queryFn: async () => (await api.get<ApiListResponse<MockAccount>>('/accounts')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<Account>>('/accounts')).data.data,
     });
 
     // --- Data Fetching for Audit Logs ---
-    const { data: auditLogs = [], isLoading: auditLogsLoading } = useQuery<MockAuditLog[], Error>({
+    const { data: auditLogs = [], isLoading: auditLogsLoading } = useQuery<AuditLog[], Error>({
         queryKey: ['audit-logs'],
-        queryFn: async () => (await api.get<ApiListResponse<MockAuditLog>>('/audit-logs')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<AuditLog>>('/audit-logs')).data.data,
     });
 
-    const { mutate: createAccount } = useMutation<MockAccount, Error, Omit<MockAccount, 'id' | 'lastLoginAt' | 'createdAt'>>({
-        mutationFn: async (newAccount) => (await api.post<ApiItemResponse<MockAccount>>('/accounts', newAccount)).data.data,
+    const { mutate: createAccount } = useMutation<Account, Error, Omit<Account, 'id' | 'lastLoginAt' | 'createdAt'>>({
+        mutationFn: async (newAccount) => (await api.post<ApiItemResponse<Account>>('/accounts', newAccount)).data.data,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['accounts'] });
             addToast('success', 'Tạo tài khoản thành công');
@@ -100,10 +100,10 @@ export function AccountManagementPage() {
         onError: (err) => addToast('error', `Lỗi: ${err.message}`),
     });
 
-    const { mutate: updateAccount } = useMutation<MockAccount, Error, { id: string; data: Partial<MockAccount> }>({
-        mutationFn: async ({ id, data }) => (await api.put<ApiItemResponse<MockAccount>>(`/accounts/${id}`, data)).data.data,
+    const { mutate: updateAccount } = useMutation<Account, Error, { id: string; data: Partial<Account> }>({
+        mutationFn: async ({ id, data }) => (await api.put<ApiItemResponse<Account>>(`/accounts/${id}`, data)).data.data,
         onSuccess: (updatedAccount) => {
-            queryClient.setQueryData<MockAccount[]>(['accounts'], (oldData) =>
+            queryClient.setQueryData<Account[]>(['accounts'], (oldData) =>
                 oldData ? oldData.map(acc => acc.id === updatedAccount.id ? updatedAccount : acc) : []
             );
             addToast('success', 'Cập nhật tài khoản thành công');
@@ -235,7 +235,7 @@ export function AccountManagementPage() {
         setIsModalOpen(true)
     }
 
-    function openEditModal(account: MockAccount) {
+    function openEditModal(account: Account) {
         setEditingId(account.id)
         setFormState({
             username: account.username,
@@ -276,7 +276,7 @@ export function AccountManagementPage() {
         }
     }
 
-    async function handleDeleteAccount(account: MockAccount) {
+    async function handleDeleteAccount(account: Account) {
         const confirmed = await confirm({
             title: 'Xóa tài khoản',
             message: `Bạn có chắc muốn xóa tài khoản "${account.fullName}"? Hành động này không thể hoàn tác.`,
@@ -288,7 +288,7 @@ export function AccountManagementPage() {
         }
     }
 
-    async function handleToggleLock(account: MockAccount) {
+    async function handleToggleLock(account: Account) {
         if (account.id === currentUser?.id) {
             addToast('error', 'Bạn không thể khóa tài khoản của chính mình!');
             return;

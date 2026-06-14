@@ -10,7 +10,8 @@ import { EmptyState } from '../components/EmptyState'
 import { DoctorFormModal, type DoctorFormData } from '../components/DoctorFormModal'
 import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse } from '../lib/api'
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
-import type { Doctor, DoctorPayload } from '../contexts/DataContext'
+import type { DoctorPayload } from '../contexts/DataContext';
+import type { Doctor } from '../lib/types';
 
 const SPECIALTIES: Doctor['specialty'][] = ['Nha khoa tổng quát', 'Niềng răng', 'Implant', 'Nhổ răng', 'Nha chu']
 const SCHEDULE_DAYS = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']

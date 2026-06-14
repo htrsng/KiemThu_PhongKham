@@ -5,7 +5,7 @@ import { PageShell } from '../components/PageShell'
 import { EmptyState } from '../components/EmptyState'
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
 import { api, type ApiListResponse, type ApiItemResponse } from '../lib/api'
-import type { MockPatient } from '../lib/mockData'
+import type { Patient } from '../lib/types'
 import { useToast } from '../contexts/ToastContext'
 import { useConfirm } from '../contexts/ConfirmContext'
 import { formatDate, formatPhone } from '../lib/formatters'
@@ -17,7 +17,7 @@ type PatientFormState = {
     fullName: string
     phone: string
     dateOfBirth: string
-    gender: MockPatient['gender']
+    gender: Patient['gender']
     address: string
     
     // Additional identity
@@ -63,16 +63,16 @@ export function PatientManagementPage() {
     const { confirm } = useConfirm()
 
     // Data Fetching
-    const { data: patients = [], isLoading } = useQuery<MockPatient[], Error>({
+    const { data: patients = [], isLoading } = useQuery<Patient[], Error>({
         queryKey: ['patients'],
-        queryFn: async () => (await api.get<ApiListResponse<MockPatient>>('/patients')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<Patient>>('/patients')).data.data,
     })
 
-    const { mutate: savePatient } = useMutation<MockPatient, Error, { id?: string; data: Partial<Omit<MockPatient, 'id' | 'createdAt'>> }>({
+    const { mutate: savePatient } = useMutation<Patient, Error, { id?: string; data: Partial<Omit<Patient, 'id' | 'createdAt'>> }>({
         mutationFn: async ({ id, data }) => {
             const url = id ? `/patients/${id}` : '/patients'
             const method = id ? 'put' : 'post'
-            return (await api[method]<ApiItemResponse<MockPatient>>(url, data)).data.data
+            return (await api[method]<ApiItemResponse<Patient>>(url, data)).data.data
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['patients'] })
@@ -136,7 +136,7 @@ export function PatientManagementPage() {
         setIsModalOpen(true)
     }
 
-    const openEditModal = (patient: MockPatient) => {
+    const openEditModal = (patient: Patient) => {
         setEditingId(patient.id)
         setFormState({
             fullName: patient.fullName,
@@ -193,7 +193,7 @@ export function PatientManagementPage() {
     const handleSave = () => {
         if (!validate()) return
 
-        const payload: Partial<Omit<MockPatient, 'id' | 'createdAt'>> = {
+        const payload: Partial<Omit<Patient, 'id' | 'createdAt'>> = {
             ...formState,
             dateOfBirth: new Date(formState.dateOfBirth).toISOString(),
             allergies: formState.allergies ? formState.allergies.split(',').map(s => s.trim()).filter(Boolean) : [],
@@ -210,7 +210,7 @@ export function PatientManagementPage() {
         resetModal()
     }
 
-    const handleDelete = async (patient: MockPatient) => {
+    const handleDelete = async (patient: Patient) => {
         const confirmed = await confirm({ title: 'Xóa bệnh nhân', message: `Bạn có chắc muốn xóa bệnh nhân "${patient.fullName}"? Mọi dữ liệu lịch sử liên quan sẽ mất.`, isDangerous: true })
         if (confirmed) {
             deletePatient(patient.id)

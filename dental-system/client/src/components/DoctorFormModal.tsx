@@ -3,7 +3,7 @@ import { X } from 'lucide-react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import type { Doctor } from '../contexts/DataContext'
+import type { Doctor } from '../lib/types';
 
 // 1. Định nghĩa Schema validation bằng Zod
 // Đây là "nguồn chân lý duy nhất" cho form của bạn.

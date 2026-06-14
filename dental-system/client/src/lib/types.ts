@@ -1,5 +1,5 @@
 // Account mock data
-export type MockAccount = {
+export type Account = {
     id: string
     username: string
     fullName: string
@@ -16,7 +16,7 @@ export type MockAccount = {
 }
 
 // Audit log mock data
-export type MockAuditLog = {
+export type AuditLog = {
     id: string
     timestamp: string
     account: string
@@ -26,7 +26,7 @@ export type MockAuditLog = {
 }
 
 // Doctor mock data
-export type MockDoctor = {
+export type Doctor = {
     id: string
     fullName: string
     licenseNumber: string
@@ -43,7 +43,7 @@ export type MockDoctor = {
 }
 
 // Service mock data
-export type MockService = {
+export type Service = {
     id: string
     name: string
     code: string
@@ -57,7 +57,7 @@ export type MockService = {
 }
 
 // Pricing policy mock data
-export type MockPricingPolicy = {
+export type PricingPolicy = {
     id: string
     serviceId: string
     serviceName: string
@@ -68,7 +68,7 @@ export type MockPricingPolicy = {
     status: 'active' | 'inactive'
 }
 
-export type MockDoctorShift = {
+export type DoctorShift = {
     id: string
     doctorId: string
     doctorName: string
@@ -79,7 +79,7 @@ export type MockDoctorShift = {
 }
 
 // Patient mock data
-export type MockPatient = {
+export type Patient = {
     id: string
     patientCode?: string
     fullName: string
@@ -121,7 +121,7 @@ export type MockPatient = {
 }
 
 // Work Shift mock data
-export type MockWorkShift = {
+export type WorkShift = {
     id: string
     name: string
     startTime: string // "HH:mm"
@@ -129,7 +129,7 @@ export type MockWorkShift = {
 }
 
 // Clinic Holiday mock data
-export type MockClinicHoliday = {
+export type ClinicHoliday = {
     id: string
     date: string
     name: string
@@ -139,7 +139,7 @@ export type MockClinicHoliday = {
 }
 
 // Appointment mock data
-export type MockAppointment = {
+export type Appointment = {
     id: string
     patientId: string
     patientName: string
@@ -156,7 +156,7 @@ export type MockAppointment = {
 }
 
 // Recent activity mock data
-export type MockActivity = {
+export type Activity = {
     id: string
     timestamp: string
     type: string

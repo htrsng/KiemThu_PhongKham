@@ -31,7 +31,7 @@ import {
 import { useToast } from '../contexts/ToastContext'
 import { useAuth } from '../contexts/AuthContext'
 import { api, type ApiListResponse, type ApiItemResponse } from '../lib/api'
-import type { MockAppointment, MockDoctor, MockPatient, MockService, MockPricingPolicy } from '../lib/mockData'
+import type { Appointment, Doctor, Patient, Service, PricingPolicy } from '../lib/types'
 import { formatVND, formatDate } from '../lib/formatters'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -70,13 +70,13 @@ function getAvatarGradient(name: string): string {
     return gradients[idx]
 }
 
-function isLate(apt: MockAppointment): boolean {
+function isLate(apt: Appointment): boolean {
     const now = new Date()
     const start = new Date(apt.startTime)
     return now > start && apt.status === 'Đã lên lịch'
 }
 
-function getWaitMinutes(apt: MockAppointment): number {
+function getWaitMinutes(apt: Appointment): number {
     const now = new Date()
     const start = new Date(apt.startTime)
     return Math.max(0, Math.floor((now.getTime() - start.getTime()) / 60000))
@@ -125,25 +125,25 @@ export function ReceptionPage() {
     const { openId, setOpenId, ref: menuRef } = useContextMenu()
 
     // ── Server Data ────────────────────────────────────────────────────────────
-    const { data: appointments = [], isLoading: aptsLoading } = useQuery<MockAppointment[]>({
+    const { data: appointments = [], isLoading: aptsLoading } = useQuery<Appointment[]>({
         queryKey: ['appointments'],
-        queryFn: async () => (await api.get<ApiListResponse<MockAppointment>>('/appointments')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<Appointment>>('/appointments')).data.data,
         refetchInterval: 30_000,
     })
 
-    const { data: doctors = [], isLoading: doctorsLoading } = useQuery<MockDoctor[]>({
+    const { data: doctors = [], isLoading: doctorsLoading } = useQuery<Doctor[]>({
         queryKey: ['doctors'],
-        queryFn: async () => (await api.get<ApiListResponse<MockDoctor>>('/doctors')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<Doctor>>('/doctors')).data.data,
     })
 
-    const { data: patients = [], isLoading: patientsLoading } = useQuery<MockPatient[]>({
+    const { data: patients = [], isLoading: patientsLoading } = useQuery<Patient[]>({
         queryKey: ['patients'],
-        queryFn: async () => (await api.get<ApiListResponse<MockPatient>>('/patients')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<Patient>>('/patients')).data.data,
     })
 
-    const { data: services = [], isLoading: servicesLoading } = useQuery<MockService[]>({
+    const { data: services = [], isLoading: servicesLoading } = useQuery<Service[]>({
         queryKey: ['services'],
-        queryFn: async () => (await api.get<ApiListResponse<MockService>>('/services')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<Service>>('/services')).data.data,
     })
 
     const { data: shifts = [], isLoading: shiftsLoading } = useQuery<DoctorShift[]>({
@@ -151,14 +151,14 @@ export function ReceptionPage() {
         queryFn: async () => (await api.get<ApiListResponse<DoctorShift>>('/shifts')).data.data,
     })
 
-    const { data: pricingPolicies = [] } = useQuery<MockPricingPolicy[]>({
+    const { data: pricingPolicies = [] } = useQuery<PricingPolicy[]>({
         queryKey: ['pricing-policies'],
-        queryFn: async () => (await api.get<ApiListResponse<MockPricingPolicy>>('/pricing-policies')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<PricingPolicy>>('/pricing-policies')).data.data,
     })
 
     // ── Mutations ──────────────────────────────────────────────────────────────
-    const { mutate: checkIn, isPending: checkingIn } = useMutation<MockAppointment, Error, string>({
-        mutationFn: async (id) => (await api.patch<ApiItemResponse<MockAppointment>>(`/appointments/${id}/checkin`)).data.data,
+    const { mutate: checkIn, isPending: checkingIn } = useMutation<Appointment, Error, string>({
+        mutationFn: async (id) => (await api.patch<ApiItemResponse<Appointment>>(`/appointments/${id}/checkin`)).data.data,
         onSuccess: (apt) => {
             queryClient.invalidateQueries({ queryKey: ['appointments'] })
             addToast('success', `✅ Đã check-in: ${apt.patientName}`)
@@ -166,8 +166,8 @@ export function ReceptionPage() {
         onError: (err: any) => addToast('error', err?.response?.data?.error || err.message),
     })
 
-    const { mutate: createWalkIn, isPending: creatingWalkIn } = useMutation<MockAppointment, Error, any>({
-        mutationFn: async (data) => (await api.post<ApiItemResponse<MockAppointment>>('/appointments/walk-in', data)).data.data,
+    const { mutate: createWalkIn, isPending: creatingWalkIn } = useMutation<Appointment, Error, any>({
+        mutationFn: async (data) => (await api.post<ApiItemResponse<Appointment>>('/appointments/walk-in', data)).data.data,
         onSuccess: (apt) => {
             queryClient.invalidateQueries({ queryKey: ['appointments'] })
             queryClient.invalidateQueries({ queryKey: ['patients'] })
@@ -176,8 +176,8 @@ export function ReceptionPage() {
         onError: (err: any) => addToast('error', err?.response?.data?.error || err.message),
     })
 
-    const { mutate: createAppointment, isPending: creatingApt } = useMutation<MockAppointment, Error, any>({
-        mutationFn: async (data) => (await api.post<ApiItemResponse<MockAppointment>>('/appointments', data)).data.data,
+    const { mutate: createAppointment, isPending: creatingApt } = useMutation<Appointment, Error, any>({
+        mutationFn: async (data) => (await api.post<ApiItemResponse<Appointment>>('/appointments', data)).data.data,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['appointments'] })
             addToast('success', 'Đặt lịch hẹn thành công!')
@@ -246,7 +246,7 @@ export function ReceptionPage() {
     const [showBooking, setShowBooking] = useState(false)
     const [showSwitchDoctor, setShowSwitchDoctor] = useState<string | null>(null)
     const [showReschedule, setShowReschedule] = useState<string | null>(null)
-    const [showPrint, setShowPrint] = useState<MockAppointment | null>(null)
+    const [showPrint, setShowPrint] = useState<Appointment | null>(null)
 
     const isLoading = aptsLoading || doctorsLoading || patientsLoading || servicesLoading || shiftsLoading
 
@@ -1031,7 +1031,7 @@ function PrintSlipModal({ appointment, onClose }: any) {
 }
 
 // ─── Patient Flow Strip ────────────────────────────────────────────────────────
-function PatientFlowStrip({ appointments }: { appointments: MockAppointment[] }) {
+function PatientFlowStrip({ appointments }: { appointments: Appointment[] }) {
     const steps = [
         { label: 'Đã lên lịch', icon: <CalendarHeart className="h-4 w-4" />, color: 'text-slate-500 bg-slate-100 dark:bg-slate-800', bar: 'bg-slate-300', count: appointments.filter(a => a.status === 'Đã lên lịch').length },
         { label: 'Đã đến',      icon: <UserPlus className="h-4 w-4" />,      color: 'text-blue-600 bg-blue-100 dark:bg-blue-900/40',   bar: 'bg-blue-500',  count: appointments.filter(a => a.status === 'Đã đến').length },
@@ -1099,7 +1099,7 @@ function StatCard({ icon, label, value, color, sub, pulse, alert }: {
 }
 
 // ─── Status Badge ──────────────────────────────────────────────────────────────
-function StatusBadge({ status }: { status: MockAppointment['status'] }) {
+function StatusBadge({ status }: { status: Appointment['status'] }) {
     const map: Record<string, { cls: string; dot?: string }> = {
         'Đã lên lịch':   { cls: 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700' },
         'Đã đến':        { cls: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-900/20 dark:text-sky-400 dark:border-sky-800' },
@@ -1202,10 +1202,10 @@ function EmptyList() {
 
 // ─── Walk-in Modal ─────────────────────────────────────────────────────────────
 function WalkInModal({ patients, doctors, services, activePolicies, todayShifts, onClose, onSubmit, isSubmitting }: {
-    patients: MockPatient[]
-    doctors: MockDoctor[]
-    services: MockService[]
-    activePolicies: MockPricingPolicy[]
+    patients: Patient[]
+    doctors: Doctor[]
+    services: Service[]
+    activePolicies: PricingPolicy[]
     todayShifts: DoctorShift[]
     onClose: () => void
     onSubmit: (data: any) => void
@@ -1435,12 +1435,12 @@ function WalkInModal({ patients, doctors, services, activePolicies, todayShifts,
 
 // ─── Booking Modal ─────────────────────────────────────────────────────────────
 function BookingModal({ patients, doctors, services, appointments, shifts, activePolicies, onClose, onSubmit, isSubmitting }: {
-    patients: MockPatient[]
-    doctors: MockDoctor[]
-    services: MockService[]
-    appointments: MockAppointment[]
+    patients: Patient[]
+    doctors: Doctor[]
+    services: Service[]
+    appointments: Appointment[]
     shifts: DoctorShift[]
-    activePolicies: MockPricingPolicy[]
+    activePolicies: PricingPolicy[]
     onClose: () => void
     onSubmit: (data: any) => void
     isSubmitting: boolean

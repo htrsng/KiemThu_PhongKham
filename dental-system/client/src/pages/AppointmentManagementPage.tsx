@@ -20,7 +20,7 @@ import {
     Wallet
 } from 'lucide-react'
 import { PageShell } from '../components/PageShell'
-import type { MockAppointment, MockPatient, MockDoctor, MockService, MockClinicHoliday, MockAccount } from '../lib/mockData'
+import type { Appointment, Patient, Doctor, Service, ClinicHoliday, Account } from '../lib/types'
 import { useToast } from '../contexts/ToastContext'
 import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse } from '../lib/api'
 import { useConfirm } from '../contexts/ConfirmContext'
@@ -49,13 +49,13 @@ export function AppointmentManagementPage() {
     const { addToast } = useToast()
 
     // --- Server-side data for Appointments ---
-    const { data: appointments = [], isLoading: appointmentsIsLoading } = useQuery<MockAppointment[], Error>({
+    const { data: appointments = [], isLoading: appointmentsIsLoading } = useQuery<Appointment[], Error>({
         queryKey: ['appointments'],
-        queryFn: async () => (await api.get<ApiListResponse<MockAppointment>>('/appointments')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<Appointment>>('/appointments')).data.data,
     });
 
-    const { mutate: createAppointment } = useMutation<MockAppointment, Error, Omit<MockAppointment, 'id'>>({
-        mutationFn: async (newApt) => (await api.post<ApiItemResponse<MockAppointment>>('/appointments', newApt)).data.data,
+    const { mutate: createAppointment } = useMutation<Appointment, Error, Omit<Appointment, 'id'>>({
+        mutationFn: async (newApt) => (await api.post<ApiItemResponse<Appointment>>('/appointments', newApt)).data.data,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['appointments'] });
             addToast('success', 'Tạo lịch hẹn thành công');
@@ -63,11 +63,11 @@ export function AppointmentManagementPage() {
         onError: (err) => addToast('error', `Lỗi khi tạo lịch hẹn: ${err.message}`),
     });
 
-    const { mutate: updateAppointment } = useMutation<MockAppointment, Error, { id: string; data: Partial<MockAppointment> }>({
-        mutationFn: async ({ id, data }) => (await api.put<ApiItemResponse<MockAppointment>>(`/appointments/${id}`, data)).data.data,
+    const { mutate: updateAppointment } = useMutation<Appointment, Error, { id: string; data: Partial<Appointment> }>({
+        mutationFn: async ({ id, data }) => (await api.put<ApiItemResponse<Appointment>>(`/appointments/${id}`, data)).data.data,
         onSuccess: (updatedApt) => {
             // Optimistically update the cache
-            queryClient.setQueryData<MockAppointment[]>(['appointments'], (oldData) =>
+            queryClient.setQueryData<Appointment[]>(['appointments'], (oldData) =>
                 oldData ? oldData.map(apt => apt.id === updatedApt.id ? updatedApt : apt) : []
             );
             addToast('success', 'Cập nhật lịch hẹn thành công');
@@ -75,8 +75,8 @@ export function AppointmentManagementPage() {
         onError: (err) => addToast('error', `Lỗi khi cập nhật lịch hẹn: ${err.message}`),
     });
 
-    const { mutate: checkInAppointment } = useMutation<MockAppointment, Error, string>({
-        mutationFn: async (id) => (await api.patch<ApiItemResponse<MockAppointment>>(`/appointments/${id}/checkin`)).data.data,
+    const { mutate: checkInAppointment } = useMutation<Appointment, Error, string>({
+        mutationFn: async (id) => (await api.patch<ApiItemResponse<Appointment>>(`/appointments/${id}/checkin`)).data.data,
         onSuccess: (updatedApt) => {
             queryClient.invalidateQueries({ queryKey: ['appointments'] });
             addToast('success', `Đã check-in cho bệnh nhân ${updatedApt.patientName}.`);
@@ -84,8 +84,8 @@ export function AppointmentManagementPage() {
         onError: (err) => addToast('error', `Lỗi khi check-in: ${err.message}`),
     });
 
-    const { mutate: createWalkIn } = useMutation<MockAppointment, Error, any>({
-        mutationFn: async (data) => (await api.post<ApiItemResponse<MockAppointment>>(`/appointments/walk-in`, data)).data.data,
+    const { mutate: createWalkIn } = useMutation<Appointment, Error, any>({
+        mutationFn: async (data) => (await api.post<ApiItemResponse<Appointment>>(`/appointments/walk-in`, data)).data.data,
         onSuccess: (updatedApt) => {
             queryClient.invalidateQueries({ queryKey: ['appointments'] });
             queryClient.invalidateQueries({ queryKey: ['patients'] }); // Refresh patients in case new one was created
@@ -125,24 +125,24 @@ export function AppointmentManagementPage() {
         queryFn: async () => (await api.get<ApiListResponse<DoctorOnCallShift>>('/shifts')).data.data,
     });
 
-    const { data: doctors = [], isLoading: doctorsIsLoading } = useQuery<MockDoctor[], Error>({
+    const { data: doctors = [], isLoading: doctorsIsLoading } = useQuery<Doctor[], Error>({
         queryKey: ['doctors'],
-        queryFn: async () => (await api.get<ApiListResponse<MockDoctor>>('/doctors')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<Doctor>>('/doctors')).data.data,
     });
 
-    const { data: patients = [], isLoading: patientsIsLoading } = useQuery<MockPatient[], Error>({
+    const { data: patients = [], isLoading: patientsIsLoading } = useQuery<Patient[], Error>({
         queryKey: ['patients'],
-        queryFn: async () => (await api.get<ApiListResponse<MockPatient>>('/patients')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<Patient>>('/patients')).data.data,
     });
 
-    const { data: services = [], isLoading: servicesIsLoading } = useQuery<MockService[], Error>({
+    const { data: services = [], isLoading: servicesIsLoading } = useQuery<Service[], Error>({
         queryKey: ['services'],
-        queryFn: async () => (await api.get<ApiListResponse<MockService>>('/services')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<Service>>('/services')).data.data,
     });
 
-    const { data: holidays = [], isLoading: holidaysIsLoading } = useQuery<MockClinicHoliday[], Error>({
+    const { data: holidays = [], isLoading: holidaysIsLoading } = useQuery<ClinicHoliday[], Error>({
         queryKey: ['holidays'],
-        queryFn: async () => (await api.get<ApiListResponse<MockClinicHoliday>>('/holidays')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<ClinicHoliday>>('/holidays')).data.data,
     });
 
     return (
@@ -192,16 +192,16 @@ function AppointmentBookingView({
     deleteAppointment,
 }: {
     isLoading: boolean
-    appointments: MockAppointment[]
-    patients: MockPatient[]
-    doctors: MockDoctor[]
-    services: MockService[]
-    holidays: MockClinicHoliday[]
+    appointments: Appointment[]
+    patients: Patient[]
+    doctors: Doctor[]
+    services: Service[]
+    holidays: ClinicHoliday[]
     doctorShifts: DoctorOnCallShift[]
-    createAppointment: (data: Omit<MockAppointment, 'id'>) => void
-    updateAppointment: (params: { id: string; data: Partial<MockAppointment> }) => void
+    createAppointment: (data: Omit<Appointment, 'id'>) => void
+    updateAppointment: (params: { id: string; data: Partial<Appointment> }) => void
     checkInAppointment: (id: string) => void
-    currentUser: MockAccount | null
+    currentUser: Account | null
     createWalkIn: (data: any) => void
     createInvoice: (data: any) => void
     deleteAppointment: (id: string) => void
@@ -254,7 +254,7 @@ function AppointmentBookingView({
         startTime: string
         notes: string
         difficulty: number
-        status: MockAppointment['status']
+        status: Appointment['status']
     }
 
     const initialFormState: AppointmentFormState = {
@@ -307,7 +307,7 @@ function AppointmentBookingView({
         return `${hh}:${mm}`
     }
 
-    const isWithinDoctorShift = (doctor: MockDoctor, startTime: Date, endTime: Date) => {
+    const isWithinDoctorShift = (doctor: Doctor, startTime: Date, endTime: Date) => {
         const dateKey = getLocalDateKey(startTime)
         const startMinutes = toMinutes(getTimeKey(startTime))
         const endMinutes = toMinutes(getTimeKey(endTime))
@@ -451,7 +451,7 @@ function AppointmentBookingView({
         )
     }
 
-    const getStatusBadgeClass = (status: MockAppointment['status']) => {
+    const getStatusBadgeClass = (status: Appointment['status']) => {
         switch (status) {
             case 'Đã hoàn thành': return 'bg-emerald-100 text-emerald-900'
             case 'Đã đến': return 'bg-sky-100 text-sky-900'
@@ -474,7 +474,7 @@ function AppointmentBookingView({
         setIsModalOpen(true)
     }
 
-    const openEditModal = (apt: MockAppointment) => {
+    const openEditModal = (apt: Appointment) => {
         setEditingId(apt.id)
         setFormState({
             patientId: apt.patientId,
@@ -507,7 +507,7 @@ function AppointmentBookingView({
     }
 
     const handleEventClick = (arg: EventClickArg) => {
-        openEditModal(arg.event.extendedProps as unknown as MockAppointment)
+        openEditModal(arg.event.extendedProps as unknown as Appointment)
     }
 
     const handleSave = () => {
@@ -626,7 +626,7 @@ function AppointmentBookingView({
         setIsWalkInModalOpen(false);
     };
 
-    const handleUpdateStatus = async (apt: MockAppointment, status: MockAppointment['status']) => {
+    const handleUpdateStatus = async (apt: Appointment, status: Appointment['status']) => {
         const confirmed = await confirm({
             title: `${status} lịch hẹn`,
             message: `Bạn có chắc muốn ${status.toLowerCase()} lịch hẹn cho "${apt.patientName}"?`,
@@ -657,7 +657,7 @@ function AppointmentBookingView({
         }
     }
 
-    const handleDeleteAppointment = async (apt: MockAppointment) => {
+    const handleDeleteAppointment = async (apt: Appointment) => {
         const confirmed = await confirm({
             title: 'Xóa vĩnh viễn lịch hẹn',
             message: `Bạn có chắc muốn xóa vĩnh viễn lịch hẹn của "${apt.patientName}"? Hành động này không thể hoàn tác.`,
@@ -956,7 +956,7 @@ function AppointmentBookingView({
                                         onChange={(e) =>
                                             setFormState((s) => ({
                                                 ...s,
-                                                status: e.target.value as MockAppointment['status'],
+                                                status: e.target.value as Appointment['status'],
                                             }))
                                         }
                                         className="mt-1 w-full rounded-lg border bg-white p-2 text-sm"

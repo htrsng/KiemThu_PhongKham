@@ -7,7 +7,7 @@ import { useConfirm } from '../contexts/ConfirmContext'
 import { formatVND, formatDate } from '../lib/formatters'
 import { validateRequired, validateNumberRange, validateDateRange } from '../lib/validations'
 import { useAuth } from '../contexts/AuthContext' // Import useAuth
-import { type MockService, type MockPricingPolicy } from '../lib/mockData'
+import { type Service, type PricingPolicy } from '../lib/types'
 import { EmptyState } from '../components/EmptyState'
 import { api, type ApiListResponse, type ApiItemResponse, type ApiDeleteResponse } from '../lib/api'
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
@@ -20,8 +20,8 @@ const UNITS = ['răng', 'hàm', 'lần', 'liệu trình']
 type ServiceFormState = {
     name: string
     code: string
-    category: MockService['category']
-    unit: MockService['unit']
+    category: Service['category']
+    unit: Service['unit']
     duration: number
     description: string
     basePrice: number
@@ -83,13 +83,13 @@ export function ServiceCategoryPage() {
     const queryClient = useQueryClient()
 
     // --- Data Fetching for Services ---
-    const { data: services = [], isLoading: servicesLoading } = useQuery<MockService[], Error>({
+    const { data: services = [], isLoading: servicesLoading } = useQuery<Service[], Error>({
         queryKey: ['services'],
-        queryFn: async () => (await api.get<ApiListResponse<MockService>>('/services')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<Service>>('/services')).data.data,
     });
 
-    const { mutate: createService } = useMutation<MockService, Error, Omit<MockService, 'id'>>({
-        mutationFn: async (newService) => (await api.post<ApiItemResponse<MockService>>('/services', newService)).data.data,
+    const { mutate: createService } = useMutation<Service, Error, Omit<Service, 'id'>>({
+        mutationFn: async (newService) => (await api.post<ApiItemResponse<Service>>('/services', newService)).data.data,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['services'] });
             addToast('success', 'Tạo dịch vụ thành công');
@@ -97,8 +97,8 @@ export function ServiceCategoryPage() {
         },
     });
 
-    const { mutate: updateService } = useMutation<MockService, Error, { id: string; data: Partial<MockService> }>({
-        mutationFn: async ({ id, data }) => (await api.put<ApiItemResponse<MockService>>(`/services/${id}`, data)).data.data,
+    const { mutate: updateService } = useMutation<Service, Error, { id: string; data: Partial<Service> }>({
+        mutationFn: async ({ id, data }) => (await api.put<ApiItemResponse<Service>>(`/services/${id}`, data)).data.data,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['services'] });
             addToast('success', 'Cập nhật dịch vụ thành công');
@@ -115,16 +115,16 @@ export function ServiceCategoryPage() {
     });
 
     // --- Data Fetching for Pricing Policies ---
-    const { data: pricingPolicies = [], isLoading: pricingLoading } = useQuery<MockPricingPolicy[], Error>({
+    const { data: pricingPolicies = [], isLoading: pricingLoading } = useQuery<PricingPolicy[], Error>({
         queryKey: ['pricing-policies'],
-        queryFn: async () => (await api.get<ApiListResponse<MockPricingPolicy>>('/pricing-policies')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<PricingPolicy>>('/pricing-policies')).data.data,
     });
 
-    const { mutate: savePricingPolicy } = useMutation<MockPricingPolicy, Error, { id?: string; data: Omit<MockPricingPolicy, 'id'> }>({
+    const { mutate: savePricingPolicy } = useMutation<PricingPolicy, Error, { id?: string; data: Omit<PricingPolicy, 'id'> }>({
         mutationFn: async ({ id, data }) => {
             const url = id ? `/pricing-policies/${id}` : '/pricing-policies';
             const method = id ? 'put' : 'post';
-            return (await api[method]<ApiItemResponse<MockPricingPolicy>>(url, data)).data.data;
+            return (await api[method]<ApiItemResponse<PricingPolicy>>(url, data)).data.data;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['pricing-policies'] });
@@ -173,7 +173,7 @@ export function ServiceCategoryPage() {
         setIsServiceModalOpen(true)
     }
 
-    function openEditServiceModal(service: MockService) {
+    function openEditServiceModal(service: Service) {
         setEditingServiceId(service.id)
         setServiceFormState({
             name: service.name,
@@ -207,7 +207,7 @@ export function ServiceCategoryPage() {
         }
     }
 
-    async function handleDeleteService(service: MockService) {
+    async function handleDeleteService(service: Service) {
         const confirmed = await confirm({
             title: 'Xóa dịch vụ',
             message: `Bạn có chắc muốn xóa dịch vụ "${service.name}"?`,
@@ -233,7 +233,7 @@ export function ServiceCategoryPage() {
         setIsPricingModalOpen(true)
     }
 
-    function openEditPricingModal(policy: MockPricingPolicy) {
+    function openEditPricingModal(policy: PricingPolicy) {
         setEditingPricingId(policy.id)
         setPricingFormState({
             serviceId: policy.serviceId,
@@ -273,7 +273,7 @@ export function ServiceCategoryPage() {
         });
     }
 
-    async function handleDeletePricing(policy: MockPricingPolicy) {
+    async function handleDeletePricing(policy: PricingPolicy) {
         const confirmed = await confirm({
             title: 'Xóa chính sách giá',
             message: `Bạn có chắc muốn xóa chính sách giá cho dịch vụ "${policy.serviceName}"?`,
@@ -537,7 +537,7 @@ export function ServiceCategoryPage() {
                                         onChange={(e) =>
                                             setServiceFormState((prev) => ({
                                                 ...prev,
-                                                category: e.target.value as MockService['category'],
+                                                category: e.target.value as Service['category'],
                                             }))
                                         }
                                         className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"
@@ -554,7 +554,7 @@ export function ServiceCategoryPage() {
                                         onChange={(e) =>
                                             setServiceFormState((prev) => ({
                                                 ...prev,
-                                                unit: e.target.value as MockService['unit'],
+                                                unit: e.target.value as Service['unit'],
                                             }))
                                         }
                                         className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-200 transition focus:ring"

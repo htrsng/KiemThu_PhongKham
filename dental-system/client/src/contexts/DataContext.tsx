@@ -1,16 +1,16 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { 
-    MockDoctor,
-    MockAppointment,
-    MockService,
-    MockDoctorShift,
-} from '../lib/mockData';
+    Doctor,
+    Appointment,
+    Service,
+    DoctorShift,
+} from '../lib/types';
 
 // These types will be used across the app during migration
-export type Doctor = MockDoctor;
-export type Appointment = MockAppointment;
-export type Service = MockService;
-export type Shift = MockDoctorShift;
+
+
+
+export type Shift = DoctorShift;
 export type DoctorPayload = Omit<Doctor, 'id' | 'schedule'>;
 
 interface DataContextType {

@@ -5,7 +5,7 @@ import { PageShell } from '../components/PageShell'
 import { useAuth } from '../contexts/AuthContext' // Import useAuth
 import { EmptyState } from '../components/EmptyState'
 import { api, type ApiListResponse, type ApiItemResponse } from '../lib/api'
-import type { MockAuditLog } from '../lib/mockData'
+import type { AuditLog } from '../lib/types'
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
 
 type SettingsTab = 'clinic-info' | 'business-hours'
@@ -42,9 +42,9 @@ export function GeneralSettingsPage() {
         queryFn: async () => (await api.get<ApiListResponse<Setting<any>>>('/settings')).data.data,
     });
 
-    const { data: recentActivities = [], isLoading: activitiesLoading } = useQuery<MockAuditLog[], Error>({
+    const { data: recentActivities = [], isLoading: activitiesLoading } = useQuery<AuditLog[], Error>({
         queryKey: ['audit-logs'],
-        queryFn: async () => (await api.get<ApiListResponse<MockAuditLog>>('/audit-logs?limit=5&sort=-updatedAt')).data.data,
+        queryFn: async () => (await api.get<ApiListResponse<AuditLog>>('/audit-logs?limit=5&sort=-updatedAt')).data.data,
     });
 
     const { mutate: saveSetting } = useMutation<Setting<any>, Error, { id: string; value: any }>({

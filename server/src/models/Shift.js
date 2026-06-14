@@ -8,6 +8,7 @@ const shiftSchema = new mongoose.Schema({
   endTime: { type: String, required: true }, // HH:mm
   coefficient: { type: Number, default: 1.0 }, // Hệ số ca làm việc
   patientCoefficient: { type: Number, default: 0 }, // Tổng hệ số bệnh nhân của ca
+  status: { type: String, enum: ['Đã đăng ký', 'Đã hủy'], default: 'Đã đăng ký' }, // Trạng thái ca trực
 }, { timestamps: true });
 
 shiftSchema.methods.toJSON = function() {

@@ -12,12 +12,12 @@ exports.getDashboardSummary = async (req, res, next) => {
 
     // Get today's appointments
     const appointmentsToday = await Appointment.countDocuments({
-      createdAt: { $gte: todayStart, $lte: todayEnd }
+      startTime: { $gte: todayStart, $lte: todayEnd }
     });
 
     const walkInsToday = await Appointment.countDocuments({
       notes: 'Bệnh nhân vãng lai',
-      createdAt: { $gte: todayStart, $lte: todayEnd }
+      startTime: { $gte: todayStart, $lte: todayEnd }
     });
 
     const invoicesToday = await Invoice.find({
