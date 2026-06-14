@@ -17,7 +17,8 @@ const pricingPolicySchema = new mongoose.Schema({
   },
   price: {
     type: Number,
-    required: true
+    required: true,
+    min: [0, 'Giá dịch vụ không được nhỏ hơn 0']
   },
   effectiveDate: {
     type: Date,

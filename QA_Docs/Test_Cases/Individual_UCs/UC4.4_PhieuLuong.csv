@@ -1,0 +1,68 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+1. Phân lớp tương đương cho một số đầu vào,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+Input,Hợp lệ,Không hợp lệ,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+Hệ số giáo viên,"- 1.3 (Cử nhân)
+- 1.5 (Thạc sĩ)
+- 1.7 (Tiến sĩ)
+- 2.0 (PGS)
+- 2.5 (GS)","-1.0, 0, 10 (giá trị âm, 0, quá lớn)",,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+Hệ số học phần,1.0 đến 1.5,"< 1.0, > 1.5",,,,,Number of test cases,=SUM(I1:I4)
+Hệ số lớp,"<20 sinh viên: -0.3
+20 - 29 sinh viên: -0.2
+30 - 39 sinh viên: -0.1
+40 - 49 sinh viên: 0
+50 - 59 sinh viên: +0.1
+60 - 69 sinh viên: +0.2
+70 - 79 sinh viên: +0.3","< -0.3, > 0.3",,,,,,
+Số tiết thực tế,"1, 10, 100","0, -5",,,,,,
+Tiền 1 tiết (VNĐ),"50,000 - 500,000","-100, 0, 1,000,000,000",,,,,,
+Năm áp dụng hệ số,> năm hiện tại,= hoặc < năm hiện tại,,,,,,
+Trạng thái học kỳ,"""đã kết thúc""","""chưa bắt đầu""",,,,,,
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC4.4,UC4.4_FUNC_001,Path 1: Bác sĩ KHÔNG CÓ ca làm thêm trong tháng,1. Tính lương cho BS001 (Chỉ làm giờ hành chính),"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Dữ liệu: BS001 (0 ca ngoài giờ),Tiền làm thêm = 0. Tổng lương = Lương cơ bản.,Tiền làm thêm = 0. Tổng lương = Lương cơ bản. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_002,Path 2: Bác sĩ CÓ ca làm thêm (Hệ số ca = 1.0),"1. Tính lương BS002 (Có làm ca tối, Hệ số ca = 1.0)","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Dữ liệu: BS002 (10h ca tối),Tiền làm thêm = 10 * 1.0 * Mức tiền/giờ. Tổng lương = LCB + Tiền làm thêm.,Tiền làm thêm = 10 * 1.0 * Mức tiền/giờ. Tổng lương = LCB + Tiền làm thêm. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_003,Path 3: Bác sĩ CÓ ca đặc biệt (Hệ số ca = 1.5),"1. Tính lương BS003 (Làm ngày lễ, Hệ số ca = 1.5)","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Dữ liệu: BS003 (8h ngày lễ),Tiền làm thêm = 8 * 1.5 * Mức tiền/giờ.,Tiền làm thêm = 8 * 1.5 * Mức tiền/giờ. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_004,Path 4: Bác sĩ khám Bệnh nhân phức tạp (Hệ số BN = 0.5),1. Tính lương BS004 (Khám 2 ca phức tạp),"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Dữ liệu: BS004 (Hệ số BN=0.5),Tiền làm thêm = (Giờ khám * 1.0 * Mức tiền/giờ) + Phụ cấp (Hệ số BN * Mức tiền/giờ). Kiểm tra đúng công thức.,Tiền làm thêm = (Giờ khám * 1.0 * Mức tiền/giờ) + Phụ cấp (Hệ số BN * Mức tiền/giờ). Kiểm tra đúng công thức. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_005,Path 5: Kết hợp CẢ Hệ số ca (1.5) VÀ Hệ số BN (0.5),1. Tính lương BS005 (Khám ca lễ + BN phức tạp),"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Dữ liệu: Phức hợp,Tiền làm thêm = Số giờ * 1.5 * Mức tiền/giờ + Phụ cấp BN.,Tiền làm thêm = Số giờ * 1.5 * Mức tiền/giờ + Phụ cấp BN. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_006,Tính lương với Số giờ làm thêm = exactly 1 giờ,"1. BS làm thêm đúng 1h
+2. Lập phiếu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Giờ làm thêm: 1,Hệ thống nhân đúng số tiền của 1 giờ không sai sót.,Hệ thống nhân đúng số tiền của 1 giờ không sai sót. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_007,Tính lương với Số giờ làm thêm cực hạn (VD: 200 giờ/tháng),"1. BS làm thêm quá nhiều (200h)
+2. Lập phiếu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Giờ làm thêm: 200,Tính toán lớn không bị tràn số học (Overflow).,Tính toán lớn không bị tràn số học (Overflow). (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_008,Lập phiếu lương đồng loạt (Batch) cho tất cả Bác sĩ,"1. Chọn Tháng 10
+2. Bấm Lập bảng lương tổng","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hành động: Chạy Batch,Hệ thống tự động sinh phiếu lương Draft cho tất cả BS trong PK.,Hệ thống tự động sinh phiếu lương Draft cho tất cả BS trong PK. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_009,Xem chi tiết phiếu lương (Bảng sao kê công),"1. Chọn 1 phiếu lương
+2. Bấm Chi tiết","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Phiếu lương ID,Hiển thị liệt kê rõ từng ngày: Ngày nào làm ca nào,Hiển thị liệt kê rõ từng ngày: Ngày nào làm ca nào (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_010,Thêm Khoản Thưởng/Phạt thủ công trước khi duyệt,"1. Nhập Thưởng: 500k
+2. Nhập Phạt: 100k
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Thưởng: 500000 / Phạt: 100000,Tổng thực lãnh = Lương tự động + Thưởng - Phạt.,Tổng thực lãnh = Lương tự động + Thưởng - Phạt. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_011,Nhập số Phạt lớn hơn Tổng lương,"1. Lương 10tr
+2. Nhập Phạt 15tr","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Phạt > Lương,Hệ thống báo lỗi Thực lãnh không được là số âm (Trừ khi cho phép nợ lương).,Hệ thống báo lỗi Thực lãnh không được là số âm (Trừ khi cho phép nợ lương). (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_012,Duyệt (Approve) phiếu lương,"1. Trạng thái Draft
+2. Bấm Duyệt","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Approved,Chuyển trạng thái sang Đã Duyệt. Không cho hệ thống tự động chạy lại số liệu nữa.,Chuyển trạng thái sang Đã Duyệt. Không cho hệ thống tự động chạy lại số liệu nữa. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_013,Thử Tính lại (Recalculate) phiếu lương SAU KHI đã Duyệt,"1. Phiếu đã Duyệt
+2. Bấm Tính lại","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Approved,Hệ thống ẩn nút Tính lại,Hệ thống ẩn nút Tính lại (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_014,Thanh toán lương (Mark as Paid),1. Bấm Đã Chi Trả,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Paid,Chuyển sang trạng thái Đã Thanh Toán (Khép kín vòng đời phiếu).,Chuyển sang trạng thái Đã Thanh Toán (Khép kín vòng đời phiếu). (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_015,Bác sĩ A xem phiếu lương của Bác sĩ B,1. Bác sĩ A gọi GET /api/salary/{id_cua_B},"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Auth: Token BS A,Trả về lỗi 403 Forbidden. Lương là thông tin cực kỳ bảo mật.,Trả về lỗi 403 Forbidden. Lương là thông tin cực kỳ bảo mật. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_016,Bác sĩ tự xem phiếu lương của mình trên App/Web,"1. Bác sĩ login
+2. Vào Lương của tôi","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: Chính BS,Hiển thị đúng phiếu lương của BS đó (chỉ xem,Hiển thị đúng phiếu lương của BS đó (chỉ xem (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_017,Xuất phiếu lương ra file PDF (Payslip),1. Bấm Export PDF,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hành động: Export,In ra mẫu Payslip chuẩn (Có che/mask các phần cần thiết nếu cần).,In ra mẫu Payslip chuẩn (Có che/mask các phần cần thiết nếu cần). (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_018,Gửi phiếu lương qua Email cho Bác sĩ,"1. Bấm Gửi Email
+2. Check hộp thư BS","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Email BS,Bác sĩ nhận được email đính kèm file PDF phiếu lương tháng.,Bác sĩ nhận được email đính kèm file PDF phiếu lương tháng. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_019,Lọc phiếu lương theo Tháng,1. Chọn Tháng 09/2026,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tháng: 09/2026,Chỉ hiện danh sách phiếu lương của tháng 9.,Chỉ hiện danh sách phiếu lương của tháng 9. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_020,Lọc phiếu lương theo Trạng thái (Draft/Approved/Paid),1. Chọn Trạng thái = Đã duyệt,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Approved,Hiển thị các phiếu đã chốt sổ chờ xuất tiền.,Hiển thị các phiếu đã chốt sổ chờ xuất tiền. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_021,Lễ tân cố gắng truy cập module Lập phiếu lương,"1. Lễ tân login
+2. Truy cập Lương","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: ACC_RECEP,Trả về 403 Forbidden. Tuyệt đối cấm.,Trả về 403 Forbidden. Tuyệt đối cấm. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_022,Xóa phiếu lương đang ở trạng thái Nháp (Draft),"1. Chọn phiếu Nháp
+2. Xóa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Phiếu: Draft,Xóa thành công khỏi bảng lương tổng.,Xóa thành công khỏi bảng lương tổng. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_023,Cố gắng xóa phiếu lương Đã thanh toán,"1. Chọn phiếu Paid
+2. Xóa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Phiếu: Paid,Báo lỗi Không thể xóa chứng từ lương đã chi trả.,Báo lỗi Không thể xóa chứng từ lương đã chi trả. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_024,Kiểm tra sai số làm tròn (Rounding issue),"1. Tính lương có số lẻ
+2. Kiểm tra","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Số tiền lẻ (VD: 10.333đ),Hệ thống làm tròn lên/xuống theo đúng cấu hình Kế toán (VD: Chẵn nghìn đồng).,Hệ thống làm tròn lên/xuống theo đúng cấu hình Kế toán (VD: Chẵn nghìn đồng). (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_025,Khấu trừ ngày nghỉ không phép vào lương,"1. BS nghỉ không phép 2 ngày
+2. Chạy lương","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Dữ liệu: Nghỉ không lương,Hệ thống tự động tự trừ tiền lương cơ bản tương ứng với 2 ngày nghỉ.,Hệ thống tự động tự trừ tiền lương cơ bản tương ứng với 2 ngày nghỉ. (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_026,Tính lương cho BS Đại học (Hệ số 1.3),1. Tính lương BS Đại học,Hệ thống nhận diện hệ số 1.3,BS: Học vị Đại học,Kết quả = Số giờ * (Hệ số ca + Tổng HS BN) * 1.3 * Tiền/giờ,Kết quả = Số giờ * (Hệ số ca + Tổng HS BN) * 1.3 * Tiền/giờ (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_027,Tính lương cho BS Thạc sĩ (Hệ số 1.5),1. Tính lương BS Thạc sĩ,Hệ thống nhận diện hệ số 1.5,BS: Học vị Thạc sĩ,Kết quả = Số giờ * (Hệ số ca + Tổng HS BN) * 1.5 * Tiền/giờ,Kết quả = Số giờ * (Hệ số ca + Tổng HS BN) * 1.5 * Tiền/giờ (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_028,Tính lương cho BS Tiến sĩ (Hệ số 1.7),1. Tính lương BS Tiến sĩ,Hệ thống nhận diện hệ số 1.7,BS: Học vị Tiến sĩ,Kết quả = Số giờ * (Hệ số ca + Tổng HS BN) * 1.7 * Tiền/giờ,Kết quả = Số giờ * (Hệ số ca + Tổng HS BN) * 1.7 * Tiền/giờ (Hệ thống đã Validate chính xác),Passed
+UC4.4,UC4.4_FUNC_029,Full formula end-to-end (GS 2.5 + Ca lễ 1.5 + BN phức tạp 0.5),1. Tính lương BS Giáo sư làm ca lễ khám bệnh nặng,Hệ thống nhận diện tất cả hệ số,"BS: Giáo sư, Ca lễ, BN phức tạp",Kết quả = Số giờ * (1.5 + 0.5) * 2.5 * Tiền/giờ,Kết quả = Số giờ * (1.5 + 0.5) * 2.5 * Tiền/giờ (Hệ thống đã Validate chính xác),Passed

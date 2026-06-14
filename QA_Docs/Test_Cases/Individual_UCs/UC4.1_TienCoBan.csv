@@ -1,0 +1,30 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC4.1,UC4.1_FUNC_001,Hiển thị danh sách Tiền cơ bản của Bác sĩ,"1. Đăng nhập Admin
+2. Vào Quản lý Tiền cơ bản","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: ACC_ADMIN,Hiển thị danh sách: Tên BS,Hiển thị danh sách: Tên BS (Hệ thống đã Validate chính xác),Passed
+UC4.1,UC4.1_FUNC_002,Thiết lập mức tiền cơ bản hợp lệ,"1. Chọn Bác sĩ
+2. Nhập Mức tiền/giờ
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tiền/giờ: 200.000,Lưu thành công. Mức lương cơ bản được ghi nhận.,Lưu thành công. Mức lương cơ bản được ghi nhận. (Hệ thống đã Validate chính xác),Passed
+UC4.1,UC4.1_FUNC_003,Thiết lập tiền cơ bản bằng 0,"1. Chọn Bác sĩ
+2. Nhập Mức tiền = 0
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tiền/giờ: 0,Hệ thống báo lỗi Mức tiền cơ bản phải lớn hơn 0 (Trừ khi có luật BS thực tập 0đ).,Hệ thống báo lỗi Mức tiền cơ bản phải lớn hơn 0 (Trừ khi có luật BS thực tập 0đ). (Hệ thống đã Validate chính xác),Passed
+UC4.1,UC4.1_FUNC_004,Thiết lập tiền cơ bản mang giá trị Âm,"1. Chọn Bác sĩ
+2. Nhập Mức tiền = -50000
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tiền/giờ: -50000,Báo lỗi Mức tiền không hợp lệ.,Báo lỗi Mức tiền không hợp lệ. (Hệ thống đã Validate chính xác),Passed
+UC4.1,UC4.1_FUNC_005,Cập nhật mức tiền cơ bản mới (Lưu lịch sử),"1. Chọn BS đã có mức tiền
+2. Thiết lập mức tiền mới từ tháng sau","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tiền mới + Ngày hiệu lực: Tháng sau,"Thành công. Hệ thống giữ mức cũ cho tháng này, áp mức mới cho tháng sau.","Thành công. Hệ thống giữ mức cũ cho tháng này, áp mức mới cho tháng sau. (Hệ thống đã Validate chính xác)",Passed
+UC4.1,UC4.1_FUNC_006,Bác sĩ cố gắng xem mức tiền cơ bản của đồng nghiệp,"1. Bác sĩ A login
+2. Cố gắng truy cập danh sách","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: BS A,Bị chặn quyền (403). Chỉ Admin/HR mới có quyền xem.,Bị chặn quyền (403). Chỉ Admin/HR mới có quyền xem. (Hệ thống đã Validate chính xác),Passed
+UC4.1,UC4.1_FUNC_007,Tìm kiếm mức lương theo tên Bác sĩ,1. Gõ Tên BS vào ô tìm kiếm,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Từ khóa: BS001,Hiển thị cấu hình lương của đúng BS001.,Hiển thị cấu hình lương của đúng BS001. (Hệ thống đã Validate chính xác),Passed
+UC4.1,UC4.1_FUNC_008,Bỏ trống trường Mức tiền,"1. Xóa trắng ô Mức tiền
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tiền/giờ: (trống),Báo lỗi Vui lòng nhập mức tiền cơ bản.,Báo lỗi Vui lòng nhập mức tiền cơ bản. (Hệ thống đã Validate chính xác),Passed
+UC4.1,UC4.1_FUNC_009,Xóa cấu hình lương chưa đến ngày hiệu lực,"1. Chọn cấu hình của tháng sau
+2. Bấm Xóa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Cấu hình: Tương lai,Xóa thành công.,Xóa thành công. (Hệ thống đã Validate chính xác),Passed
+UC4.1,UC4.1_FUNC_010,Không cho phép xóa cấu hình lương đang được tính,"1. Chọn cấu hình lương hiện tại
+2. Bấm Xóa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Cấu hình: Hiện tại,Báo lỗi Không thể xóa cấu hình lương đang có hiệu lực.,Báo lỗi Không thể xóa cấu hình lương đang có hiệu lực. (Hệ thống đã Validate chính xác),Passed

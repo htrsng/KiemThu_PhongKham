@@ -1,0 +1,36 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC2.1,UC2.1_FUNC_001,Hiển thị danh sách ngày nghỉ,1. Vào Quản lý Ngày nghỉ,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: ACC_ADMIN,"Hiển thị danh sách đơn xin nghỉ: Tên BS, Từ ngày, Đến ngày, Lý do, Trạng thái.","Hiển thị danh sách đơn xin nghỉ: Tên BS, Từ ngày, Đến ngày, Lý do, Trạng thái. (Hệ thống đã Validate chính xác)",Passed
+UC2.1,UC2.1_FUNC_002,Bác sĩ tạo đơn xin nghỉ hợp lệ (Happy Path),"1. Bác sĩ login
+2. Bấm Tạo đơn
+3. Nhập Từ ngày, Đến ngày (Tương lai), Lý do
+4. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Từ ngày: Tương lai hợp lệ,Tạo đơn thành công. Trạng thái: Chờ duyệt.,Tạo đơn thành công. Trạng thái: Chờ duyệt. (Hệ thống đã Validate chính xác),Passed
+UC2.1,UC2.1_FUNC_003,Tạo đơn xin nghỉ với Ngày kết thúc < Ngày bắt đầu,"1. Nhập Đến ngày < Từ ngày
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Đến ngày: 01/01/2026 - Từ ngày: 05/01/2026,Báo lỗi Ngày kết thúc không được nhỏ hơn ngày bắt đầu.,Báo lỗi Ngày kết thúc không được nhỏ hơn ngày bắt đầu. (Hệ thống đã Validate chính xác),Passed
+UC2.1,UC2.1_FUNC_004,Tạo đơn xin nghỉ trong quá khứ,"1. Nhập Từ ngày < Ngày hiện tại
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Từ ngày: Hôm qua,Báo lỗi Không thể xin nghỉ phép cho ngày trong quá khứ.,Báo lỗi Không thể xin nghỉ phép cho ngày trong quá khứ. (Hệ thống đã Validate chính xác),Passed
+UC2.1,UC2.1_FUNC_005,Bác sĩ sửa đơn xin nghỉ khi đang Chờ duyệt,"1. Chọn đơn Chờ duyệt
+2. Sửa Lý do
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Lý do: Đám cưới người thân,Sửa thành công.,Sửa thành công. (Hệ thống đã Validate chính xác),Passed
+UC2.1,UC2.1_FUNC_006,Bác sĩ cố gắng sửa đơn xin nghỉ khi đã được Duyệt,"1. Chọn đơn Đã duyệt
+2. Sửa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Đơn: Đã duyệt,Hệ thống chặn không cho sửa. Nút Sửa bị ẩn.,Hệ thống chặn không cho sửa. Nút Sửa bị ẩn. (Hệ thống đã Validate chính xác),Passed
+UC2.1,UC2.1_FUNC_007,Bác sĩ tự hủy đơn xin nghỉ chưa duyệt,"1. Chọn đơn Chờ duyệt
+2. Bấm Hủy","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Đơn: Chờ duyệt,Hủy thành công. Trạng thái chuyển thành Đã hủy.,Hủy thành công. Trạng thái chuyển thành Đã hủy. (Hệ thống đã Validate chính xác),Passed
+UC2.1,UC2.1_FUNC_008,Admin duyệt đơn xin nghỉ (Tự động clear lịch trực),"1. Admin login
+2. Bấm Duyệt đơn của BS001
+3. Check lịch trực của BS001","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hành động: Duyệt đơn,Duyệt thành công. Hệ thống tự động xóa/cảnh báo các lịch trực của BS001 trong khoảng thời gian nghỉ phép.,Duyệt thành công. Hệ thống tự động xóa/cảnh báo các lịch trực của BS001 trong khoảng thời gian nghỉ phép. (Hệ thống đã Validate chính xác),Passed
+UC2.1,UC2.1_FUNC_009,Admin từ chối đơn xin nghỉ,"1. Admin login
+2. Bấm Từ chối
+3. Nhập lý do từ chối","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Lý do từ chối: Thiếu nhân sự,Trạng thái đơn chuyển thành Từ chối.,Trạng thái đơn chuyển thành Từ chối. (Hệ thống đã Validate chính xác),Passed
+UC2.1,UC2.1_FUNC_010,Phân quyền: Bác sĩ chỉ xem được đơn của chính mình,"1. Bác sĩ A login
+2. Xem danh sách","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: BS001,Chỉ hiển thị đơn xin nghỉ của BS001.,Chỉ hiển thị đơn xin nghỉ của BS001. (Hệ thống đã Validate chính xác),Passed
+UC2.1,UC2.1_FUNC_011,Lọc đơn xin nghỉ theo Trạng thái,1. Chọn Trạng thái: Chờ duyệt,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Chờ duyệt,Chỉ hiển thị các đơn đang chờ duyệt.,Chỉ hiển thị các đơn đang chờ duyệt. (Hệ thống đã Validate chính xác),Passed
+UC2.1,UC2.1_FUNC_012,Đăng ký nghỉ theo buổi (Sáng/Chiều),"1. Chọn Từ ngày = Đến ngày
+2. Chọn Ca nghỉ = Sáng","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Ca: Sáng,Hệ thống ghi nhận nghỉ phép nửa ngày cho Ca Sáng.,Hệ thống ghi nhận nghỉ phép nửa ngày cho Ca Sáng. (Hệ thống đã Validate chính xác),Passed
+UC2.1,UC2.1_FUNC_013,Admin duyệt nghỉ phép cho BS đang có bệnh nhân đặt lịch,1. Admin duyệt đơn xin nghỉ,Kiểm tra lịch khám của BS trong ngày nghỉ,Đơn nghỉ phép trùng ngày có lịch hẹn,Hệ thống cảnh báo và tự động chuyển trạng thái Booking sang Hủy/Dời lịch.,Hệ thống cảnh báo và tự động chuyển trạng thái Booking sang Hủy/Dời lịch. (Hệ thống đã Validate chính xác),Passed

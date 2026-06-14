@@ -50,27 +50,48 @@ exports.createShift = async (req, res, next) => {
     }
 
     if (toMinutes(endTime) <= toMinutes(startTime)) {
-      return res.status(400).json({ error: 'Giờ kết thúc phải sau giờ bắt đầu.' });
+      return res.status(400).json({ error: 'Thời gian kết thúc phải sau thời gian bắt đầu' });
+    }
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    if (new Date(date) < today) {
+      return res.status(400).json({ error: 'Không thể thêm lịch trực vào ngày trong quá khứ' });
     }
 
-    const conflict = await findConflict(doctorId, date, startTime, endTime);
-    if (conflict) {
-      return res.status(409).json({
-        error: `Xung đột ca làm việc: Bác sĩ ${doctorName} đã có ca từ ${conflict.startTime} đến ${conflict.endTime} vào ngày ${date}. Vui lòng chọn khung giờ khác.`,
-        conflictingShift: conflict.toJSON ? conflict.toJSON() : conflict,
-      });
-    }
-
-    const shift = await Shift.create({
+    const LeaveRequest = require('../models/LeaveRequest');
+    const onLeave = await LeaveRequest.findOne({
       doctorId,
-      doctorName,
-      date,
-      startTime,
-      endTime,
-      coefficient: coefficient ?? 1.0,
+      status: 'Approved',
+      startDate: { $lte: new Date(date) },
+      endDate: { $gte: new Date(date) }
     });
+    if (onLeave) {
+      return res.status(400).json({ error: 'Bác sĩ đang nghỉ phép vào ngày này' });
+    }
 
-    res.status(201).json({ data: shift.toJSON() });
+    function timeToMinutes(timeStr) {
+      const [h, m] = timeStr.split(':').map(Number);
+      return h * 60 + m;
+    }
+    
+    const shifts = await Shift.find({ doctorId, date });
+    if (shifts.length >= 3) {
+      return res.status(400).json({ error: 'Bác sĩ không thể trực quá 3 ca một ngày' });
+    }
+
+    const st = timeToMinutes(startTime);
+    const et = timeToMinutes(endTime);
+
+    for (let s of shifts) {
+      const existingSt = timeToMinutes(s.startTime);
+      const existingEt = timeToMinutes(s.endTime);
+      if (Math.max(st, existingSt) < Math.min(et, existingEt)) {
+        return res.status(400).json({ error: 'Lịch trực bị trùng với ca đã có' });
+      }
+    }
+
+    const newShift = await Shift.create(req.body);
+    res.status(201).json({ data: newShift.toJSON() });
   } catch (error) {
     next(error);
   }
@@ -152,11 +173,29 @@ exports.getShift = async (req, res, next) => {
   }
 };
 
-// DELETE /api/shifts/:id
 exports.deleteShift = async (req, res, next) => {
   try {
-    const result = await Shift.findByIdAndDelete(req.params.id);
-    if (!result) return res.status(404).json({ error: 'Không tìm thấy ca làm việc.' });
+    const shift = await Shift.findById(req.params.id);
+    if (!shift) return res.status(404).json({ error: 'Không tìm thấy ca làm việc.' });
+
+    const Appointment = require('../models/Appointment');
+    
+    // Tạo đối tượng Date cho ca làm việc
+    const [startH, startM] = shift.startTime.split(':');
+    const [endH, endM] = shift.endTime.split(':');
+    const shiftStart = new Date(`${shift.date}T${startH}:${startM}:00`);
+    const shiftEnd = new Date(`${shift.date}T${endH}:${endM}:00`);
+
+    const count = await Appointment.countDocuments({
+       doctorId: shift.doctorId,
+       startTime: { $gte: shiftStart, $lt: shiftEnd }
+    });
+
+    if (count > 0) {
+      return res.status(400).json({ error: 'Không thể xóa lịch trực đã có bệnh nhân đặt hẹn' });
+    }
+
+    await Shift.findByIdAndDelete(req.params.id);
     res.json({ deletedCount: 1 });
   } catch (error) {
     next(error);

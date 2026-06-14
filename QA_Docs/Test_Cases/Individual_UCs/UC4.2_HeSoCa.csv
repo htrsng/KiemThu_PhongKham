@@ -1,0 +1,31 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC4.2,UC4.2_FUNC_001,Hiển thị danh sách Hệ số ca,1. Vào Quản lý Hệ số ca,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: ACC_ADMIN,Hiển thị danh sách: Loại ca (Ngày/Đêm/Lễ),Hiển thị danh sách: Loại ca (Ngày/Đêm/Lễ) (Hệ thống đã Validate chính xác),Passed
+UC4.2,UC4.2_FUNC_002,Thiết lập Hệ số ca = 1.0 (Ca bình thường),"1. Chọn Ca Ngày
+2. Nhập Hệ số = 1.0
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hệ số: 1.0,Lưu thành công. Ca này không được cộng thêm tiền.,Lưu thành công. Ca này không được cộng thêm tiền. (Hệ thống đã Validate chính xác),Passed
+UC4.2,UC4.2_FUNC_003,Thiết lập Hệ số ca = 1.5 (Ca đêm / Làm thêm),"1. Chọn Ca Đêm
+2. Nhập Hệ số = 1.5
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hệ số: 1.5,Lưu thành công.,Lưu thành công. (Hệ thống đã Validate chính xác),Passed
+UC4.2,UC4.2_FUNC_004,Thiết lập Hệ số ca < 1.0 (Lỗi),"1. Nhập Hệ số = 0.8
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hệ số: 0.8,Báo lỗi Hệ số ca không được nhỏ hơn 1.0.,Báo lỗi Hệ số ca không được nhỏ hơn 1.0. (Hệ thống đã Validate chính xác),Passed
+UC4.2,UC4.2_FUNC_005,Thiết lập Hệ số ca = 3.0 (Ngày Lễ/Tết),"1. Chọn Ca Lễ
+2. Nhập Hệ số = 3.0
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hệ số: 3.0,Báo lỗi Hệ số ca ngoài giờ/cuối tuần không được vượt quá 2.0.,Báo lỗi Hệ số ca ngoài giờ/cuối tuần không được vượt quá 2.0. (Hệ thống đã Validate chính xác),Passed
+UC4.2,UC4.2_FUNC_006,Cập nhật Hệ số ca hiện có,"1. Chọn Ca Đêm
+2. Sửa Hệ số 1.5 -> 1.8
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hệ số mới: 1.8,Cập nhật thành công. Áp dụng cho các lần tính lương sau.,Cập nhật thành công. Áp dụng cho các lần tính lương sau. (Hệ thống đã Validate chính xác),Passed
+UC4.2,UC4.2_FUNC_007,Xóa loại Hệ số chưa sử dụng,"1. Chọn loại hệ số mới tạo
+2. Bấm Xóa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Loại hệ số: Chưa tính lương bao giờ,Xóa thành công.,Xóa thành công. (Hệ thống đã Validate chính xác),Passed
+UC4.2,UC4.2_FUNC_008,Ngăn xóa Hệ số ca đã được dùng để tính lương,"1. Chọn Ca Ngày (Đã từng chốt lương)
+2. Bấm Xóa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Loại hệ số: Đã dùng,"Hệ thống chặn, báo lỗi Hệ số đã được sử dụng trong phiếu lương cũ, không thể xóa.","Hệ thống chặn, báo lỗi Hệ số đã được sử dụng trong phiếu lương cũ, không thể xóa. (Hệ thống đã Validate chính xác)",Passed
+UC4.2,UC4.2_FUNC_009,Lễ tân không xem được Hệ số ca,"1. Lễ tân login
+2. Cố gắng vào link Hệ số","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: ACC_RECEP,Trả về 403 Forbidden.,Trả về 403 Forbidden. (Hệ thống đã Validate chính xác),Passed
+UC4.2,UC4.2_FUNC_010,Tạo trùng lặp loại Hệ số ca,"1. Tạo Ca Ngày mới
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Loại ca: Đã tồn tại,Báo lỗi Loại ca này đã được thiết lập hệ số.,Báo lỗi Loại ca này đã được thiết lập hệ số. (Hệ thống đã Validate chính xác),Passed

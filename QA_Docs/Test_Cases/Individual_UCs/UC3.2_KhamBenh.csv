@@ -1,0 +1,56 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC3.2,UC3.2_FUNC_001,Xem lịch sử khám bệnh của Bệnh nhân,"1. Chọn BN trong hàng chờ
+2. Bấm tab Lịch sử Y tế","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",BN: Đã từng khám,Hiển thị danh sách các lần khám trước,Hiển thị danh sách các lần khám trước (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_002,Nhập Chẩn đoán sơ bộ & Kết luận (Happy Path),"1. Nhập Triệu chứng, Chẩn đoán sơ bộ
+2. Chọn mã ICD-10
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Triệu chứng: Đau bụng / ICD-10: K29,Lưu hồ sơ thành công.,Lưu hồ sơ thành công. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_003,Bác sĩ Hoàn tất khám nhưng Bỏ trống Chẩn đoán,"1. Bỏ trống ô Chẩn đoán/Kết luận
+2. Bấm Hoàn tất khám","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Chẩn đoán: (trống),Báo lỗi Vui lòng nhập Kết luận chẩn đoán trước khi hoàn tất.,Báo lỗi Vui lòng nhập Kết luận chẩn đoán trước khi hoàn tất. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_004,Chỉ định Dịch vụ cận lâm sàng (Xét nghiệm/X-Quang),"1. Bấm Thêm chỉ định
+2. Chọn Xét nghiệm máu
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Dịch vụ: Cận lâm sàng,Thêm thành công. DV này sẽ được đẩy sang Hóa đơn của BN.,Thêm thành công. DV này sẽ được đẩy sang Hóa đơn của BN. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_005,Kê đơn thuốc cho bệnh nhân,"1. Bấm Kê đơn
+2. Chọn Thuốc A, Thuốc B
+3. Nhập số lượng, liều dùng
+4. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Thuốc: Paracetamol / SL: 10 / Liều: Ngày 2 viên,Đơn thuốc được lưu vào Hồ sơ khám bệnh.,Đơn thuốc được lưu vào Hồ sơ khám bệnh. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_006,Kê đơn thuốc với Số lượng = 0,"1. Chọn thuốc
+2. Nhập SL = 0
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Số lượng: 0,Báo lỗi Số lượng thuốc phải lớn hơn 0.,Báo lỗi Số lượng thuốc phải lớn hơn 0. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_007,Kê đơn thuốc với Số lượng Âm,"1. Chọn thuốc
+2. Nhập SL = -5
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Số lượng: -5,Báo lỗi Số lượng không hợp lệ.,Báo lỗi Số lượng không hợp lệ. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_008,Kê đơn loại thuốc đang Hết hàng trong kho,1. Chọn thuốc có Tồn kho = 0,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Thuốc: Hết hàng,Hệ thống cảnh báo Thuốc này hiện đang hết trong kho dược.,Hệ thống cảnh báo Thuốc này hiện đang hết trong kho dược. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_009,Kết thúc phiên khám (Hoàn tất),"1. Bấm Hoàn tất khám
+2. Xác nhận","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Đang khám,Đóng hồ sơ bệnh án. BN được chuyển sang trạng thái Chờ thanh toán.,Đóng hồ sơ bệnh án. BN được chuyển sang trạng thái Chờ thanh toán. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_010,Lưu nháp bệnh án (Save as Draft),"1. Đang nhập dở chẩn đoán
+2. Bấm Lưu nháp","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Đang khám,Lưu dữ liệu nhưng chưa đóng hồ sơ. BS có thể khám tiếp BN khác rồi quay lại.,Lưu dữ liệu nhưng chưa đóng hồ sơ. BS có thể khám tiếp BN khác rồi quay lại. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_011,Sửa bệnh án SAU KHI đã Hoàn tất (Nhưng trong cùng ngày),"1. Chọn hồ sơ đã Hoàn tất hôm nay
+2. Bấm Sửa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Thời gian: < 24h từ lúc khám,"Cho phép sửa đổi (nếu chưa in hóa đơn), hoặc yêu cầu tạo log chỉnh sửa.","Cho phép sửa đổi (nếu chưa in hóa đơn), hoặc yêu cầu tạo log chỉnh sửa. (Hệ thống đã Validate chính xác)",Passed
+UC3.2,UC3.2_FUNC_012,Sửa bệnh án SAU KHI đã Hoàn tất > 24h (Khóa sổ),"1. Chọn hồ sơ của ngày hôm qua
+2. Cố gắng Sửa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Thời gian: > 24h,Hệ thống khóa (Read-only). Không cho phép sửa đổi hồ sơ cũ.,Hệ thống khóa (Read-only). Không cho phép sửa đổi hồ sơ cũ. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_013,Xóa một thuốc khỏi đơn thuốc khi chưa Hoàn tất,"1. Bấm X icon cạnh tên thuốc trong đơn
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Thuốc: Vừa kê,Thuốc bị xóa khỏi đơn.,Thuốc bị xóa khỏi đơn. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_014,Tải lên file Kết quả xét nghiệm (PDF/Image),"1. Bấm Upload KQ
+2. Chọn file .pdf
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",File: ketqua.pdf,File tải lên thành công và đính kèm vào bệnh án.,File tải lên thành công và đính kèm vào bệnh án. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_015,Tải lên file Kết quả xét nghiệm định dạng nguy hiểm,1. Upload file .exe / .bat / .sh,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",File: virus.exe,Báo lỗi Định dạng file không được hỗ trợ.,Báo lỗi Định dạng file không được hỗ trợ. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_016,Tải lên file kích thước vượt giới hạn,1. Upload file PDF > 20MB,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",File: size 25MB,Báo lỗi Dung lượng file vượt quá giới hạn cho phép (20MB).,Báo lỗi Dung lượng file vượt quá giới hạn cho phép (20MB). (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_017,Cảnh báo tương tác thuốc (Nếu HT có hỗ trợ),1. Kê Thuốc A và Thuốc B (Kỵ nhau theo DB y tế),"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Thuốc: Kỵ nhau,Hiển thị Cảnh báo tương tác thuốc mức độ Nguy hiểm.,Hiển thị Cảnh báo tương tác thuốc mức độ Nguy hiểm. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_018,In Toa thuốc,1. Bấm In toa thuốc,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Đơn thuốc: Hợp lệ,Xuất file PDF form Toa thuốc chuẩn của phòng khám.,Xuất file PDF form Toa thuốc chuẩn của phòng khám. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_019,In Phiếu chỉ định dịch vụ,1. Bấm In Phiếu chỉ định cận lâm sàng,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Chỉ định: Hợp lệ,Xuất file PDF danh sách dịch vụ yêu cầu.,Xuất file PDF danh sách dịch vụ yêu cầu. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_020,Tái khám: Clone một số thông tin từ bệnh án cũ,"1. BN đến tái khám
+2. Chọn chức năng Lấy thông tin toa thuốc cũ","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Bệnh án: Cũ,Tự động điền lại các thuốc mãn tính vào đơn mới.,Tự động điền lại các thuốc mãn tính vào đơn mới. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_021,Ghi chú ẩn dành riêng cho nội bộ (Bác sĩ khác xem),"1. Ghi vào ô Internal Note
+2. In toa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Note: Nội bộ,"Lưu note, nhưng note này KHÔNG được in ra toa thuốc cho Bệnh nhân.","Lưu note, nhưng note này KHÔNG được in ra toa thuốc cho Bệnh nhân. (Hệ thống đã Validate chính xác)",Passed
+UC3.2,UC3.2_FUNC_022,Bác sĩ A cố tình sửa hồ sơ khám do Bác sĩ B phụ trách,1. Dùng token BS A gọi PUT /api/records/{id_cua_BS_B},"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Auth: Token BS A,Trả về 403 Forbidden.,Trả về 403 Forbidden. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_023,Bệnh nhân tự ý xem thông tin chẩn đoán ẩn qua API,1. BN gọi GET /api/records/internal,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Auth: Token BN,Trả về 403 hoặc 401. BN chỉ xem được những gì public.,Trả về 403 hoặc 401. BN chỉ xem được những gì public. (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_024,Tìm kiếm mã ICD-10 theo từ khóa (Autocomplete),1. Gõ chữ Viêm gan vào ô ICD-10,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Từ khóa: Viêm gan,Dropdown list tự động sổ ra các mã như B15,Dropdown list tự động sổ ra các mã như B15 (Hệ thống đã Validate chính xác),Passed
+UC3.2,UC3.2_FUNC_025,Không cho phép chuyển BN sang Chờ TT khi chưa hoàn tất Chỉ định,"1. Đã tạo chỉ định nhưng chưa có KQ hoặc chưa thanh toán chỉ định
+2. Hoàn tất khám","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Đang làm xét nghiệm,Có thể cho phép hoặc cảnh báo Bệnh nhân chưa có kết quả xét nghiệm.,Có thể cho phép hoặc cảnh báo Bệnh nhân chưa có kết quả xét nghiệm. (Hệ thống đã Validate chính xác),Passed

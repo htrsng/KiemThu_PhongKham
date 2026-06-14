@@ -13,8 +13,19 @@ exports.checkIn = async (req, res, next) => {
         return res.status(400).json({ error: 'Only scheduled appointments can be checked in.' });
     }
 
+    const now = new Date();
+    const aptTime = new Date(apt.startTime);
+    const diffMs = now - aptTime; // Positive if now > aptTime (late), negative if early
+
+    if (diffMs < -30 * 60000) {
+       return res.status(400).json({ error: 'Không thể Check-in quá sớm (trước 30 phút)' });
+    }
+    if (diffMs > 30 * 60000) {
+       return res.status(400).json({ error: 'Đã quá hạn Check-in (trễ hơn 30 phút)' });
+    }
+
     apt.status = 'Đã đến';
-    apt.checkInTime = new Date();
+    apt.checkInTime = now;
     await apt.save();
 
     res.json({ data: apt.toJSON() });

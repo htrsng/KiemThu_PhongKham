@@ -13,6 +13,11 @@ const workShiftSchema = new mongoose.Schema({
   endTime: {
     type: String,
     required: [true, 'Please add an end time'],
+  },
+  maxPatients: {
+    type: Number,
+    default: 10,
+    min: [1, 'Số lượng bệnh nhân tối đa phải lớn hơn 0']
   }
 }, { timestamps: true });
 

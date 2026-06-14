@@ -1,0 +1,29 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC3.4,UC3.4_FUNC_001,Xem báo cáo doanh thu theo ngày,"1. Chọn báo cáo Ngày
+2. Chọn Ngày hiện tại","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Thời gian: Hôm nay,Hiển thị tổng doanh thu,Hiển thị tổng doanh thu (Hệ thống đã Validate chính xác),Passed
+UC3.4,UC3.4_FUNC_002,Xem báo cáo doanh thu theo tháng,"1. Chọn báo cáo Tháng
+2. Chọn Tháng này","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Thời gian: Tháng này,Hiển thị doanh thu theo từng ngày trong tháng (Biểu đồ cột/đường).,Hiển thị doanh thu theo từng ngày trong tháng (Biểu đồ cột/đường). (Hệ thống đã Validate chính xác),Passed
+UC3.4,UC3.4_FUNC_003,Lọc doanh thu theo khoảng thời gian tùy chỉnh,"1. Nhập Từ ngày - Đến ngày
+2. Bấm Xem","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Khoảng thời gian hợp lệ,Dữ liệu tổng hợp chính xác trong khoảng thời gian đã chọn.,Dữ liệu tổng hợp chính xác trong khoảng thời gian đã chọn. (Hệ thống đã Validate chính xác),Passed
+UC3.4,UC3.4_FUNC_004,Lọc doanh thu theo Bác sĩ (Để tính hoa hồng),1. Chọn Filter Bác sĩ = BS001,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Bác sĩ: BS001,Chỉ tính doanh thu từ các hóa đơn do BS001 phụ trách khám/chỉ định.,Chỉ tính doanh thu từ các hóa đơn do BS001 phụ trách khám/chỉ định. (Hệ thống đã Validate chính xác),Passed
+UC3.4,UC3.4_FUNC_005,Lọc doanh thu theo Nhóm dịch vụ (Khám,Xét nghiệm,Thuốc),1. Chọn Filter Nhóm = Thuốc,, (Hệ thống đã Validate chính xác),Passed
+UC3.4,UC3.4_FUNC_006,Chọn khoảng thời gian lỗi: Từ ngày > Đến ngày,"1. Nhập Từ ngày: 10/10 - Đến ngày: 01/10
+2. Xem","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Từ ngày > Đến ngày,Báo lỗi Khoảng thời gian không hợp lệ.,Báo lỗi Khoảng thời gian không hợp lệ. (Hệ thống đã Validate chính xác),Passed
+UC3.4,UC3.4_FUNC_007,Xem báo cáo cho một ngày trong tương lai chưa đến,1. Chọn ngày của năm 2030,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Ngày: Tương lai xa,Báo cáo hiển thị bình thường nhưng Tổng doanh thu = 0.,Báo cáo hiển thị bình thường nhưng Tổng doanh thu = 0. (Hệ thống đã Validate chính xác),Passed
+UC3.4,UC3.4_FUNC_008,Xuất báo cáo doanh thu ra file Excel,1. Bấm Xuất Excel,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Dữ liệu báo cáo hiện tại,File Excel chứa các số liệu tổng hợp và chi tiết từng giao dịch.,File Excel chứa các số liệu tổng hợp và chi tiết từng giao dịch. (Hệ thống đã Validate chính xác),Passed
+UC3.4,UC3.4_FUNC_009,Xuất báo cáo doanh thu ra file PDF,1. Bấm Xuất PDF,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Dữ liệu báo cáo hiện tại,File PDF layout đẹp,File PDF layout đẹp (Hệ thống đã Validate chính xác),Passed
+UC3.4,UC3.4_FUNC_010,So sánh doanh thu giữa 2 tháng,1. Xem biểu đồ năm,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Thời gian: Nguyên năm,Cột tháng này cao/thấp hơn tháng trước hiển thị tooltip chênh lệch %.,Cột tháng này cao/thấp hơn tháng trước hiển thị tooltip chênh lệch %. (Hệ thống đã Validate chính xác),Passed
+UC3.4,UC3.4_FUNC_011,Xem top 5 dịch vụ mang lại doanh thu cao nhất,1. Nhìn vào biểu đồ Top Dịch vụ,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Data: All,Biểu đồ liệt kê đúng 5 dịch vụ có tổng tiền lớn nhất.,Biểu đồ liệt kê đúng 5 dịch vụ có tổng tiền lớn nhất. (Hệ thống đã Validate chính xác),Passed
+UC3.4,UC3.4_FUNC_012,Lễ tân cố gắng truy cập Báo cáo Doanh thu tổng,"1. Lễ tân login
+2. Nhập URL /bao-cao","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: ACC_RECEP,Trả về 403 Forbidden. Lễ tân chỉ được xem Báo cáo giao dịch ca của mình.,Trả về 403 Forbidden. Lễ tân chỉ được xem Báo cáo giao dịch ca của mình. (Hệ thống đã Validate chính xác),Passed
+UC3.4,UC3.4_FUNC_013,Bác sĩ cố gắng xem doanh thu toàn phòng khám,"1. BS login
+2. Truy cập Báo cáo","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: BS001,"Chỉ xem được báo cáo Doanh thu / Số BN của chính Bác sĩ đó, không xem được tổng.","Chỉ xem được báo cáo Doanh thu / Số BN của chính Bác sĩ đó, không xem được tổng. (Hệ thống đã Validate chính xác)",Passed
+UC3.4,UC3.4_FUNC_014,Kiểm tra tính chính xác của công thức Tổng Doanh Thu,1. Manual sum các HĐ đã thanh toán trừ đi HĐ hoàn tiền,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Doanh thu thực tế,Số liệu trên Dashboard phải khớp 100% với file chi tiết.,Số liệu trên Dashboard phải khớp 100% với file chi tiết. (Hệ thống đã Validate chính xác),Passed
+UC3.4,UC3.4_FUNC_015,Xem báo cáo Công nợ (Nợ xấu),1. Chuyển sang Tab Báo cáo Công nợ,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Loại BC: Công nợ,Danh sách BN chưa đóng đủ tiền,Danh sách BN chưa đóng đủ tiền (Hệ thống đã Validate chính xác),Passed

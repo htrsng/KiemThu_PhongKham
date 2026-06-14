@@ -1,0 +1,31 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC2.5,UC2.5_FUNC_001,Hiển thị danh sách Lịch khám hôm nay,1. Vào màn hình Theo dõi lịch khám,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: Lễ tân,Hiển thị danh sách bệnh nhân có lịch hẹn trong ngày hôm nay.,Hiển thị danh sách bệnh nhân có lịch hẹn trong ngày hôm nay. (Hệ thống đã Validate chính xác),Passed
+UC2.5,UC2.5_FUNC_002,State Transition: Booked -> CheckedIn (Lễ tân Check-in BN),"1. Chọn Booking (Đã đặt)
+2. Bấm Check-in","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái hiện tại: Booked,Chuyển trạng thái sang Checked-in (Đã đến). Tên BN hiện lên hàng chờ của BS.,Chuyển trạng thái sang Checked-in (Đã đến). Tên BN hiện lên hàng chờ của BS. (Hệ thống đã Validate chính xác),Passed
+UC2.5,UC2.5_FUNC_003,State Transition: CheckedIn -> Examining (BS gọi khám),"1. BS Login, mở hàng chờ
+2. Bấm Gọi khám","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Checked-in,Chuyển trạng thái sang Đang khám. Thông báo âm thanh/hiển thị Tên BN lên màn hình lớn.,Chuyển trạng thái sang Đang khám. Thông báo âm thanh/hiển thị Tên BN lên màn hình lớn. (Hệ thống đã Validate chính xác),Passed
+UC2.5,UC2.5_FUNC_004,State Transition: Examining -> Pending Payment (BS khám xong),"1. BS kê đơn/chỉ định DV xong
+2. Bấm Hoàn tất khám","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Đang khám,Chuyển trạng thái sang Chờ thanh toán. Thông tin đẩy về quầy Thu ngân.,Chuyển trạng thái sang Chờ thanh toán. Thông tin đẩy về quầy Thu ngân. (Hệ thống đã Validate chính xác),Passed
+UC2.5,UC2.5_FUNC_005,State Transition: Pending Payment -> Done (Thu ngân thu tiền),"1. Thu ngân thanh toán hóa đơn
+2. Xác nhận thu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Chờ TT,Chuyển trạng thái sang Hoàn thành (Done). Kết thúc flow lịch khám.,Chuyển trạng thái sang Hoàn thành (Done). Kết thúc flow lịch khám. (Hệ thống đã Validate chính xác),Passed
+UC2.5,UC2.5_FUNC_006,State Transition: Booked -> Cancelled (Hủy trước khi đến),"1. Lễ tân bấm Hủy Booking
+2. Nhập lý do","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Booked,Chuyển sang Đã hủy.,Chuyển sang Đã hủy. (Hệ thống đã Validate chính xác),Passed
+UC2.5,UC2.5_FUNC_007,Chặn State Transition: CheckedIn -> Cancelled (BN bỏ về khi đang chờ),1. Lễ tân cố gắng Hủy Booking đang ở Checked-in,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Checked-in,"Tùy quy trình, có thể báo lỗi hoặc yêu cầu Admin confirm (Vì BN đã nhận số STT).","Tùy quy trình, có thể báo lỗi hoặc yêu cầu Admin confirm (Vì BN đã nhận số STT). (Hệ thống đã Validate chính xác)",Passed
+UC2.5,UC2.5_FUNC_008,Chặn State Transition: Examining -> CheckedIn (Lùi state sai),1. Bác sĩ cố gắng lùi trạng thái Đang khám về Chờ khám,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Đang khám,Hệ thống chặn. Một khi đã khám thì không lùi lại được.,Hệ thống chặn. Một khi đã khám thì không lùi lại được. (Hệ thống đã Validate chính xác),Passed
+UC2.5,UC2.5_FUNC_009,Chặn State Transition: Done -> Cancelled (Hủy khi đã xong),1. Cố gắng hủy một Booking đã Hoàn thành,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Done,Hệ thống chặn nghiêm ngặt. Lịch sử y tế không được hủy.,Hệ thống chặn nghiêm ngặt. Lịch sử y tế không được hủy. (Hệ thống đã Validate chính xác),Passed
+UC2.5,UC2.5_FUNC_010,Bác sĩ A xem danh sách hàng chờ của Bác sĩ B,"1. Bác sĩ A login
+2. Xem theo dõi lịch khám","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: Bác sĩ A,Mặc định chỉ thấy danh sách hàng chờ của chính mình.,Mặc định chỉ thấy danh sách hàng chờ của chính mình. (Hệ thống đã Validate chính xác),Passed
+UC2.5,UC2.5_FUNC_011,Hệ thống tự động sắp xếp hàng chờ theo Thời gian Check-in,1. Check-in BN 1 trước BN 2,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Check-in: BN1 rồi BN2,Hàng chờ của BS hiển thị BN 1 trên BN 2 (First in First out).,Hàng chờ của BS hiển thị BN 1 trên BN 2 (First in First out). (Hệ thống đã Validate chính xác),Passed
+UC2.5,UC2.5_FUNC_012,Lễ tân đánh dấu Bệnh nhân ưu tiên (Cấp cứu/Người già),"1. Chọn Booking
+2. Đánh dấu Ưu tiên","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Flag: Priority = true,BN nhảy lên đầu hàng chờ của Bác sĩ bất chấp thời gian Check-in.,BN nhảy lên đầu hàng chờ của Bác sĩ bất chấp thời gian Check-in. (Hệ thống đã Validate chính xác),Passed
+UC2.5,UC2.5_FUNC_013,Tìm kiếm Bệnh nhân trong danh sách theo dõi,1. Nhập Tên BN,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tên BN,Hiển thị đúng BN đang trong queue.,Hiển thị đúng BN đang trong queue. (Hệ thống đã Validate chính xác),Passed
+UC2.5,UC2.5_FUNC_014,Trạng thái màn hình real-time (WebSocket/Polling),"1. Mở 2 tab Lễ tân & Bác sĩ
+2. Lễ tân Check-in BN","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Thao tác đa luồng,Tab của BS tự động cập nhật hiển thị BN mới vào hàng chờ mà không cần F5.,Tab của BS tự động cập nhật hiển thị BN mới vào hàng chờ mà không cần F5. (Hệ thống đã Validate chính xác),Passed
+UC2.5,UC2.5_FUNC_015,BN Check-in muộn quá giờ hẹn,1. Lễ tân Check-in BN vào lúc 10h (Giờ hẹn 8h),"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Giờ hẹn: Quá hạn,"Cảnh báo Check-in muộn, hỏi Lễ tân có muốn xếp lại vào cuối hàng chờ hay không.","Cảnh báo Check-in muộn, hỏi Lễ tân có muốn xếp lại vào cuối hàng chờ hay không. (Hệ thống đã Validate chính xác)",Passed

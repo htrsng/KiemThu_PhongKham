@@ -1,0 +1,6 @@
+[
+  { "id": "BS001", "name": "BS. Nguyen Minh Duc", "hocVi": "ThacSi", "heSo": 1.5, "chuyenKhoa": "Rang tong quat" },
+  { "id": "BS002", "name": "PGS. Le Thi Hoa", "hocVi": "PhoGiaoSu", "heSo": 2.0, "chuyenKhoa": "Chinh nha" },
+  { "id": "BS003", "name": "GS. Tran Van Nam", "hocVi": "GiaoSu", "heSo": 2.5, "chuyenKhoa": "Phau thuat ham mat" },
+  { "id": "BS004", "name": "BS. Pham Lan Anh", "hocVi": "DaiHoc", "heSo": 1.3, "chuyenKhoa": "Rang tong quat", "status": "inactive" }
+]

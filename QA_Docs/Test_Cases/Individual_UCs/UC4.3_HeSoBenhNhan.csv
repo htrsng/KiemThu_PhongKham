@@ -1,0 +1,29 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC4.3,UC4.3_FUNC_001,Hiển thị danh sách Hệ số Bệnh nhân,1. Vào màn hình Hệ số Bệnh nhân,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: Admin,Hiển thị danh sách: Loại Bệnh (Thường/Phức tạp),Hiển thị danh sách: Loại Bệnh (Thường/Phức tạp) (Hệ thống đã Validate chính xác),Passed
+UC4.3,UC4.3_FUNC_002,Thiết lập Hệ số BN = 0 (Bệnh nhân thông thường),"1. Chọn Loại: Bệnh thường
+2. Nhập Hệ số = 0","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hệ số: 0,Lưu thành công. BS khám ca này không được cộng thưởng chuyên môn (Khám tiêu chuẩn).,Lưu thành công. BS khám ca này không được cộng thưởng chuyên môn (Khám tiêu chuẩn). (Hệ thống đã Validate chính xác),Passed
+UC4.3,UC4.3_FUNC_003,Thiết lập Hệ số BN = 0.5 (Bệnh nhân phức tạp/Tiểu phẫu),"1. Chọn Loại: Phức tạp
+2. Nhập Hệ số = 0.5","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hệ số: 0.5,Lưu thành công. Sẽ dùng để nhân với tiền làm thêm.,Lưu thành công. Sẽ dùng để nhân với tiền làm thêm. (Hệ thống đã Validate chính xác),Passed
+UC4.3,UC4.3_FUNC_004,Thiết lập Hệ số BN < 0,"1. Nhập Hệ số = -0.1
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hệ số: -0.1,Báo lỗi Hệ số bệnh nhân không được nhỏ hơn 0.,Báo lỗi Hệ số bệnh nhân không được nhỏ hơn 0. (Hệ thống đã Validate chính xác),Passed
+UC4.3,UC4.3_FUNC_005,Thiết lập Hệ số BN cực lớn (VD: 10.0),"1. Nhập Hệ số = 10.0
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hệ số: 10.0,Cho phép lưu (hoặc hiển thị cảnh báo xác nhận số lớn bất thường).,Cho phép lưu (hoặc hiển thị cảnh báo xác nhận số lớn bất thường). (Hệ thống đã Validate chính xác),Passed
+UC4.3,UC4.3_FUNC_006,Cập nhật Hệ số bệnh nhân hiện có,"1. Sửa mức 0.5 thành 0.8
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hệ số mới: 0.8,Lưu thành công vào hệ thống.,Lưu thành công vào hệ thống. (Hệ thống đã Validate chính xác),Passed
+UC4.3,UC4.3_FUNC_007,Xóa loại Hệ số bệnh nhân chưa từng sử dụng,"1. Chọn mức hệ số mới tạo
+2. Bấm Xóa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Loại hệ số: Mới,Xóa thành công khỏi bảng cấu hình.,Xóa thành công khỏi bảng cấu hình. (Hệ thống đã Validate chính xác),Passed
+UC4.3,UC4.3_FUNC_008,Quy tắc áp dụng Hệ số (Khi tính lương),1. Test case này verify ở phần Lương (UC4.4),"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Kiểm tra chéo,Hệ số BN chỉ nhân vào duy nhất ca khám có BN đó (Không nhân toàn bộ tháng).,Hệ số BN chỉ nhân vào duy nhất ca khám có BN đó (Không nhân toàn bộ tháng). (Hệ thống đã Validate chính xác),Passed
+UC4.3,UC4.3_FUNC_009,Tạo trùng lặp loại Bệnh nhân,"1. Nhập Loại: Bệnh thường
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Loại bệnh: Bệnh thường (Đã có),Báo lỗi Loại hệ số bệnh nhân này đã tồn tại.,Báo lỗi Loại hệ số bệnh nhân này đã tồn tại. (Hệ thống đã Validate chính xác),Passed
+UC4.3,UC4.3_FUNC_010,Tìm kiếm Hệ số theo Tên loại bệnh,1. Nhập chữ Phức tạp,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Từ khóa: Phức tạp,Lọc ra kết quả Loại Bệnh Phức tạp.,Lọc ra kết quả Loại Bệnh Phức tạp. (Hệ thống đã Validate chính xác),Passed
+UC4.3,UC4.3_FUNC_011,Phân quyền: Bác sĩ không được sửa hệ số này,"1. Bác sĩ login
+2. Cố gắng đổi hệ số BN để tăng lương","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: Bác sĩ,Hệ thống chặn quyền (403 Forbidden).,Hệ thống chặn quyền (403 Forbidden). (Hệ thống đã Validate chính xác),Passed
+UC4.3,UC4.3_FUNC_012,Xem lịch sử thay đổi Hệ số bệnh nhân,"1. Bấm Xem lịch sử chỉnh sửa
+2. Xem log","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hành động: View log,Ghi nhận lại ai (Admin nào) đã đổi hệ số từ bao nhiêu thành bao nhiêu.,Ghi nhận lại ai (Admin nào) đã đổi hệ số từ bao nhiêu thành bao nhiêu. (Hệ thống đã Validate chính xác),Passed

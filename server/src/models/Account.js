@@ -2,11 +2,22 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const accountSchema = new mongoose.Schema({
-  accountCode: { type: String, required: true, unique: true },
+  accountCode: { type: String, required: true, unique: true, default: () => `ACC${Date.now()}` },
   fullName: { type: String, required: true },
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  password: { 
+    type: String, 
+    required: true,
+    validate: {
+      validator: function(v) {
+        if (!this.isModified('password')) return true;
+        // Require at least 8 chars, 1 uppercase, 1 number, 1 special character
+        return /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(v);
+      },
+      message: 'Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 số và 1 ký tự đặc biệt.'
+    }
+  },
   role: { type: String, enum: ['Admin', 'Doctor', 'Reception'], required: true },
   status: { type: String, enum: ['active', 'inactive', 'locked'], default: 'active' },
   referenceId: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor' },

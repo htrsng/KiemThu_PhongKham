@@ -245,7 +245,7 @@ exports.calculateYearlyPayroll = async (req, res, next) => {
         const doctors = await Doctor.find(docQuery);
 
         // Lấy dữ liệu đã lưu trên server (PayrollSlip)
-        const slipQuery = { year: targetYear, status: 'Đã chốt' };
+        const slipQuery = { year: targetYear, status: { $in: ['Approved', 'Paid'] } };
         if (doctorId) {
             slipQuery.doctorId = doctorId;
         }
@@ -310,26 +310,35 @@ exports.getPayrollSlip = async (req, res, next) => {
 
 exports.savePayrollSlip = async (req, res, next) => {
     try {
-        const { doctorId, month, year, totalSalary, totalHours, hourlyRateUsed, details } = req.body;
+        const { doctorId, month, year, totalSalary, totalHours, hourlyRateUsed, details, bonus, penalty } = req.body;
         
-        // Check existing
-        const existingSlip = await PayrollSlip.findOne({ doctorId, month, year });
-        if (existingSlip && existingSlip.status === 'Đã chốt') {
-            return res.status(400).json({ success: false, error: 'Phiếu lương tháng này đã được chốt và không thể ghi đè' });
+        const finalBonus = bonus || 0;
+        const finalPenalty = penalty || 0;
+
+        if (finalPenalty > totalSalary + finalBonus) {
+            return res.status(400).json({ success: false, error: 'Số tiền phạt không được lớn hơn tổng lương' });
         }
 
+        const existingSlip = await PayrollSlip.findOne({ doctorId, month, year });
+        if (existingSlip && ['Approved', 'Paid'].includes(existingSlip.status)) {
+            return res.status(400).json({ success: false, error: 'Phiếu lương đã được duyệt hoặc thanh toán, không thể lưu nháp/tính lại' });
+        }
+
+        const finalTotal = totalSalary + finalBonus - finalPenalty;
+
         if (existingSlip) {
-            existingSlip.totalSalary = totalSalary;
+            existingSlip.totalSalary = finalTotal;
+            existingSlip.bonus = finalBonus;
+            existingSlip.penalty = finalPenalty;
             existingSlip.totalHours = totalHours;
             existingSlip.hourlyRateUsed = hourlyRateUsed;
             existingSlip.details = details;
-            existingSlip.status = 'Đã chốt';
-            existingSlip.lockedAt = Date.now();
+            existingSlip.status = 'Draft';
             await existingSlip.save();
             return res.status(200).json({ success: true, data: existingSlip });
         } else {
             const newSlip = new PayrollSlip({
-                doctorId, month, year, totalSalary, totalHours, hourlyRateUsed, details, status: 'Đã chốt', lockedAt: Date.now()
+                doctorId, month, year, totalSalary: finalTotal, bonus: finalBonus, penalty: finalPenalty, totalHours, hourlyRateUsed, details, status: 'Draft'
             });
             await newSlip.save();
             return res.status(201).json({ success: true, data: newSlip });
@@ -337,6 +346,51 @@ exports.savePayrollSlip = async (req, res, next) => {
     } catch (error) {
         console.error('Error saving payroll slip:', error);
         res.status(500).json({ success: false, error: 'Lỗi server khi lưu phiếu lương' });
+    }
+};
+
+exports.deletePayrollSlip = async (req, res, next) => {
+    try {
+        const slip = await PayrollSlip.findById(req.params.id);
+        if (!slip) return res.status(404).json({ success: false, error: 'Không tìm thấy phiếu lương' });
+        if (slip.status !== 'Draft') {
+            return res.status(400).json({ success: false, error: 'Chỉ có thể xóa phiếu lương ở trạng thái Nháp (Draft)' });
+        }
+        await PayrollSlip.findByIdAndDelete(req.params.id);
+        res.status(200).json({ success: true, message: 'Đã xóa' });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Lỗi server' });
+    }
+};
+
+exports.approvePayrollSlip = async (req, res, next) => {
+    try {
+        const slip = await PayrollSlip.findById(req.params.id);
+        if (!slip) return res.status(404).json({ success: false, error: 'Không tìm thấy phiếu lương' });
+        if (slip.status !== 'Draft') {
+            return res.status(400).json({ success: false, error: 'Phiếu lương không ở trạng thái Nháp' });
+        }
+        slip.status = 'Approved';
+        slip.lockedAt = Date.now();
+        await slip.save();
+        res.status(200).json({ success: true, data: slip });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Lỗi server' });
+    }
+};
+
+exports.payPayrollSlip = async (req, res, next) => {
+    try {
+        const slip = await PayrollSlip.findById(req.params.id);
+        if (!slip) return res.status(404).json({ success: false, error: 'Không tìm thấy phiếu lương' });
+        if (slip.status !== 'Approved') {
+            return res.status(400).json({ success: false, error: 'Phiếu lương chưa được duyệt' });
+        }
+        slip.status = 'Paid';
+        await slip.save();
+        res.status(200).json({ success: true, data: slip });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Lỗi server' });
     }
 };
 
@@ -400,9 +454,13 @@ exports.updateShiftCoefficient = async (req, res, next) => {
             return res.status(404).json({ success: false, error: 'Không tìm thấy ca trực' });
         }
 
+        if (patientCoefficient < 0 || patientCoefficient > 10.0) {
+            return res.status(400).json({ success: false, error: 'Hệ số bệnh nhân phải từ 0 đến 10' });
+        }
+
         // Check if payroll is locked
         const [year, month] = shift.date.split('-');
-        const slip = await PayrollSlip.findOne({ doctorId: shift.doctorId, month: parseInt(month), year: parseInt(year), status: 'Đã chốt' });
+        const slip = await PayrollSlip.findOne({ doctorId: shift.doctorId, month: parseInt(month), year: parseInt(year), status: { $in: ['Approved', 'Paid'] } });
         if (slip) {
             return res.status(400).json({ success: false, error: 'Phiếu lương tháng này đã được chốt, không thể chỉnh sửa hệ số' });
         }
@@ -429,7 +487,7 @@ exports.updateAppointmentsDifficulty = async (req, res, next) => {
 
         // Check if payroll is locked
         const [year, month] = shift.date.split('-');
-        const slip = await PayrollSlip.findOne({ doctorId: shift.doctorId, month: parseInt(month), year: parseInt(year), status: 'Đã chốt' });
+        const slip = await PayrollSlip.findOne({ doctorId: shift.doctorId, month: parseInt(month), year: parseInt(year), status: { $in: ['Approved', 'Paid'] } });
         if (slip) {
             return res.status(400).json({ success: false, error: 'Phiếu lương tháng này đã được chốt, không thể chỉnh sửa hệ số' });
         }
@@ -501,5 +559,20 @@ exports.addPayrollConfigHistory = async (req, res, next) => {
     } catch (error) {
         console.error('Error adding config history:', error);
         res.status(500).json({ success: false, error: 'Lỗi server khi lưu cấu hình' });
+    }
+};exports.deletePayrollConfigHistory = async (req, res, next) => {
+    try {
+        const config = await PayrollConfigHistory.findById(req.params.id);
+        if (!config) return res.status(404).json({ success: false, error: 'Không tìm thấy cấu hình' });
+        
+        const now = new Date();
+        if (new Date(config.effectiveDate) <= now) {
+            return res.status(400).json({ success: false, error: 'Không thể xóa cấu hình đã hoặc đang có hiệu lực' });
+        }
+        
+        await PayrollConfigHistory.findByIdAndDelete(req.params.id);
+        res.status(200).json({ success: true, message: 'Đã xóa cấu hình' });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Lỗi server' });
     }
 };

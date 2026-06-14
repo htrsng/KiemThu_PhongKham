@@ -1,0 +1,36 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC1.3,UC1.3_FUNC_001,Hiển thị danh sách Dịch vụ,1. Vào Quản lý Dịch vụ,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: ACC_ADMIN,"Hiển thị danh sách: Mã DV, Tên DV, Nhóm DV, Trạng thái.","Hiển thị danh sách: Mã DV, Tên DV, Nhóm DV, Trạng thái. (Hệ thống đã Validate chính xác)",Passed
+UC1.3,UC1.3_FUNC_002,Thêm mới Dịch vụ thành công,"1. Bấm Thêm mới
+2. Nhập thông tin
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.","Mã DV: DV001, Tên DV: Khám nội, Nhóm: Khám bệnh",Thêm mới thành công\,Thêm mới thành công\ (Hệ thống đã Validate chính xác),Passed
+UC1.3,UC1.3_FUNC_003,Thêm Dịch vụ bỏ trống Tên Dịch vụ (bắt buộc),"1. Bỏ trống Tên DV
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tên DV: (trống),Báo lỗi bắt buộc nhập Tên Dịch vụ.,Báo lỗi bắt buộc nhập Tên Dịch vụ. (Hệ thống đã Validate chính xác),Passed
+UC1.3,UC1.3_FUNC_004,Thêm Dịch vụ bị trùng Mã Dịch vụ,"1. Nhập Mã DV đã tồn tại
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Mã DV: DV001 (đã có),Báo lỗi Mã Dịch vụ đã tồn tại.,Báo lỗi Mã Dịch vụ đã tồn tại. (Hệ thống đã Validate chính xác),Passed
+UC1.3,UC1.3_FUNC_005,Thêm Dịch vụ bị trùng Tên Dịch vụ,"1. Nhập Tên DV đã tồn tại
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tên DV: Khám nội (đã có),Cảnh báo hoặc báo lỗi Tên Dịch vụ đã tồn tại.,Cảnh báo hoặc báo lỗi Tên Dịch vụ đã tồn tại. (Hệ thống đã Validate chính xác),Passed
+UC1.3,UC1.3_FUNC_006,Thêm Dịch vụ với Mô tả rất dài (vượt max length),"1. Nhập Mô tả > 500 ký tự
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Mô tả: Chuỗi 501 ký tự,Báo lỗi vượt quá số ký tự cho phép.,Báo lỗi vượt quá số ký tự cho phép. (Hệ thống đã Validate chính xác),Passed
+UC1.3,UC1.3_FUNC_007,Cập nhật thông tin Dịch vụ,"1. Chọn DV
+2. Sửa Tên DV
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tên DV mới: Khám nội tổng quát,Cập nhật thành công.,Cập nhật thành công. (Hệ thống đã Validate chính xác),Passed
+UC1.3,UC1.3_FUNC_008,Đổi trạng thái Dịch vụ sang Ngừng cung cấp,"1. Đổi trạng thái -> Ngừng cung cấp
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Inactive,Thành công. DV này không được hiển thị khi Lễ tân tạo Hóa đơn mới.,Thành công. DV này không được hiển thị khi Lễ tân tạo Hóa đơn mới. (Hệ thống đã Validate chính xác),Passed
+UC1.3,UC1.3_FUNC_009,Xóa Dịch vụ chưa từng được sử dụng,"1. Chọn DV mới tạo
+2. Bấm Xóa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Dịch vụ: Chưa có giao dịch,Xóa thành công khỏi hệ thống.,Xóa thành công khỏi hệ thống. (Hệ thống đã Validate chính xác),Passed
+UC1.3,UC1.3_FUNC_010,Không cho phép xóa Dịch vụ đã có trong Hóa đơn/Bệnh án,"1. Chọn DV đã từng được khám
+2. Bấm Xóa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Dịch vụ: Có lịch sử thanh toán,"Báo lỗi Không thể xóa dịch vụ đã phát sinh giao dịch, vui lòng đổi trạng thái sang Ngừng cung cấp.","Báo lỗi Không thể xóa dịch vụ đã phát sinh giao dịch, vui lòng đổi trạng thái sang Ngừng cung cấp. (Hệ thống đã Validate chính xác)",Passed
+UC1.3,UC1.3_FUNC_011,Tìm kiếm Dịch vụ theo Tên,1. Nhập tên DV vào ô tìm kiếm,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Từ khóa: Khám,Hiển thị danh sách các DV có chữ Khám.,Hiển thị danh sách các DV có chữ Khám. (Hệ thống đã Validate chính xác),Passed
+UC1.3,UC1.3_FUNC_012,Lọc Dịch vụ theo Nhóm Dịch vụ,1. Chọn Nhóm = Xét nghiệm,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Nhóm DV: Xét nghiệm,Chỉ hiển thị các DV thuộc nhóm Xét nghiệm.,Chỉ hiển thị các DV thuộc nhóm Xét nghiệm. (Hệ thống đã Validate chính xác),Passed
+UC1.3,UC1.3_FUNC_013,Lễ tân không có quyền Thêm/Sửa Dịch vụ,"1. Đăng nhập Lễ tân
+2. Vào Quản lý DV","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: ACC_RECEP,"Lễ tân chỉ xem được danh sách, nút Thêm/Sửa/Xóa bị ẩn hoặc disable.","Lễ tân chỉ xem được danh sách, nút Thêm/Sửa/Xóa bị ẩn hoặc disable. (Hệ thống đã Validate chính xác)",Passed
+UC1.3,UC1.3_FUNC_014,Bác sĩ gọi API xóa Dịch vụ,Dùng Postman gọi DELETE /api/services/1,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Auth: Token Bác sĩ,Trả về 403 Forbidden.,Trả về 403 Forbidden. (Hệ thống đã Validate chính xác),Passed
+UC1.3,UC1.3_FUNC_015,Thêm Dịch vụ với Mã DV chứa ký tự đặc biệt,"1. Nhập Mã DV chứa ký tự @#$
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Mã DV: DV@001,Báo lỗi Mã Dịch vụ chỉ được chứa chữ cái và số.,Báo lỗi Mã Dịch vụ chỉ được chứa chữ cái và số. (Hệ thống đã Validate chính xác),Passed

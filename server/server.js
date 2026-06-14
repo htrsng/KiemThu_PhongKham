@@ -12,6 +12,16 @@ const payrollRoutes = require('./src/routes/payrollRoutes');
 
 const { createResourceRouter } = require('./src/routes/resourceRoutes');
 
+const accountRoutes = require('./src/routes/accountRoutes');
+const doctorRoutes = require('./src/routes/doctorRoutes');
+const serviceRoutes = require('./src/routes/serviceRoutes');
+const pricingRoutes = require('./src/routes/pricingRoutes');
+const leaveRequestRoutes = require('./src/routes/leaveRequestRoutes');
+const workShiftRoutes = require('./src/routes/workShiftRoutes');
+const appointmentRoutes = require('./src/routes/appointmentRoutes');
+const treatmentRoutes = require('./src/routes/treatmentRoutes');
+const invoiceRoutes = require('./src/routes/invoiceRoutes');
+
 // Import models for generic routes
 const Account = require('./src/models/Account');
 const Doctor = require('./src/models/Doctor');
@@ -69,12 +79,12 @@ app.post('/api/appointments/walk-in', protect, appointmentController.walkIn);
 app.patch('/api/appointments/:id', protect, appointmentController.finishTreatment); // Overrides generic patch for logic
 
 // Mount generic resource routes
-app.use('/api/accounts', protect, createResourceRouter(Account));
-app.use('/api/doctors', createResourceRouter(Doctor)); // Publicly readable?
+app.use('/api/accounts', protect, accountRoutes);
+app.use('/api/doctors', protect, doctorRoutes);
 app.use('/api/patients', protect, createResourceRouter(Patient));
-app.use('/api/services', createResourceRouter(Service));
-app.use('/api/appointments', protect, createResourceRouter(Appointment));
-app.use('/api/invoices', protect, createResourceRouter(Invoice));
+app.use('/api/services', protect, serviceRoutes);
+app.use('/api/appointments', protect, appointmentRoutes);
+app.use('/api/invoices', protect, invoiceRoutes);
 app.use('/api/materials', protect, createResourceRouter(Material));
 app.use('/api/inventory-logs', protect, createResourceRouter(InventoryLog));
 // Custom Shift Routes (with conflict detection)
@@ -84,13 +94,14 @@ app.post('/api/shifts', protect, shiftController.createShift);
 app.put('/api/shifts/:id', protect, shiftController.updateShift);
 app.patch('/api/shifts/:id', protect, shiftController.updateShift);
 app.delete('/api/shifts/:id', protect, shiftController.deleteShift);
-app.use('/api/work-shifts', protect, createResourceRouter(WorkShift));
-app.use('/api/pricing-policies', protect, createResourceRouter(PricingPolicy));
+app.use('/api/work-shifts', protect, workShiftRoutes);
+app.use('/api/pricing-policies', protect, pricingRoutes);
+app.use('/api/leave-requests', protect, leaveRequestRoutes);
 app.use('/api/holidays', protect, createResourceRouter(Holiday));
 app.use('/api/settings', protect, createResourceRouter(Setting));
 app.use('/api/audit-logs', protect, createResourceRouter(AuditLog));
 app.use('/api/role_permissions', protect, createResourceRouter(RolePermission));
-app.use('/api/treatment-records', protect, createResourceRouter(TreatmentRecord));
+app.use('/api/treatment-records', protect, treatmentRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

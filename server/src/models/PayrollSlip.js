@@ -16,12 +16,20 @@ const payrollSlipSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Nháp', 'Đã chốt'],
-        default: 'Đã chốt'
+        enum: ['Draft', 'Approved', 'Paid'],
+        default: 'Draft'
     },
     totalSalary: {
         type: Number,
         required: true
+    },
+    bonus: {
+        type: Number,
+        default: 0
+    },
+    penalty: {
+        type: Number,
+        default: 0
     },
     totalHours: {
         type: Number,

@@ -43,7 +43,12 @@ const treatmentRecordSchema = new mongoose.Schema({
     dentalChart: [{
         toothId: Number,
         status: String
-    }]
+    }],
+    status: {
+        type: String,
+        enum: ['Draft', 'Completed'],
+        default: 'Draft'
+    }
 }, {
     timestamps: true
 });

@@ -1,0 +1,6 @@
+{
+  "admin": { "username": "admin", "password": "Admin@123", "role": "Admin", "fullName": "Nguyen Van Admin" },
+  "le_tan": { "username": "letan01", "password": "Letan@123", "role": "LeTan", "fullName": "Tran Thi Le Tan" },
+  "bac_si": { "username": "bacsi01", "password": "Bacsi@123", "role": "BacSi", "fullName": "BS. Nguyen Minh Duc", "hocVi": "ThacSi", "heSo": 1.5 },
+  "thu_ngan": { "username": "thungan", "password": "Thungan@123","role": "ThuNgan", "fullName": "Le Thi Thu Ngan" }
+}

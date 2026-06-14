@@ -1,0 +1,68 @@
+name: Cypress E2E Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+defaults:
+  run:
+    working-directory: ./smilecare-cypress
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Frontend Dependencies
+        run: npm install
+        working-directory: ./dental-system/client
+
+      - name: Start Frontend
+        run: npm run dev &
+        working-directory: ./dental-system/client
+
+      - name: Install Backend Dependencies
+        run: npm install
+        working-directory: ./server
+
+      - name: Start Backend
+        run: npm start &
+        working-directory: ./server
+
+      - name: Install Cypress Dependencies
+        run: npm install
+
+      - name: Wait for servers
+        run: npx wait-on http://localhost:5173 http://localhost:3000 --timeout 60000
+
+      - name: Run Smoke Tests
+        run: npm run cy:smoke
+
+      - name: Run Full E2E Suite
+        run: npm run cy:run
+        env:
+          ADMIN_USER: ${{ secrets.ADMIN_USER }}
+          ADMIN_PASS: ${{ secrets.ADMIN_PASS }}
+          BASE_URL: http://localhost:5173
+
+      - name: Merge Reports
+        if: always()
+        run: npm run report:merge && npm run report:gen
+
+      - name: Upload Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-report
+          path: smilecare-cypress/cypress/reports/final/
+
+      - name: Upload Videos on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-videos
+          path: smilecare-cypress/cypress/videos/

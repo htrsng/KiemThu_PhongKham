@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 
 const doctorSchema = new mongoose.Schema({
   licenseNumber: { type: String, required: true, unique: true },
-  fullName: { type: String, required: true },
-  phone: { type: String },
-  email: { type: String },
+  fullName: { type: String, required: true, maxlength: [100, 'Tên bác sĩ không được vượt quá 100 ký tự'] },
+  phone: { type: String, match: [/^[0-9]{10,11}$/, 'Số điện thoại phải từ 10-11 số'] },
+  email: { type: String, match: [/^\S+@\S+\.\S+$/, 'Định dạng email không hợp lệ'] },
   specialty: { type: String },
   degree: { type: String },
   experience: { type: Number, default: 0 },

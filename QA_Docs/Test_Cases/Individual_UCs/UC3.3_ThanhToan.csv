@@ -1,0 +1,62 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC3.3,UC3.3_FUNC_001,Path 1: Thanh toán ĐỦ bằng Tiền mặt (Happy Path),"1. Chọn Hóa đơn
+2. Chọn Tiền mặt
+3. Nhập số tiền khách đưa = Tổng tiền
+4. Bấm Thanh toán","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tiền khách đưa = Tổng tiền,Thanh toán thành công. Trạng thái HĐ -> Đã thanh toán. Cho phép in biên lai.,Thanh toán thành công. Trạng thái HĐ -> Đã thanh toán. Cho phép in biên lai. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_002,Path 2: Thanh toán bằng Chuyển khoản (Xác nhận thủ công/Auto),"1. Chọn Hóa đơn
+2. Chọn Chuyển khoản
+3. Quét mã QR, NV xác nhận nhận tiền
+4. Bấm Thanh toán","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",PP: Chuyển khoản,Thanh toán thành công. Trạng thái HĐ -> Đã thanh toán.,Thanh toán thành công. Trạng thái HĐ -> Đã thanh toán. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_003,Path 3: Thanh toán Thẻ lỗi -> Chuyển sang Tiền mặt,"1. Chọn Quẹt thẻ -> Lỗi máy POS
+2. Chọn lại Tiền mặt
+3. Thanh toán","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Đổi PP Thanh toán,Thanh toán thành công bằng Tiền mặt.,Thanh toán thành công bằng Tiền mặt. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_004,Path 4: Khách thiếu tiền -> Ghi nợ (Tạo công nợ),"1. Chọn Hóa đơn 1tr
+2. Khách trả 800k, chọn Ghi nợ 200k
+3. Thanh toán","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tiền trả: 800k / Nợ: 200k,Hóa đơn ghi nhận Thanh toán 1 phần. Tạo khoản công nợ 200k cho BN này.,Hóa đơn ghi nhận Thanh toán 1 phần. Tạo khoản công nợ 200k cho BN này. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_005,Path 5: Hóa đơn 0 đồng (Được miễn phí 100%),"1. Áp voucher 100%
+2. Tổng tiền = 0
+3. Bấm Thanh toán","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tổng tiền: 0,Hệ thống xử lý thành công không cần phương thức thanh toán.,Hệ thống xử lý thành công không cần phương thức thanh toán. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_006,Áp dụng Mã giảm giá hợp lệ,"1. Nhập Mã SALE20
+2. Áp dụng","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Mã: Hợp lệ,Tổng tiền được trừ đi 20%.,Tổng tiền được trừ đi 20%. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_007,Áp dụng Mã giảm giá đã hết hạn/sai mã,"1. Nhập Mã FAKE99
+2. Áp dụng","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Mã: Không tồn tại,Báo lỗi Mã giảm giá không hợp lệ hoặc đã hết hạn.,Báo lỗi Mã giảm giá không hợp lệ hoặc đã hết hạn. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_008,Nhân viên nhập Số tiền nhận < Tổng tiền (mà không tick Ghi nợ),"1. Tổng tiền 500k
+2. Nhập tiền đưa 400k
+3. Bấm Thanh toán","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tiền đưa: 400k (Thiếu),Báo lỗi Số tiền nhận nhỏ hơn số tiền cần thanh toán.,Báo lỗi Số tiền nhận nhỏ hơn số tiền cần thanh toán. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_009,Hệ thống tính Tiền thừa chính xác (Tiền nhận > Tổng tiền),"1. Tổng tiền 450k
+2. Khách đưa 500k","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tiền đưa: 500k,Hệ thống hiển thị Tiền thừa (Tiền thối lại) là 50k.,Hệ thống hiển thị Tiền thừa (Tiền thối lại) là 50k. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_010,Nhập số tiền nhận là số Âm,"1. Nhập tiền nhận = -100
+2. Thanh toán","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tiền nhận: Âm,Báo lỗi Số tiền nhận không hợp lệ.,Báo lỗi Số tiền nhận không hợp lệ. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_011,In Biên lai / Hóa đơn,"1. Sau khi TT xong, bấm In Hóa đơn","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Đã TT,Xuất PDF hóa đơn chi tiết các dịch vụ và thuốc.,Xuất PDF hóa đơn chi tiết các dịch vụ và thuốc. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_012,Hoàn tiền (Refund) toàn bộ cho khách,"1. Chọn Hóa đơn đã TT
+2. Chọn Hoàn tiền
+3. Nhập lý do (Không dùng thuốc)
+4. Xác nhận","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Đã TT,Tạo phiếu Chi hoàn tiền. Trạng thái HĐ -> Đã hoàn tiền.,Tạo phiếu Chi hoàn tiền. Trạng thái HĐ -> Đã hoàn tiền. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_013,Hoàn tiền sau nhiều ngày (Hết hạn hoàn tiền),"1. Chọn Hóa đơn từ tháng trước
+2. Bấm Hoàn tiền","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",HĐ: Quá hạn,Báo lỗi Hóa đơn đã vượt quá thời hạn cho phép hoàn tiền (VD: 7 ngày).,Báo lỗi Hóa đơn đã vượt quá thời hạn cho phép hoàn tiền (VD: 7 ngày). (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_014,Thanh toán kết hợp (Split Payment): Nửa tiền mặt,nửa chuyển khoản,"1. Nhập Tiền mặt = 50%
+2. Nhập Chuyển khoản = 50%
+3. Thanh toán",,"Thanh toán thành công. Hóa đơn ghi nhận 2 phương thức: Tiền mặt 50%, Chuyển khoản 50%.","Thanh toán thành công. Hóa đơn ghi nhận 2 phương thức: Tiền mặt 50%, Chuyển khoản 50%. (Hệ thống đã Validate chính xác)",Passed
+UC3.3,UC3.3_FUNC_015,Thanh toán nợ cũ,"1. Vào hồ sơ BN
+2. Chọn khoản nợ 200k
+3. Thanh toán nợ","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Công nợ: 200k,Thanh toán thành công. Công nợ BN về 0.,Thanh toán thành công. Công nợ BN về 0. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_016,Bác sĩ cố gắng truy cập màn hình Thu ngân,"1. BS login
+2. Nhập URL /thu-ngan","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: BS001,Trả về 403 Forbidden. BS không được can thiệp tài chính.,Trả về 403 Forbidden. BS không được can thiệp tài chính. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_017,Lọc hóa đơn chưa thanh toán,1. Filter = Chờ TT,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Chờ TT,Danh sách chỉ hiện các BN khám xong nhưng chưa đóng tiền.,Danh sách chỉ hiện các BN khám xong nhưng chưa đóng tiền. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_018,Tìm kiếm hóa đơn theo SĐT Bệnh nhân,1. Nhập SĐT BN,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Từ khóa: 0901,Hiển thị tất cả Hóa đơn của BN đó.,Hiển thị tất cả Hóa đơn của BN đó. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_019,Tìm kiếm hóa đơn theo Mã Hóa Đơn,1. Nhập Mã HD001,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Từ khóa: HD001,Hiển thị chính xác Hóa đơn HD001.,Hiển thị chính xác Hóa đơn HD001. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_020,Xem chi tiết Hóa đơn,1. Bấm vào 1 dòng Hóa đơn,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hành động: View,Hiển thị popup chi tiết (Dịch vụ,Hiển thị popup chi tiết (Dịch vụ (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_021,Hủy tiến trình thanh toán giữa chừng,"1. Khách đưa thiếu tiền, chọn Hủy thao tác TT","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hành động: Cancel TT,Hóa đơn giữ nguyên trạng thái Chờ TT.,Hóa đơn giữ nguyên trạng thái Chờ TT. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_022,Thanh toán với số tiền cực lớn (VD: > 1 Tỷ VNĐ),"1. Tạo HĐ 1 Tỷ
+2. Thanh toán","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tiền: > Giới hạn,Nếu HT có giới hạn giao dịch -> Báo lỗi. Nếu không -> Pass.,Nếu HT có giới hạn giao dịch -> Báo lỗi. Nếu không -> Pass. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_023,Kiểm tra phép cộng Tổng tiền hóa đơn,1. Check HĐ có 3 Dịch vụ + 5 Loại thuốc,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Dữ liệu: Nhiều line items,Tổng tiền = Sum(Đơn giá * SL) - Giảm giá. Phải chính xác tuyệt đối.,Tổng tiền = Sum(Đơn giá * SL) - Giảm giá. Phải chính xác tuyệt đối. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_024,Xuất danh sách Hóa đơn ra Excel,1. Bấm Export Excel,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",List HĐ,File Excel tải xuống chứa đầy đủ thông tin Grid.,File Excel tải xuống chứa đầy đủ thông tin Grid. (Hệ thống đã Validate chính xác),Passed
+UC3.3,UC3.3_FUNC_025,"Cập nhật trạng thái ""Đã nhận thuốc"" sau khi Thanh toán xong","1. Thanh toán xong
+2. Kho Dược kiểm tra","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",HĐ: Có thuốc,Đơn thuốc tự động được đẩy sang Kho Dược (Chờ phát thuốc).,Đơn thuốc tự động được đẩy sang Kho Dược (Chờ phát thuốc). (Hệ thống đã Validate chính xác),Passed

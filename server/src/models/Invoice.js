@@ -8,8 +8,11 @@ const invoiceSchema = new mongoose.Schema({
   serviceIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Service' }],
   totalAmount: { type: Number, required: true },
   finalAmount: { type: Number },
+  amountPaid: { type: Number, default: 0 },
+  debt: { type: Number, default: 0 },
+  discount: { type: Number, default: 0 },
   paymentMethod: { type: String, enum: ['Tiền mặt', 'Chuyển khoản', 'Thẻ tín dụng', 'Thẻ ATM'], default: 'Tiền mặt' },
-  status: { type: String, enum: ['Chưa thanh toán', 'Đã thanh toán'], default: 'Chưa thanh toán' },
+  status: { type: String, enum: ['Chưa thanh toán', 'Đã thanh toán', 'Hoàn tiền'], default: 'Chưa thanh toán' },
 }, { timestamps: true });
 
 invoiceSchema.methods.toJSON = function() {

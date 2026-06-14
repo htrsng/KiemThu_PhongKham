@@ -1,0 +1,22 @@
+"﻿""Requirement ID (Use Case)""",Tên Use Case,Mức độ ưu tiên,Tổng số Test Cases,Danh sách Test Cases Mapping,Tỉ lệ hoàn thành (Pass/Total)
+UC0.1,Đăng nhập và Xác thực,High,9,TC-UC01-001 -> TC-UC01-009,9/9
+UC1.1,Quản lý người dùng,High,23,TC-UC11-001 -> TC-UC11-020,3/23
+UC1.2,Quản lý bác sĩ,High,20,TC-UC12-001 -> TC-UC12-020,0/20
+UC1.3,Quản lý dịch vụ,High,15,TC-UC13-001 -> TC-UC13-015,0/15
+UC1.4,Bảng giá,Medium,15,TC-UC14-001 -> TC-UC14-015,0/15
+UC2.1,Ngày nghỉ,Medium,13,TC-UC21-001 -> TC-UC21-013,1/13
+UC2.2,Ca làm việc,High,15,TC-UC22-001 -> TC-UC22-015,0/15
+UC2.3,Lịch trực,High,20,TC-UC23-001 -> TC-UC23-020,0/20
+UC2.4,Đặt lịch khám,High,30,TC-UC24-001 -> TC-UC24-030,0/30
+UC2.5,Theo dõi lịch khám,High,15,TC-UC25-001 -> TC-UC25-015,0/15
+UC3.1,Check-in,High,15,TC-UC31-001 -> TC-UC31-015,0/15
+UC3.2,Khám bệnh,High,25,TC-UC32-001 -> TC-UC32-025,0/25
+UC3.3,Thanh toán,High,25,TC-UC33-001 -> TC-UC33-025,0/25
+UC3.4,Thống kê doanh thu,Medium,15,TC-UC34-001 -> TC-UC34-015,0/15
+UC4.1,Tiền cơ bản,High,10,TC-UC41-001 -> TC-UC41-010,0/10
+UC4.2,Hệ số ca,High,10,TC-UC42-001 -> TC-UC42-010,0/10
+UC4.3,Hệ số bệnh nhân,High,12,TC-UC43-001 -> TC-UC43-012,0/12
+UC4.4,Lập phiếu lương,High,29,TC-UC44-001 -> TC-UC44-029,4/29
+UC4.5,Báo cáo lương,Medium,15,TC-UC45-001 -> TC-UC45-015,0/15
+UC4.6,Báo cáo lương 1 BS,High,10,TC-UC46-001 -> TC-UC46-010,10/10
+UC4.7,Báo cáo lương toàn PK,High,10,TC-UC47-001 -> TC-UC47-010,10/10

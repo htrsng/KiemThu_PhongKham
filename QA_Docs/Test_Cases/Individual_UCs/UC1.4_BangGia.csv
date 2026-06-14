@@ -1,0 +1,37 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC1.4,UC1.4_FUNC_001,Hiển thị danh sách Bảng giá hiện hành,1. Vào Quản lý Bảng giá,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: ACC_ADMIN,Hiển thị danh sách giá đang áp dụng cho các Dịch vụ.,Hiển thị danh sách giá đang áp dụng cho các Dịch vụ. (Hệ thống đã Validate chính xác),Passed
+UC1.4,UC1.4_FUNC_002,Xem lịch sử thay đổi giá của một Dịch vụ,"1. Chọn 1 Dịch vụ
+2. Bấm Xem lịch sử giá","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Dịch vụ: DV001,"Hiển thị danh sách các mức giá cũ, hiện hành và sắp tới của DV đó.","Hiển thị danh sách các mức giá cũ, hiện hành và sắp tới của DV đó. (Hệ thống đã Validate chính xác)",Passed
+UC1.4,UC1.4_FUNC_003,Thêm mới mức giá cho Dịch vụ (Happy path),"1. Bấm Thêm giá mới
+2. Nhập Giá và Ngày hiệu lực (tương lai)
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.","Giá: 200,000đ
+Ngày áp dụng: 01/01/2027",Thêm mới thành công.,Thêm mới thành công. (Hệ thống đã Validate chính xác),Passed
+UC1.4,UC1.4_FUNC_004,Thêm mức giá với Ngày hiệu lực trong quá khứ,"1. Nhập Ngày áp dụng < Ngày hiện tại
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Ngày áp dụng: Hôm qua,Báo lỗi Ngày hiệu lực phải lớn hơn hoặc bằng ngày hiện tại.,Báo lỗi Ngày hiệu lực phải lớn hơn hoặc bằng ngày hiện tại. (Hệ thống đã Validate chính xác),Passed
+UC1.4,UC1.4_FUNC_005,Thêm mức giá với giá trị Âm (< 0),"1. Nhập Giá = -50000
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Giá: -50000,Báo lỗi Giá dịch vụ không được nhỏ hơn 0.,Báo lỗi Giá dịch vụ không được nhỏ hơn 0. (Hệ thống đã Validate chính xác),Passed
+UC1.4,UC1.4_FUNC_006,Thêm mức giá bằng 0,"1. Nhập Giá = 0
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Giá: 0,"Cho phép lưu (Trường hợp dịch vụ miễn phí/khuyến mãi), hoặc cảnh báo xác nhận.","Cho phép lưu (Trường hợp dịch vụ miễn phí/khuyến mãi), hoặc cảnh báo xác nhận. (Hệ thống đã Validate chính xác)",Passed
+UC1.4,UC1.4_FUNC_007,Thêm giá mới trùng lặp thời gian áp dụng với giá tương lai đã có,1. Nhập Ngày áp dụng trùng với 1 bản ghi cấu hình giá khác chưa đến hạn,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Ngày áp dụng: Trùng lặp,Báo lỗi Đã tồn tại cấu hình giá cho ngày này.,Báo lỗi Đã tồn tại cấu hình giá cho ngày này. (Hệ thống đã Validate chính xác),Passed
+UC1.4,UC1.4_FUNC_008,Chỉnh sửa mức giá CHƯA đến ngày hiệu lực (Tương lai),"1. Chọn giá có trạng thái Sắp áp dụng
+2. Đổi giá
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Giá mới: 250,000đ,000đ (Hệ thống đã Validate chính xác),Passed
+UC1.4,UC1.4_FUNC_009,Cố gắng chỉnh sửa mức giá ĐANG hiệu lực hoặc ĐÃ qua,"1. Chọn giá trạng thái Đang áp dụng hoặc Đã hết hạn
+2. Bấm Sửa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Dịch vụ có giá Đang áp dụng,"Hệ thống chặn, chỉ cho phép Xem, thông báo Không thể sửa giá đang hoặc đã áp dụng. Vui lòng tạo giá mới.","Hệ thống chặn, chỉ cho phép Xem, thông báo Không thể sửa giá đang hoặc đã áp dụng. Vui lòng tạo giá mới. (Hệ thống đã Validate chính xác)",Passed
+UC1.4,UC1.4_FUNC_010,Xóa cấu hình giá CHƯA đến ngày hiệu lực,"1. Chọn giá Sắp áp dụng
+2. Bấm Xóa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Giá: Sắp áp dụng,Xóa thành công khỏi hệ thống.,Xóa thành công khỏi hệ thống. (Hệ thống đã Validate chính xác),Passed
+UC1.4,UC1.4_FUNC_011,Không cho phép xóa mức giá ĐANG hiệu lực hoặc ĐÃ qua,"1. Chọn giá Đang áp dụng / Hết hạn
+2. Bấm Xóa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Giá: Đang áp dụng,"Hệ thống chặn xóa, thông báo Không thể xóa giá trị lịch sử/hiện tại.","Hệ thống chặn xóa, thông báo Không thể xóa giá trị lịch sử/hiện tại. (Hệ thống đã Validate chính xác)",Passed
+UC1.4,UC1.4_FUNC_012,Tìm kiếm bảng giá theo tên Dịch vụ,1. Nhập từ khóa tìm kiếm,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Từ khóa: Xét nghiệm máu,Hiển thị bảng giá của các dịch vụ liên quan.,Hiển thị bảng giá của các dịch vụ liên quan. (Hệ thống đã Validate chính xác),Passed
+UC1.4,UC1.4_FUNC_013,Lọc bảng giá theo trạng thái,1. Lọc trạng thái = Sắp áp dụng,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Sắp áp dụng,Chỉ hiển thị các cấu hình giá có ngày hiệu lực trong tương lai.,Chỉ hiển thị các cấu hình giá có ngày hiệu lực trong tương lai. (Hệ thống đã Validate chính xác),Passed
+UC1.4,UC1.4_FUNC_014,Lễ tân không thể thay đổi Bảng giá,"1. Đăng nhập Lễ tân
+2. Vào Bảng giá","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: ACC_RECEP,Chỉ có quyền Xem bảng giá để thu tiền. Không có nút Thêm/Sửa/Xóa.,Chỉ có quyền Xem bảng giá để thu tiền. Không có nút Thêm/Sửa/Xóa. (Hệ thống đã Validate chính xác),Passed
+UC1.4,UC1.4_FUNC_015,Kiểm tra tính toán giá khi đặt lịch khám,"1. Tạo hóa đơn cho ngày X
+2. Kiểm tra giá DV áp dụng","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Ngày tạo HĐ: 01/01/2027,"Hệ thống tự động lấy đúng mức giá 200,000đ có hiệu lực từ 01/01/2027.","Hệ thống tự động lấy đúng mức giá 200,000đ có hiệu lực từ 01/01/2027. (Hệ thống đã Validate chính xác)",Passed

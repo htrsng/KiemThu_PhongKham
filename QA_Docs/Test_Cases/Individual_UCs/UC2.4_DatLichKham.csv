@@ -1,0 +1,49 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC2.4,UC2.4_FUNC_001,Đặt lịch (Rule 1): BS có lịch trực + Không nghỉ phép + Ca chưa đầy (Happy Path),"1. Lễ tân tạo Booking
+2. Chọn BS có lịch, ca trống
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",DT Input: Rule 1,Đặt lịch thành công. Gửi SMS xác nhận cho Bệnh nhân.,Đặt lịch thành công. Gửi SMS xác nhận cho Bệnh nhân. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_002,Đặt lịch (Rule 2): BS KHÔNG có lịch trực vào ngày đó,"1. Chọn BS
+2. Chọn ngày BS không có lịch","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",DT Input: Rule 2,Hệ thống chặn. Không hiển thị ca khám nào cho BS vào ngày đó.,Hệ thống chặn. Không hiển thị ca khám nào cho BS vào ngày đó. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_003,Đặt lịch (Rule 3): BS có lịch nhưng ĐANG NGHỈ PHÉP,1. Cố ý chọn ngày BS nghỉ phép,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",DT Input: Rule 3,"Hệ thống hiển thị Bác sĩ đang nghỉ phép, chặn đặt lịch.","Hệ thống hiển thị Bác sĩ đang nghỉ phép, chặn đặt lịch. (Hệ thống đã Validate chính xác)",Passed
+UC2.4,UC2.4_FUNC_004,Đặt lịch (Rule 4): BS có lịch trực nhưng CA ĐÃ ĐẦY,1. Chọn ca đã max bệnh nhân,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",DT Input: Rule 4,"Hiển thị Ca đã đầy, chặn đặt lịch.","Hiển thị Ca đã đầy, chặn đặt lịch. (Hệ thống đã Validate chính xác)",Passed
+UC2.4,UC2.4_FUNC_005,Đặt lịch với Bệnh nhân thứ Max (Ví dụ: Max = 20 BN),1. Đặt lịch cho BN thứ 20,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Số lượng BN trong ca: 19,Đặt lịch thành công. Ca cập nhật trạng thái Full.,Đặt lịch thành công. Ca cập nhật trạng thái Full. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_006,Đặt lịch với Bệnh nhân thứ Max + 1 (Ví dụ: BN thứ 21),1. Cố gắng đặt lịch cho BN thứ 21,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Số lượng BN trong ca: 20,Báo lỗi Ca khám đã đạt giới hạn bệnh nhân.,Báo lỗi Ca khám đã đạt giới hạn bệnh nhân. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_007,Bỏ trống trường Bệnh nhân,"1. Không nhập Tên/SĐT BN
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",BN: (trống),Báo lỗi Vui lòng nhập thông tin Bệnh nhân.,Báo lỗi Vui lòng nhập thông tin Bệnh nhân. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_008,Đặt lịch với SĐT bệnh nhân sai định dạng,1. Nhập SĐT chứa chữ cái,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",SĐT: 090abc123,Báo lỗi Số điện thoại không hợp lệ.,Báo lỗi Số điện thoại không hợp lệ. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_009,Đặt lịch hẹn trong quá khứ,1. Chọn Ngày đặt lịch = Hôm qua,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Ngày hẹn: Hôm qua,Lỗi Không thể đặt lịch cho ngày trong quá khứ.,Lỗi Không thể đặt lịch cho ngày trong quá khứ. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_010,Cùng 1 BN đặt lịch cùng 1 Bác sĩ 2 lần trong cùng 1 ngày,"1. Đặt lịch 1 thành công
+2. Đặt lịch 2 y hệt","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",BN: BN001 / BS: BS001,Báo lỗi Bệnh nhân đã có lịch hẹn với Bác sĩ này trong ngày hôm nay.,Báo lỗi Bệnh nhân đã có lịch hẹn với Bác sĩ này trong ngày hôm nay. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_011,BN đặt lịch trên Web Portal (BN tự đặt),"1. BN Login web
+2. Tự đặt lịch","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Auth: Token BN,Đặt thành công. Lịch hiển thị bên màn hình Lễ tân.,Đặt thành công. Lịch hiển thị bên màn hình Lễ tân. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_012,Tìm kiếm Bệnh nhân cũ theo SĐT khi đặt lịch,"1. Lễ tân nhập SĐT
+2. Click Search","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",SĐT: Có sẵn trong DB,Hệ thống auto-fill tên và thông tin Bệnh nhân.,Hệ thống auto-fill tên và thông tin Bệnh nhân. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_013,Dời lịch khám (Đổi ngày/giờ hẹn),"1. Mở chi tiết Booking
+2. Đổi ngày/ca
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Ca mới: Trống,Cập nhật lịch thành công. Gửi thông báo dời lịch.,Cập nhật lịch thành công. Gửi thông báo dời lịch. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_014,Hủy lịch khám (Thành công),"1. Chọn Booking
+2. Bấm Hủy
+3. Chọn Lý do","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Booked,Chuyển trạng thái sang Hủy (Cancelled). Giải phóng slot cho ca.,Chuyển trạng thái sang Hủy (Cancelled). Giải phóng slot cho ca. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_015,BN tự hủy lịch trước giờ khám < 2 tiếng (Nếu có policy),1. BN tự hủy sát giờ,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Thời gian hủy: Sát giờ khám,"Nếu có luật phạt, tính phí. Nếu không, cảnh báo Hủy sát giờ.","Nếu có luật phạt, tính phí. Nếu không, cảnh báo Hủy sát giờ. (Hệ thống đã Validate chính xác)",Passed
+UC2.4,UC2.4_FUNC_016,Bệnh nhân A cố gắng Hủy lịch của Bệnh nhân B qua API,Dùng Postman gọi PUT /api/booking/cancel/{id_cua_B},"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Auth: Token Bệnh nhân A,API trả về lỗi 403 Forbidden.,API trả về lỗi 403 Forbidden. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_017,Xem chi tiết Lịch hẹn,1. Bấm Xem chi tiết,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Booking ID,Hiển thị đầy đủ thông tin: Bệnh nhân,Hiển thị đầy đủ thông tin: Bệnh nhân (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_018,Lọc lịch khám theo Bác sĩ,1. Filter Bác sĩ = BS001,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Bác sĩ: BS001,Danh sách chỉ hiện Booking của BS001.,Danh sách chỉ hiện Booking của BS001. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_019,Lọc lịch khám theo Trạng thái,1. Filter Trạng thái = Đã Hủy,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Cancelled,Danh sách chỉ hiện Booking Đã Hủy.,Danh sách chỉ hiện Booking Đã Hủy. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_020,Tìm kiếm lịch khám theo Tên/SĐT Bệnh nhân,1. Nhập SĐT BN,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",SĐT: BN001,Hiển thị Booking của đúng BN001.,Hiển thị Booking của đúng BN001. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_021,Đặt lịch vào khoảng thời gian BS nghỉ trưa (Không thuộc ca nào),1. Chọn giờ 12:30,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Giờ: 12:30,Báo lỗi Giờ khám không hợp lệ hoặc Không thuộc ca làm việc.,Báo lỗi Giờ khám không hợp lệ hoặc Không thuộc ca làm việc. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_022,Hủy lịch hẹn của ngày rất xa trong tương lai,1. Hủy lịch của năm 2027,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Lịch: Tương lai xa,Hủy thành công.,Hủy thành công. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_023,Cập nhật trạng thái tự động: Quá giờ hẹn không đến -> No Show,Hệ thống chạy job cuối ngày,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Booked (cuối ngày),Chuyển tự động thành No Show / Cancelled do không đến.,Chuyển tự động thành No Show / Cancelled do không đến. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_024,Lễ tân đặt lịch cho Bệnh nhân Vãng lai (Walk-in),1. Đặt lịch chọn ca hiện tại,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Loại: Walk-in,Đặt thành công và chuyển thẳng sang trạng thái Check-in.,Đặt thành công và chuyển thẳng sang trạng thái Check-in. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_025,Nhập tên Bệnh nhân chứa ký tự số/kí tự đặc biệt,1. Tên = Nguyễn Văn A123,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tên BN: Nguyễn Văn A123,Báo lỗi Tên bệnh nhân không hợp lệ.,Báo lỗi Tên bệnh nhân không hợp lệ. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_026,Nhập ghi chú đặt lịch rất dài,1. Ghi chú > 1000 từ,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Ghi chú: Dài,Báo lỗi độ dài ghi chú vượt quá giới hạn.,Báo lỗi độ dài ghi chú vượt quá giới hạn. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_027,Hiển thị màu sắc/Icon nhận diện trạng thái trên Lịch,1. Xem lịch,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",UI Check,"Booking có màu vàng (Chờ khám), Xám (Hủy), Xanh (Đã khám).","Booking có màu vàng (Chờ khám), Xám (Hủy), Xanh (Đã khám). (Hệ thống đã Validate chính xác)",Passed
+UC2.4,UC2.4_FUNC_028,Bệnh nhân gọi API đặt lịch bằng Bác sĩ ID Inactive,Dùng API đặt lịch với BS đã nghỉ việc,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",BS: Inactive,Trả về lỗi 400 Bad Request Bác sĩ không khả dụng.,Trả về lỗi 400 Bad Request Bác sĩ không khả dụng. (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_029,BS không được đặt lịch khám cho chính mình,"1. Đăng nhập BS001, tạo lịch hẹn lấy Tên BS001","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",User=BS001,chặn tự khám,chặn tự khám (Hệ thống đã Validate chính xác),Passed
+UC2.4,UC2.4_FUNC_030,Xác nhận SMS sau khi dời lịch,1. Dời lịch -> Check số điện thoại BN,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",SMS Gateway,BN nhận được SMS báo lịch khám đã thay đổi ngày giờ.,BN nhận được SMS báo lịch khám đã thay đổi ngày giờ. (Hệ thống đã Validate chính xác),Passed

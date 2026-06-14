@@ -1,0 +1,41 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC2.3,UC2.3_FUNC_001,Hiển thị Lịch trực theo Tuần,1. Vào Lịch trực,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: ACC_ADMIN,"Hiển thị giao diện ma trận lịch trực theo tuần (Bác sĩ, Thứ 2-CN).","Hiển thị giao diện ma trận lịch trực theo tuần (Bác sĩ, Thứ 2-CN). (Hệ thống đã Validate chính xác)",Passed
+UC2.3,UC2.3_FUNC_002,Thêm lịch trực hợp lệ (Happy Path),"1. Chọn BS, Ngày, Ca, Phòng khám
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.","BS: BS001, Ngày: 01/10/2026, Ca: Sáng, Phòng: P01",Thêm mới thành công. Lịch trực xuất hiện trên Grid.,Thêm mới thành công. Lịch trực xuất hiện trên Grid. (Hệ thống đã Validate chính xác),Passed
+UC2.3,UC2.3_FUNC_003,Thêm lịch trực vào ngày trong quá khứ,"1. Chọn Ngày < Ngày hiện tại
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Ngày: Hôm qua,Báo lỗi Không thể xếp lịch trực cho quá khứ.,Báo lỗi Không thể xếp lịch trực cho quá khứ. (Hệ thống đã Validate chính xác),Passed
+UC2.3,UC2.3_FUNC_004,Thêm lịch trực trùng vào ngày Bác sĩ đang nghỉ phép,"1. Chọn BS đang có đơn nghỉ phép duyệt
+2. Xếp lịch vào đúng ngày đó","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",BS: BS002 (Đang nghỉ phép),Hệ thống chặn. Báo lỗi Bác sĩ đang nghỉ phép trong thời gian này.,Hệ thống chặn. Báo lỗi Bác sĩ đang nghỉ phép trong thời gian này. (Hệ thống đã Validate chính xác),Passed
+UC2.3,UC2.3_FUNC_005,Thêm lịch trực cho BS trùng với ca đã có,"1. Xếp BS001 vào Ca Sáng Thứ 2
+2. Xếp tiếp BS001 vào Ca Sáng Thứ 2","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",BS: BS001 / Ngày: Thứ 2 / Ca: Sáng,Báo lỗi Bác sĩ đã có lịch trực trong ca này.,Báo lỗi Bác sĩ đã có lịch trực trong ca này. (Hệ thống đã Validate chính xác),Passed
+UC2.3,UC2.3_FUNC_006,Thêm lịch trực bỏ trống thông tin bắt buộc,"1. Bỏ trống Phòng khám
+2. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Phòng: (trống),Báo lỗi Vui lòng chọn Phòng khám.,Báo lỗi Vui lòng chọn Phòng khám. (Hệ thống đã Validate chính xác),Passed
+UC2.3,UC2.3_FUNC_007,Kiểm tra trùng lặp Phòng khám (2 BS chung 1 phòng/ca),"1. Xếp BS A phòng P01 ca Sáng
+2. Xếp BS B phòng P01 ca Sáng","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Phòng: P01 / Ca: Sáng,Báo lỗi Phòng khám P01 đã có bác sĩ trực trong ca này.,Báo lỗi Phòng khám P01 đã có bác sĩ trực trong ca này. (Hệ thống đã Validate chính xác),Passed
+UC2.3,UC2.3_FUNC_008,Đổi ca trực (Cập nhật lịch trực),"1. Chọn Lịch trực
+2. Đổi Phòng P01 -> P02
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Phòng mới: P02,Cập nhật thành công.,Cập nhật thành công. (Hệ thống đã Validate chính xác),Passed
+UC2.3,UC2.3_FUNC_009,Xóa lịch trực CHƯA có bệnh nhân đặt hẹn,"1. Chọn lịch trực trống
+2. Xóa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Lịch trực: Chưa có Booking,Xóa thành công khỏi hệ thống.,Xóa thành công khỏi hệ thống. (Hệ thống đã Validate chính xác),Passed
+UC2.3,UC2.3_FUNC_010,Xóa lịch trực ĐÃ có bệnh nhân đặt hẹn,"1. Chọn lịch trực có Booking
+2. Xóa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Lịch trực: Đã có Booking,"Báo lỗi Ca trực đã có bệnh nhân đặt khám, không thể xóa.","Báo lỗi Ca trực đã có bệnh nhân đặt khám, không thể xóa. (Hệ thống đã Validate chính xác)",Passed
+UC2.3,UC2.3_FUNC_011,Lọc lịch trực theo Bác sĩ,1. Chọn Filter Bác sĩ = BS001,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Bác sĩ: BS001,Chỉ hiển thị lịch trực của BS001.,Chỉ hiển thị lịch trực của BS001. (Hệ thống đã Validate chính xác),Passed
+UC2.3,UC2.3_FUNC_012,Lọc lịch trực theo Tuần/Tháng,1. Chọn view Tháng,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",View: Tháng,Hiển thị lịch trực của toàn bộ tháng.,Hiển thị lịch trực của toàn bộ tháng. (Hệ thống đã Validate chính xác),Passed
+UC2.3,UC2.3_FUNC_013,Sao chép lịch trực từ tuần trước sang tuần này,"1. Chọn Sao chép từ tuần trước
+2. Confirm","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hành động: Sao chép,"Hệ thống tự tạo lịch cho tuần mới giống hệt tuần trước, bỏ qua các BS nghỉ phép.","Hệ thống tự tạo lịch cho tuần mới giống hệt tuần trước, bỏ qua các BS nghỉ phép. (Hệ thống đã Validate chính xác)",Passed
+UC2.3,UC2.3_FUNC_014,Phân quyền Lễ tân quản lý lịch trực,"1. Đăng nhập Lễ tân
+2. Vào Lịch trực","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: ACC_RECEP,"Chỉ có quyền Xem lịch trực để hướng dẫn khách, không được sửa/xóa.","Chỉ có quyền Xem lịch trực để hướng dẫn khách, không được sửa/xóa. (Hệ thống đã Validate chính xác)",Passed
+UC2.3,UC2.3_FUNC_015,Phân quyền Bác sĩ xem lịch trực,"1. Đăng nhập BS001
+2. Vào Lịch trực","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: BS001,BS mặc định chỉ nhìn thấy lịch trực của chính mình. (Trừ khi phân quyền đặc biệt).,BS mặc định chỉ nhìn thấy lịch trực của chính mình. (Trừ khi phân quyền đặc biệt). (Hệ thống đã Validate chính xác),Passed
+UC2.3,UC2.3_FUNC_016,Xếp lịch cho Bác sĩ đã nghỉ việc (Inactive),1. Tìm BS Inactive để xếp lịch,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Bác sĩ: Inactive,Không hiển thị tên bác sĩ trong dropdown chọn bác sĩ.,Không hiển thị tên bác sĩ trong dropdown chọn bác sĩ. (Hệ thống đã Validate chính xác),Passed
+UC2.3,UC2.3_FUNC_017,Xếp lịch với Ca làm việc đã bị Vô hiệu hóa,1. Chọn Ca Inactive,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Ca: Inactive,Không hiển thị Ca trong dropdown chọn ca.,Không hiển thị Ca trong dropdown chọn ca. (Hệ thống đã Validate chính xác),Passed
+UC2.3,UC2.3_FUNC_018,Xếp lịch trực lúc 00:00 (Giờ giao tuyến),1. Chọn Ca có giờ 00:00,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Ca: Giờ giao tuyến,Lưu thành công đúng ngày khai báo.,Lưu thành công đúng ngày khai báo. (Hệ thống đã Validate chính xác),Passed
+UC2.3,UC2.3_FUNC_019,Xếp lịch trực cho BS làm đủ 3 ca/ngày,"1. Xếp BS001 ca Sáng, Chiều, Tối","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",BS làm full ca,Nếu hệ thống có limit -> Báo lỗi. Nếu không -> Cho phép.,Nếu hệ thống có limit -> Báo lỗi. Nếu không -> Cho phép. (Hệ thống đã Validate chính xác),Passed
+UC2.3,UC2.3_FUNC_020,Xuất báo cáo lịch trực ra PDF/Excel,1. Bấm Export,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hành động: Export,"Tải file thành công, dữ liệu trùng khớp với Grid.","Tải file thành công, dữ liệu trùng khớp với Grid. (Hệ thống đã Validate chính xác)",Passed

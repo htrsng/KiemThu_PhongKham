@@ -1,0 +1,9 @@
+{
+  "rule1": {
+    "doctor": "BS. Nguyen Minh Duc",
+    "date": "2026-06-20",
+    "shift": "morning",
+    "patientName": "Nguyen Van A",
+    "phone": "0901234567"
+  }
+}

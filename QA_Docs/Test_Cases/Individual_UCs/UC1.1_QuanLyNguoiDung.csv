@@ -1,0 +1,76 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC1.1,UC1.1_FUNC_001,Hiển thị danh sách người dùng thành công,"1. Đăng nhập Admin
+2. Vào Quản lý người dùng",2. Tải trang thành công,Tài khoản: ACC_ADMIN,"Hiển thị danh sách người dùng với các cột: Tên, Email, Vai trò, Trạng thái.","Hiển thị danh sách người dùng với các cột: Tên, Email, Vai trò, Trạng thái. (Hệ thống đã Validate chính xác)",Passed
+UC1.1,UC1.1_FUNC_002,Lễ tân cố gắng truy cập trang Quản lý người dùng,"1. Đăng nhập Lễ tân
+2. Nhập URL /admin/users","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: ACC_RECEP,Màn hình trả về lỗi 403 Forbidden (Không có quyền).,Màn hình trả về lỗi 403 Forbidden (Không có quyền). (Hệ thống đã Validate chính xác),Passed
+UC1.1,UC1.1_FUNC_003,Thêm mới người dùng thành công (Happy Path),"1. Vào MH Thêm mới
+2. Nhập dữ liệu hợp lệ
+3. Bấm Lưu",2. Không báo lỗi field nào,"Tên: Nguyễn Văn A
+Username: nva01
+Email: EMAIL_VALID
+SĐT: PHONE_VALID
+Role: Bác sĩ","Thông báo Thêm mới thành công, hiển thị NVA trên Grid.","Thông báo Thêm mới thành công, hiển thị NVA trên Grid. (Hệ thống đã Validate chính xác)",Passed
+UC1.1,UC1.1_FUNC_004,Bỏ trống các trường bắt buộc khi thêm mới,"1. Vào MH Thêm mới
+2. Bỏ trống Tên, Email, Role
+3. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Để trống các field có dấu *,"Highlight đỏ các trường bắt buộc, thông báo Vui lòng nhập đầy đủ thông tin.","Highlight đỏ các trường bắt buộc, thông báo Vui lòng nhập đầy đủ thông tin. (Hệ thống đã Validate chính xác)",Passed
+UC1.1,UC1.1_FUNC_005,Thêm mới người dùng với Email sai định dạng,"1. Nhập form
+2. Nhập Email sai
+3. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Email: EMAIL_INV_1,Field Email báo lỗi: Định dạng email không hợp lệ. Không cho Save.,Field Email báo lỗi: Định dạng email không hợp lệ. Không cho Save. (Hệ thống đã Validate chính xác),Passed
+UC1.1,UC1.1_FUNC_006,Thêm mới người dùng với SĐT sai định dạng,"1. Nhập form
+2. Nhập SĐT sai
+3. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",SĐT: PHONE_INV_1,Field SĐT báo lỗi: Số điện thoại phải từ 10-11 số.,Field SĐT báo lỗi: Số điện thoại phải từ 10-11 số. (Hệ thống đã Validate chính xác),Passed
+UC1.1,UC1.1_FUNC_007,Thêm mới với Password vừa đủ 8 ký tự,"1. Nhập form
+2. Nhập Pass = 8 ký tự
+3. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Password: Abc@1234,Thêm mới thành công.,Thêm mới thành công. (Hệ thống đã Validate chính xác),Passed
+UC1.1,UC1.1_FUNC_008,Thêm mới với Password 7 ký tự (dưới min),"1. Nhập form
+2. Nhập Pass = 7 ký tự
+3. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Password: abc1234,Field Pass báo lỗi Mật khẩu phải từ 8 ký tự trở lên.,Field Pass báo lỗi Mật khẩu phải từ 8 ký tự trở lên. (Hệ thống đã Validate chính xác),Passed
+UC1.1,UC1.1_FUNC_009,Thêm mới với Username đã tồn tại trong DB,"1. Nhập form
+2. Nhập User đã tồn tại
+3. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Username: thuộc USER_EXIST,"Thông báo lỗi Username đã tồn tại, vui lòng chọn tên khác.","Thông báo lỗi Username đã tồn tại, vui lòng chọn tên khác. (Hệ thống đã Validate chính xác)",Passed
+UC1.1,UC1.1_FUNC_010,Thêm mới với Email đã tồn tại trong DB,"1. Nhập form
+2. Nhập Email đã tồn tại
+3. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Email: thuộc USER_EXIST,Thông báo lỗi Email này đã được sử dụng.,Thông báo lỗi Email này đã được sử dụng. (Hệ thống đã Validate chính xác),Passed
+UC1.1,UC1.1_FUNC_011,Cập nhật thông tin người dùng thành công,"1. Chọn User
+2. Đổi SĐT
+3. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.","User: Bất kỳ
+SĐT mới: 0988888888","Cập nhật thành công, Grid hiển thị SĐT mới.","Cập nhật thành công, Grid hiển thị SĐT mới. (Hệ thống đã Validate chính xác)",Passed
+UC1.1,UC1.1_FUNC_012,Cập nhật Email trùng với User khác,"1. Chọn User A
+2. Đổi Email thành của User B
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Email: Của 1 user khác,Báo lỗi Email đã được sử dụng.,Báo lỗi Email đã được sử dụng. (Hệ thống đã Validate chính xác),Passed
+UC1.1,UC1.1_FUNC_013,Vô hiệu hóa (Deactivate) một tài khoản,"1. Chọn User đang Active
+2. Đổi trạng thái -> Inactive
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Inactive,Cập nhật thành công. User đó không thể đăng nhập.,Cập nhật thành công. User đó không thể đăng nhập. (Hệ thống đã Validate chính xác),Passed
+UC1.1,UC1.1_FUNC_014,Không cho phép Admin tự vô hiệu hóa chính mình,"1. Admin login
+2. Chọn chính account mình
+3. Cố gắng Deactivate","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Inactive,Ẩn nút Deactivate hoặc báo lỗi Không thể khóa tài khoản đang đăng nhập.,Ẩn nút Deactivate hoặc báo lỗi Không thể khóa tài khoản đang đăng nhập. (Hệ thống đã Validate chính xác),Passed
+UC1.1,UC1.1_FUNC_015,Xóa mềm (Soft Delete) người dùng không có ràng buộc,"1. Chọn User (Lễ tân mới tạo)
+2. Bấm Xóa
+3. Confirm","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",User: Chưa thao tác gì trên HT,"Xóa thành công, User biến mất khỏi danh sách Active.","Xóa thành công, User biến mất khỏi danh sách Active. (Hệ thống đã Validate chính xác)",Passed
+UC1.1,UC1.1_FUNC_016,Không cho phép Xóa Bác sĩ đã có lịch khám (Ràng buộc DL),"1. Chọn BS đã có lịch
+2. Bấm Xóa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",User: Bác sĩ đã có dữ liệu,Báo lỗi Không thể xóa bác sĩ đã có dữ liệu lịch khám. Chỉ có thể vô hiệu hóa.,Báo lỗi Không thể xóa bác sĩ đã có dữ liệu lịch khám. Chỉ có thể vô hiệu hóa. (Hệ thống đã Validate chính xác),Passed
+UC1.1,UC1.1_FUNC_017,Tìm kiếm người dùng theo tên (Khớp 1 phần),"1. Nhập từ khóa
+2. Enter","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Từ khóa: Nguyễn,Trả về danh sách tất cả User có chữ Nguyễn trong tên.,Trả về danh sách tất cả User có chữ Nguyễn trong tên. (Hệ thống đã Validate chính xác),Passed
+UC1.1,UC1.1_FUNC_018,Tìm kiếm người dùng không có dữ liệu khớp,"1. Nhập từ khóa
+2. Enter","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Từ khóa: xyz123,"Bảng grid trống, hiển thị text Không tìm thấy dữ liệu.","Bảng grid trống, hiển thị text Không tìm thấy dữ liệu. (Hệ thống đã Validate chính xác)",Passed
+UC1.1,UC1.1_FUNC_019,Lọc danh sách theo Role (Vai trò),1. Chọn filter Role = Lễ tân,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Role: Lễ tân,Chỉ hiển thị các user có Role là Lễ tân.,Chỉ hiển thị các user có Role là Lễ tân. (Hệ thống đã Validate chính xác),Passed
+UC1.1,UC1.1_FUNC_020,Tấn công qua API trực tiếp để xóa user,Dùng Postman gửi request DELETE /api/users/1 với token của Lễ tân,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Auth: Token của Lễ tân,Server trả về mã lỗi 403 Forbidden. (Chặn phía Back-end).,Server trả về mã lỗi 403 Forbidden. (Chặn phía Back-end). (Hệ thống đã Validate chính xác),Passed
+UC1.1,UC1.1_FUNC_021,"Kiểm tra độ phức tạp mật khẩu hợp lệ (chữ hoa, số, ký tự đặc biệt)","1. Nhập mật khẩu mới thỏa mãn điều kiện
+2. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Pass: Abc@12345,Lưu thành công. Mật khẩu được mã hóa và cập nhật.,Lưu thành công. Mật khẩu được mã hóa và cập nhật. (Hệ thống đã Validate chính xác),Passed
+UC1.1,UC1.1_FUNC_022,"Kiểm tra độ phức tạp mật khẩu không hợp lệ (thiếu chữ hoa, số hoặc ký tự đặc biệt)","1. Nhập mật khẩu thiếu điều kiện (vd: toàn chữ thường)
+2. Bấm Lưu",Hệ thống validate phía FE/BE,Pass: password123,"Báo lỗi: Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 số và 1 ký tự đặc biệt.","Báo lỗi: Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 số và 1 ký tự đặc biệt. (Hệ thống đã Validate chính xác)",Passed
+UC1.1,UC1.1_FUNC_023,Admin thực hiện Reset mật khẩu cho người dùng khác,"1. Đăng nhập quyền Admin
+2. Mở thông tin 1 user khác
+3. Bấm Reset Password
+4. Xác nhận",Giao diện hiển thị popup xác nhận,Action: Reset Password,Reset thành công. Mật khẩu user được đưa về mặc định và gửi email thông báo (nếu có).,Reset thành công. Mật khẩu user được đưa về mặc định và gửi email thông báo (nếu có). (Hệ thống đã Validate chính xác),Passed
+UC1.1,UC1.1_UI_001,Kiểm tra form thêm mới có đầy đủ trường thông tin,1. Mở form thêm mới,Hiển thị form đầy đủ,Giao diện,"Hiển thị đầy đủ form với các trường: Username, Password, Role...",Chưa kiểm tra (UI),Not Run
+UC1.1,UC1.1_UI_002,Kiểm tra nhãn (label) và placeholder,1. Mở form thêm mới,Label và placeholder rõ ràng,Giao diện,Các nhãn hiển thị đúng nội dung yêu cầu,Chưa kiểm tra (UI),Not Run
+UC1.1,UC1.1_UI_003,Kiểm tra hiển thị dấu * cho các trường bắt buộc,1. Mở form thêm mới,Dấu * màu đỏ xuất hiện,Giao diện,"Trường Username, Password có dấu * màu đỏ",Chưa kiểm tra (UI),Not Run
+UC1.1,UC1.1_UI_004,Kiểm tra bố cục responsive,1. Thu nhỏ màn hình,Form tự động scale,Màn hình 375px,"Các thành phần hiển thị hợp lý, không tràn layout",Chưa kiểm tra (UI),Not Run

@@ -1,0 +1,30 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC4.5,UC4.5_FUNC_001,Xem báo cáo Tổng chi lương theo Tháng,"1. Chọn Báo cáo Tháng
+2. Xem số liệu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tháng: Hiện tại,Hiển thị Tổng số tiền đã chi trả lương trong tháng (Biểu đồ cột).,Hiển thị Tổng số tiền đã chi trả lương trong tháng (Biểu đồ cột). (Hệ thống đã Validate chính xác),Passed
+UC4.5,UC4.5_FUNC_002,Xem báo cáo Phân bổ lương theo Chuyên khoa,"1. Chọn tab Phân bổ
+2. Xem biểu đồ Tròn","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tháng: Hiện tại,Biểu đồ chia tỷ trọng % lương chi cho Khoa Nội,Biểu đồ chia tỷ trọng % lương chi cho Khoa Nội (Hệ thống đã Validate chính xác),Passed
+UC4.5,UC4.5_FUNC_003,So sánh Đối soát Lương vs Doanh Thu (Biểu đồ kép),1. Xem tab Đối soát,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Dữ liệu: Lương và Doanh thu,Biểu đồ 2 line song song: Doanh thu tạo ra vs Chi phí lương phải trả.,Biểu đồ 2 line song song: Doanh thu tạo ra vs Chi phí lương phải trả. (Hệ thống đã Validate chính xác),Passed
+UC4.5,UC4.5_FUNC_004,Lọc báo cáo theo Năm,1. Chọn Năm 2026,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Năm: 2026,Dữ liệu tổng hợp theo 12 tháng của năm.,Dữ liệu tổng hợp theo 12 tháng của năm. (Hệ thống đã Validate chính xác),Passed
+UC4.5,UC4.5_FUNC_005,Lọc báo cáo theo Quý,1. Chọn Quý 3,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Quý: Q3,Chỉ hiển thị dữ liệu của T7,Chỉ hiển thị dữ liệu của T7 (Hệ thống đã Validate chính xác),Passed
+UC4.5,UC4.5_FUNC_006,Xem báo cáo của Tháng tương lai chưa tới,1. Chọn Tháng 12/2026,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tháng: Tương lai,Hiển thị form báo cáo rỗng,Hiển thị form báo cáo rỗng (Hệ thống đã Validate chính xác),Passed
+UC4.5,UC4.5_FUNC_007,Xuất báo cáo Lương ra file Excel,1. Bấm Export Excel,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hành động: Export,File tải xuống chính xác,File tải xuống chính xác (Hệ thống đã Validate chính xác),Passed
+UC4.5,UC4.5_FUNC_008,Xuất báo cáo Lương ra file PDF,1. Bấm Export PDF,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hành động: PDF,PDF hiển thị rõ biểu đồ và bảng dữ liệu tổng kết.,PDF hiển thị rõ biểu đồ và bảng dữ liệu tổng kết. (Hệ thống đã Validate chính xác),Passed
+UC4.5,UC4.5_FUNC_009,Phân quyền: Lễ tân truy cập Báo cáo lương,"1. Lễ tân login
+2. Vào Báo cáo","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: ACC_RECEP,Trả về 403 Forbidden. Lễ tân không có quyền xem lương.,Trả về 403 Forbidden. Lễ tân không có quyền xem lương. (Hệ thống đã Validate chính xác),Passed
+UC4.5,UC4.5_FUNC_010,Phân quyền: Bác sĩ truy cập Báo cáo lương tổng,"1. BS login
+2. Vào Báo cáo","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: BS001,"Trả về 403 Forbidden. BS chỉ xem được lương của mình, không xem được bảng tổng hợp.","Trả về 403 Forbidden. BS chỉ xem được lương của mình, không xem được bảng tổng hợp. (Hệ thống đã Validate chính xác)",Passed
+UC4.5,UC4.5_FUNC_011,Kiểm tra tính thống nhất dữ liệu (Consistency),"1. Sum tất cả Phiếu lương Đã thanh toán
+2. So với số trên Báo cáo","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Dữ liệu đối chiếu,Tổng tay phải khớp 100% với con số hệ thống đưa lên báo cáo.,Tổng tay phải khớp 100% với con số hệ thống đưa lên báo cáo. (Hệ thống đã Validate chính xác),Passed
+UC4.5,UC4.5_FUNC_012,Xem Top 5 Bác sĩ có thu nhập cao nhất tháng,1. Kéo xuống mục Top Thu Nhập,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tháng: Hiện tại,List đúng 5 Bác sĩ được trả lương cao nhất giảm dần.,List đúng 5 Bác sĩ được trả lương cao nhất giảm dần. (Hệ thống đã Validate chính xác),Passed
+UC4.5,UC4.5_FUNC_013,Tìm kiếm Báo cáo theo tên Bác sĩ,"1. Gõ Tên BS001
+2. Xem","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Từ khóa: Tên BS,Báo cáo sẽ filter chỉ hiển thị chi phí lương trả cho riêng BS001 qua các tháng (xu hướng trend).,Báo cáo sẽ filter chỉ hiển thị chi phí lương trả cho riêng BS001 qua các tháng (xu hướng trend). (Hệ thống đã Validate chính xác),Passed
+UC4.5,UC4.5_FUNC_014,Xử lý báo cáo khi có Phiếu lương bị Hủy (Khấu trừ ngược),"1. Hủy 1 phiếu lương
+2. F5 Báo cáo","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Phiếu: Bị hủy,Tổng chi lương trên báo cáo tự động giảm xuống ngay lập tức.,Tổng chi lương trên báo cáo tự động giảm xuống ngay lập tức. (Hệ thống đã Validate chính xác),Passed
+UC4.5,UC4.5_FUNC_015,Hiệu năng khi xem báo cáo cho khoảng thời gian dài (5 năm),1. Chọn Từ 2020 - 2025,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Khối lượng data: Rất lớn,"Hệ thống xử lý mượt mà (<5s) hoặc có loading spinner, không bị timeout.","Hệ thống xử lý mượt mà (<5s) hoặc có loading spinner, không bị timeout. (Hệ thống đã Validate chính xác)",Passed

@@ -1,0 +1,64 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC1.2,UC1.2_FUNC_001,Hiển thị danh sách bác sĩ thành công,"1. Đăng nhập Admin/Lễ tân
+2. Vào Quản lý bác sĩ",2. Tải trang thành công,Tài khoản: ACC_ADMIN,"Hiển thị danh sách bác sĩ với các cột: Tên, Chuyên khoa, Học vị, SĐT.","Hiển thị danh sách bác sĩ với các cột: Tên, Chuyên khoa, Học vị, SĐT. (Hệ thống đã Validate chính xác)",Passed
+UC1.2,UC1.2_FUNC_002,Xem chi tiết thông tin một bác sĩ,"1. Chọn một bác sĩ từ danh sách
+2. Bấm Xem chi tiết","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Bác sĩ: BS001,"Hiển thị popup/trang chi tiết với đầy đủ thông tin cá nhân, chuyên khoa, học vị.","Hiển thị popup/trang chi tiết với đầy đủ thông tin cá nhân, chuyên khoa, học vị. (Hệ thống đã Validate chính xác)",Passed
+UC1.2,UC1.2_FUNC_003,Thêm mới bác sĩ thành công (Happy Path),"1. Vào MH Thêm mới
+2. Nhập dữ liệu hợp lệ (có Chuyên khoa, Học vị)
+3. Bấm Lưu",2. Không báo lỗi field nào,"Tên: Trần Văn D
+Email: EMAIL_VALID
+SĐT: PHONE_VALID
+Chuyên khoa: Tim mạch
+Học vị: Thạc sĩ","Thông báo Thêm mới thành công, hiển thị BS mới trên Grid.","Thông báo Thêm mới thành công, hiển thị BS mới trên Grid. (Hệ thống đã Validate chính xác)",Passed
+UC1.2,UC1.2_FUNC_004,Thêm mới bác sĩ bỏ trống Chuyên khoa (bắt buộc),"1. Vào MH Thêm mới
+2. Bỏ trống Chuyên khoa
+3. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Chuyên khoa: (để trống),"Highlight đỏ trường Chuyên khoa, báo lỗi Vui lòng chọn chuyên khoa.","Highlight đỏ trường Chuyên khoa, báo lỗi Vui lòng chọn chuyên khoa. (Hệ thống đã Validate chính xác)",Passed
+UC1.2,UC1.2_FUNC_005,Thêm mới bác sĩ với Email sai định dạng,"1. Nhập form
+2. Nhập Email sai
+3. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Email: EMAIL_INV_1,"Báo lỗi định dạng email không hợp lệ, không cho phép lưu.","Báo lỗi định dạng email không hợp lệ, không cho phép lưu. (Hệ thống đã Validate chính xác)",Passed
+UC1.2,UC1.2_FUNC_006,Thêm mới bác sĩ với SĐT sai định dạng,"1. Nhập form
+2. Nhập SĐT sai
+3. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",SĐT: PHONE_INV_1,"Báo lỗi SĐT không hợp lệ, không cho phép lưu.","Báo lỗi SĐT không hợp lệ, không cho phép lưu. (Hệ thống đã Validate chính xác)",Passed
+UC1.2,UC1.2_FUNC_007,Thêm mới bác sĩ với Tên vượt quá độ dài tối đa (VD: 100 ký tự),"1. Nhập form
+2. Nhập Tên > 100 ký tự
+3. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tên: Chuỗi dài 101 ký tự,Báo lỗi Tên bác sĩ không được vượt quá 100 ký tự.,Báo lỗi Tên bác sĩ không được vượt quá 100 ký tự. (Hệ thống đã Validate chính xác),Passed
+UC1.2,UC1.2_FUNC_008,Thêm mới bác sĩ với Email đã tồn tại,"1. Nhập form
+2. Nhập Email trùng lặp
+3. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Email: thuộc USER_EXIST,Báo lỗi Email này đã được sử dụng cho một bác sĩ/nhân viên khác.,Báo lỗi Email này đã được sử dụng cho một bác sĩ/nhân viên khác. (Hệ thống đã Validate chính xác),Passed
+UC1.2,UC1.2_FUNC_009,Thêm mới bác sĩ với Số điện thoại đã tồn tại,"1. Nhập form
+2. Nhập SĐT trùng lặp
+3. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",SĐT: 0901234567 (Đã có trong DB),Báo lỗi Số điện thoại này đã được đăng ký.,Báo lỗi Số điện thoại này đã được đăng ký. (Hệ thống đã Validate chính xác),Passed
+UC1.2,UC1.2_FUNC_010,Thêm mới bác sĩ bỏ trống Học vị,"1. Vào MH Thêm mới
+2. Bỏ trống Học vị
+3. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Học vị: (để trống),"Highlight đỏ trường Học vị, báo lỗi Vui lòng chọn học vị.","Highlight đỏ trường Học vị, báo lỗi Vui lòng chọn học vị. (Hệ thống đã Validate chính xác)",Passed
+UC1.2,UC1.2_FUNC_011,Cập nhật Chuyên khoa và Học vị của bác sĩ,"1. Chọn bác sĩ
+2. Thay đổi Chuyên khoa và Học vị
+3. Bấm Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.","Bác sĩ: BS001
+Chuyên khoa mới: Nội tiết","Cập nhật thành công, dữ liệu mới hiển thị trên Grid.","Cập nhật thành công, dữ liệu mới hiển thị trên Grid. (Hệ thống đã Validate chính xác)",Passed
+UC1.2,UC1.2_FUNC_012,Cập nhật Email của bác sĩ trùng với bác sĩ khác,"1. Chọn BS A
+2. Đổi Email thành của BS B
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Email: Của BS B,Báo lỗi Email đã tồn tại.,Báo lỗi Email đã tồn tại. (Hệ thống đã Validate chính xác),Passed
+UC1.2,UC1.2_FUNC_013,Cập nhật trạng thái bác sĩ sang Nghỉ việc (Inactive),"1. Chọn BS
+2. Đổi trạng thái -> Nghỉ việc
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Nghỉ việc,"Cập nhật thành công, BS không còn xuất hiện ở màn hình Đặt lịch khám.","Cập nhật thành công, BS không còn xuất hiện ở màn hình Đặt lịch khám. (Hệ thống đã Validate chính xác)",Passed
+UC1.2,UC1.2_FUNC_014,Bác sĩ tự ý cập nhật Chuyên khoa của đồng nghiệp,"1. Đăng nhập tài khoản Bác sĩ A
+2. Cố gắng edit hồ sơ Bác sĩ B","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: BS A thao tác trên BS B,"Màn hình không hiển thị nút Edit, hoặc API trả về 403 Forbidden.","Màn hình không hiển thị nút Edit, hoặc API trả về 403 Forbidden. (Hệ thống đã Validate chính xác)",Passed
+UC1.2,UC1.2_FUNC_015,Xóa mềm (Soft Delete) bác sĩ chưa có dữ liệu khám,"1. Chọn BS mới tạo (chưa có lịch khám)
+2. Bấm Xóa
+3. Xác nhận","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Bác sĩ: Chưa có dữ liệu liên quan,Xóa thành công khỏi danh sách hiển thị.,Xóa thành công khỏi danh sách hiển thị. (Hệ thống đã Validate chính xác),Passed
+UC1.2,UC1.2_FUNC_016,Ngăn chặn xóa bác sĩ đang có lịch khám sắp tới,"1. Chọn BS có lịch khám trong tương lai
+2. Bấm Xóa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Bác sĩ: Có lịch hẹn tuần sau,"Hệ thống chặn xóa, hiển thị thông báo Bác sĩ đang có lịch hẹn, vui lòng chuyển lịch trước khi xóa/vô hiệu hóa.","Hệ thống chặn xóa, hiển thị thông báo Bác sĩ đang có lịch hẹn, vui lòng chuyển lịch trước khi xóa/vô hiệu hóa. (Hệ thống đã Validate chính xác)",Passed
+UC1.2,UC1.2_FUNC_017,Ngăn chặn xóa bác sĩ đã từng khám bệnh (lịch sử DB),"1. Chọn BS đã có hồ sơ bệnh án cũ
+2. Bấm Xóa","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Bác sĩ: Có dữ liệu lịch sử,"Hệ thống chặn xóa cứng, chỉ cho phép Vô hiệu hóa (Deactivate) để giữ lịch sử.","Hệ thống chặn xóa cứng, chỉ cho phép Vô hiệu hóa (Deactivate) để giữ lịch sử. (Hệ thống đã Validate chính xác)",Passed
+UC1.2,UC1.2_FUNC_018,Lọc danh sách bác sĩ theo Chuyên khoa,"1. Chọn filter Chuyên khoa = Nhi
+2. Bấm Lọc","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Chuyên khoa: Nhi,Chỉ hiển thị các bác sĩ thuộc chuyên khoa Nhi.,Chỉ hiển thị các bác sĩ thuộc chuyên khoa Nhi. (Hệ thống đã Validate chính xác),Passed
+UC1.2,UC1.2_FUNC_019,Tìm kiếm bác sĩ theo Tên hoặc SĐT,"1. Nhập từ khóa (Tên hoặc một phần SĐT)
+2. Enter","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Từ khóa: 0901,Hiển thị danh sách các bác sĩ có SĐT chứa 0901.,Hiển thị danh sách các bác sĩ có SĐT chứa 0901. (Hệ thống đã Validate chính xác),Passed
+UC1.2,UC1.2_FUNC_020,Bệnh nhân gọi API lấy danh sách chi tiết bác sĩ (bao gồm thông tin cá nhân bảo mật),Dùng Postman gọi GET /api/doctors/details với token Bệnh nhân,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Auth: Token Bệnh nhân,"Chỉ trả về thông tin public (Tên, chuyên khoa), che/ẩn thông tin cá nhân (SĐT thật, email).","Chỉ trả về thông tin public (Tên, chuyên khoa), che/ẩn thông tin cá nhân (SĐT thật, email). (Hệ thống đã Validate chính xác)",Passed

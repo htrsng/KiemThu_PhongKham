@@ -1,0 +1,29 @@
+{
+  "name": "smilecare-cypress",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "cy:smoke": "cypress run --spec cypress/e2e/smoke.cy.js",
+    "cy:regression": "cypress run --spec cypress/e2e/regression.cy.js",
+    "cy:uc1": "cypress run --spec cypress/e2e/uc1-management.cy.js",
+    "cy:uc2": "cypress run --spec cypress/e2e/uc2-schedule.cy.js",
+    "cy:uc3": "cypress run --spec cypress/e2e/uc3-clinic.cy.js",
+    "cy:uc4": "cypress run --spec cypress/e2e/uc4-*.cy.js",
+    "cy:security": "cypress run --spec cypress/e2e/security.cy.js",
+    "report:merge": "mochawesome-merge cypress/reports/*.json > cypress/reports/combined.json",
+    "report:gen": "marge cypress/reports/combined.json -o cypress/reports/final"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@cypress/xpath": "^2.0.3",
+    "cypress": "^15.17.0",
+    "cypress-mochawesome-reporter": "^4.0.2",
+    "cypress-plugin-tab": "^2.0.0"
+  }
+}

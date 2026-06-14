@@ -1,0 +1,11 @@
+Mã Dữ Liệu,Phân Loại,Giá Trị Chi Tiết (Input Thực Tế),Mô Tả / Điều Kiện Môi Trường
+ACC_ADMIN,Account,"User: admin01 / Pass: Admin@123 / Role: Admin",Tài khoản Quản trị viên (Full quyền)
+ACC_RECEP,Account,"User: letan01 / Pass: Letan@123 / Role: Lễ tân",Tài khoản Lễ tân
+ACC_DOC,Account,"User: bacsi01 / Pass: Bacsi@123 / Role: Bác sĩ",Tài khoản Bác sĩ
+EMAIL_VALID,Format,nguyenvana@gmail.com,Email đúng định dạng
+EMAIL_INV_1,Format,nguyenvanagmail.com,Email thiếu @
+PHONE_VALID,Format,0901234567,Số điện thoại 10 số hợp lệ
+PHONE_INV_1,Format,090123,Số điện thoại quá ngắn (< 10 số)
+PASS_VALID,Format,Abc@1234,"Password đủ mạnh (>= 8 ký tự, chữ hoa, số, ký tự đb)"
+PASS_INV_1,Format,abc1234,"Password yếu (7 ký tự, không viết hoa, đb)"
+USER_EXIST,DB Data,"Username: admin01 / Email: admin@phongkham.com",Dữ liệu người dùng đã tồn tại sẵn trong hệ thống

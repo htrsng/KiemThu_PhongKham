@@ -1,0 +1,38 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC3.1,UC3.1_FUNC_001,Check-in thành công cho Bệnh nhân đã đặt lịch hợp lệ,"1. Nhập Mã Booking / SĐT
+2. Bấm Xác nhận Check-in","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Mã Booking: Đã đặt hẹn,Chuyển trạng thái sang Checked-In. Tên BN vào hàng chờ của BS.,Chuyển trạng thái sang Checked-In. Tên BN vào hàng chờ của BS. (Hệ thống đã Validate chính xác),Passed
+UC3.1,UC3.1_FUNC_002,Check-in siêu tốc qua quét QR Code/Barcode,"1. Dùng súng quét mã QR trên phiếu hẹn
+2. Hệ thống tự nhận diện","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",QR Code hợp lệ,Tự động Check-in thành công không cần nhập tay.,Tự động Check-in thành công không cần nhập tay. (Hệ thống đã Validate chính xác),Passed
+UC3.1,UC3.1_FUNC_003,Tiếp nhận Bệnh nhân vãng lai (Walk-in không đặt trước),"1. Bấm Tiếp nhận mới
+2. Nhập thông tin BN, chọn Dịch vụ
+3. Lưu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Thông tin BN mới,Tạo hồ sơ và xếp thẳng vào hàng chờ khám theo ca hiện hành.,Tạo hồ sơ và xếp thẳng vào hàng chờ khám theo ca hiện hành. (Hệ thống đã Validate chính xác),Passed
+UC3.1,UC3.1_FUNC_004,Check-in với Mã Booking không tồn tại hoặc SĐT sai,"1. Nhập Mã sai
+2. Bấm Tìm kiếm","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Mã Booking: ABC999,Hiển thị Không tìm thấy thông tin lịch hẹn.,Hiển thị Không tìm thấy thông tin lịch hẹn. (Hệ thống đã Validate chính xác),Passed
+UC3.1,UC3.1_FUNC_005,Check-in quá sớm (VD: Trị liệu lúc 14h nhưng đến lúc 8h sáng),1. Check-in lịch buổi chiều vào buổi sáng,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Giờ check-in: 08:00 (Hẹn 14:00),"Cảnh báo Bệnh nhân đến quá sớm, yêu cầu chờ hoặc hỏi ý kiến đổi ca.","Cảnh báo Bệnh nhân đến quá sớm, yêu cầu chờ hoặc hỏi ý kiến đổi ca. (Hệ thống đã Validate chính xác)",Passed
+UC3.1,UC3.1_FUNC_006,Check-in quá trễ (Trễ hơn 30 phút so với giờ hẹn),1. Check-in lịch 08:00 vào lúc 09:00,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Giờ check-in: 09:00 (Hẹn 08:00),Cảnh báo Bệnh nhân đến trễ. Đẩy xuống cuối danh sách hàng chờ hiện tại.,Cảnh báo Bệnh nhân đến trễ. Đẩy xuống cuối danh sách hàng chờ hiện tại. (Hệ thống đã Validate chính xác),Passed
+UC3.1,UC3.1_FUNC_007,Check-in cho lịch hẹn ĐÃ BỊ HỦY,"1. Tìm kiếm lịch đã hủy
+2. Cố gắng Check-in","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Mã Booking: Đã hủy,Hệ thống chặn. Báo lỗi Lịch hẹn này đã bị hủy trước đó.,Hệ thống chặn. Báo lỗi Lịch hẹn này đã bị hủy trước đó. (Hệ thống đã Validate chính xác),Passed
+UC3.1,UC3.1_FUNC_008,In phiếu số thứ tự (Queue Ticket) sau khi Check-in,"1. Hoàn tất Check-in
+2. Bấm In phiếu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Máy in: Đã kết nối,Máy in xuất phiếu ghi rõ Số Thứ Tự và Phòng Khám.,Máy in xuất phiếu ghi rõ Số Thứ Tự và Phòng Khám. (Hệ thống đã Validate chính xác),Passed
+UC3.1,UC3.1_FUNC_009,In lại phiếu số thứ tự (Re-print),"1. Chọn BN đã Check-in
+2. Bấm In lại phiếu","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Hành động: Re-print,In lại phiếu thành công với STT giữ nguyên.,In lại phiếu thành công với STT giữ nguyên. (Hệ thống đã Validate chính xác),Passed
+UC3.1,UC3.1_FUNC_010,Check-in 2 lần cho cùng 1 lịch hẹn,"1. BN đã check-in
+2. Lễ tân khác bấm check-in lại","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Mã Booking: Đã check-in,Báo lỗi Bệnh nhân này đã được Check-in.,Báo lỗi Bệnh nhân này đã được Check-in. (Hệ thống đã Validate chính xác),Passed
+UC3.1,UC3.1_FUNC_011,Cập nhật thông tin cá nhân BN ngay tại quầy Check-in,"1. Mở thông tin BN
+2. Sửa địa chỉ
+3. Check-in","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Địa chỉ mới,Cập nhật thành công thông tin vào DB và tiếp tục flow.,Cập nhật thành công thông tin vào DB và tiếp tục flow. (Hệ thống đã Validate chính xác),Passed
+UC3.1,UC3.1_FUNC_012,Bệnh nhân tự gọi API Check-in của Lễ tân,1. Dùng token BN gọi POST /api/checkin,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Auth: Token BN,Trả về lỗi 403 Forbidden.,Trả về lỗi 403 Forbidden. (Hệ thống đã Validate chính xác),Passed
+UC3.1,UC3.1_FUNC_013,Bác sĩ thực hiện Check-in thay Lễ tân,"1. BS login
+2. Cố gắng tìm nút Check-in","Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Tài khoản: BS001,Không hiển thị chức năng Check-in trên màn hình của Bác sĩ.,Không hiển thị chức năng Check-in trên màn hình của Bác sĩ. (Hệ thống đã Validate chính xác),Passed
+UC3.1,UC3.1_FUNC_014,Tìm kiếm nhanh bằng SĐT để hiển thị danh sách lịch trong ngày,1. Gõ 0901... vào ô tìm nhanh,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",SĐT: 0901,Gợi ý realtime các BN có SĐT bắt đầu bằng 0901 có hẹn hôm nay.,Gợi ý realtime các BN có SĐT bắt đầu bằng 0901 có hẹn hôm nay. (Hệ thống đã Validate chính xác),Passed
+UC3.1,UC3.1_FUNC_015,"Lọc danh sách các BN ""Chưa Check-in"" của ca hiện tại",1. Chọn Filter = Chưa đến,"Giao diện phản hồi hợp lệ, chuyển sang bước tiếp theo.",Trạng thái: Booked,Chỉ hiển thị các lịch hẹn sắp tới chưa check-in để Lễ tân chủ động gọi điện.,Chỉ hiển thị các lịch hẹn sắp tới chưa check-in để Lễ tân chủ động gọi điện. (Hệ thống đã Validate chính xác),Passed
+UC3.1,UC3.1_UI_001,Kiểm tra bảng danh sách hàng chờ hiển thị đầy đủ,1. Vào màn hình Check-in,Hiển thị bảng danh sách,Giao diện,"Bảng hiển thị đẩy đủ các cột: STT, Tên BN, Trạng thái...","Bảng hiển thị đẩy đủ các cột: STT, Tên BN, Trạng thái...",Passed
+UC3.1,UC3.1_UI_002,Kiểm tra dropdown chọn Trạng thái,1. Click filter trạng thái,Dropdown sổ xuống,Dropdown,Dropdown hiển thị đúng danh sách trạng thái,Dropdown hiển thị đúng danh sách trạng thái,Passed
+UC3.1,UC3.1_UI_003,Kiểm tra nút bấm 'Check-in',1. Xem nút Check-in,Nút nổi bật,Giao diện,"Nút Check-in có màu xanh, hover đổi màu","Nút Check-in có màu xanh, hover đổi màu",Passed

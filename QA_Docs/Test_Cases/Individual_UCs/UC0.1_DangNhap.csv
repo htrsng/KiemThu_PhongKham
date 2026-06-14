@@ -1,0 +1,25 @@
+Test Date: 13/06/2026,,,,,,,Passed,"=COUNTIF(I:I, ""Passed"")"
+,,,,,,,Failed,"=COUNTIF(I:I, ""Failed"")"
+,,,,,,,Not Run,"=COUNTIF(I:I, ""Not Run"")"
+,,,,,,,Not Completed,"=COUNTIF(I:I, ""Not Completed"")"
+,,,,,,,Number of test cases,=SUM(I1:I4)
+
+Category,Test Case ID,Test Case Description,Test Procedures,,Test Input Value,Test Case Expected Result,Test Case Program Result,Status
+,,,Steps to Perform,Step Expected Result,,,,
+UC0.1,UC0.1_FUNC_001,Đăng nhập thành công với tài khoản đúng,"1. Nhập Username, Password đúng
+2. Bấm Đăng nhập",Nút bấm phản hồi,"User: admin01, Pass: Admin@123","Đăng nhập thành công, chuyển hướng vào Dashboard.","Đăng nhập thành công, chuyển hướng vào Dashboard.",Passed
+UC0.1,UC0.1_FUNC_002,Đăng nhập sai mật khẩu,"1. Nhập Username đúng, Pass sai
+2. Bấm Đăng nhập",Hệ thống xử lý,"User: admin01, Pass: Sai123",Báo lỗi Sai tên đăng nhập hoặc mật khẩu.,Báo lỗi Sai tên đăng nhập hoặc mật khẩu.,Passed
+UC0.1,UC0.1_FUNC_003,Đăng nhập sai tên người dùng,"1. Nhập Username sai, Pass đúng
+2. Bấm Đăng nhập",Hệ thống xử lý,"User: no_exist, Pass: Admin@123",Báo lỗi Sai tên đăng nhập hoặc mật khẩu.,Báo lỗi Sai tên đăng nhập hoặc mật khẩu.,Passed
+UC0.1,UC0.1_FUNC_004,Bỏ trống tài khoản hoặc mật khẩu,"1. Để trống input
+2. Bấm Đăng nhập",Validate tại FE,User: (trống),Hiển thị cảnh báo Vui lòng nhập thông tin bắt buộc.,Hiển thị cảnh báo Vui lòng nhập thông tin bắt buộc.,Passed
+UC0.1,UC0.1_FUNC_005,Đăng nhập sai quá 5 lần -> Khóa tài khoản,1. Nhập sai Pass 5 lần liên tiếp,Đếm số lần sai,Sai 5 lần,Lần thứ 6 báo lỗi: Tài khoản đã bị khóa do nhập sai nhiều lần.,Lần thứ 6 báo lỗi: Tài khoản đã bị khóa do nhập sai nhiều lần.,Passed
+UC0.1,UC0.1_FUNC_006,Session Timeout (Hết hạn phiên đăng nhập),"1. Đăng nhập thành công
+2. Để máy không thao tác 30 phút
+3. Thao tác tiếp",Kiểm tra token timeout,Thời gian chờ > 30p,"Hệ thống tự động đẩy ra màn hình Login, yêu cầu đăng nhập lại.","Hệ thống tự động đẩy ra màn hình Login, yêu cầu đăng nhập lại.",Passed
+UC0.1,UC0.1_FUNC_007,Đăng xuất thành công,1. Bấm Đăng xuất,Call API logout,Hành động Logout,"Xóa token, chuyển về trang Login. Không thể back lại trang bảo mật.","Xóa token, chuyển về trang Login. Không thể back lại trang bảo mật.",Passed
+UC0.1,UC0.1_FUNC_008,Cố gắng truy cập trang Dashboard khi chưa đăng nhập,1. Nhập trực tiếp URL /dashboard,Kiểm tra Auth,URL: /dashboard,Hệ thống chặn và redirect về trang Login.,Hệ thống chặn và redirect về trang Login.,Passed
+UC0.1,UC0.1_FUNC_009,Tính năng 'Ghi nhớ đăng nhập' (Remember Me),"1. Tích Remember me
+2. Đăng nhập
+3. Tắt trình duyệt, mở lại",Cookie lưu trữ,Checkbox: Checked,Vẫn giữ trạng thái đăng nhập khi mở lại trình duyệt.,Vẫn giữ trạng thái đăng nhập khi mở lại trình duyệt.,Passed

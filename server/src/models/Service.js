@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const serviceSchema = new mongoose.Schema({
-  code: { type: String, required: true, unique: true },
+  code: { type: String, required: true, unique: true, match: [/^[A-Za-z0-9]+$/, 'Mã Dịch vụ chỉ được chứa chữ cái và số'] },
   name: { type: String, required: true },
   category: { type: String },
   basePrice: { type: Number, required: true },
