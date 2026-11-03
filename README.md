@@ -1,80 +1,37 @@
-# 🦷 Hệ thống Quản lý Phòng khám Nha khoa (Dental Clinic Management System)
+# SmileCare clinic management
 
-Chào mừng bạn đến với kho lưu trữ mã nguồn và tài liệu Đảm bảo Chất lượng (QA) của Hệ thống Quản lý Phòng khám Nha khoa. Dự án này bao gồm toàn bộ mã nguồn ứng dụng web và một bộ khung kiểm thử (Testing Framework) cực kỳ chuyên nghiệp và toàn diện.
+Academic web application for managing clinic accounts, doctors, services, appointments, billing and payroll. The repository also contains manual test documents and a Cypress suite.
 
----
+## Repository layout
 
-## 📁 Cấu trúc Thư mục Dự án
+- `client/`: React and TypeScript frontend.
+- `server/`: Express API and MongoDB models.
+- `testing/e2e/`: Cypress specs, page objects, fixtures and configuration.
+- `docs/qa/`: test case workbooks, generators and historical reports.
+- `scripts/`: maintenance scripts.
+- `patches/`: existing one-off fixes; review before running.
 
-Dự án được tổ chức gọn gàng thành các thành phần độc lập:
+## Run locally
 
-```text
-📦 d:\PhongKham_KiemThu
- ┣ 📂 dental-system/    # Mã nguồn Frontend (Giao diện người dùng)
- ┣ 📂 server/           # Mã nguồn Backend API (Xử lý nghiệp vụ & Database)
- ┣ 📂 QA_Docs/          # Toàn bộ tài liệu và công cụ Đảm bảo Chất lượng (QA)
- │  ┣ 📂 Generators/    # Chứa các Script Python dùng để sinh dữ liệu và kịch bản Test
- │  ┗ 📂 Test_Cases/    # Chứa kết quả kiểm thử Manual dưới dạng bảng CSV
- ┣ 📂 cypress/          # Khung kiểm thử tự động (Automation E2E Testing)
- ┣ 📂 patches/          # Chứa các script vá lỗi (patch) tạm thời cho hệ thống
- ┣ 📜 cypress.config.js # Cấu hình cho bộ Automation Test Cypress
- ┣ 📜 package.json      # Danh sách thư viện và cấu hình Node.js toàn cục
- ┗ 📜 README.md         
-```
+Use Node.js 22.12 or later and a running MongoDB instance.
 
----
+1. Copy `server/.env.example` to `server/.env` and set local values.
+2. In `server/`, run `npm install` and `npm start` (port 5000 by default).
+3. In `client/`, run `npm install` and `npm run dev` (port 5173).
+4. In `testing/e2e/`, run `npm install`, then `npm run cy:open` or `npm run cy:run`.
 
-## 🛠️ Hướng dẫn Khởi chạy Ứng dụng Web
+Set the required `ADMIN_USER`, `ADMIN_PASS` and role-specific `*_USER` / `*_PASS` environment variables in the shell or CI secrets before running Cypress. Credentials have no built-in defaults. A `.env.example` file is a template; Cypress does not load it automatically.
 
-*(Lưu ý: Bạn cần cài đặt [Node.js](https://nodejs.org/) trước khi chạy)*
+The test accounts and database records required by each spec must exist before execution. Fixtures are input files, not proof that accounts have been seeded.
 
-1. **Khởi chạy Backend (Server)**
-   ```bash
-   cd server
-   npm install
-   npm start
-   ```
+## Testing status
 
-2. **Khởi chạy Frontend (Giao diện)**
-   ```bash
-   cd dental-system
-   npm install
-   npm run dev
-   ```
+The suite is work in progress. Some specs contain placeholder bodies or only visit a page. A passing placeholder does not verify the named business behavior. GitHub Actions is configured, but successful end-to-end execution has not been verified for this cleanup.
 
----
+Some legacy Python generators in `docs/qa/generators/` randomly assign Pass, Fail, Blocked, tester names and dates. Their output is synthetic, not a record of manual execution. Do not use those generated statuses or counts as portfolio results. Record actual execution separately and retain the input, expected result, observed result and evidence.
 
-## 🧪 Hệ thống Đảm bảo Chất lượng (QA & Testing)
+Historical reports may refer to earlier paths or local Windows files. Treat them as historical documents rather than current execution evidence.
 
-Dự án sở hữu một hệ thống kiểm thử khổng lồ với gần **900 Kịch bản kiểm thử (Test Cases)**, bao phủ toàn bộ 3 nhóm nghiệp vụ cốt lõi của một phòng khám nha khoa:
-- **Nhóm 1**: Quản lý Người dùng, Bác sĩ và Dịch vụ.
-- **Nhóm 2**: Quản lý Lịch khám và Xếp ca làm việc.
-- **Nhóm 3**: Tiếp đón, Khám bệnh, Thanh toán và Thống kê.
+## Conventions
 
-### 1. Kiểm thử Thủ công (Manual Testing)
-Toàn bộ Test Case chi tiết và kết quả chạy (Pass/Fail) được xuất ra file CSV siêu nhẹ tại thư mục `QA_Docs/Test_Cases/`. Bạn có thể dễ dàng mở bằng **Microsoft Excel** hoặc import vào Jira.
-
-Nếu bạn muốn tạo lại bộ dữ liệu test với các giá trị ngẫu nhiên mới, hãy chạy các lệnh Python sau:
-```bash
-python QA_Docs/Generators/generate_testcase_nhom1.py
-python QA_Docs/Generators/generate_testcase_nhom2.py
-python QA_Docs/Generators/generate_testcase_nhom3.py
-```
-Để xem Bảng tóm tắt kết quả kiểm thử (Dashboard), chạy lệnh:
-```bash
-python QA_Docs/Generators/generate_summary.py
-```
-
-### 2. Kiểm thử Tự động (Automation E2E Testing)
-Dự án được tích hợp sẵn **Cypress** để tự động hóa các luồng nghiệp vụ phức tạp nhất của Nhóm 3 (Điển hình như: tự động click check-in, tự động kê đơn thuốc, tự động tính tiền có áp dụng voucher giảm giá).
-
-**Cách chạy Automation Test:**
-1. Mở Terminal tại thư mục gốc của dự án (`d:\PhongKham_KiemThu`).
-2. Mở giao diện Cypress UI:
-   ```bash
-   npx cypress open
-   ```
-3. Chọn **E2E Testing** trên cửa sổ hiện ra và click vào các file kịch bản (ví dụ: `UC3_1_CheckIn.cy.js`) để xem máy tính tự động thực hiện thao tác trên trình duyệt.
-
----
-
+See [repository conventions](CONTRIBUTING.md). Test output and dependencies stay out of version control.
