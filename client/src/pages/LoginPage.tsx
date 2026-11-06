@@ -104,7 +104,7 @@ export function LoginPage() {
                 </div>
 
                 {error && (
-                    <div className="mb-6 rounded-xl bg-rose-50 p-3 text-sm text-rose-600 border border-rose-200">
+                    <div data-cy="auth-error" role="alert" className="mb-6 rounded-xl bg-rose-50 p-3 text-sm text-rose-600 border border-rose-200">
                         {error}
                     </div>
                 )}
@@ -175,6 +175,7 @@ export function LoginPage() {
                             <UserCircle className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
                             <input
                                 required
+                                data-cy="login-email"
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -188,6 +189,7 @@ export function LoginPage() {
                         <label className="block text-sm font-medium text-slate-700 mb-1">Mật khẩu</label>
                         <input
                             required
+                            data-cy="login-password"
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -197,6 +199,7 @@ export function LoginPage() {
                     </div>
 
                     <button
+                        data-cy="login-submit"
                         type="submit"
                         className="mt-6 w-full rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-700 active:scale-[0.98]"
                     >

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { X, Download } from 'lucide-react';
 import { formatVND } from '../lib/formatters';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -186,7 +186,7 @@ export function YearlyDoctorPayrollModal({ isOpen, onClose, report, year }: Year
                                             dx={-10}
                                         />
                                         <Tooltip 
-                                            formatter={(value: number) => formatVND(value)}
+                                            formatter={(value) => formatVND(Number(value ?? 0))}
                                             labelStyle={{fontWeight: 'bold', color: '#334155'}}
                                             contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
                                         />

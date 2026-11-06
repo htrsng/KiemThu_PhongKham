@@ -1,37 +1,60 @@
-# SmileCare clinic management
+# SmileCare — Quản lý phòng khám nha khoa
 
-Academic web application for managing clinic accounts, doctors, services, appointments, billing and payroll. The repository also contains manual test documents and a Cypress suite.
+Dự án học tập xây dựng ứng dụng quản lý phòng khám: tài khoản, bác sĩ, dịch vụ, lịch khám, tiếp đón, thanh toán và tiền lương. Kho mã gồm giao diện React/TypeScript, API Express/MongoDB, tài liệu kiểm thử thủ công và bộ kiểm thử Cypress.
 
-## Repository layout
+## Cấu trúc
 
-- `client/`: React and TypeScript frontend.
-- `server/`: Express API and MongoDB models.
-- `testing/e2e/`: Cypress specs, page objects, fixtures and configuration.
-- `docs/qa/`: test case workbooks, generators and historical reports.
-- `scripts/`: maintenance scripts.
-- `patches/`: existing one-off fixes; review before running.
+| Thư mục | Nội dung |
+| --- | --- |
+| `client/` | Giao diện React, TypeScript và Vite |
+| `server/` | API Express và mô hình MongoDB |
+| `testing/api/` | Kiểm tra API đăng nhập bằng Node.js |
+| `testing/e2e/` | Cypress: kiểm tra hiện tại và các kịch bản cũ tách riêng |
+| `testing/scripts/` | Sinh môi trường QA, tạo tài khoản thử nghiệm, chờ ứng dụng |
+| `docs/qa/` | Kế hoạch kiểm thử, hướng dẫn và kết quả xác minh |
+| `docs/qa/archive/` | Tài liệu, bộ sinh và dữ liệu kiểm thử học tập cũ |
+| `scripts/`, `patches/` | Công cụ bảo trì; đọc mã trước khi chạy |
 
-## Run locally
+## Chạy ứng dụng
 
-Use Node.js 22.12 or later and a running MongoDB instance.
+Yêu cầu Node.js 24, npm và MongoDB. Sao chép `server/.env.example` thành `server/.env`, đặt URI MongoDB và khóa JWT của môi trường cục bộ. Không đưa file `.env` lên Git.
 
-1. Copy `server/.env.example` to `server/.env` and set local values.
-2. In `server/`, run `npm install` and `npm start` (port 5000 by default).
-3. In `client/`, run `npm install` and `npm run dev` (port 5173).
-4. In `testing/e2e/`, run `npm install`, then `npm run cy:open` or `npm run cy:run`.
+Từ thư mục gốc, cài thư viện:
 
-Set the required `ADMIN_USER`, `ADMIN_PASS` and role-specific `*_USER` / `*_PASS` environment variables in the shell or CI secrets before running Cypress. Credentials have no built-in defaults. A `.env.example` file is a template; Cypress does not load it automatically.
+```sh
+npm ci --prefix server
+npm ci --prefix client
+npm ci --prefix testing/e2e
+```
 
-The test accounts and database records required by each spec must exist before execution. Fixtures are input files, not proof that accounts have been seeded.
+Mở hai cửa sổ lệnh:
 
-## Testing status
+```sh
+cd server
+npm start
+```
 
-The suite is work in progress. Some specs contain placeholder bodies or only visit a page. A passing placeholder does not verify the named business behavior. GitHub Actions is configured, but successful end-to-end execution has not been verified for this cleanup.
+```sh
+cd client
+npm run dev
+```
 
-Some legacy Python generators in `docs/qa/generators/` randomly assign Pass, Fail, Blocked, tester names and dates. Their output is synthetic, not a record of manual execution. Do not use those generated statuses or counts as portfolio results. Record actual execution separately and retain the input, expected result, observed result and evidence.
+API mặc định ở cổng 5000, giao diện ở cổng 5173. `npm run build --prefix client` biên dịch bản giao diện.
 
-Historical reports may refer to earlier paths or local Windows files. Treat them as historical documents rather than current execution evidence.
+## Kiểm thử
 
-## Conventions
+Đọc [hướng dẫn QA](./docs/qa/README.md) và [kế hoạch hiện tại](./docs/qa/test-plan.md). Bộ kiểm tra hiện tại gồm 8 ca API đăng nhập và 5 ca giao diện đăng nhập. Số ca này mô tả phạm vi bộ kiểm thử, không phải độ bao phủ toàn bộ phòng khám.
 
-See [repository conventions](CONTRIBUTING.md). Test output and dependencies stay out of version control.
+Workflow **Clinic QA Checks** dùng MongoDB riêng, sinh tài khoản và mật khẩu tạm thời, kiểm tra API và chạy Cypress. Kết quả xác minh được ghi ở [verification.md](./docs/qa/verification.md).
+
+## Tài liệu và kiểm thử cũ
+
+Các kịch bản trước đây dùng bộ chọn và đường dẫn chưa khớp giao diện hiện tại, một số chỉ là khung. Chúng được giữ tại `testing/e2e/cypress/legacy/`, không tính như chức năng đã xác minh và không chạy mặc định. Có thể chọn chạy thêm qua workflow thủ công để tiếp tục hoàn thiện.
+
+Một số bộ sinh trong `docs/qa/archive/` gán ngẫu nhiên trạng thái Pass/Fail/Blocked, người kiểm thử và ngày chạy. Đó là dữ liệu tổng hợp, **không phải kết quả thực thi**; không dùng làm số lỗi hoặc số ca đã chạy trong CV.
+
+## Giới hạn
+
+Bộ kiểm thử hiện tại tập trung vào đăng nhập. Lịch khám, thanh toán, phân quyền theo từng tài nguyên và tính lương chưa được xác nhận đầy đủ bằng bộ kiểm thử này. Không dùng dữ liệu thật khi thử các seed hoặc script bảo trì cũ; một số script có lệnh xóa dữ liệu.
+
+Tài liệu đang duy trì dùng tiếng Việt; tên file và mã nguồn dùng tiếng Anh theo quy ước từng ngôn ngữ. Xem [CONTRIBUTING.md](./CONTRIBUTING.md).

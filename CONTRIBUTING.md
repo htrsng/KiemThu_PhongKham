@@ -1,10 +1,11 @@
-# Repository conventions
+# Quy ước đóng góp
 
-- Use English for file and directory names. Use Vietnamese for domain data and existing academic documents where required.
-- Directories and documentation files use `kebab-case`; keep standard names such as `README.md`.
-- React components and page objects use `PascalCase`; JS functions and variables use `camelCase`; Python modules use `snake_case`. A single rule for all languages would break established framework conventions.
-- New tests describe observable behavior and include assertions. Do not count placeholders as coverage.
-- Generated reports belong in ignored output directories. Publish only selected, reproducible evidence with its command and environment.
-- Before moving a file, update imports, scripts, CI paths and documentation.
-- Explain code changes and their limitations in plain language. AI assistance is acceptable only when the contributor can explain and verify the result.
-- Preserve historical report contents and evidence filenames when they are referenced by manifests; use an explicit migration instead of silently renaming them.
+- Tài liệu đang duy trì dùng tiếng Việt. Tên file, thư mục, hàm và biến dùng tiếng Anh; không đổi trường API hay dữ liệu nghiệp vụ chỉ để đổi ngôn ngữ.
+- Thư mục/tài liệu mới dùng kebab-case, giữ tên chuẩn README.md. Thành phần React và page object dùng PascalCase; Python dùng snake_case.
+- Báo cáo, dữ liệu và bộ sinh lịch sử trong `docs/qa/archive/` giữ nguyên tên để đối chiếu.
+- Test phải kiểm tra kết quả quan sát được. Không tính khung rỗng hoặc chỉ mở trang thành kiểm chứng chức năng.
+- Dữ liệu Pass/Fail ngẫu nhiên không phải kết quả chạy. Khi đưa bằng chứng vào repo, ghi commit, môi trường, lệnh và phạm vi.
+- Không đưa node_modules, file môi trường, mật khẩu hay kết quả tạm vào Git.
+- Khi di chuyển file, cập nhật import, CI, lệnh chạy và liên kết tài liệu. Chạy các kiểm tra liên quan trước khi đẩy mã.
+- Đọc các seed và script bảo trì trước khi chạy: một số script cũ xóa dữ liệu. Chỉ dùng DB thử nghiệm.
+- Cần giải thích được mã và giới hạn của thay đổi, kể cả khi có AI hỗ trợ.

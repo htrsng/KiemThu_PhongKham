@@ -1,5 +1,5 @@
 describe('Boundary Tests', () => {
-  it('Test bien gia tri', () => {
+  it.skip('Test bien gia tri', () => {
     // ...
   });
 });

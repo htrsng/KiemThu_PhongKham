@@ -6,15 +6,8 @@
   "scripts": {
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "cy:smoke": "cypress run --spec cypress/e2e/smoke.cy.js",
-    "cy:regression": "cypress run --spec cypress/e2e/regression.cy.js",
-    "cy:uc1": "cypress run --spec cypress/e2e/uc1-management.cy.js",
-    "cy:uc2": "cypress run --spec cypress/e2e/uc2-schedule.cy.js",
-    "cy:uc3": "cypress run --spec cypress/e2e/uc3-clinic.cy.js",
-    "cy:uc4": "cypress run --spec cypress/e2e/uc4-*.cy.js",
-    "cy:security": "cypress run --spec cypress/e2e/security.cy.js",
-    "report:merge": "mochawesome-merge cypress/reports/*.json > cypress/reports/combined.json",
-    "report:gen": "marge cypress/reports/combined.json -o cypress/reports/final"
+    "cy:smoke": "cypress run --spec cypress/e2e/login.cy.js",
+    "cy:legacy": "cypress run --config \"specPattern=cypress/legacy/**/*.cy.js\""
   },
   "keywords": [],
   "author": "",

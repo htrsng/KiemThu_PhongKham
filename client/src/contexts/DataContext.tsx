@@ -1,8 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { 
     Doctor,
-    Appointment,
-    Service,
     DoctorShift,
 } from '../lib/types';
 

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Banknote, Percent, Settings2, History, Calendar, Plus } from 'lucide-react'
+import { Banknote, Percent, History, Calendar, Plus } from 'lucide-react'
 import { PageShell } from '../components/PageShell'
 import { useAuth } from '../contexts/AuthContext'
 import { EmptyState } from '../components/EmptyState'
-import { api, type ApiListResponse, type ApiItemResponse } from '../lib/api'
+import { api } from '../lib/api'
 import { TableLoadingSkeleton } from '../components/LoadingSkeleton'
 import { formatDateTime, formatVND } from '../lib/formatters'
 

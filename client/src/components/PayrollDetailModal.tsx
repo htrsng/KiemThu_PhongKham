@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { X } from 'lucide-react'
 import { formatVND, formatDateTime } from '../lib/formatters'
 import type { SalaryReport } from '../pages/DoctorPayrollPage'

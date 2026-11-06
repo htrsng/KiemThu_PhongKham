@@ -7,12 +7,15 @@ Cypress.Commands.add('login', (role = 'admin') => {
     thu_ngan: { user: Cypress.env('THU_NGAN_USER'), pass: Cypress.env('THU_NGAN_PASS') },
   };
   
+  if (!users[role] || !users[role].user || !users[role].pass) {
+    throw new Error(`Missing test credentials for role: ${role}`);
+  }
   const { user, pass } = users[role];
   cy.visit('/login');
-  cy.get('#username').clear().type(user);
-  cy.get('[name=password]').clear().type(pass);
+  cy.get('[data-cy=login-email]').clear().type(user);
+  cy.get('[data-cy=login-password]').clear().type(pass, { log: false });
   cy.contains('button', 'Đăng nhập').click();
-  cy.url().should('include', '/dashboard');
+  cy.location('pathname').should('equal', '/');
 });
 
 // Chon bac si tren form dat lich

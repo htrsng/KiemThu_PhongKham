@@ -23,3 +23,7 @@ Thumbs.db
 **/cypress/reports/
 **/__pycache__/
 *.pyc
+
+# Disposable QA environment and runtime evidence
+testing/.env.test
+testing/artifacts/
