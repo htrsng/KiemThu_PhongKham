@@ -1,0 +1,22 @@
+{
+  "name": "smilecare-e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "cy:smoke": "cypress run --spec cypress/e2e/login.cy.js",
+    "cy:legacy": "cypress run --config \"specPattern=cypress/legacy/**/*.cy.js\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@cypress/xpath": "^2.0.3",
+    "cypress": "^15.17.0",
+    "cypress-mochawesome-reporter": "^4.0.2",
+    "cypress-plugin-tab": "^2.0.0"
+  }
+}

@@ -1,80 +1,60 @@
-# 🦷 Hệ thống Quản lý Phòng khám Nha khoa (Dental Clinic Management System)
+# SmileCare — Quản lý phòng khám nha khoa
 
-Chào mừng bạn đến với kho lưu trữ mã nguồn và tài liệu Đảm bảo Chất lượng (QA) của Hệ thống Quản lý Phòng khám Nha khoa. Dự án này bao gồm toàn bộ mã nguồn ứng dụng web và một bộ khung kiểm thử (Testing Framework) cực kỳ chuyên nghiệp và toàn diện.
+Dự án học tập xây dựng ứng dụng quản lý phòng khám: tài khoản, bác sĩ, dịch vụ, lịch khám, tiếp đón, thanh toán và tiền lương. Kho mã gồm giao diện React/TypeScript, API Express/MongoDB, tài liệu kiểm thử thủ công và bộ kiểm thử Cypress.
 
----
+## Cấu trúc
 
-## 📁 Cấu trúc Thư mục Dự án
+| Thư mục | Nội dung |
+| --- | --- |
+| `client/` | Giao diện React, TypeScript và Vite |
+| `server/` | API Express và mô hình MongoDB |
+| `testing/api/` | Kiểm tra API đăng nhập bằng Node.js |
+| `testing/e2e/` | Cypress: kiểm tra hiện tại và các kịch bản cũ tách riêng |
+| `testing/scripts/` | Sinh môi trường QA, tạo tài khoản thử nghiệm, chờ ứng dụng |
+| `docs/qa/` | Kế hoạch kiểm thử, hướng dẫn và kết quả xác minh |
+| `docs/qa/archive/` | Tài liệu, bộ sinh và dữ liệu kiểm thử học tập cũ |
+| `scripts/`, `patches/` | Công cụ bảo trì; đọc mã trước khi chạy |
 
-Dự án được tổ chức gọn gàng thành các thành phần độc lập:
+## Chạy ứng dụng
 
-```text
-📦 d:\PhongKham_KiemThu
- ┣ 📂 dental-system/    # Mã nguồn Frontend (Giao diện người dùng)
- ┣ 📂 server/           # Mã nguồn Backend API (Xử lý nghiệp vụ & Database)
- ┣ 📂 QA_Docs/          # Toàn bộ tài liệu và công cụ Đảm bảo Chất lượng (QA)
- │  ┣ 📂 Generators/    # Chứa các Script Python dùng để sinh dữ liệu và kịch bản Test
- │  ┗ 📂 Test_Cases/    # Chứa kết quả kiểm thử Manual dưới dạng bảng CSV
- ┣ 📂 cypress/          # Khung kiểm thử tự động (Automation E2E Testing)
- ┣ 📂 patches/          # Chứa các script vá lỗi (patch) tạm thời cho hệ thống
- ┣ 📜 cypress.config.js # Cấu hình cho bộ Automation Test Cypress
- ┣ 📜 package.json      # Danh sách thư viện và cấu hình Node.js toàn cục
- ┗ 📜 README.md         
+Yêu cầu Node.js 24, npm và MongoDB. Sao chép `server/.env.example` thành `server/.env`, đặt URI MongoDB và khóa JWT của môi trường cục bộ. Không đưa file `.env` lên Git.
+
+Từ thư mục gốc, cài thư viện:
+
+```sh
+npm ci --prefix server
+npm ci --prefix client
+npm ci --prefix testing/e2e
 ```
 
----
+Mở hai cửa sổ lệnh:
 
-## 🛠️ Hướng dẫn Khởi chạy Ứng dụng Web
-
-*(Lưu ý: Bạn cần cài đặt [Node.js](https://nodejs.org/) trước khi chạy)*
-
-1. **Khởi chạy Backend (Server)**
-   ```bash
-   cd server
-   npm install
-   npm start
-   ```
-
-2. **Khởi chạy Frontend (Giao diện)**
-   ```bash
-   cd dental-system
-   npm install
-   npm run dev
-   ```
-
----
-
-## 🧪 Hệ thống Đảm bảo Chất lượng (QA & Testing)
-
-Dự án sở hữu một hệ thống kiểm thử khổng lồ với gần **900 Kịch bản kiểm thử (Test Cases)**, bao phủ toàn bộ 3 nhóm nghiệp vụ cốt lõi của một phòng khám nha khoa:
-- **Nhóm 1**: Quản lý Người dùng, Bác sĩ và Dịch vụ.
-- **Nhóm 2**: Quản lý Lịch khám và Xếp ca làm việc.
-- **Nhóm 3**: Tiếp đón, Khám bệnh, Thanh toán và Thống kê.
-
-### 1. Kiểm thử Thủ công (Manual Testing)
-Toàn bộ Test Case chi tiết và kết quả chạy (Pass/Fail) được xuất ra file CSV siêu nhẹ tại thư mục `QA_Docs/Test_Cases/`. Bạn có thể dễ dàng mở bằng **Microsoft Excel** hoặc import vào Jira.
-
-Nếu bạn muốn tạo lại bộ dữ liệu test với các giá trị ngẫu nhiên mới, hãy chạy các lệnh Python sau:
-```bash
-python QA_Docs/Generators/generate_testcase_nhom1.py
-python QA_Docs/Generators/generate_testcase_nhom2.py
-python QA_Docs/Generators/generate_testcase_nhom3.py
-```
-Để xem Bảng tóm tắt kết quả kiểm thử (Dashboard), chạy lệnh:
-```bash
-python QA_Docs/Generators/generate_summary.py
+```sh
+cd server
+npm start
 ```
 
-### 2. Kiểm thử Tự động (Automation E2E Testing)
-Dự án được tích hợp sẵn **Cypress** để tự động hóa các luồng nghiệp vụ phức tạp nhất của Nhóm 3 (Điển hình như: tự động click check-in, tự động kê đơn thuốc, tự động tính tiền có áp dụng voucher giảm giá).
+```sh
+cd client
+npm run dev
+```
 
-**Cách chạy Automation Test:**
-1. Mở Terminal tại thư mục gốc của dự án (`d:\PhongKham_KiemThu`).
-2. Mở giao diện Cypress UI:
-   ```bash
-   npx cypress open
-   ```
-3. Chọn **E2E Testing** trên cửa sổ hiện ra và click vào các file kịch bản (ví dụ: `UC3_1_CheckIn.cy.js`) để xem máy tính tự động thực hiện thao tác trên trình duyệt.
+API mặc định ở cổng 5000, giao diện ở cổng 5173. `npm run build --prefix client` biên dịch bản giao diện.
 
----
+## Kiểm thử
 
+Đọc [hướng dẫn QA](./docs/qa/README.md) và [kế hoạch hiện tại](./docs/qa/test-plan.md). Bộ kiểm tra hiện tại gồm 8 ca API đăng nhập và 5 ca giao diện đăng nhập. Số ca này mô tả phạm vi bộ kiểm thử, không phải độ bao phủ toàn bộ phòng khám.
+
+Workflow **Clinic QA Checks** dùng MongoDB riêng, sinh tài khoản và mật khẩu tạm thời, kiểm tra API và chạy Cypress. Kết quả xác minh được ghi ở [verification.md](./docs/qa/verification.md).
+
+## Tài liệu và kiểm thử cũ
+
+Các kịch bản trước đây dùng bộ chọn và đường dẫn chưa khớp giao diện hiện tại, một số chỉ là khung. Chúng được giữ tại `testing/e2e/cypress/legacy/`, không tính như chức năng đã xác minh và không chạy mặc định. Có thể chọn chạy thêm qua workflow thủ công để tiếp tục hoàn thiện.
+
+Một số bộ sinh trong `docs/qa/archive/` gán ngẫu nhiên trạng thái Pass/Fail/Blocked, người kiểm thử và ngày chạy. Đó là dữ liệu tổng hợp, **không phải kết quả thực thi**; không dùng làm số lỗi hoặc số ca đã chạy trong CV.
+
+## Giới hạn
+
+Bộ kiểm thử hiện tại tập trung vào đăng nhập. Lịch khám, thanh toán, phân quyền theo từng tài nguyên và tính lương chưa được xác nhận đầy đủ bằng bộ kiểm thử này. Không dùng dữ liệu thật khi thử các seed hoặc script bảo trì cũ; một số script có lệnh xóa dữ liệu.
+
+Tài liệu đang duy trì dùng tiếng Việt; tên file và mã nguồn dùng tiếng Anh theo quy ước từng ngôn ngữ. Xem [CONTRIBUTING.md](./CONTRIBUTING.md).
