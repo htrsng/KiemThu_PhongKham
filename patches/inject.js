@@ -1,5 +1,5 @@
 const fs = require('fs');
-const path = 'dental-system/client/src/pages/AppointmentManagementPage.tsx';
+const path = 'client/src/pages/AppointmentManagementPage.tsx';
 
 let text = fs.readFileSync(path, 'utf8');
 

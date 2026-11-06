@@ -16,3 +16,14 @@ server/.env
 # OS
 .DS_Store
 Thumbs.db
+
+# Generated test output
+**/cypress/videos/
+**/cypress/screenshots/
+**/cypress/reports/
+**/__pycache__/
+*.pyc
+
+# Disposable QA environment and runtime evidence
+testing/.env.test
+testing/artifacts/

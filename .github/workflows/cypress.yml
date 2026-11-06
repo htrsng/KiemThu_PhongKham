@@ -1,68 +1,68 @@
-name: Cypress E2E Tests
-
+name: Clinic QA Checks
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, portfolio-cleanup]
   pull_request:
     branches: [main]
-
-defaults:
-  run:
-    working-directory: ./smilecare-cypress
-
+  workflow_dispatch:
+    inputs:
+      run_legacy:
+        description: 'Chạy thêm bộ kiểm thử cũ chưa xác minh (có thể thất bại)'
+        type: boolean
+        default: false
+permissions:
+  contents: read
 jobs:
-  cypress-run:
+  verified-login:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      mongodb:
+        image: mongo:7
+        ports: ['27017:27017']
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.adminCommand({ping:1})'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install Frontend Dependencies
-        run: npm install
-        working-directory: ./dental-system/client
-
-      - name: Start Frontend
-        run: npm run dev &
-        working-directory: ./dental-system/client
-
-      - name: Install Backend Dependencies
-        run: npm install
-        working-directory: ./server
-
-      - name: Start Backend
-        run: npm start &
-        working-directory: ./server
-
-      - name: Install Cypress Dependencies
-        run: npm install
-
-      - name: Wait for servers
-        run: npx wait-on http://localhost:5173 http://localhost:3000 --timeout 60000
-
-      - name: Run Smoke Tests
-        run: npm run cy:smoke
-
-      - name: Run Full E2E Suite
-        run: npm run cy:run
-        env:
-          ADMIN_USER: ${{ secrets.ADMIN_USER }}
-          ADMIN_PASS: ${{ secrets.ADMIN_PASS }}
-          BASE_URL: http://localhost:5173
-
-      - name: Merge Reports
-        if: always()
-        run: npm run report:merge && npm run report:gen
-
-      - name: Upload Report
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Cai thu vien backend
+        run: npm ci --prefix server
+      - name: Cai thu vien frontend
+        run: npm ci --prefix client
+      - name: Bien dich giao dien
+        run: npm run build --prefix client
+      - name: Cai Cypress
+        run: npm ci --prefix testing/e2e
+      - name: Sinh moi truong QA tam thoi
+        run: node testing/scripts/prepare-env.js
+      - name: Tao tai khoan trong DB thu nghiem
+        run: node testing/scripts/seed-test-accounts.js
+      - name: Chay backend va frontend
+        run: |
+          mkdir -p testing/artifacts
+          (cd server && nohup npm start > ../testing/artifacts/backend.log 2>&1 &)
+          (cd client && nohup npm run dev -- --host 0.0.0.0 > ../testing/artifacts/frontend.log 2>&1 &)
+          node testing/scripts/wait-for-app.js
+      - name: Kiem thu API dang nhap
+        run: node --test --test-concurrency=1 testing/api/auth.test.js
+      - name: Kiem thu giao dien dang nhap
+        run: npm run cy:smoke --prefix testing/e2e
+      - name: Bo kiem thu cu, chi chay khi duoc chon thu cong
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_legacy }}
+        run: npm run cy:legacy --prefix testing/e2e
+      - name: Luu bao cao va log
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cypress-report
-          path: smilecare-cypress/cypress/reports/final/
-
-      - name: Upload Videos on Failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: cypress-videos
-          path: smilecare-cypress/cypress/videos/
+          name: clinic-qa-evidence
+          path: |
+            testing/e2e/cypress/reports/
+            testing/e2e/cypress/screenshots/
+            testing/e2e/cypress/videos/
+            testing/artifacts/
+          if-no-files-found: warn
