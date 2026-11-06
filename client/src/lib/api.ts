@@ -30,7 +30,9 @@ api.interceptors.response.use(
             const status = error.response.status;
             const data = error.response.data;
 
-            if (status === 401) {
+            // Sai thông tin đăng nhập cần được form hiển thị, không tải lại trang.
+            const isAuthenticationSubmission = /\/auth\/(login|register)(?:\?|$)/.test(error.config?.url || '');
+            if (status === 401 && !isAuthenticationSubmission) {
             // Token không hợp lệ hoặc hết hạn
             // Xóa token và chuyển hướng về trang đăng nhập
             localStorage.removeItem('authToken');
