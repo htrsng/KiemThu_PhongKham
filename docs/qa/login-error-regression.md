@@ -22,4 +22,4 @@ Không tự chuyển trang đối với HTTP 401 từ yêu cầu đăng nhập/�
 
 Ca hồi quy: `testing/e2e/cypress/e2e/login.cy.js`, trường hợp “Từ chối mật khẩu sai và không lưu phiên đăng nhập”. Không bỏ assertion và không giả phản hồi API để làm test đạt.
 
-Kết quả sau sửa được ghi ở `verification.md` sau khi CI xác nhận.
+Sau sửa: CI xác nhận 8/8 API và 5/5 Cypress đạt. Xem `verification.md` để đối chiếu lần chạy và phạm vi.

@@ -1,73 +1,24 @@
-# React + TypeScript + Vite
+# Giao diện SmileCare
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Giao diện quản lý phòng khám sử dụng React, TypeScript và Vite. Xem [README chính](../README.md) để thiết lập API và MongoDB.
 
-Currently, two official plugins are available:
+## Cài đặt và chạy
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Dùng Node.js 24. Tại thư mục `client/`:
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```sh
+npm ci
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Vite mặc định chạy ở cổng 5173. Giao diện hiện gọi API ở `http://localhost:5000/api`; chạy backend tương ứng trước khi kiểm tra chức năng.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Các lệnh
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- `npm run build`: kiểm tra kiểu TypeScript và biên dịch giao diện.
+- `npm run lint`: kiểm tra quy tắc mã nguồn; trạng thái lint không được suy ra từ build.
+- `npm run preview`: xem bản giao diện đã biên dịch.
+
+## Kiểm thử
+
+Các trường trên form đăng nhập có `data-cy` để Cypress định vị ổn định. Xem [hướng dẫn QA](../docs/qa/README.md) và [phạm vi kiểm tra](../docs/qa/test-plan.md).
