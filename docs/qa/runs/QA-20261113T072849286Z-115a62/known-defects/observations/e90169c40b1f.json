@@ -1,0 +1,26 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af6bc350c685e9a02b1bc51",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đang điều trị"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af6bc350c685e9a02b1bc51",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đang điều trị"
+    }
+  }
+]

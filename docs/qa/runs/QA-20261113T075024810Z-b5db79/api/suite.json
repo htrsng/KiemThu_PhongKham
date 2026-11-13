@@ -1,0 +1,15 @@
+{
+  "runId": "QA-20261113T075024810Z-b5db79",
+  "suite": "api",
+  "counts": {
+    "tests": 34,
+    "pass": 34,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "exitCode": 0,
+  "infrastructureError": null,
+  "finished": "2026-11-13T07:50:28.919Z"
+}

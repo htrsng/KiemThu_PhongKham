@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "defects": [
+    {
+      "id": "BUG-001",
+      "title": "Wrong-password feedback disappears",
+      "severity": "Medium",
+      "priority": "P1",
+      "state": "Closed",
+      "owner": "maintainer",
+      "testCaseIds": [
+        "TC-AUTH-005"
+      ],
+      "history": [
+        {
+          "state": "Closed",
+          "at": "2026-11-06",
+          "actor": "historical report",
+          "evidence": "docs/qa/bugs/BUG-001.md",
+          "note": "Imported historical status; intermediate event timestamps are not available."
+        }
+      ]
+    },
+    {
+      "id": "BUG-002",
+      "title": "Completed appointment can move backward",
+      "severity": "High",
+      "priority": "P1",
+      "state": "Open",
+      "owner": "maintainer",
+      "testCaseIds": [
+        "TC-APPT-021"
+      ],
+      "history": [
+        {
+          "state": "Open",
+          "at": "2026-11-13",
+          "actor": "historical report",
+          "evidence": "docs/qa/evidence/2026-11-13/known-defects-results.tap",
+          "note": "Imported previously verified open defect."
+        }
+      ]
+    },
+    {
+      "id": "BUG-003",
+      "title": "Repeated completion creates duplicate invoices",
+      "severity": "High",
+      "priority": "P0",
+      "state": "Open",
+      "owner": "maintainer",
+      "testCaseIds": [
+        "TC-APPT-022"
+      ],
+      "history": [
+        {
+          "state": "Open",
+          "at": "2026-11-13",
+          "actor": "historical report",
+          "evidence": "docs/qa/evidence/2026-11-13/known-defects-results.tap",
+          "note": "Imported previously verified open defect."
+        }
+      ]
+    },
+    {
+      "id": "BUG-004",
+      "title": "Cash payment marks invoice paid but received amount stays zero",
+      "severity": "High",
+      "priority": "P1",
+      "owner": "maintainer",
+      "testCaseIds": [
+        "TC-PAY-003"
+      ],
+      "state": "Closed",
+      "history": [
+        {
+          "state": "New",
+          "actor": "qa-maintainer-assisted",
+          "note": "Detected by persisted-state assertion in full check-in to cash-payment workflow",
+          "evidence": "docs/qa/runs/QA-20261113T072849286Z-115a62/execution.json",
+          "at": "2026-11-13T07:33:09.767Z"
+        },
+        {
+          "state": "Open",
+          "actor": "qa-maintainer-assisted",
+          "note": "Confirmed received amount 0 while final amount is 100000; assigned for correction",
+          "evidence": "docs/qa/runs/QA-20261113T072849286Z-115a62/execution.json",
+          "at": "2026-11-13T07:33:09.816Z"
+        },
+        {
+          "state": "Fixed",
+          "actor": "qa-maintainer-assisted",
+          "note": "Committed received amount and explicit no-debt payload for a confirmed full payment",
+          "evidence": "client/src/pages/PaymentManagementPage.tsx",
+          "fixCommit": "6fb4482fca8167ba6a40a956939e25bb9718c987",
+          "at": "2026-11-13T07:34:34.479Z"
+        },
+        {
+          "state": "Retest",
+          "actor": "qa-maintainer-assisted",
+          "note": "Executed unchanged persisted-money assertion against fix build with fresh fixture; API and UI regression also ran",
+          "evidence": "docs/qa/runs/QA-20261113T073749688Z-18594c/execution.json",
+          "runId": "QA-20261113T073749688Z-18594c",
+          "at": "2026-11-13T07:40:12.715Z"
+        },
+        {
+          "state": "Closed",
+          "actor": "qa-maintainer-assisted",
+          "note": "Linked E2E persists amountPaid 100000 matching finalAmount 100000, debt zero; 34 API and 12 UI tests pass",
+          "evidence": "docs/qa/runs/QA-20261113T073749688Z-18594c/execution.json",
+          "runId": "QA-20261113T073749688Z-18594c",
+          "at": "2026-11-13T07:40:12.814Z"
+        }
+      ]
+    }
+  ]
+}

@@ -1,33 +1,30 @@
-// Reports are generated directly by Node's runner; no guessed pass counts.
-const { spawnSync, execFileSync } = require('node:child_process');
+const { spawnSync } = require('node:child_process');
 const { mkdirSync, writeFileSync, readFileSync } = require('node:fs');
 const { resolve } = require('node:path');
-const { createHash } = require('node:crypto');
-const root = resolve(__dirname, '../..');
-const defects = process.argv.includes('--known-defects');
-const label = defects ? 'known-defects' : 'api';
-const directory = resolve(root, 'testing/artifacts', label);
-mkdirSync(directory, { recursive: true });
-const files = defects ? ['testing/api/known-defects.test.js'] : ['testing/api/auth.test.js', 'testing/api/authorization-invoice.test.js'];
-const started = new Date().toISOString();
-for (const file of ['results.tap', 'junit.xml']) writeFileSync(resolve(directory, file), '');
+const { root, activeRun } = require('../helpers/run-store');
+const { directory: runDirectory, manifest } = activeRun('api');
+const suite = process.argv.includes('--known-defects') ? 'known-defects' : 'api';
+const directory = resolve(runDirectory, suite);
+mkdirSync(directory); // Refuse to overwrite this suite inside the same run.
+const files = suite === 'known-defects' ? ['testing/api/known-defects.test.js']
+  : ['testing/api/auth.test.js', 'testing/api/authorization-invoice.test.js'];
 const result = spawnSync(process.execPath, ['--test', '--test-concurrency=1',
-  '--test-reporter=spec', '--test-reporter-destination=stdout',
   '--test-reporter=tap', `--test-reporter-destination=${directory}/results.tap`,
-  '--test-reporter=junit', `--test-reporter-destination=${directory}/junit.xml`, ...files],
-{ cwd: root, env: process.env, stdio: 'inherit' });
-if (result.error) throw result.error;
+  '--test-reporter=junit', `--test-reporter-destination=${directory}/junit.xml`,
+  '--test-reporter=./testing/helpers/json-reporter.js', `--test-reporter-destination=${directory}/results.jsonl`, ...files],
+{ cwd: root, env: { ...process.env, QA_RUN_DIR: runDirectory, QA_SUITE: suite }, stdio: 'inherit' });
 const tap = readFileSync(resolve(directory, 'results.tap'), 'utf8');
 const counts = Object.fromEntries(['tests', 'pass', 'fail', 'cancelled', 'skipped', 'todo'].map((key) => {
   const match = tap.match(new RegExp(`^# ${key} (\\d+)$`, 'm'));
   return [key, match ? Number(match[1]) : null];
 }));
-const source = ['testing/scripts/run-api.js', 'testing/helpers/qa-data.js', 'server/server.js',
-  'server/src/controllers/authController.js', 'server/src/controllers/appointmentController.js',
-  'server/src/routes/appointmentRoutes.js', 'server/src/routes/invoiceRoutes.js', ...files];
-writeFileSync(resolve(directory, 'manifest.json'), JSON.stringify({ started, finished: new Date().toISOString(),
-  baseCommit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
-  sourceHashes: Object.fromEntries(source.map((file) => [file, createHash('sha256').update(readFileSync(resolve(root, file))).digest('hex')])),
-  node: process.version, platform: process.platform, suite: label, counts, exitCode: result.status,
-  note: 'Working tree run; source hashes identify tested files. No credentials included.' }, null, 2) + '\n');
+writeFileSync(resolve(directory, 'suite.json'), JSON.stringify({ runId: manifest.runId, suite, counts,
+  exitCode: result.status ?? 1, infrastructureError: result.error?.message || null, finished: new Date().toISOString() }, null, 2) + '\n');
+console.log(`${manifest.runId} ${suite}: ${JSON.stringify(counts)}; evidence ${directory}`);
+if (!process.env.QA_RUN_DIR) {
+  manifest.finished = new Date().toISOString();
+  manifest.outcomes = [{ suite, exitCode: result.status ?? 1 }];
+  writeFileSync(resolve(runDirectory, 'run.json'), JSON.stringify(manifest, null, 2) + '\n');
+  require('./report-run').reportRun(runDirectory).catch((error) => { console.error(error); process.exitCode = 1; });
+}
 process.exitCode = result.status ?? 1;

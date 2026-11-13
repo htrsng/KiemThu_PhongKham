@@ -1,0 +1,34 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Reception"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/invoices/6af6bc33bca90e3bbb0292ad",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã thanh toán",
+      "amountPaid": 40000,
+      "finalAmount": 100000,
+      "debt": 60000,
+      "paymentMethod": "Tiền mặt"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices/6af6bc33bca90e3bbb0292ad",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã thanh toán",
+      "amountPaid": 40000,
+      "finalAmount": 100000,
+      "debt": 60000,
+      "paymentMethod": "Tiền mặt"
+    }
+  }
+]

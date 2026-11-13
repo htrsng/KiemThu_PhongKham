@@ -1,0 +1,38 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Doctor"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices/6af6bc34bca90e3bbb0292bf",
+    "httpStatus": 403,
+    "body": {
+      "error": "User role Doctor is not authorized to access this route"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices/6af6bc34bca90e3bbb0292bf",
+    "httpStatus": 200,
+    "body": {
+      "status": "Chưa thanh toán",
+      "amountPaid": 0,
+      "finalAmount": 100000,
+      "debt": 0,
+      "paymentMethod": "Tiền mặt"
+    }
+  }
+]

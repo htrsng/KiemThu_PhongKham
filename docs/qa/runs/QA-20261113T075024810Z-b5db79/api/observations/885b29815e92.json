@@ -1,0 +1,10 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 401,
+    "body": {
+      "error": "wrong_password"
+    }
+  }
+]

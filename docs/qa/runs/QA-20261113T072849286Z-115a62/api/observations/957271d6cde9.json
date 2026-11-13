@@ -1,0 +1,26 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Reception"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af6bc33bca90e3bbb02925f/checkin",
+    "httpStatus": 400,
+    "body": {
+      "error": "Đã quá hạn Check-in (trễ hơn 30 phút)"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af6bc33bca90e3bbb02925f",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã lên lịch"
+    }
+  }
+]

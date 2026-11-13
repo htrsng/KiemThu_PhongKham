@@ -6,13 +6,13 @@ describe('Đăng nhập — kiểm tra trên backend thật với dữ liệu th
     expect(Cypress.env('ADMIN_PASS'), 'ADMIN_PASS đã được cấu hình').to.be.a('string').and.not.be.empty;
   });
 
-  it('Chuyển người chưa đăng nhập về trang đăng nhập', () => {
+  it('TC-AUTH-010 (UI subset): redirects a missing session to login', () => {
     cy.visit('/');
     cy.location('pathname').should('equal', '/login');
     cy.get('[data-cy=login-submit]').should('be.visible');
   });
 
-  it('Không gửi biểu mẫu khi thiếu email và mật khẩu', () => {
+  it('TC-AUTH-002 (UI): required credentials prevent empty submission', () => {
     loginPage.visit();
     loginPage.submit();
     cy.get('[data-cy=login-email]').then(($input) => {
@@ -21,7 +21,7 @@ describe('Đăng nhập — kiểm tra trên backend thật với dữ liệu th
     cy.location('pathname').should('equal', '/login');
   });
 
-  it('Hiển thị lỗi định dạng email không thuộc gmail.com', () => {
+  it('TC-AUTH-003 (UI): non-gmail email shows validation feedback', () => {
     loginPage.visit();
     loginPage.fillUsername('qa@example.invalid');
     loginPage.fillPassword('invalid-input');
@@ -30,7 +30,7 @@ describe('Đăng nhập — kiểm tra trên backend thật với dữ liệu th
     cy.location('pathname').should('equal', '/login');
   });
 
-  it('Từ chối mật khẩu sai và không lưu phiên đăng nhập', () => {
+  it('BUG-001 / TC-AUTH-005 (UI): wrong password keeps feedback and no session', () => {
     cy.intercept('POST', '**/api/auth/login').as('login');
     loginPage.visit();
     loginPage.fillUsername(Cypress.env('ADMIN_USER'));
@@ -41,7 +41,7 @@ describe('Đăng nhập — kiểm tra trên backend thật với dữ liệu th
     cy.window().then((win) => expect(win.localStorage.getItem('authToken')).to.equal(null));
   });
 
-  it('Đăng nhập tài khoản thử nghiệm và xác minh phiên bằng API /me', () => {
+  it('TC-AUTH-001 / TC-AUTH-012 (UI): login session matches API current account', () => {
     cy.login('admin');
     cy.window().then((win) => {
       const token = win.localStorage.getItem('authToken');

@@ -1,0 +1,46 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Reception"
+    }
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/invoices/6af6c1445fe43dd6a4ef39e6",
+    "httpStatus": 403,
+    "body": {
+      "error": "User role Reception is not authorized to access this route"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices/6af6c1445fe43dd6a4ef39e6",
+    "httpStatus": 200,
+    "body": {
+      "status": "Chưa thanh toán",
+      "amountPaid": 0,
+      "finalAmount": 100000,
+      "debt": 0,
+      "paymentMethod": "Tiền mặt"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af6c1445fe43dd6a4ef39e5",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã lên lịch"
+    }
+  }
+]

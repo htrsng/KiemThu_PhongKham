@@ -6,9 +6,3 @@ beforeEach(() => {
   cy.clearLocalStorage();
   cy.clearCookies();
 });
-
-Cypress.on('uncaught:exception', (err) => {
-  // Ngăn Cypress fail vì lỗi JS không liên quan đến test
-  if (err.message.includes('ResizeObserver')) return false;
-  return true;
-});

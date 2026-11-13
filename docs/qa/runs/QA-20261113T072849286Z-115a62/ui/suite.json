@@ -1,0 +1,12 @@
+{
+  "suite": "ui",
+  "runId": "QA-20261113T072849286Z-115a62",
+  "exitCode": 1,
+  "counts": {
+    "tests": 12,
+    "pass": 11,
+    "fail": 1,
+    "pending": 0,
+    "skipped": 0
+  }
+}

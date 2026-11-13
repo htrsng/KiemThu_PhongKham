@@ -2,6 +2,8 @@
 const { readFileSync } = require('node:fs');
 const { resolve } = require('node:path');
 const assert = require('node:assert/strict');
+const { createHash } = require('node:crypto');
+const { parseCsv } = require('../helpers/tabular');
 const root = resolve(__dirname, '../..');
 function rows(file) {
   const lines = readFileSync(resolve(root, file), 'utf8').replace(/^\uFEFF/, '').trimEnd().split(/\r?\n/);
@@ -58,4 +60,31 @@ for (const row of rtm) {
   }
 }
 assert.deepEqual([...ids].filter((id) => !mapped.has(id)), [], 'Unmapped test cases');
-console.log(`QA audit passed: ${cases.length} unique designs; ${rtm.length} requirements; every case mapped. Runtime coverage is separate.`);
+const source = parseCsv(readFileSync(resolve(root, 'testing/manual/source-cases.csv'), 'utf8'));
+const reconciliation = JSON.parse(readFileSync(resolve(root, 'docs/qa/source-reconciliation.json'), 'utf8'));
+assert.equal(source.length, reconciliation.excel.total, 'Source baseline count mismatch');
+assert.equal(new Set(source.map((row) => row.ID)).size, source.length, 'Duplicate source IDs');
+assert.equal(new Set(source.map((row) => row['Use case'])).size, 20, 'Missing original use cases');
+for (const file of reconciliation.sources) {
+  assert.equal(createHash('sha256').update(readFileSync(resolve(root, file.file))).digest('hex'), file.sha256, `Source document changed: ${file.file}`);
+}
+for (const row of source) {
+  assert.match(row.Priority, /^P[0-3]$/, `${row.ID}: invalid priority`);
+  assert.equal(row['Current status'], 'Not Run', 'Historical labels cannot become verified Pass');
+  assert.ok(row.Description && row['Source row'] && row['Source sheet'], `${row.ID}: missing provenance`);
+  if (!row.Steps || !row.Expected || !row['Test data']) assert.match(row['Design review'], /Needs review/, 'Incomplete design must be flagged');
+}
+const links = JSON.parse(readFileSync(resolve(root, 'testing/trace-links.json'), 'utf8'));
+const sourceIds = new Set(source.map((row) => row.ID));
+for (const [id, targets] of Object.entries(links)) {
+  assert.ok(ids.has(id), `Unknown focused case ${id}`);
+  targets.forEach((target) => assert.ok(sourceIds.has(target), `Unknown source case ${target}`));
+}
+const defects = JSON.parse(readFileSync(resolve(root, 'docs/qa/bugs/registry.json'), 'utf8')).defects;
+assert.equal(new Set(defects.map((defect) => defect.id)).size, defects.length, 'Duplicate bug ID');
+for (const defect of defects) {
+  assert.ok(defect.title && defect.owner && defect.severity && /^P[0-3]$/.test(defect.priority), 'Incomplete defect');
+  assert.equal(defect.history.at(-1).state, defect.state, 'Defect state/history mismatch');
+  defect.testCaseIds.forEach((id) => assert.ok(ids.has(id) || sourceIds.has(id), `Unknown defect case ${id}`));
+}
+console.log(`QA audit passed: ${source.length} original designs / 20 use cases; ${cases.length} overlapping focused designs / ${rtm.length} requirements; source hashes and bug links valid.`);

@@ -1,5 +1,6 @@
 // Run separately: requirement assertions MUST fail while documented defects remain open.
-const { test, after } = require('node:test');
+const { after } = require('node:test');
+const { test, observedFetch: fetch } = require('../helpers/qa-test');
 const assert = require('node:assert/strict');
 const { assertLocalQa, createFixture, cleanupFixture, cleanupAll } = require('../helpers/qa-data');
 assertLocalQa();

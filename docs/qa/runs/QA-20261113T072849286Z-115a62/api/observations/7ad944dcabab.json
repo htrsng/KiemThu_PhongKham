@@ -1,0 +1,10 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 401,
+    "body": {
+      "error": "Not authorized to access this route"
+    }
+  }
+]

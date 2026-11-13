@@ -1,4 +1,5 @@
-const { test, after } = require('node:test');
+const { after } = require('node:test');
+const { test, observedFetch: fetch } = require('../helpers/qa-test');
 const assert = require('node:assert/strict');
 const { assertLocalQa, createFixture, cleanupFixture, cleanupAll } = require('../helpers/qa-data');
 assertLocalQa();
@@ -30,7 +31,14 @@ for (const [role, status] of [['ADMIN', 200], ['DOCTOR', 403], ['RECEPTION', 403
   test(`TC-AUTHZ-00${role === 'ADMIN' ? 1 : role === 'DOCTOR' ? 2 : 3}: ${role} account access returns ${status}`, async () => {
     const result = await request('/accounts', await login(role));
     assert.equal(result.status, status);
-    if (status === 200) assert.ok(Array.isArray(result.body.data));
+    if (status === 200) {
+      assert.ok(Array.isArray(result.body.data));
+      for (const account of result.body.data) {
+        assert.equal(typeof account.id, 'string');
+        assert.ok(['Admin', 'Doctor', 'Reception'].includes(account.role));
+        assert.equal(account.password, undefined);
+      }
+    }
     else assert.equal(result.body.data, undefined);
   });
 }
@@ -82,18 +90,42 @@ test('TC-APPT-018: complete treatment and verify exactly one unpaid invoice', as
   assert.equal(invoices[0].status, 'Chưa thanh toán');
   assert.equal(invoices[0].finalAmount, 100000);
 });
-for (const [id, paid, debtAllowed, expected] of [['003', 100000, false, 200], ['007', 1, false, 400], ['008', 40000, true, 200], ['010', -1, false, 400]]) {
+for (const [id, paid, debtAllowed, expected, method = 'Tiền mặt'] of [['003', 100000, false, 200],
+  ['004', 100000, false, 200, 'Chuyển khoản'], ['005', 100000, false, 200, 'Thẻ tín dụng'], ['006', 100000, false, 200, 'Thẻ ATM'],
+  ['007', 1, false, 400], ['008', 40000, true, 200], ['010', -1, false, 400]]) {
   test(`TC-PAY-${id}: paid=${paid}, allowDebt=${debtAllowed} returns ${expected} and persists balance`, async (t) => {
     const data = await fixture(t, { invoice: true, status: 'Đã hoàn thành' });
     const token = await login('RECEPTION');
     assert.equal((await request(`/invoices/${data.invoiceId}`, token, 'PATCH', {
-      amountPaid: paid, finalAmount: 100000, allowDebt: debtAllowed, status: 'Đã thanh toán', paymentMethod: 'Tiền mặt' })).status, expected);
+      amountPaid: paid, finalAmount: 100000, allowDebt: debtAllowed, status: 'Đã thanh toán', paymentMethod: method })).status, expected);
     const stored = await read(`/invoices/${data.invoiceId}`, token);
     assert.equal(stored.status, expected === 200 ? 'Đã thanh toán' : 'Chưa thanh toán');
     assert.equal(stored.amountPaid, expected === 200 ? paid : 0);
     assert.equal(stored.debt, expected === 200 ? 100000 - paid : 0);
+    assert.equal(stored.paymentMethod, expected === 200 ? method : 'Tiền mặt');
   });
 }
+
+for (const method of ['GET', 'PATCH']) {
+  test(`TC-AUTHZ-005: Doctor ${method} invoice returns 403 without exposing or modifying data`, async (t) => {
+    const data = await fixture(t, { invoice: true });
+    const result = await request(`/invoices/${data.invoiceId}`, await login('DOCTOR'), method,
+      method === 'PATCH' ? { status: 'Đã thanh toán', amountPaid: 100000, finalAmount: 100000 } : undefined);
+    assert.equal(result.status, 403);
+    assert.equal(result.body.data, undefined);
+    assert.equal(typeof result.body.error, 'string');
+    const stored = await read(`/invoices/${data.invoiceId}`, await login('ADMIN'));
+    assert.equal(stored.status, 'Chưa thanh toán');
+    assert.equal(stored.amountPaid, 0);
+  });
+}
+
+test('TC-AUTH-010 (invoice subset): missing token cannot list invoices', async () => {
+  const result = await request('/invoices');
+  assert.equal(result.status, 401);
+  assert.equal(result.body.data, undefined);
+  assert.equal(typeof result.body.error, 'string');
+});
 for (const [role, expected] of [['ADMIN', 200], ['DOCTOR', 403], ['RECEPTION', 403]]) {
   test(`TC-AUTHZ-${role === 'ADMIN' ? '004' : role === 'DOCTOR' ? '005' : '007'}: ${role} invoice deletion returns ${expected}`, async (t) => {
     const data = await fixture(t, { invoice: true });

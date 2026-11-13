@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="BUG-002 / TC-APPT-021: completed appointment cannot move backward" time="0.188087" classname="test" failure="Expected values to be strictly deep-equal:+ actual - expected  {+   persisted: 'Đang điều trị',+   status: 200-   persisted: 'Đã hoàn thành',-   status: 400  }">
+		<failure type="testCodeFailure" message="Expected values to be strictly deep-equal:+ actual - expected  {+   persisted: 'Đang điều trị',+   status: 200-   persisted: 'Đã hoàn thành',-   status: 400  }">
+[Error [ERR_TEST_FAILURE]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  {
++   persisted: 'Đang điều trị',
++   status: 200
+-   persisted: 'Đã hoàn thành',
+-   status: 400
+  }
+] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   persisted: 'Đang điều trị',
+  +   status: 200
+  -   persisted: 'Đã hoàn thành',
+  -   status: 400
+    }
+  
+      at D:\KiemThu_PhongKham\testing\api\known-defects.test.js:27:10
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async D:\KiemThu_PhongKham\testing\helpers\qa-test.js:9:11
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { status: 200, persisted: 'Đang điều trị' },
+    expected: { status: 400, persisted: 'Đã hoàn thành' },
+    operator: 'deepStrictEqual'
+  }
+}
+		</failure>
+	</testcase>
+	<testcase name="BUG-003 / TC-APPT-022: repeated completion cannot create duplicate invoices" time="0.111878" classname="test" failure="Exactly one invoice per completed appointment2 !== 1">
+		<failure type="testCodeFailure" message="Exactly one invoice per completed appointment2 !== 1">
+[Error [ERR_TEST_FAILURE]: Exactly one invoice per completed appointment
+
+2 !== 1
+] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: Exactly one invoice per completed appointment
+  
+  2 !== 1
+  
+      at D:\KiemThu_PhongKham\testing\api\known-defects.test.js:34:10
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async D:\KiemThu_PhongKham\testing\helpers\qa-test.js:9:11
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual'
+  }
+}
+		</failure>
+	</testcase>
+	<!-- tests 2 -->
+	<!-- suites 0 -->
+	<!-- pass 0 -->
+	<!-- fail 2 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 889.9573 -->
+</testsuites>

@@ -1,0 +1,1325 @@
+{
+  "schemaVersion": 1,
+  "runId": "QA-20261113T075024810Z-b5db79",
+  "label": "all",
+  "started": "2026-11-13T07:50:24.810Z",
+  "finished": "2026-11-13T07:51:15.789Z",
+  "executor": "automation:local",
+  "executionType": "Automated",
+  "applicationVersion": "1.0.0",
+  "commit": "6fb4482fca8167ba6a40a956939e25bb9718c987",
+  "workingTreeHash": "53ed772e939a7866be5837697cd5d30ef1dbd272070ec4de365073d0f0be352d",
+  "sourceHashes": {
+    "testing/helpers/cypress-results.js": "053eb7ffeaf0d1665cd6a7cd70876846ce65b9a36100ced739cc6ac18ec8f449",
+    "testing/helpers/defect-lifecycle.js": "261dc03a64ae45d6507695447b17a5c0efacffcb42c7cd2974e3b8ac6f971092",
+    "testing/helpers/json-reporter.js": "4056667ecd32f51f0fab2f1dea5eb822f46cac931c2f8d70120bbc9a5872f2c9",
+    "testing/helpers/qa-test.js": "c18e2c7dc2a531412587a93d815bfa1ed0b21a0fa6f52577cec3a8faeb3b14d8",
+    "testing/helpers/redact.js": "8d8bcb6957bab267ba1f9ebddc7c6b2d2ab3036f54bd29e4e38b23b126df8638",
+    "testing/helpers/run-store.js": "93d1834c4f80bdbdb6e873026f316d1bbeb39da8fc7ea5092e71a2a264ae3e75",
+    "testing/helpers/tabular.js": "38c8bde6e059d9a6b0fcdd86524e968d59b8ed6f7058faca58c3e52fab14ea5c",
+    "testing/manual/source-cases.csv": "cf91af88a446894228d5b2affdeefb64882341f163f7b32b3a57c089f4209930",
+    "testing/scripts/audit-run.js": "ebecaba2b5024caf30a6eac61a1488545ff190a82ef0487a2e9597755e37e772",
+    "testing/scripts/defect.js": "0c0068a957c4dd45577aa8efbc3a972524a6e4c0302ecf0b48311f4a28e8289f",
+    "testing/scripts/normalize-sources.js": "edb00a7f115dddbd4e6cf76a67634f2e0de164aa1bbd220855f13972bbfb9d3d",
+    "testing/scripts/publish-run.js": "60a7ecf52b34dac8883b0e1bbf5752bf9f1304f198ac07fedc2648af5db87b57",
+    "testing/scripts/report-run.js": "319ff2e91b0c97a2b968093cac195623c40139cd87f9a5d4250e14b4902fe8e1",
+    "testing/scripts/run-qa.js": "b3d8cf2b9cfe4a495632222ac235e4fc30f465f6c0c320ca2de9e4b0358eea65",
+    "testing/trace-links.json": "5c8fcd642b70bebe6e51967f7294592d921f95d87b3c33d1d12d8e18316e9a21",
+    "testing/unit/qa-reporting.test.js": "a36aba833138884f2d3d5e19cb151e2d302206a3ff3244c33156c77192882cd5",
+    ".github/workflows/cypress.yml": "1993ef7cd8343001868731b230c65d7cfb5e390514bc0ae322fea80d413615df",
+    "client/eslint.config.js": "74bcb49fec61d75ef30542fbfe41f2498961f72a028a827c2091622b06d6921e",
+    "client/package-lock.json": "da58299222928a9eb8c5a324ad8502dc76866c7c660102e51bf32a0bef8e9b91",
+    "client/package.json": "eea7ca476d315ac69b7adf2654ff362b55813661e800683d41c993de0d362dd6",
+    "client/postcss.config.js": "60595f13a5120051b9e6312b14d0922efa034f0bd6aaf9455898dd4fae987ea9",
+    "client/src/App.tsx": "162571c5959c90598c32885b9c580285bfb00423bdbac05e38e195f82b228d42",
+    "client/src/components/AppHeader.tsx": "f44118aea7f7d33b844b2543c4f9b1609957c3752fcd5712f08e9c3a3099b7e3",
+    "client/src/components/Breadcrumb.tsx": "59c391d1bae84cf92c0f34c89cbd0bd4e19290bd52a2eabe76c95f694e47c756",
+    "client/src/components/DoctorFormModal.tsx": "da18967120ee4dcc54ca855265d708e47b3064b0045c9b00a150a8c82540c9e0",
+    "client/src/components/EmptyState.tsx": "c0554c433601f9dc87137ef4081303f04c31168ebc45d4a0b8d70599f4679c23",
+    "client/src/components/LoadingSkeleton.tsx": "ab7d7a5898672dac9dddf48687b236ed85213e9678dd0942130730c142d8cde1",
+    "client/src/components/PageShell.tsx": "b308b73900c4b09bf342ef415eb7cf3e07c9ebcc95b388c6bba2d2bf442729ec",
+    "client/src/components/PayrollDetailModal.tsx": "6adc3ec9584ce7577e9efce0c93a40054625030641c6b4a69db2321df1db2368",
+    "client/src/components/Sidebar.tsx": "2b7a0e20b83e50efad2619d2f290ffef6088d8c87c3de2fd4f1ac5d2e176f1ca",
+    "client/src/components/ToothChart.tsx": "bb5787cb55bda866f8a8b2317cb236601957fdfd934b3436fd0c05449a87f697",
+    "client/src/components/YearlyDoctorPayrollModal.tsx": "a97cfc60ac078459ca317f1319f29d34e91537b0b0c81b78b7f9934edeacee1f",
+    "client/src/config/navigation.ts": "b59d8faacf845ea7a7ac262e68b2b89f15018d5665d9d2f13f5c358dda1fdbad",
+    "client/src/contexts/AuthContext.tsx": "4b30b873375e037e2d1c8541606aa516b637afb2879b1611fa8bdb5d64b584fa",
+    "client/src/contexts/ConfirmContext.tsx": "6e7bfe7609aa9c50be9bd440a3bb73bfa95553f8bc1297b7a5f04466e5225848",
+    "client/src/contexts/DataContext.tsx": "682307e74747e6e18f6c517a767b9767ca31565b84fc5a1bffe82b46cff29f68",
+    "client/src/contexts/ToastContext.tsx": "95471f411f8a0ec668fc7fcb56afafe05a7c6b8bc764f59aaf97ff50b59feeee",
+    "client/src/layout/AppShell.tsx": "fa7fcdda544d814d6eb817d5b2ef3c393960635e74c9cf5f068d5228e3aab33b",
+    "client/src/lib/api.ts": "43e4142d980e41fc1f99378f5c5239001ef8ec0ab94ee9ab87fbffc44e73b70b",
+    "client/src/lib/formatters.ts": "5dba8b1ddb9d15e3e3d26bfa26224f30ff298f1bf69254131defdb020c9da45f",
+    "client/src/lib/types.ts": "7c46fbb20393e614024fa413a3fdec170f0c7cd195fd2711cc4f0a91c5d10ee3",
+    "client/src/lib/validations.ts": "b39d9d3e7fcf0c0bfa9bb05e5e824881089357be2ef31c255619e8de3f98c78c",
+    "client/src/main.tsx": "0a90385a847237268323f5c74850949ee8c3fef3ca9b4ff59f63b5b3474f8c15",
+    "client/src/pages/AccountManagementPage.tsx": "695e43803da1aa16387db8f6b0cd8babd9986a721e5ccba15662167c3c9224bc",
+    "client/src/pages/AppointmentManagementPage.tsx": "159f60adc13470ade7e2ad21fb9b1f4226a4cd66965e13dd05d978992cdf6ced",
+    "client/src/pages/DashboardPage.tsx": "9c1665f8b64a5fb837b9648e28576f54e63bda8f117ffdaa484b0381e6745e62",
+    "client/src/pages/DoctorExaminationPage.tsx": "7b4c3f707ce8efbddc57f1cc230833ee635e1724658ecef20224a8fadf3f946e",
+    "client/src/pages/DoctorManagementPage.tsx": "a6acf142f563d867365f49c84b4621d8ef5692640693219ddfca6f97a4828ae8",
+    "client/src/pages/DoctorPayrollPage.tsx": "728aa4105b5bcb2ab077d77dffe840ea6f993e8e04203617d6b66580ea8cac06",
+    "client/src/pages/GeneralSettingsPage.tsx": "6caff700195875e4da088abfe726923043bcce174b175cafe6b1bf32a5b5b988",
+    "client/src/pages/LoginPage.tsx": "001b25cd9785c62179a1f53312a24d661068319d6dfb0f754d87c1b3cc3905da",
+    "client/src/pages/PatientManagementPage.tsx": "d71b625e12c1b2d92998089994b05d2b6e9e7d09c6b1725e1d4d6cff6d7a75cb",
+    "client/src/pages/PaymentManagementPage.tsx": "442c5958cd58df3660393e7c682c0e7a935e07c5a1a95b1167b05fab2b4a2dd7",
+    "client/src/pages/PayrollSettingsPage.tsx": "651aaab05a0c91f3532180a0e72330b329a08a7f3feebb085dc91788fc1177ea",
+    "client/src/pages/PermissionManagementPage.tsx": "2c18316810854522b681ae3167578892ef14dcaba2464d2f0eef6b3bfef02899",
+    "client/src/pages/ReceptionPage.tsx": "9dd40ec314ba4fd2d108e9260b5207244c270a96e10ea2a0f0d2d7f82f6bdb4a",
+    "client/src/pages/RevenueStatisticsPage.tsx": "c754ec887efcc2a267033bbfeaf42aee9a9dd9b3ad5bbac48789305c60e2c0ec",
+    "client/src/pages/ScheduleManagementPage.tsx": "bb2e6a1ef1a803f2bd0b7b16cb7c77a5d2655e8af4a6601de1a81fa245c03598",
+    "client/src/pages/ServiceCategoryPage.tsx": "4d46d83709fef90a96b32b7c2a55a7af87cb13fc294c74f9bb09953dd66e81bc",
+    "client/src/pages/ShiftCoefficientPage.tsx": "232e8f8a21da0b349eb8d6d427b484b5a9d710578da26d41073b60ca56428fac",
+    "client/src/routes/AppRouter.tsx": "1f0f860db87c09c714a87cc67ceaf3596f00f450d9c5884b04deade4def2f8cb",
+    "client/src/routes/ProtectedRoute.tsx": "2e25a780dfb229a143619635706d06078840277123b48da32db13c61735f4879",
+    "client/tailwind.config.js": "0613742fd45d11fef0c12c7af205718a818268ea180dfd0fec3a35536fe4f455",
+    "client/tsconfig.app.json": "61ab483a94a0556e57ea95cc7353bb07b9f3084c0691364070bbf853910646e8",
+    "client/tsconfig.json": "ad28d132ee48d6e23917cf5827cace785d0fc01a44ca68b0dda51cc8c3fd3f52",
+    "client/tsconfig.node.json": "e0f1936992f77a707102795e8ea311ae74cb54de87b221bb32b44055af66ff7e",
+    "client/vite.config.ts": "9e4a6432404ff88f4f71c6e9bc59e8cb90e8d5a043ce6722677d90f0894325de",
+    "server/package-lock.json": "e9b9c336631b912ac681f61f451e06a44ad5f9ef0e8a8ef26e12046d440743ae",
+    "server/package.json": "92b01926f063369b24c1e5571b38db36294f2a28ebdae6b78bf1dd5d285dd61b",
+    "server/server.js": "6795a7e49dd794bf66e4c7a4f31213dbfb8643711a5f82a0ae77cc2d5a105524",
+    "server/src/config/db.js": "f470a1ea48c745b3ea573b1d5f050edfb2f303a781158263b3b2d2910ecfa4ef",
+    "server/src/controllers/appointmentController.js": "d17a53c900f60b66d9c271f99fb0d907f2a5b0bc0044f0215387cd447ffe03c1",
+    "server/src/controllers/authController.js": "b1befcd11f06ce473ea4aa2e555ee2700742dc4fba12b454f52a8d15d45d8930",
+    "server/src/controllers/dashboardController.js": "442190df9b152be2cd00af3a7a0eb9d8cc7ea55176f025be81761c272d82b143",
+    "server/src/controllers/handlerFactory.js": "e5f84fcd99b78b1962c5cec99809ff267540ddb800c54d482def400f7753b97b",
+    "server/src/controllers/inventoryController.js": "f706ed37842444fff02846655da026d8c0919e9fab772051c384f73fe1564743",
+    "server/src/controllers/payrollController.js": "72abc6527ea0b6c49c5154131b53f4d17ced074ee618f1bde435061a76b680be",
+    "server/src/controllers/reportController.js": "643df2c328b5617ade1ebb0fd60717ea7abd2511b6abbaba0eefb1932988cfa4",
+    "server/src/controllers/shiftController.js": "699708cde281739a766dd1f8bff29ef769257f380a6d453c2c2c58a0b9a651e1",
+    "server/src/jobs/reminderJob.js": "3530370ce0983f07c5cdc4171ee5bb4f96625742bae2a19efc92c7beab2ccf22",
+    "server/src/middlewares/auth.js": "95bf047e77b396725e93f7ed35836c46b33b257789abed6c00a26b9c69d49882",
+    "server/src/models/Account.js": "db1576256531514a9a9bc037cec4867725980d2316b29922a75811ec4cdd06dc",
+    "server/src/models/Appointment.js": "f344072b837adec7660e78b72ac574d8da322a5e2685111db28e694919f3e16b",
+    "server/src/models/AuditLog.js": "73c2a446b5d3449d941834a9445b9db1917e9be83ac34d57217c1cc4cbab0a12",
+    "server/src/models/Doctor.js": "4cc0d089aee7afa7ea4e227edcf62aa6ff88b3d1c1d3d60a377d73dcc6d0c8ac",
+    "server/src/models/Holiday.js": "8137a5b7a73f24063a79c93a8e2bc5361475934631cd8e69b5156dc18642a60d",
+    "server/src/models/InventoryLog.js": "68563d98a6259cba24b1051fba5a3b6db6e34bfb8261681a19beee72cc0e9400",
+    "server/src/models/Invoice.js": "24747637af5e511f434bbdd893469427359be7a8a97c1f9c377781f7027085b7",
+    "server/src/models/LeaveRequest.js": "feb4c2ddb0d2a8041058afcb24297ae093454a32651f12f14d160167b612f1f8",
+    "server/src/models/Material.js": "5b8dc0b6797f33d7ae0e90295b8351d7cd84556191f53467445143e98c162d0c",
+    "server/src/models/Patient.js": "f68328a95a0c74d2214717140fa4b4ff863434743e88d0beef355ed2790af9f9",
+    "server/src/models/PayrollConfigHistory.js": "d5dedc6c919a80abfff4f68672e8b61befc01011517d7a90f991b85935877be2",
+    "server/src/models/PayrollSlip.js": "8e71b2520814eb2196b610f09ee358bb6f9ba23050e4fb0647baf41f88524ca5",
+    "server/src/models/PricingPolicy.js": "9f185fbbcf29137b0240583c68360eccbc6b9dcd7a45a504a395f52abeaef777",
+    "server/src/models/RolePermission.js": "98e34ec3888e66513ca7c34b1b50c34f33f960c7d7f7234f3a5a364386436bf5",
+    "server/src/models/Service.js": "777284a06db3e1744707ea3b93688543c5f3a81e2806014f37c47de900b9dc28",
+    "server/src/models/Setting.js": "a8b705541e7271d3a93cd933ba44041a9805eea69b89f728bb2d33ecc0af68dd",
+    "server/src/models/Shift.js": "8f6537ac57e6a252280cb4fb6002df582d146e5fffa6bb351f6360b6be9e3243",
+    "server/src/models/TreatmentRecord.js": "0ab0ff5fdfd2f563fc6429f1065f73fa085cb88a4b33125cf9dbafc434729d42",
+    "server/src/models/WorkShift.js": "2b5447dcc3bf977b076873acfb4436a6a20847282226f877625683d90c8f02a0",
+    "server/src/routes/accountRoutes.js": "23825b4b586712e65c22c6e2b97561382ee8a31770a62f09b0b65924731b276e",
+    "server/src/routes/appointmentRoutes.js": "cbc7604991b6ba23d55af0ac1f9036dec7c131a4911a25d263e73d8dd1853816",
+    "server/src/routes/authRoutes.js": "39c2883c33dc01ed358b82dfd13b0b71874d640625da9b69726042421c48427e",
+    "server/src/routes/dashboardRoutes.js": "851774a9b85b2dda013fc4df92291e99af9422f7b5f1b221e7d93dfa650b3b49",
+    "server/src/routes/doctorRoutes.js": "a6420a7b80bc35cd7454f8b4a2401262eb02560c0c806a5f0c86c56550fe3349",
+    "server/src/routes/inventoryRoutes.js": "daf72b41b9ea2399178815408c9882e0bcc3ea4b1f87700d69b9fe5febe806b1",
+    "server/src/routes/invoiceRoutes.js": "387376bc418e9e435534aa89dbddc0a446f6151947aa1e536c57c7d8951c6bc7",
+    "server/src/routes/leaveRequestRoutes.js": "8ffd64659285a23298d1821a2ad0d357cf1a92a1a5b818b4f8f9961e68919202",
+    "server/src/routes/payrollRoutes.js": "3952b4d9d02d16dd6574424f01c9b8acbe16e96cab509cc7b639047bc96371de",
+    "server/src/routes/pricingRoutes.js": "c45b9bcd1669f733334068b04184e95e88b3b0a3dd79c0f22ef490a87d98b7ab",
+    "server/src/routes/reportRoutes.js": "8cb434871ae56d176daba11c80aff19ff4f8b402ebda0075f28af51f32090209",
+    "server/src/routes/resourceRoutes.js": "66dc18fd8772730ff43049e3af4c1c4accd7c66a3df8b513e4768e258dd09ebf",
+    "server/src/routes/serviceRoutes.js": "9fd4a4c55292b04c6c4f4f19c20b85add5055a8a975bb01a6a79ed65f0abf936",
+    "server/src/routes/treatmentRoutes.js": "28f79fee4224c653a534aec036608f48a3727eb92ce63a77757e43434f5b79dc",
+    "server/src/routes/workShiftRoutes.js": "5cef19bb0984c3d7a4a95ba0dd0417b9f50ebec43ed6968be960cc6f26d3d9a7",
+    "testing/api/auth.test.js": "3d93945f19550e6be001dbf9993760dae16a3c0e3c007b3d7169d78a04ead583",
+    "testing/api/authorization-invoice.test.js": "dcdd2bc240011f5601accdfb61f93fc6da3cbba40c49e2409b3f93bc64b983ec",
+    "testing/api/known-defects.test.js": "19d16de440bd94ab577f57a45b0f0854a2c8a0b1c10943fa53bad6f98097d339",
+    "testing/e2e/cypress.config.js": "39324ec83d15b89abde3304d01af00333f837d62f333459dd8e718a3ab951fc2",
+    "testing/e2e/cypress/e2e/core-workflows.cy.js": "365bc98c497b3de8ea66d1ff15f85d1d0dd3bd400ad6f6a248e8d81cf38142ae",
+    "testing/e2e/cypress/e2e/login.cy.js": "7ceffa78afcab7c45e59de673ae9477bb174bd82a9e1b078b5474bf646b570ce",
+    "testing/e2e/cypress/pages/LoginPage.js": "13dc3138743e8f2cedf60598da80203dbce1a0cdbbfb908ea6657508d0953e34",
+    "testing/e2e/cypress/support/commands.js": "4a72e00a2f1f23c923c463be91424f65435fb3a5e76717e27b334a9c3128b88c",
+    "testing/e2e/cypress/support/e2e.js": "437c41466a27f1a0fc655487fe971f98a5f39d8e4063de6309a174cf0071589e",
+    "testing/e2e/package-lock.json": "450ce27da66de624fe49ae1af1a80db31cf651438da47ce500360e76e09d4fbd",
+    "testing/e2e/package.json": "372e5e0067a61037599da470f8dd2a5e5318e0a3c6bd9848c528330f47152708",
+    "testing/helpers/qa-data.js": "3cc0f201548bc897aadb8d9d43d56ea1f0f025612f426c7f9e58dd3ad0b7fc69",
+    "testing/manual/test-cases.csv": "c9c846d6f82d32d3cfe133cdcd9d8f2247dd14e14bd73c2139aa0babef1ddad0",
+    "testing/postman/smilecare-qa.postman_collection.json": "7458ab877fe002829b35586cd5780d4e17b0d940890d23dbdc20ef353a2e76be",
+    "testing/postman/smilecare-qa.postman_environment.json": "3f2314d5fc6f8390bbd97ed322a50d66c40d51c55501cc5019788247f1c3113e",
+    "testing/scripts/audit-qa.js": "b2e9bf82b9a616a635914c6f943d436e20f781b862827d1427fd4b724b92b20c",
+    "testing/scripts/prepare-env.js": "fb9d8ac00da892e2ea046e140b27babb1c2d28288e029386a1e650f8da17cc20",
+    "testing/scripts/run-api.js": "9bc4b28a7d28039c347e064f90cf9c9fd3fdf38ea3df963149eb6ce608b8ac7b",
+    "testing/scripts/seed-test-accounts.js": "370f9b9310c67fffef3c5d273865f9e81b4406fd89f08f1b05a4de0dde97122d",
+    "testing/scripts/wait-for-app.js": "a0e7ccfb684e1aeefcd33cb1950e60cdf244ec768ffa81a7be5de8bcf59caead"
+  },
+  "environment": {
+    "node": "v22.15.0",
+    "platform": "win32",
+    "timezone": "Asia/Saigon",
+    "apiUrl": "http://localhost:5000/api",
+    "baseUrl": "http://localhost:5173"
+  },
+  "ciRunUrl": null,
+  "outcomes": [
+    {
+      "suite": "api",
+      "exitCode": 0
+    },
+    {
+      "suite": "known-defects",
+      "exitCode": 1
+    },
+    {
+      "suite": "ui",
+      "exitCode": 0
+    }
+  ],
+  "counts": {
+    "Pass": 46,
+    "Fail": 2,
+    "Blocked": 0,
+    "Not Run": 0
+  },
+  "results": [
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-5e17eeeb4f54",
+      "testCaseIds": [
+        "TC-AUTH-002"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTH-002 (API subset): missing both credentials returns 400",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTH-002: Validation bắt buộc; không tạo phiên",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":400,\"body\":{\"error\":\"Please provide an email and password\"}},{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":400,\"body\":{\"error\":\"Please provide an email and password\"}},{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":400,\"body\":{\"error\":\"Please provide an email and password\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 62.9823,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/5e17eeeb4f54.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-c9cb31b40540",
+      "testCaseIds": [
+        "TC-AUTH-004"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTH-004: uppercase gmail account is normalized",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTH-004: HTTP 200; token được cấp; account.email bằng email chữ thường đã seed",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 82.9025,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/c9cb31b40540.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-96b7e451a606",
+      "testCaseIds": [
+        "TC-AUTH-003"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTH-003: non-gmail email returns 400",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTH-003: HTTP 400; error invalid_email_format; không lưu token",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":400,\"body\":{\"error\":\"invalid_email_format\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 6.283,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/96b7e451a606.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-885b29815e92",
+      "testCaseIds": [
+        "TC-AUTH-005"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTH-005: wrong password returns 401",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTH-005: HTTP 401; error wrong_password; không lưu phiên",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":401,\"body\":{\"error\":\"wrong_password\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [
+        "BUG-001"
+      ],
+      "durationMs": 107.6347,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/885b29815e92.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-821b11fd8639",
+      "testCaseIds": [
+        "TC-AUTH-008"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTH-008: locked account returns 403",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTH-008: HTTP 403; error locked; không cấp token",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":403,\"body\":{\"error\":\"locked\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 113.9788,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/821b11fd8639.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-04066502b7ad",
+      "testCaseIds": [
+        "TC-AUTH-001",
+        "TC-AUTH-012"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTH-001 / TC-AUTH-012 (API): valid login returns token without password",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTH-001: HTTP 200; có token; chuyển về trang chính; response không có password | TC-AUTH-012: Response account không có trường password",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 109.6932,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/04066502b7ad.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-ccf2218e022a",
+      "testCaseIds": [
+        "TC-AUTH-010"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTH-010 (missing-token subset): /me rejects missing token",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTH-010: HTTP 401; token bị xóa; UI chuyển về /login",
+      "actual": "{\"observations\":[{\"method\":\"GET\",\"path\":\"/api/auth/me\",\"httpStatus\":401,\"body\":{\"error\":\"Not authorized to access this route\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 4.6001,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/ccf2218e022a.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-1f32a85b0644",
+      "testCaseIds": [
+        "TC-AUTH-012"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTH-012 (session): /me returns current account without password",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTH-012: Response account không có trường password",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}},{\"method\":\"GET\",\"path\":\"/api/auth/me\",\"httpStatus\":200,\"body\":{\"status\":\"active\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 88.0334,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/1f32a85b0644.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-b7c8082a525e",
+      "testCaseIds": [
+        "TC-AUTH-009"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTH-009: /me rejects invalid token",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTH-009: HTTP 401; không trả dữ liệu user",
+      "actual": "{\"observations\":[{\"method\":\"GET\",\"path\":\"/api/auth/me\",\"httpStatus\":401,\"body\":{\"error\":\"Not authorized to access this route\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 2.8385,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/b7c8082a525e.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-8746eb8e47e6",
+      "testCaseIds": [
+        "TC-AUTH-010"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTH-010 (expired-token subset): signed expired JWT cannot access current account",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTH-010: HTTP 401; token bị xóa; UI chuyển về /login",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}},{\"method\":\"GET\",\"path\":\"/api/auth/me\",\"httpStatus\":401,\"body\":{\"error\":\"Not authorized to access this route\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 127.0215,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/8746eb8e47e6.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-3ad507b6fa5f",
+      "testCaseIds": [
+        "TC-AUTHZ-001"
+      ],
+      "sourceCaseIds": [
+        "TC-UC11-001"
+      ],
+      "name": "TC-AUTHZ-001: ADMIN account access returns 200",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTHZ-001: HTTP 200; menu accounts hiển thị",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}},{\"method\":\"GET\",\"path\":\"/api/accounts\",\"httpStatus\":200,\"body\":{\"recordCount\":8}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 107.1106,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/3ad507b6fa5f.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-ef8292516fc6",
+      "testCaseIds": [
+        "TC-AUTHZ-002"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTHZ-002: DOCTOR account access returns 403",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTHZ-002: HTTP 403; không trả danh sách account",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Doctor\"}},{\"method\":\"GET\",\"path\":\"/api/accounts\",\"httpStatus\":403,\"body\":{\"error\":\"User role Doctor is not authorized to access this route\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 71.764,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/ef8292516fc6.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-765925be96f7",
+      "testCaseIds": [
+        "TC-AUTHZ-003"
+      ],
+      "sourceCaseIds": [
+        "TC-UC11-002"
+      ],
+      "name": "TC-AUTHZ-003: RECEPTION account access returns 403",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTHZ-003: HTTP 403; menu accounts không hiển thị",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Reception\"}},{\"method\":\"GET\",\"path\":\"/api/accounts\",\"httpStatus\":403,\"body\":{\"error\":\"User role Reception is not authorized to access this route\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 76.1014,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/765925be96f7.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-2b79b520ba51",
+      "testCaseIds": [
+        "TC-APPT-001"
+      ],
+      "sourceCaseIds": [
+        "TC-UC24-001"
+      ],
+      "name": "TC-APPT-001: create appointment and read persisted fields",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-APPT-001: HTTP 201; trạng thái Đã lên lịch",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}},{\"method\":\"POST\",\"path\":\"/api/appointments\",\"httpStatus\":201,\"body\":{\"status\":\"Đã lên lịch\"}},{\"method\":\"GET\",\"path\":\"/api/appointments/6af6c1427abddce88a155cc9\",\"httpStatus\":200,\"body\":{\"status\":\"Đã lên lịch\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 151.9514,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/2b79b520ba51.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-62edf7d1ed40",
+      "testCaseIds": [
+        "TC-APPT-002"
+      ],
+      "sourceCaseIds": [
+        "TC-UC24-009"
+      ],
+      "name": "TC-APPT-002: past appointment returns 400 and creates no data",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-APPT-002: HTTP 400; không tạo lịch",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}},{\"method\":\"POST\",\"path\":\"/api/appointments\",\"httpStatus\":400,\"body\":{\"error\":\"Không thể đặt lịch hẹn trong quá khứ\"}},{\"method\":\"GET\",\"path\":\"/api/appointments\",\"httpStatus\":200,\"body\":{\"recordCount\":0}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 113.4134,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/62edf7d1ed40.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-d24d17967a79",
+      "testCaseIds": [
+        "TC-APPT-009"
+      ],
+      "sourceCaseIds": [
+        "TC-UC24-010"
+      ],
+      "name": "TC-APPT-009: duplicate patient/doctor/day returns 400 without duplicate data",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-APPT-009: HTTP 400; lỗi đã đặt lịch trong ngày",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}},{\"method\":\"POST\",\"path\":\"/api/appointments\",\"httpStatus\":400,\"body\":{\"error\":\"Bệnh nhân đã đặt lịch với bác sĩ này trong ngày hôm nay\"}},{\"method\":\"GET\",\"path\":\"/api/appointments\",\"httpStatus\":200,\"body\":{\"recordCount\":1}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 113.2468,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/d24d17967a79.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-311873720b3d",
+      "testCaseIds": [
+        "TC-APPT-011"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-APPT-011: check-in offset 29 minutes returns 200",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-APPT-011: HTTP 200; chuyển Đã đến",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Reception\"}},{\"method\":\"PATCH\",\"path\":\"/api/appointments/6af6c1435fe43dd6a4ef395a/checkin\",\"httpStatus\":200,\"body\":{\"status\":\"Đã đến\",\"checkInTime\":\"2026-11-13T07:50:27.092Z\"}},{\"method\":\"GET\",\"path\":\"/api/appointments/6af6c1435fe43dd6a4ef395a\",\"httpStatus\":200,\"body\":{\"status\":\"Đã đến\",\"checkInTime\":\"2026-11-13T07:50:27.092Z\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 94.9615,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/311873720b3d.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-957271d6cde9",
+      "testCaseIds": [
+        "TC-APPT-013"
+      ],
+      "sourceCaseIds": [
+        "TC-UC31-006"
+      ],
+      "name": "TC-APPT-013: check-in offset -31 minutes returns 400",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-APPT-013: HTTP 400; không đổi trạng thái",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Reception\"}},{\"method\":\"PATCH\",\"path\":\"/api/appointments/6af6c1435fe43dd6a4ef3962/checkin\",\"httpStatus\":400,\"body\":{\"error\":\"Đã quá hạn Check-in (trễ hơn 30 phút)\"}},{\"method\":\"GET\",\"path\":\"/api/appointments/6af6c1435fe43dd6a4ef3962\",\"httpStatus\":200,\"body\":{\"status\":\"Đã lên lịch\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 80.8144,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/957271d6cde9.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-488ade0a912b",
+      "testCaseIds": [
+        "TC-APPT-014"
+      ],
+      "sourceCaseIds": [
+        "TC-UC31-001"
+      ],
+      "name": "TC-APPT-014: check-in offset 0 minutes returns 200",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-APPT-014: HTTP 200; ghi checkInTime",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Reception\"}},{\"method\":\"PATCH\",\"path\":\"/api/appointments/6af6c1435fe43dd6a4ef396a/checkin\",\"httpStatus\":200,\"body\":{\"status\":\"Đã đến\",\"checkInTime\":\"2026-11-13T07:50:27.261Z\"}},{\"method\":\"GET\",\"path\":\"/api/appointments/6af6c1435fe43dd6a4ef396a\",\"httpStatus\":200,\"body\":{\"status\":\"Đã đến\",\"checkInTime\":\"2026-11-13T07:50:27.261Z\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 83.7615,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/488ade0a912b.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-f7a0dda77ca0",
+      "testCaseIds": [
+        "TC-APPT-015"
+      ],
+      "sourceCaseIds": [
+        "TC-UC31-010"
+      ],
+      "name": "TC-APPT-015: repeated check-in returns 400 without modifying state",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-APPT-015: HTTP 400; không thay đổi trạng thái",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Reception\"}},{\"method\":\"PATCH\",\"path\":\"/api/appointments/6af6c1435fe43dd6a4ef3972/checkin\",\"httpStatus\":400,\"body\":{\"error\":\"Only scheduled appointments can be checked in.\"}},{\"method\":\"GET\",\"path\":\"/api/appointments/6af6c1435fe43dd6a4ef3972\",\"httpStatus\":200,\"body\":{\"status\":\"Đã đến\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 85.7596,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/f7a0dda77ca0.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-68bf4feafede",
+      "testCaseIds": [
+        "TC-APPT-018"
+      ],
+      "sourceCaseIds": [
+        "TC-UC32-009"
+      ],
+      "name": "TC-APPT-018: complete treatment and verify exactly one unpaid invoice",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-APPT-018: HTTP 200; trạng thái hoàn thành",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}},{\"method\":\"PATCH\",\"path\":\"/api/appointments/6af6c1435fe43dd6a4ef397a\",\"httpStatus\":200,\"body\":{\"status\":\"Đã hoàn thành\"}},{\"method\":\"GET\",\"path\":\"/api/appointments/6af6c1435fe43dd6a4ef397a\",\"httpStatus\":200,\"body\":{\"status\":\"Đã hoàn thành\"}},{\"method\":\"GET\",\"path\":\"/api/invoices\",\"httpStatus\":200,\"body\":{\"recordCount\":1}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 92.1896,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/68bf4feafede.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-2fc5623d046d",
+      "testCaseIds": [
+        "TC-PAY-003"
+      ],
+      "sourceCaseIds": [
+        "TC-UC33-001"
+      ],
+      "name": "TC-PAY-003: paid=100000, allowDebt=false returns 200 and persists balance",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-PAY-003: HTTP 200; status Đã thanh toán; debt = 0",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Reception\"}},{\"method\":\"PATCH\",\"path\":\"/api/invoices/6af6c1435fe43dd6a4ef3983\",\"httpStatus\":200,\"body\":{\"status\":\"Đã thanh toán\",\"amountPaid\":100000,\"finalAmount\":100000,\"debt\":0,\"paymentMethod\":\"Tiền mặt\"}},{\"method\":\"GET\",\"path\":\"/api/invoices/6af6c1435fe43dd6a4ef3983\",\"httpStatus\":200,\"body\":{\"status\":\"Đã thanh toán\",\"amountPaid\":100000,\"finalAmount\":100000,\"debt\":0,\"paymentMethod\":\"Tiền mặt\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 90.0023,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/2fc5623d046d.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-69c152a4c38a",
+      "testCaseIds": [
+        "TC-PAY-004"
+      ],
+      "sourceCaseIds": [
+        "TC-UC33-002"
+      ],
+      "name": "TC-PAY-004: paid=100000, allowDebt=false returns 200 and persists balance",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-PAY-004: HTTP 200; paymentMethod đúng",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Reception\"}},{\"method\":\"PATCH\",\"path\":\"/api/invoices/6af6c1435fe43dd6a4ef398c\",\"httpStatus\":200,\"body\":{\"status\":\"Đã thanh toán\",\"amountPaid\":100000,\"finalAmount\":100000,\"debt\":0,\"paymentMethod\":\"Chuyển khoản\"}},{\"method\":\"GET\",\"path\":\"/api/invoices/6af6c1435fe43dd6a4ef398c\",\"httpStatus\":200,\"body\":{\"status\":\"Đã thanh toán\",\"amountPaid\":100000,\"finalAmount\":100000,\"debt\":0,\"paymentMethod\":\"Chuyển khoản\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 109.8738,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/69c152a4c38a.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-0d6fcc4ab6ff",
+      "testCaseIds": [
+        "TC-PAY-005"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-PAY-005: paid=100000, allowDebt=false returns 200 and persists balance",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-PAY-005: HTTP 200; paymentMethod đúng",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Reception\"}},{\"method\":\"PATCH\",\"path\":\"/api/invoices/6af6c1435fe43dd6a4ef3995\",\"httpStatus\":200,\"body\":{\"status\":\"Đã thanh toán\",\"amountPaid\":100000,\"finalAmount\":100000,\"debt\":0,\"paymentMethod\":\"Thẻ tín dụng\"}},{\"method\":\"GET\",\"path\":\"/api/invoices/6af6c1435fe43dd6a4ef3995\",\"httpStatus\":200,\"body\":{\"status\":\"Đã thanh toán\",\"amountPaid\":100000,\"finalAmount\":100000,\"debt\":0,\"paymentMethod\":\"Thẻ tín dụng\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 111.1094,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/0d6fcc4ab6ff.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-dd81087e0bed",
+      "testCaseIds": [
+        "TC-PAY-006"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-PAY-006: paid=100000, allowDebt=false returns 200 and persists balance",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-PAY-006: HTTP 200; paymentMethod đúng",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Reception\"}},{\"method\":\"PATCH\",\"path\":\"/api/invoices/6af6c1435fe43dd6a4ef399e\",\"httpStatus\":200,\"body\":{\"status\":\"Đã thanh toán\",\"amountPaid\":100000,\"finalAmount\":100000,\"debt\":0,\"paymentMethod\":\"Thẻ ATM\"}},{\"method\":\"GET\",\"path\":\"/api/invoices/6af6c1435fe43dd6a4ef399e\",\"httpStatus\":200,\"body\":{\"status\":\"Đã thanh toán\",\"amountPaid\":100000,\"finalAmount\":100000,\"debt\":0,\"paymentMethod\":\"Thẻ ATM\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 99.9795,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/dd81087e0bed.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-0487e386acea",
+      "testCaseIds": [
+        "TC-PAY-007"
+      ],
+      "sourceCaseIds": [
+        "TC-UC33-008"
+      ],
+      "name": "TC-PAY-007: paid=1, allowDebt=false returns 400 and persists balance",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-PAY-007: HTTP 400; invoice không chuyển Đã thanh toán",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Reception\"}},{\"method\":\"PATCH\",\"path\":\"/api/invoices/6af6c1435fe43dd6a4ef39a7\",\"httpStatus\":400,\"body\":{\"error\":\"Số tiền nhận không đủ. Vui lòng xác nhận Ghi nợ nếu muốn tiếp tục.\"}},{\"method\":\"GET\",\"path\":\"/api/invoices/6af6c1435fe43dd6a4ef39a7\",\"httpStatus\":200,\"body\":{\"status\":\"Chưa thanh toán\",\"amountPaid\":0,\"finalAmount\":100000,\"debt\":0,\"paymentMethod\":\"Tiền mặt\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 85.0607,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/0487e386acea.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-e0ba86ce0528",
+      "testCaseIds": [
+        "TC-PAY-008"
+      ],
+      "sourceCaseIds": [
+        "TC-UC33-004"
+      ],
+      "name": "TC-PAY-008: paid=40000, allowDebt=true returns 200 and persists balance",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-PAY-008: HTTP 200; debt = finalAmount - amountPaid",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Reception\"}},{\"method\":\"PATCH\",\"path\":\"/api/invoices/6af6c1435fe43dd6a4ef39b0\",\"httpStatus\":200,\"body\":{\"status\":\"Đã thanh toán\",\"amountPaid\":40000,\"finalAmount\":100000,\"debt\":60000,\"paymentMethod\":\"Tiền mặt\"}},{\"method\":\"GET\",\"path\":\"/api/invoices/6af6c1435fe43dd6a4ef39b0\",\"httpStatus\":200,\"body\":{\"status\":\"Đã thanh toán\",\"amountPaid\":40000,\"finalAmount\":100000,\"debt\":60000,\"paymentMethod\":\"Tiền mặt\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 82.6947,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/e0ba86ce0528.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-6dc78f0a9f3c",
+      "testCaseIds": [
+        "TC-PAY-010"
+      ],
+      "sourceCaseIds": [
+        "TC-UC33-010"
+      ],
+      "name": "TC-PAY-010: paid=-1, allowDebt=false returns 400 and persists balance",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-PAY-010: HTTP 400; lỗi số tiền không được âm",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Reception\"}},{\"method\":\"PATCH\",\"path\":\"/api/invoices/6af6c1445fe43dd6a4ef39b9\",\"httpStatus\":400,\"body\":{\"error\":\"Số tiền nhận không được là số âm\"}},{\"method\":\"GET\",\"path\":\"/api/invoices/6af6c1445fe43dd6a4ef39b9\",\"httpStatus\":200,\"body\":{\"status\":\"Chưa thanh toán\",\"amountPaid\":0,\"finalAmount\":100000,\"debt\":0,\"paymentMethod\":\"Tiền mặt\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 83.2905,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/6dc78f0a9f3c.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-32a930a721a6",
+      "testCaseIds": [
+        "TC-AUTHZ-005"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTHZ-005: Doctor GET invoice returns 403 without exposing or modifying data",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTHZ-005: HTTP 403",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Doctor\"}},{\"method\":\"GET\",\"path\":\"/api/invoices/6af6c1445fe43dd6a4ef39c2\",\"httpStatus\":403,\"body\":{\"error\":\"User role Doctor is not authorized to access this route\"}},{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}},{\"method\":\"GET\",\"path\":\"/api/invoices/6af6c1445fe43dd6a4ef39c2\",\"httpStatus\":200,\"body\":{\"status\":\"Chưa thanh toán\",\"amountPaid\":0,\"finalAmount\":100000,\"debt\":0,\"paymentMethod\":\"Tiền mặt\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 158.0601,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/32a930a721a6.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-c9a3e45140fc",
+      "testCaseIds": [
+        "TC-AUTHZ-005"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTHZ-005: Doctor PATCH invoice returns 403 without exposing or modifying data",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTHZ-005: HTTP 403",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Doctor\"}},{\"method\":\"PATCH\",\"path\":\"/api/invoices/6af6c1445fe43dd6a4ef39cb\",\"httpStatus\":403,\"body\":{\"error\":\"User role Doctor is not authorized to access this route\"}},{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}},{\"method\":\"GET\",\"path\":\"/api/invoices/6af6c1445fe43dd6a4ef39cb\",\"httpStatus\":200,\"body\":{\"status\":\"Chưa thanh toán\",\"amountPaid\":0,\"finalAmount\":100000,\"debt\":0,\"paymentMethod\":\"Tiền mặt\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 147.1859,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/c9a3e45140fc.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-7ad944dcabab",
+      "testCaseIds": [
+        "TC-AUTH-010"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTH-010 (invoice subset): missing token cannot list invoices",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTH-010: HTTP 401; token bị xóa; UI chuyển về /login",
+      "actual": "{\"observations\":[{\"method\":\"GET\",\"path\":\"/api/invoices\",\"httpStatus\":401,\"body\":{\"error\":\"Not authorized to access this route\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 1.7023,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/7ad944dcabab.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-f75e48798c4d",
+      "testCaseIds": [
+        "TC-AUTHZ-004"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTHZ-004: ADMIN invoice deletion returns 200",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTHZ-004: HTTP 200; hóa đơn bị xóa",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}},{\"method\":\"DELETE\",\"path\":\"/api/invoices/6af6c1445fe43dd6a4ef39d4\",\"httpStatus\":200,\"body\":{\"deletedCount\":1}},{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}},{\"method\":\"GET\",\"path\":\"/api/invoices/6af6c1445fe43dd6a4ef39d4\",\"httpStatus\":404,\"body\":{\"error\":\"Document not found\"}},{\"method\":\"GET\",\"path\":\"/api/appointments/6af6c1445fe43dd6a4ef39d3\",\"httpStatus\":200,\"body\":{\"status\":\"Đã lên lịch\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 160.5979,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/f75e48798c4d.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-b9847e2f34bc",
+      "testCaseIds": [
+        "TC-AUTHZ-005"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTHZ-005: DOCTOR invoice deletion returns 403",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTHZ-005: HTTP 403",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Doctor\"}},{\"method\":\"DELETE\",\"path\":\"/api/invoices/6af6c1445fe43dd6a4ef39dd\",\"httpStatus\":403,\"body\":{\"error\":\"User role Doctor is not authorized to access this route\"}},{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}},{\"method\":\"GET\",\"path\":\"/api/invoices/6af6c1445fe43dd6a4ef39dd\",\"httpStatus\":200,\"body\":{\"status\":\"Chưa thanh toán\",\"amountPaid\":0,\"finalAmount\":100000,\"debt\":0,\"paymentMethod\":\"Tiền mặt\"}},{\"method\":\"GET\",\"path\":\"/api/appointments/6af6c1445fe43dd6a4ef39dc\",\"httpStatus\":200,\"body\":{\"status\":\"Đã lên lịch\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 153.7377,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/b9847e2f34bc.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "API-6aa1a9294dc6",
+      "testCaseIds": [
+        "TC-AUTHZ-007"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTHZ-007: RECEPTION invoice deletion returns 403",
+      "suite": "api",
+      "status": "Pass",
+      "expected": "TC-AUTHZ-007: HTTP 403; hóa đơn còn nguyên",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Reception\"}},{\"method\":\"DELETE\",\"path\":\"/api/invoices/6af6c1445fe43dd6a4ef39e6\",\"httpStatus\":403,\"body\":{\"error\":\"User role Reception is not authorized to access this route\"}},{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}},{\"method\":\"GET\",\"path\":\"/api/invoices/6af6c1445fe43dd6a4ef39e6\",\"httpStatus\":200,\"body\":{\"status\":\"Chưa thanh toán\",\"amountPaid\":0,\"finalAmount\":100000,\"debt\":0,\"paymentMethod\":\"Tiền mặt\"}},{\"method\":\"GET\",\"path\":\"/api/appointments/6af6c1445fe43dd6a4ef39e5\",\"httpStatus\":200,\"body\":{\"status\":\"Đã lên lịch\"}}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 152.2722,
+      "evidence": [
+        "api/results.jsonl",
+        "api/observations/6aa1a9294dc6.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "KNOWN-DEFECTS-e90169c40b1f",
+      "testCaseIds": [
+        "TC-APPT-021"
+      ],
+      "sourceCaseIds": [],
+      "name": "BUG-002 / TC-APPT-021: completed appointment cannot move backward",
+      "suite": "known-defects",
+      "status": "Fail",
+      "expected": "TC-APPT-021: HTTP 400; trạng thái giữ nguyên",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}},{\"method\":\"PATCH\",\"path\":\"/api/appointments/6af6c145f014a689efa7edf4\",\"httpStatus\":200,\"body\":{\"status\":\"Đang điều trị\"}},{\"method\":\"GET\",\"path\":\"/api/appointments/6af6c145f014a689efa7edf4\",\"httpStatus\":200,\"body\":{\"status\":\"Đang điều trị\"}}],\"assertionOutcome\":\"Fail\",\"error\":{\"message\":\"Expected values to be strictly deep-equal:\\n+ actual - expected\\n\\n  {\\n+   persisted: 'Đang điều trị',\\n+   status: 200\\n-   persisted: 'Đã hoàn thành',\\n-   status: 400\\n  }\\n\",\"code\":\"ERR_TEST_FAILURE\",\"cause\":\"Expected values to be strictly deep-equal:\\n+ actual - expected\\n\\n  {\\n+   persisted: 'Đang điều trị',\\n+   status: 200\\n-   persisted: 'Đã hoàn thành',\\n-   status: 400\\n  }\\n\",\"actual\":{\"status\":200,\"persisted\":\"Đang điều trị\"},\"expected\":{\"status\":400,\"persisted\":\"Đã hoàn thành\"}}}",
+      "bugIds": [
+        "BUG-002"
+      ],
+      "durationMs": 176.4262,
+      "evidence": [
+        "known-defects/results.jsonl",
+        "known-defects/observations/e90169c40b1f.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "KNOWN-DEFECTS-058855c36efa",
+      "testCaseIds": [
+        "TC-APPT-022"
+      ],
+      "sourceCaseIds": [],
+      "name": "BUG-003 / TC-APPT-022: repeated completion cannot create duplicate invoices",
+      "suite": "known-defects",
+      "status": "Fail",
+      "expected": "TC-APPT-022: Lần cập nhật lặp bị từ chối hoặc không tạo side effect hóa đơn trùng",
+      "actual": "{\"observations\":[{\"method\":\"POST\",\"path\":\"/api/auth/login\",\"httpStatus\":200,\"body\":{\"role\":\"Admin\"}},{\"method\":\"PATCH\",\"path\":\"/api/appointments/6af6c145f014a689efa7edfc\",\"httpStatus\":200,\"body\":{\"status\":\"Đã hoàn thành\"}},{\"method\":\"PATCH\",\"path\":\"/api/appointments/6af6c145f014a689efa7edfc\",\"httpStatus\":200,\"body\":{\"status\":\"Đã hoàn thành\"}},{\"method\":\"GET\",\"path\":\"/api/invoices\",\"httpStatus\":200,\"body\":{\"recordCount\":2}}],\"assertionOutcome\":\"Fail\",\"error\":{\"message\":\"Exactly one invoice per completed appointment\\n\\n2 !== 1\\n\",\"code\":\"ERR_TEST_FAILURE\",\"cause\":\"Exactly one invoice per completed appointment\\n\\n2 !== 1\\n\",\"actual\":2,\"expected\":1}}",
+      "bugIds": [
+        "BUG-003"
+      ],
+      "durationMs": 121.1498,
+      "evidence": [
+        "known-defects/results.jsonl",
+        "known-defects/observations/058855c36efa.json"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "UI-6de60f0d3189",
+      "testCaseIds": [
+        "TC-AUTHZ-001"
+      ],
+      "sourceCaseIds": [
+        "TC-UC11-001"
+      ],
+      "name": "TC-AUTHZ-001: Admin opens accounts and API returns account records",
+      "suite": "ui",
+      "status": "Pass",
+      "expected": "TC-AUTHZ-001: HTTP 200; menu accounts hiển thị",
+      "actual": "{\"observations\":[],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 3791,
+      "evidence": [
+        "ui/results.jsonl"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "UI-a3361e00d35d",
+      "testCaseIds": [
+        "TC-AUTHZ-002"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTHZ-002: DOCTOR has no accounts menu and API returns 403",
+      "suite": "ui",
+      "status": "Pass",
+      "expected": "TC-AUTHZ-002: HTTP 403; không trả danh sách account",
+      "actual": "{\"observations\":[],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 2585,
+      "evidence": [
+        "ui/results.jsonl"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "UI-5066d22a7fe9",
+      "testCaseIds": [
+        "TC-AUTHZ-003"
+      ],
+      "sourceCaseIds": [
+        "TC-UC11-002"
+      ],
+      "name": "TC-AUTHZ-003: RECEPTION has no accounts menu and API returns 403",
+      "suite": "ui",
+      "status": "Pass",
+      "expected": "TC-AUTHZ-003: HTTP 403; menu accounts không hiển thị",
+      "actual": "{\"observations\":[],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 2560,
+      "evidence": [
+        "ui/results.jsonl"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "UI-9ac2147fce6d",
+      "testCaseIds": [
+        "TC-APPT-014"
+      ],
+      "sourceCaseIds": [
+        "TC-UC31-001"
+      ],
+      "name": "TC-APPT-014: Reception checks in a patient through UI and state persists",
+      "suite": "ui",
+      "status": "Pass",
+      "expected": "TC-APPT-014: HTTP 200; ghi checkInTime",
+      "actual": "{\"observations\":[{\"httpStatus\":200,\"appointmentStatus\":\"Đã đến\",\"checkInTime\":\"2026-11-13T07:50:51.651Z\"}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 3698,
+      "evidence": [
+        "ui/results.jsonl"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "UI-01b6ff26fc58",
+      "testCaseIds": [
+        "TC-PAY-002"
+      ],
+      "sourceCaseIds": [
+        "TC-UC33-020"
+      ],
+      "name": "TC-PAY-002: Reception opens a real invoice and sees its patient and amount",
+      "suite": "ui",
+      "status": "Pass",
+      "expected": "TC-PAY-002: Hóa đơn hiển thị đúng tổng tiền và trạng thái",
+      "actual": "{\"observations\":[{\"httpStatus\":200,\"invoiceStatus\":\"Chưa thanh toán\",\"finalAmount\":100000}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 3768,
+      "evidence": [
+        "ui/results.jsonl"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "UI-f932cb7c8cf5",
+      "testCaseIds": [
+        "TC-PAY-017"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-PAY-017: excessive discount shows a validation error and sends no payment request",
+      "suite": "ui",
+      "status": "Pass",
+      "expected": "TC-PAY-017: Toast lỗi; không gửi thanh toán",
+      "actual": "{\"observations\":[{\"invoiceStatus\":\"Chưa thanh toán\",\"amountPaid\":0,\"invalidPaymentRequests\":0}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 4439,
+      "evidence": [
+        "ui/results.jsonl"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "UI-c24a0b506d2c",
+      "testCaseIds": [
+        "TC-APPT-014",
+        "TC-APPT-018",
+        "TC-PAY-003"
+      ],
+      "sourceCaseIds": [
+        "TC-UC31-001",
+        "TC-UC32-009",
+        "TC-UC33-001"
+      ],
+      "name": "BUG-004 / TC-APPT-014 / TC-APPT-018 / TC-PAY-003: check-in UI to treatment API to cash payment UI",
+      "suite": "ui",
+      "status": "Pass",
+      "expected": "TC-APPT-014: HTTP 200; ghi checkInTime | TC-APPT-018: HTTP 200; trạng thái hoàn thành | TC-PAY-003: HTTP 200; status Đã thanh toán; debt = 0",
+      "actual": "{\"observations\":[{\"status\":\"Đã thanh toán\",\"paymentMethod\":\"Tiền mặt\",\"amountPaid\":100000,\"finalAmount\":100000,\"debt\":0}],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [
+        "BUG-004"
+      ],
+      "durationMs": 4028,
+      "evidence": [
+        "ui/results.jsonl"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "UI-71ef6431bf46",
+      "testCaseIds": [
+        "TC-AUTH-010"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTH-010 (UI subset): redirects a missing session to login",
+      "suite": "ui",
+      "status": "Pass",
+      "expected": "TC-AUTH-010: HTTP 401; token bị xóa; UI chuyển về /login",
+      "actual": "{\"observations\":[],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 970,
+      "evidence": [
+        "ui/results.jsonl"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "UI-f7ca937ee957",
+      "testCaseIds": [
+        "TC-AUTH-002"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTH-002 (UI): required credentials prevent empty submission",
+      "suite": "ui",
+      "status": "Pass",
+      "expected": "TC-AUTH-002: Validation bắt buộc; không tạo phiên",
+      "actual": "{\"observations\":[],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 542,
+      "evidence": [
+        "ui/results.jsonl"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "UI-e912748c4da0",
+      "testCaseIds": [
+        "TC-AUTH-003"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTH-003 (UI): non-gmail email shows validation feedback",
+      "suite": "ui",
+      "status": "Pass",
+      "expected": "TC-AUTH-003: HTTP 400; error invalid_email_format; không lưu token",
+      "actual": "{\"observations\":[],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 1427,
+      "evidence": [
+        "ui/results.jsonl"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "UI-9553bb533ac7",
+      "testCaseIds": [
+        "TC-AUTH-005"
+      ],
+      "sourceCaseIds": [],
+      "name": "BUG-001 / TC-AUTH-005 (UI): wrong password keeps feedback and no session",
+      "suite": "ui",
+      "status": "Pass",
+      "expected": "TC-AUTH-005: HTTP 401; error wrong_password; không lưu phiên",
+      "actual": "{\"observations\":[],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [
+        "BUG-001"
+      ],
+      "durationMs": 2097,
+      "evidence": [
+        "ui/results.jsonl"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    },
+    {
+      "runId": "QA-20261113T075024810Z-b5db79",
+      "executedAt": "2026-11-13T07:50:24.810Z",
+      "build": "1.0.0@6fb4482fca81+53ed772e939a",
+      "executor": "automation:local",
+      "automationId": "UI-901685711e9d",
+      "testCaseIds": [
+        "TC-AUTH-001",
+        "TC-AUTH-012"
+      ],
+      "sourceCaseIds": [],
+      "name": "TC-AUTH-001 / TC-AUTH-012 (UI): login session matches API current account",
+      "suite": "ui",
+      "status": "Pass",
+      "expected": "TC-AUTH-001: HTTP 200; có token; chuyển về trang chính; response không có password | TC-AUTH-012: Response account không có trường password",
+      "actual": "{\"observations\":[],\"assertionOutcome\":\"Pass\",\"error\":null}",
+      "bugIds": [],
+      "durationMs": 1995,
+      "evidence": [
+        "ui/results.jsonl"
+      ],
+      "coverage": "Partial: automated assertions only; manual status remains separate"
+    }
+  ]
+}

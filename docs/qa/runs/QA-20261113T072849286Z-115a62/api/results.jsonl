@@ -1,0 +1,33 @@
+{"name":"TC-AUTH-002 (API subset): missing both credentials returns 400","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":67.2748,"error":null}
+{"name":"TC-AUTH-004: uppercase gmail account is normalized","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":94.6603,"error":null}
+{"name":"TC-AUTH-003: non-gmail email returns 400","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":3.0565,"error":null}
+{"name":"TC-AUTH-005: wrong password returns 401","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":66.3253,"error":null}
+{"name":"TC-AUTH-008: locked account returns 403","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":63.9282,"error":null}
+{"name":"TC-AUTH-001 / TC-AUTH-012 (API): valid login returns token without password","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":68.3395,"error":null}
+{"name":"TC-AUTH-010 (missing-token subset): /me rejects missing token","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":3.8899,"error":null}
+{"name":"TC-AUTH-012 (session): /me returns current account without password","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":80.0363,"error":null}
+{"name":"TC-AUTH-009: /me rejects invalid token","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":5.0587,"error":null}
+{"name":"TC-AUTHZ-001: ADMIN account access returns 200","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":115.1391,"error":null}
+{"name":"TC-AUTHZ-002: DOCTOR account access returns 403","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":70.2645,"error":null}
+{"name":"TC-AUTHZ-003: RECEPTION account access returns 403","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":71.5193,"error":null}
+{"name":"TC-APPT-001: create appointment and read persisted fields","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":141.8281,"error":null}
+{"name":"TC-APPT-002: past appointment returns 400 and creates no data","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":89.3697,"error":null}
+{"name":"TC-APPT-009: duplicate patient/doctor/day returns 400 without duplicate data","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":89.8014,"error":null}
+{"name":"TC-APPT-011: check-in offset 29 minutes returns 200","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":84.2458,"error":null}
+{"name":"TC-APPT-013: check-in offset -31 minutes returns 400","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":80.3823,"error":null}
+{"name":"TC-APPT-014: check-in offset 0 minutes returns 200","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":85.2113,"error":null}
+{"name":"TC-APPT-015: repeated check-in returns 400 without modifying state","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":80.7387,"error":null}
+{"name":"TC-APPT-018: complete treatment and verify exactly one unpaid invoice","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":92.8888,"error":null}
+{"name":"TC-PAY-003: paid=100000, allowDebt=false returns 200 and persists balance","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":89.7728,"error":null}
+{"name":"TC-PAY-004: paid=100000, allowDebt=false returns 200 and persists balance","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":83.6202,"error":null}
+{"name":"TC-PAY-005: paid=100000, allowDebt=false returns 200 and persists balance","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":85.166,"error":null}
+{"name":"TC-PAY-006: paid=100000, allowDebt=false returns 200 and persists balance","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":79.7282,"error":null}
+{"name":"TC-PAY-007: paid=1, allowDebt=false returns 400 and persists balance","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":82.3597,"error":null}
+{"name":"TC-PAY-008: paid=40000, allowDebt=true returns 200 and persists balance","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":81.097,"error":null}
+{"name":"TC-PAY-010: paid=-1, allowDebt=false returns 400 and persists balance","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":82.1731,"error":null}
+{"name":"TC-AUTHZ-005: Doctor GET invoice returns 403 without exposing or modifying data","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":145.938,"error":null}
+{"name":"TC-AUTHZ-005: Doctor PATCH invoice returns 403 without exposing or modifying data","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":142.3756,"error":null}
+{"name":"TC-AUTH-010 (invoice subset): missing token cannot list invoices","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":1.746,"error":null}
+{"name":"TC-AUTHZ-004: ADMIN invoice deletion returns 200","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":150.6454,"error":null}
+{"name":"TC-AUTHZ-005: DOCTOR invoice deletion returns 403","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":145.2073,"error":null}
+{"name":"TC-AUTHZ-007: RECEPTION invoice deletion returns 403","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":147.9452,"error":null}

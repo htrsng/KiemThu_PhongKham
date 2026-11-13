@@ -1,0 +1,15 @@
+{
+  "runId": "QA-20261113T073749688Z-18594c",
+  "suite": "known-defects",
+  "counts": {
+    "tests": 2,
+    "pass": 0,
+    "fail": 2,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "exitCode": 1,
+  "infrastructureError": null,
+  "finished": "2026-11-13T07:37:55.131Z"
+}

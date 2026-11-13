@@ -1,0 +1,10 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 403,
+    "body": {
+      "error": "locked"
+    }
+  }
+]

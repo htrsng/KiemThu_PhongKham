@@ -1,0 +1,34 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af6c145f014a689efa7edfc",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af6c145f014a689efa7edfc",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 2
+    }
+  }
+]
