@@ -4,9 +4,9 @@
 
 ## 1. Tổng quan dự án
 
-SmileCare là hệ thống quản lý phòng khám nha khoa trong đồ án học phần, sử dụng React/TypeScript, Express và MongoDB. Kho mã trình bày công việc QA phục vụ ứng tuyển **Thực tập sinh Kiểm thử phần mềm**: phân tích yêu cầu, thiết kế kiểm thử, kết quả thực thi lịch sử, báo cáo lỗi, kiểm thử API và hồi quy bằng Cypress.
+SmileCare là hệ thống quản lý phòng khám nha khoa, hỗ trợ quản lý bệnh nhân, bác sĩ, dịch vụ, lịch hẹn, tiếp đón, quá trình khám và thanh toán. Hệ thống phân quyền cho quản trị viên, bác sĩ và lễ tân để thực hiện công việc theo từng vai trò.
 
-Ứng dụng trong `client/` và `server/` là đối tượng kiểm thử. Hồ sơ QA được chia thành `manual-testing/`, `api-testing/` và `automation-testing/`.
+Quy trình chính gồm đặt lịch hẹn, check-in, cập nhật trạng thái điều trị, tạo hóa đơn và ghi nhận thanh toán. Ứng dụng sử dụng React/TypeScript cho giao diện, Express cho API và MongoDB để lưu trữ dữ liệu.
 
 ## 2. Phạm vi kiểm thử
 
