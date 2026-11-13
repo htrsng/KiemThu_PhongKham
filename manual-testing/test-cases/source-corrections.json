@@ -1,0 +1,27 @@
+{
+  "TC-UC34-005": {
+    "reference": "docs/requirements/LT2_N02_DacTa.pdf#page=46; UC3 4_DoanhThu row 6",
+    "reason": "Proposed revenue-filter design and dataset; not historical actual.",
+    "fields": {
+      "Steps": "1. Đăng nhập Admin, mở Thống kê doanh thu. 2. Chọn khoảng ngày chứa dữ liệu thử. 3. Ghi tổng trước lọc. 4. Chọn Nhóm dịch vụ = Thuốc. 5. Đối chiếu từng dòng và tổng với dữ liệu đã thanh toán của nhóm Thuốc; bỏ lọc và kiểm tra lại.",
+      "Test data": "Dữ liệu đề xuất trong DB thử: hóa đơn Thuốc đã thanh toán 100.000đ; hóa đơn Khám đã thanh toán 200.000đ; hóa đơn Thuốc chưa thanh toán 50.000đ; cùng khoảng ngày. Ghi ID thực tế trước khi chạy. Nếu thiếu nhóm Thuốc/bộ lọc, ghi Blocked và evidence.",
+      "Expected": "Lọc Thuốc: chỉ tính doanh thu đã thanh toán của nhóm Thuốc trong khoảng ngày, tổng 100.000đ với dữ liệu đề xuất. Không cộng Khám hoặc hóa đơn chưa thanh toán. Bỏ lọc: tổng 300.000đ. Dữ liệu hóa đơn không đổi.",
+      "Step expected": "1–2. Mở đúng báo cáo/khoảng ngày. 3. Tổng trước lọc 300.000đ. 4–5. Chỉ hiển thị Thuốc, tổng 100.000đ; bỏ lọc trở lại 300.000đ với dữ liệu đề xuất."
+    }
+  },
+  "TC-UC33-014": {
+    "reference": "docs/requirements/LT2_N02_DacTa.pdf#page=45; UC3 3_ThanhToan row 15",
+    "reason": "Proposed split-payment input. Current single-method model does not implement split payment; do not claim current Pass.",
+    "fields": { "Test data": "Hóa đơn thử chưa thanh toán, finalAmount 100.000đ, giảm giá/phụ phí 0, amountPaid 0; trả tiền mặt 50.000đ + chuyển khoản 50.000đ, tổng 100.000đ, không ghi nợ. Ghi invoiceId trước khi chạy. Build hiện tại chỉ lưu một paymentMethod: ghi Blocked nếu chưa hỗ trợ tách phương thức." }
+  },
+  "TC-UC31-004": {
+    "reference": "docs/requirements/LT2_N02_DacTa.pdf#page=41; UC3 1_CheckIn row 5",
+    "reason": "Step expected completed from original overall expected; historical outcome unchanged.",
+    "fields": { "Step expected": "1. Ô tìm kiếm nhận mã ABC999 (xác nhận không tồn tại trong dữ liệu thử). 2. Hiển thị Không tìm thấy thông tin lịch hẹn hoặc thông báo tương đương; không cho check-in, không tạo/cập nhật lịch hẹn nào." }
+  },
+  "TC-UC13-001": {
+    "reference": "docs/requirements/LT2_N02_DacTa.pdf#page=19; UC1 3_QuanLyDichVu row 2",
+    "reason": "Overall expected completed from specification and original actual as a new design revision.",
+    "fields": { "Expected": "Admin mở được danh sách dịch vụ; mỗi dòng có Mã dịch vụ, Tên dịch vụ, Nhóm dịch vụ và Trạng thái khớp dữ liệu thử. Danh mục trống hiển thị không có dữ liệu, không lỗi trang." }
+  }
+}

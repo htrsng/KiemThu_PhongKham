@@ -5,7 +5,6 @@
 .env
 **/.env
 server/.env
-testing/.env
 **/.env.local
 **/.env.test
 
@@ -15,7 +14,7 @@ testing/.env
 
 # Logs
 **/*.log
-!docs/qa/runs/**/*.log
+!automation-testing/reports/runs/**/*.log
 
 # OS
 .DS_Store
@@ -31,5 +30,5 @@ Thumbs.db
 *.pyc
 
 # Disposable QA environment and runtime evidence
-testing/.env.test
-testing/artifacts/
+.env.test
+automation-testing/reports/generated/

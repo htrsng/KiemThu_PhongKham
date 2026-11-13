@@ -28,45 +28,45 @@ jobs:
         with:
           node-version: '24'
       - name: Kiem tra test design va RTM
-        run: node testing/scripts/audit-qa.js
+        run: node .github/qa/scripts/audit-qa.js
       - name: Cai thu vien backend
         run: npm ci --prefix server
       - name: Kiem tra reporting va defect lifecycle
-        run: node --test testing/unit/qa-reporting.test.js
+        run: node --test .github/qa/unit/qa-reporting.test.js
       - name: Cai thu vien frontend
         run: npm ci --prefix client
       - name: Bien dich giao dien
         run: npm run build --prefix client
       - name: Cai Cypress
-        run: npm ci --prefix testing/e2e
+        run: npm ci --prefix automation-testing
       - name: Cai Newman
-        run: npm ci --prefix testing/postman
+        run: npm ci --prefix api-testing/postman
       - name: Sinh moi truong QA tam thoi
-        run: node testing/scripts/prepare-env.js
+        run: node .github/qa/scripts/prepare-env.js
       - name: Tao tai khoan trong DB thu nghiem
-        run: node testing/scripts/seed-test-accounts.js
+        run: node .github/qa/scripts/seed-test-accounts.js
       - name: Chay backend va frontend
         run: |
-          mkdir -p testing/artifacts
-          (cd server && nohup npm start > ../testing/artifacts/backend.log 2>&1 &)
-          (cd client && nohup npm run dev -- --host 0.0.0.0 > ../testing/artifacts/frontend.log 2>&1 &)
-          node testing/scripts/wait-for-app.js
+          mkdir -p automation-testing/reports/generated
+          (cd server && nohup npm start > ../automation-testing/reports/generated/backend.log 2>&1 &)
+          (cd client && nohup npm run dev -- --host 0.0.0.0 > ../automation-testing/reports/generated/frontend.log 2>&1 &)
+          node .github/qa/scripts/wait-for-app.js
       - name: Full QA run (API, defect regression, Cypress)
         id: qa
-        run: node testing/scripts/run-qa.js
+        run: node .github/qa/scripts/run-qa.js
       - name: Kiem tra ket qua va evidence cua run
         if: always() && steps.qa.outputs.run_dir != ''
         env:
           QA_AUDIT_DIR: ${{ steps.qa.outputs.run_dir }}
-        run: node testing/scripts/audit-run.js "$QA_AUDIT_DIR"
+        run: node .github/qa/scripts/audit-run.js "$QA_AUDIT_DIR"
       - name: Postman collection via Newman
         if: always() && steps.qa.outputs.run_dir != ''
-        run: node testing/scripts/run-postman.js
+        run: node .github/qa/scripts/run-postman.js
       - name: Luu bao cao va log
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: clinic-qa-evidence
           path: |
-            testing/artifacts/
+            automation-testing/reports/generated/
           if-no-files-found: warn

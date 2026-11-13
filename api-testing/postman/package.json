@@ -1,0 +1,12 @@
+{
+  "name": "smilecare-postman-checks",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Newman execution of the sanitized QA collection",
+  "scripts": {
+    "test": "node --env-file=../../.env.test ../../.github/qa/scripts/run-postman.js"
+  },
+  "devDependencies": {
+    "newman": "^6.2.3"
+  }
+}

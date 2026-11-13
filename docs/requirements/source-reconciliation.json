@@ -1,0 +1,125 @@
+{
+  "sources": [
+    {
+      "file": "docs/academic/LT2_N02_CaiDat-1.pdf",
+      "sha256": "ec58513820177c8fa5c5620cfdf19134d734bf7046fda0643b861f48c467fbb9"
+    },
+    {
+      "file": "docs/academic/LT2_N02_KiemThu.pdf",
+      "sha256": "64add756adb456c763c1446aaf0ffbedd823ac2e45d456fa593fbeb9d4c4bb5d"
+    },
+    {
+      "file": "docs/academic/LT2_N02_TestCase (2).xlsx",
+      "sha256": "a7453342d67f9f6966d7ea5f7329d8df0bc470cb487de696b3f1be9d0196c6f7"
+    },
+    {
+      "file": "docs/requirements/LT2_N02_DacTa.pdf",
+      "sha256": "197f1549d098c9e5408d7bc72f47385816f5c0fe1e4e133a02f950e90655640f"
+    }
+  ],
+  "excel": {
+    "total": 337,
+    "unique": 337,
+    "useCases": {
+      "UC4.7": 10,
+      "UC4.6": 10,
+      "UC4.5": 15,
+      "UC4.4": 29,
+      "UC4.3": 12,
+      "UC4.2": 10,
+      "UC4.1": 10,
+      "UC3.4": 15,
+      "UC3.3": 25,
+      "UC3.2": 25,
+      "UC3.1": 15,
+      "UC2.5": 15,
+      "UC2.4": 30,
+      "UC2.3": 20,
+      "UC2.2": 15,
+      "UC2.1": 13,
+      "UC1.4": 15,
+      "UC1.3": 15,
+      "UC1.2": 20,
+      "UC1.1": 18
+    },
+    "groups": {
+      "UC1": 68,
+      "UC2": 93,
+      "UC3": 80,
+      "UC4": 96
+    },
+    "historicalPassLabels": 337
+  },
+  "pdf": {
+    "file": "docs/academic/LT2_N02_KiemThu.pdf",
+    "summaryPage": 26,
+    "executionPage": 36,
+    "summary": {
+      "UC1": 70,
+      "UC2": 92,
+      "UC3": 80,
+      "UC4": 72
+    },
+    "reportedTotal": 314,
+    "reportedPassed": 288,
+    "reportedFailed": 26,
+    "detailedUc4Count": 92,
+    "detailedUc4Pages": [
+      33,
+      34,
+      35
+    ]
+  },
+  "differences": {
+    "UC1": -2,
+    "UC2": 1,
+    "UC3": 0,
+    "UC4": 24
+  },
+  "designIssues": [
+    {
+      "id": "TC-UC34-005",
+      "sheet": "UC3 4_DoanhThu",
+      "row": 6,
+      "missing": [
+        "Steps",
+        "Overall expected"
+      ],
+      "resolution": "Completed in derived design; original preserved",
+      "correction": "docs/requirements/LT2_N02_DacTa.pdf#page=46; UC3 4_DoanhThu row 6"
+    },
+    {
+      "id": "TC-UC33-014",
+      "sheet": "UC3 3_ThanhToan",
+      "row": 15,
+      "missing": [
+        "Input"
+      ],
+      "resolution": "Completed in derived design; original preserved",
+      "correction": "docs/requirements/LT2_N02_DacTa.pdf#page=45; UC3 3_ThanhToan row 15"
+    },
+    {
+      "id": "TC-UC31-004",
+      "sheet": "UC3 1_CheckIn",
+      "row": 5,
+      "missing": [
+        "Step expected"
+      ],
+      "resolution": "Completed in derived design; original preserved",
+      "correction": "docs/requirements/LT2_N02_DacTa.pdf#page=41; UC3 1_CheckIn row 5"
+    },
+    {
+      "id": "TC-UC13-001",
+      "sheet": "UC1 3_QuanLyDichVu",
+      "row": 2,
+      "missing": [
+        "Overall expected"
+      ],
+      "resolution": "Completed in derived design; original preserved",
+      "correction": "docs/requirements/LT2_N02_DacTa.pdf#page=19; UC1 3_QuanLyDichVu row 2"
+    }
+  ],
+  "unresolvedDesignIssues": 0,
+  "disposition": "User-provided completed test records: Excel reports 337 Pass; PDF reports 288 Pass / 26 Fail on 314 cases. Preserve these historical results separately. Their chronology is not recorded, and neither is a regression result for the current build.",
+  "priorityPolicy": "15 role/booking/check-in/payment risks are P0. Other High -> P1, Medium -> P2, Low -> P3; original labels are retained separately."
+}
