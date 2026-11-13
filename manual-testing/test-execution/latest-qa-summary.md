@@ -1,6 +1,6 @@
 # Tổng hợp QA mới nhất
 
-Cập nhật: 2026-11-13T15:39:36.601Z. Nguồn máy đọc: [latest-qa-summary.json](latest-qa-summary.json). Đây là trang trạng thái hiện hành; [báo cáo cũ](test-report.md) và các run đã công bố là hồ sơ lịch sử, không sửa lại thành Pass.
+Cập nhật: 2026-11-13T15:51:03.056Z. Nguồn máy đọc: [latest-qa-summary.json](latest-qa-summary.json). Đây là trang trạng thái hiện hành; [báo cáo cũ](test-report.md) và các run đã công bố là hồ sơ lịch sử, không sửa lại thành Pass.
 
 ## Kết quả mới nhất
 
@@ -44,3 +44,9 @@ node .github/qa/scripts/update-latest-summary.js --run=QA-20261113T153459634Z-3e
 ```
 
 Khi có manual run thật, thêm `--manual=<đường-dẫn-workbook-thực-thi.xlsx>`; script kiểm tra metadata và evidence của dòng đã thực hiện. Không ghi đè run cũ để cập nhật trang này.
+
+## Xác minh CI hiện hành
+
+[Workflow 43455436873](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43455436873), head `420cc74dc2ffa318bab9a08ffa143121d4a59c4f`: **failure**. Bước Fail là Full QA run do 11 assertions của BUG-005/006; unit 19 Pass, UI 12 Pass và Newman 46 assertions Pass. Đã tải artifact 14054215848, kiểm tra 116 file và mọi evidence link, có ảnh/video/HTML. [Metadata xác minh](../../automation-testing/reports/ci-coverage-verification.json).
+
+Run CI `QA-20261113T154518142Z-1685ef` độc lập với run local phía trên; cả hai có cùng số Pass/Fail, không gán chung commit/fingerprint. Để giữ phần xác minh khi sinh lại, thêm `--ci=automation-testing/reports/ci-coverage-verification.json` vào lệnh cập nhật.

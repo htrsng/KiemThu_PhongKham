@@ -68,7 +68,7 @@ Dùng QA runner headless để tạo báo cáo thực thi hoàn chỉnh. Chế �
 
 Job summary tách **Automation API + UI** và **Defect regression**. Assertion nghiệp vụ Fail, test tự động bị bỏ qua/chưa chạy hoặc lỗi process đều làm QA runner thất bại. Không dùng `continue-on-error` để bỏ qua lỗi đã biết. Upload artifact vẫn chạy sau test Fail khi có bằng chứng.
 
-[CI lịch sử sau khi đổi cấu trúc](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43438419642), commit `9b0a162`: bộ cũ 53 test nghiệp vụ Pass. Sau mở rộng, [tổng hợp hiện hành](../manual-testing/test-execution/latest-qa-summary.md) ghi 54 Pass / 11 Fail do BUG-005/006 trong API; Cypress vẫn 12 Pass. CI phải Fail khi các assertions API mới còn Fail, không được dùng riêng Cypress Pass để kết luận cả build đạt.
+[CI đã xác minh bộ mở rộng](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43455436873), head `420cc74`: Failed do 11 assertions của BUG-005/006 trong API; Cypress vẫn 12 Pass. Unit/build/audit evidence và Newman đạt. [Tổng hợp hiện hành](../manual-testing/test-execution/latest-qa-summary.md) ghi rõ 54 Pass / 11 Fail và metadata CI. Không dùng riêng Cypress Pass để kết luận cả build đạt.
 
 ## 7. Kết quả và bằng chứng
 

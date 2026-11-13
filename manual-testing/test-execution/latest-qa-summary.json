@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T15:39:36.601Z",
+  "generatedAt": "2026-11-13T15:51:03.056Z",
   "business": {
     "runId": "QA-20261113T153459634Z-3e9268",
     "commit": "53f15ae8d2924c9447ca2ebabdc40d6e06e10e76",
@@ -174,5 +174,87 @@
       "severity": "Medium",
       "priority": "P2"
     }
-  ]
+  ],
+  "ci": {
+    "report": "automation-testing/reports/ci-coverage-verification.json",
+    "workflowRunId": 43455436873,
+    "head": "420cc74dc2ffa318bab9a08ffa143121d4a59c4f",
+    "testRunId": "QA-20261113T154518142Z-1685ef",
+    "environment": {
+      "node": "v24.22.2",
+      "platform": "linux",
+      "timezone": "UTC",
+      "apiUrl": "http://localhost:5000/api",
+      "baseUrl": "http://localhost:5173"
+    },
+    "counts": {
+      "Pass": 54,
+      "Fail": 11,
+      "Blocked": 0,
+      "Not Run": 0
+    },
+    "suites": {
+      "api": {
+        "Pass": 35,
+        "Fail": 11
+      },
+      "known-defects": {
+        "Pass": 7,
+        "Fail": 0
+      },
+      "ui": {
+        "Pass": 12,
+        "Fail": 0
+      }
+    },
+    "failedTests": [
+      "BUG-005 / TC-AUTHZ-008: Doctor listing and query filters cannot expose another doctor appointments",
+      "BUG-005 / TC-AUTHZ-008: Doctor may read own appointment but not foreign appointment by ID",
+      "BUG-005 / TC-AUTHZ-008: Doctor cannot change treatment status on a foreign appointment",
+      "BUG-006 / TC-APPT-025: missing patientId returns client error and creates no appointment",
+      "BUG-006 / TC-APPT-025: missing startTime returns client error and creates no appointment",
+      "BUG-006 / TC-APPT-025: missing endTime returns client error and creates no appointment",
+      "BUG-006 / TC-APPT-025: malformed doctorId returns client error without creating data",
+      "BUG-006 / TC-APPT-025: malformed startTime returns client error without creating data",
+      "BUG-006 / TC-APPT-026: GET malformed appointment ID detail returns client error",
+      "BUG-006 / TC-APPT-026: PATCH malformed appointment ID detail returns client error",
+      "BUG-006 / TC-APPT-026: PATCH malformed appointment ID /checkin returns client error"
+    ],
+    "artifactFiles": 116,
+    "allCaseEvidencePresent": true,
+    "hasVideos": true,
+    "hasHtmlReport": true,
+    "hasScreenshots": true,
+    "postman": {
+      "runId": "QA-20261113T154620178Z-235095",
+      "requests": {
+        "total": 21,
+        "pending": 0,
+        "failed": 0
+      },
+      "assertions": {
+        "total": 46,
+        "pending": 0,
+        "failed": 0
+      },
+      "failures": []
+    },
+    "unit": {
+      "runId": "QA-20261113T154400349Z-26b731",
+      "counts": {
+        "tests": 19,
+        "pass": 19,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      "scope": "13 reporting/lifecycle tests + 6 fixed-clock controller tests with mocked persistence; not HTTP or manual execution"
+    },
+    "expectedBusinessFailureVerified": true,
+    "workflowConclusion": "failure",
+    "artifactId": 14054215848,
+    "failedSteps": [
+      "Full QA run (API, defect regression, Cypress)"
+    ]
+  }
 }

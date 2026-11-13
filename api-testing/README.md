@@ -68,7 +68,7 @@ Mỗi lần chạy tạo thư mục riêng trong `automation-testing/reports/gen
 | [TAP hồi quy lỗi](../automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/known-defects/results.tap) / [JUnit](../automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/known-defects/junit.xml) | 7 Pass |
 | [JSON thực thi](../automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/execution.json) | Build, expected/actual, trạng thái và bằng chứng từng test; kết quả UI được phân loại riêng |
 | [JSON Newman](reports/newman/QA-20261113T153601759Z-bf5a0c/newman-results.json) | 21 request; 46/46 assertions Pass; không có lỗi |
-| [CI lịch sử trước mở rộng coverage](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43438419642) | Bộ cũ 34 API + 7 hồi quy lỗi + 12 UI Pass; không phải run của 46 test API mới |
+| [CI đã xác minh bộ mở rộng](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43455436873) | API 35 Pass / 11 Fail; hồi quy BUG-002/003 7 Pass; UI 12 Pass; unit 19 Pass; Newman 46 assertions Pass. Job Failed do BUG-005/006 |
 
 Xem [chỉ mục báo cáo](reports/README.md). Số liệu thuộc từng run riêng; không cộng dồn run lịch sử/run mới hoặc coi assertions Newman là các case manual độc lập bổ sung.
 

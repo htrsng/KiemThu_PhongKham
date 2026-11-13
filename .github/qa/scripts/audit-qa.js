@@ -134,4 +134,9 @@ const currentPostman = JSON.parse(readFileSync(resolve(root, latest.postman.repo
 assert.deepEqual(latest.postman.stats, currentPostman.stats, 'Latest Newman statistics differ');
 assert.deepEqual(latest.defects, defects.map(({ id, state, severity, priority }) => ({ id, state, severity, priority })), 'Latest defect summary is stale');
 assert.equal(latest.manual.sha256, createHash('sha256').update(readFileSync(resolve(root, latest.manual.workbook))).digest('hex'), 'Manual workbook changed: regenerate latest summary');
+if (latest.ci) {
+  const verification = JSON.parse(readFileSync(resolve(root, latest.ci.report), 'utf8'));
+  assert.deepEqual(verification.counts, currentRun.counts, 'CI/local summary counts differ');
+  assert.equal(verification.workflowRunId, latest.ci.workflowRunId);
+}
 console.log(`QA audit passed: ${source.length} original designs / 20 use cases; ${cases.length} overlapping focused designs / ${rtm.length} requirements; source hashes and bug links valid.`);

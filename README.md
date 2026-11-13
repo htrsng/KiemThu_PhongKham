@@ -42,7 +42,7 @@ Cypress có các luồng kết hợp UI/API. Bộ hiện tại chưa xác minh l
 | Collection Postman chạy bằng Newman | 21 request; **46/46 assertions Pass** | [Kết quả Newman](api-testing/reports/newman/QA-20261113T153601759Z-bf5a0c/newman-results.json) |
 | Manual regression ưu tiên trên build mới | 40 case: **Not Run** | [Workbook thực thi](manual-testing/test-execution/manual-regression.xlsx) |
 
-[CI lịch sử sau khi đổi cấu trúc](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43438419642), commit `9b0a162`, xác nhận 53 test của bộ cũ và 46 assertions Newman Pass; không phải kết quả của bộ mở rộng hiện tại. BUG-002/003/004 vẫn Closed; BUG-005/006 đang Open trong [sổ theo dõi lỗi](manual-testing/bug-reports/README.md). CI phải Fail khi các assertions nghiệp vụ mới còn Fail.
+[CI đã xác minh cho bộ mở rộng](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43455436873), head `420cc74`: **Failed do 11 assertions của BUG-005/006**, cùng kết quả 54 Pass / 11 Fail như local. Unit/build/audit evidence và Newman đạt; [metadata xác minh](automation-testing/reports/ci-coverage-verification.json) ghi rõ run/build và artifact. BUG-002/003/004 vẫn Closed; BUG-005/006 đang Open trong [sổ theo dõi lỗi](manual-testing/bug-reports/README.md).
 
 Excel và PDF là hai hồ sơ lịch sử riêng; chênh lệch được giải thích trong [đối chiếu nguồn](docs/requirements/source-reconciliation.md). 70 thiết kế tập trung có chồng lấp với 337 case gốc; bộ manual 40 case là một tập con. Không cộng số thiết kế hoặc assertions tự động thành số case manual đã Pass.
 
