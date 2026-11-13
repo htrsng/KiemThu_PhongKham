@@ -16,7 +16,7 @@ Bộ 70 thiết kế focused là bổ trợ, có hành vi chồng lấp với 33
 
 API bổ sung một ca token hết hạn giữa hai run; không coi hai suite có số lượng hoàn toàn giống nhau. Ca BUG-004 giữ nguyên assertion và dùng fixture mới. Mọi record có Run ID, timestamp UTC, executor, application version/commit/fingerprint, test case ID, expected, actual, status, bug và evidence. Metadata bắt đầu/kết thúc nằm trong từng `run.json`, thời gian Việt Nam là UTC+7.
 
-Môi trường local: Windows, Node.js 22.15.0, MongoDB 8.2.3 local `_test`, Cypress 15.17.0 / Electron 138. CI cấu hình Ubuntu, Node.js 24, MongoDB 7; kết quả CI được ghi riêng sau khi workflow thực sự chạy. Build frontend đạt. **11 test hạ tầng reporting/lifecycle Pass**, không cộng vào 48 test nghiệp vụ.
+Môi trường local: Windows, Node.js 22.15.0, MongoDB 8.2.3 local `_test`, Cypress 15.17.0 / Electron 138. CI cấu hình Ubuntu, Node.js 24, MongoDB 7; kết quả CI được ghi riêng sau khi workflow thực sự chạy. Build frontend đạt. **12 test hạ tầng reporting/lifecycle Pass**, không cộng vào 48 test nghiệp vụ.
 
 ## Kết quả nghiệp vụ và lifecycle
 
@@ -34,3 +34,7 @@ Môi trường local: Windows, Node.js 22.15.0, MongoDB 8.2.3 local `_test`, Cyp
 CI chạy đủ API, defect regression và Cypress kể cả khi suite trước Fail, rồi trả nonzero nếu có Fail/Not Run/process error. Artifact vẫn được upload để điều tra. Báo cáo không dùng màu xanh của riêng regression để che hai yêu cầu còn Fail.
 
 [Chỉ mục run và ghi chú exporter](runs/README.md) phân biệt thời gian UI chưa đo được trong hai run đầu với phép đo thật của run verification.
+
+## Xác minh GitHub Actions
+
+[Run 43389244707](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43389244707), head 9e0aee325b363f6dc23e8a80919bfebca1120c90, Node.js 24.22.2/Linux/MongoDB 7: 34 API Pass, 12 UI Pass, BUG-002/003 Fail. Bước audit và upload artifact đều Success. Artifact clinic-qa-evidence có 85 file; đã tải và kiểm tra mọi evidence link, HTML report, video và screenshot. [Metadata xác minh](ci-verification.json).

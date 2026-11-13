@@ -38,6 +38,15 @@ test('Empty/failed processes become explicit infrastructure Fail, with Excel out
   assert.match(result.results[0].name, /process failed outside test assertions/);
   assert.ok(readFileSync(resolve(run.directory, 'execution.xlsx')).length > 0);
 });
+test('Completed execution results cannot be overwritten by the exporter', async () => {
+  const run = createRun('reporting-unit');
+  run.manifest.finished = new Date().toISOString();
+  writeFileSync(resolve(run.directory, 'run.json'), JSON.stringify(run.manifest));
+  await reportRun(run.directory);
+  const before = readFileSync(resolve(run.directory, 'execution.json'), 'utf8');
+  await assert.rejects(() => reportRun(run.directory), /immutable/);
+  assert.equal(readFileSync(resolve(run.directory, 'execution.json'), 'utf8'), before);
+});
 test('Known credentials and JWTs are removed from artifact text', () => {
   const old = process.env.ADMIN_PASS;
   process.env.ADMIN_PASS = 'Unit-Secret-123';

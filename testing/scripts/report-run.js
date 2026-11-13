@@ -8,6 +8,7 @@ const jsonLines = (path) => existsSync(path) ? readFileSync(path, 'utf8').trim()
 const slash = (path) => path.replace(/\\/g, '/');
 const statusOrder = (values) => values.includes('Fail') ? 'Fail' : values.includes('Blocked') ? 'Blocked' : values.includes('Pass') ? 'Pass' : 'Not Run';
 async function reportRun(directory) {
+  if (existsSync(resolve(directory, 'execution.json'))) throw new Error('Completed execution reports are immutable; create a new Run ID');
   const manifest = readJson(resolve(directory, 'run.json'));
   const focused = parseCsv(readFileSync(resolve(root, 'testing/manual/test-cases.csv'), 'utf8'));
   const source = parseCsv(readFileSync(resolve(root, 'testing/manual/source-cases.csv'), 'utf8'));

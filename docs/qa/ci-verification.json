@@ -1,0 +1,48 @@
+{
+  "workflowRunId": 43389244707,
+  "head": "9e0aee325b363f6dc23e8a80919bfebca1120c90",
+  "testRunId": "QA-20261113T075724804Z-c93877",
+  "environment": {
+    "node": "v24.22.2",
+    "platform": "linux",
+    "timezone": "UTC",
+    "apiUrl": "http://localhost:5000/api",
+    "baseUrl": "http://localhost:5173"
+  },
+  "counts": {
+    "Pass": 46,
+    "Fail": 2,
+    "Blocked": 0,
+    "Not Run": 0
+  },
+  "suites": {
+    "api": {
+      "Pass": 34,
+      "Fail": 0
+    },
+    "known-defects": {
+      "Pass": 0,
+      "Fail": 2
+    },
+    "ui": {
+      "Pass": 12,
+      "Fail": 0
+    }
+  },
+  "failedTests": [
+    "BUG-002 / TC-APPT-021: completed appointment cannot move backward",
+    "BUG-003 / TC-APPT-022: repeated completion cannot create duplicate invoices"
+  ],
+  "artifactFiles": 85,
+  "allCaseEvidencePresent": true,
+  "hasVideos": true,
+  "hasHtmlReport": true,
+  "hasScreenshots": true,
+  "workflowUrl": "https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43389244707",
+  "artifactId": 14019244431,
+  "artifactName": "clinic-qa-evidence",
+  "workflowConclusion": "failure",
+  "evidenceAuditStep": "success",
+  "artifactUploadStep": "success",
+  "note": "Failure consists only of BUG-002 and BUG-003 assertions; all 34 API and 12 UI regression tests passed. Final guard against report overwrite is covered by an additional local unit test after this CI run."
+}

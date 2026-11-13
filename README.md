@@ -13,9 +13,10 @@ Dự án QA cho ứng dụng nha khoa React/TypeScript, Express và MongoDB, ph�
 | API | **34 Pass**, gồm positive/negative, token hết hạn, RBAC và dữ liệu đọc lại |
 | Cypress | **12 Pass**, không retry; có luồng check-in UI → điều trị API → thanh toán UI |
 | Defect regression | **2 Fail**, BUG-002/003 còn mở; không bị bỏ khỏi gate |
+| CI đã xác minh | [Run 43389244707](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43389244707): 46 Pass / 2 Fail, audit và lưu artifact thành công |
 | Lifecycle đã thực hiện | BUG-004: New → Open → Fixed → Retest → Closed, có commit và evidence trước/sau |
 
-[Run mới nhất](docs/qa/runs/QA-20261113T075024810Z-b5db79/summary.md): **46 Pass / 48 test tự động** trên Windows, ngày 13/11/2026. [Baseline trước sửa](docs/qa/runs/QA-20261113T072849286Z-115a62/summary.md) và [test report](docs/qa/test-report.md) được giữ riêng. Mười một test hạ tầng reporting/lifecycle đạt, không cộng vào số test nghiệp vụ.
+[Run mới nhất](docs/qa/runs/QA-20261113T075024810Z-b5db79/summary.md): **46 Pass / 48 test tự động** trên Windows, ngày 13/11/2026. [Baseline trước sửa](docs/qa/runs/QA-20261113T072849286Z-115a62/summary.md) và [test report](docs/qa/test-report.md) được giữ riêng. Mười hai test hạ tầng reporting/lifecycle đạt, không cộng vào số test nghiệp vụ.
 
 Không nhận 337 nhãn Pass lịch sử là kết quả mới. Bộ 70 thiết kế hồi quy bổ trợ có nội dung chồng lấp với baseline gốc; không cộng thành 407 kịch bản độc lập. Còn lỗi High/P0 và manual chưa thực thi nên chưa kết luận sẵn sàng phát hành. CI sẽ Fail khi requirement test Fail, đồng thời vẫn lưu đầy đủ artifacts.
 
