@@ -22,6 +22,8 @@ jobs:
           --health-retries 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -29,6 +31,8 @@ jobs:
         run: node testing/scripts/audit-qa.js
       - name: Cai thu vien backend
         run: npm ci --prefix server
+      - name: Kiem tra reporting va defect lifecycle
+        run: node --test testing/unit/qa-reporting.test.js
       - name: Cai thu vien frontend
         run: npm ci --prefix client
       - name: Bien dich giao dien
@@ -45,31 +49,19 @@ jobs:
           (cd server && nohup npm start > ../testing/artifacts/backend.log 2>&1 &)
           (cd client && nohup npm run dev -- --host 0.0.0.0 > ../testing/artifacts/frontend.log 2>&1 &)
           node testing/scripts/wait-for-app.js
-      - name: API regression va bao cao TAP JUnit
-        run: node testing/scripts/run-api.js
-      - name: Cypress UI regression (khong retry)
-        run: npm run cy:run --prefix testing/e2e
-      - name: Tai hien bug dang mo (non-blocking, expected Fail)
-        id: known
-        continue-on-error: true
-        run: node testing/scripts/run-api.js --known-defects
-      - name: Ghi ket qua suite vao job summary
-        if: always()
+      - name: Full QA run (API, defect regression, Cypress)
+        id: qa
+        run: node testing/scripts/run-qa.js
+      - name: Kiem tra ket qua va evidence cua run
+        if: always() && steps.qa.outputs.run_dir != ''
         env:
-          KNOWN_OUTCOME: ${{ steps.known.outcome }}
-        run: |
-          echo '## SmileCare QA' >> "$GITHUB_STEP_SUMMARY"
-          echo 'Regression failures fail the job. Known-defect requirements run separately and are non-blocking.' >> "$GITHUB_STEP_SUMMARY"
-          echo "Known-defect step outcome: $KNOWN_OUTCOME. See TAP/JUnit in clinic-qa-evidence; failed requirements are not passes." >> "$GITHUB_STEP_SUMMARY"
-          echo 'Manual execution is not performed by this workflow. A green job is not a release-readiness decision.' >> "$GITHUB_STEP_SUMMARY"
+          QA_AUDIT_DIR: ${{ steps.qa.outputs.run_dir }}
+        run: node testing/scripts/audit-run.js "$QA_AUDIT_DIR"
       - name: Luu bao cao va log
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: clinic-qa-evidence
           path: |
-            testing/e2e/cypress/reports/
-            testing/e2e/cypress/screenshots/
-            testing/e2e/cypress/videos/
             testing/artifacts/
           if-no-files-found: warn

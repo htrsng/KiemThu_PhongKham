@@ -5,12 +5,12 @@ Base URL QA: `http://localhost:5000/api`. Các status dưới đây lấy từ r
 | Method / endpoint | Request / quyền | Kỳ vọng chính | Kiểm thử hiện tại |
 | --- | --- | --- | --- |
 | POST `/auth/login` | email, password; public | 200 token/account không password; 400 thiếu trường/email sai; 401 wrong_password; 403 locked; 404 not_found | Regression đã chạy trừ nhánh 404 |
-| GET `/auth/me` | Bearer token | 200 account của token, không password; 401 missing/invalid | Regression đã chạy; expired token chưa chạy |
+| GET `/auth/me` | Bearer token | 200 account của token, không password; 401 missing/invalid/expired | Đã chạy cả missing, invalid và JWT ký hợp lệ nhưng hết hạn |
 | GET `/accounts` | Admin | 200 data array; Doctor/Reception 403 | API và UI đã chạy |
 | POST `/appointments` | Token, patient/doctor/service và thời gian | 201 đúng ca; 400 quá khứ/trùng bệnh nhân-bác sĩ trong ngày | Đã chạy và GET kiểm tra side effect |
 | PATCH `/appointments/:id/checkin` | Token, lịch đã lên lịch | 200 và checkInTime; ngoài ±30 phút hoặc sai trạng thái 400 | Đã chạy offset +29, -31, 0 và sai trạng thái; biên đúng 30 chưa chạy |
 | PATCH `/appointments/:id` | Token, status | Chỉ tiến trạng thái; hoàn thành tạo một invoice | Lần đầu Pass; lùi/lặp Fail, BUG-002/003 |
-| GET `/invoices?appointmentId=:id` | Admin/Reception | 200 array có invoice của lịch; Doctor 403 | Luồng Admin/Reception đã chạy; Doctor GET chưa chạy |
+| GET `/invoices?appointmentId=:id` | Admin/Reception | 200 array có invoice của lịch; Doctor 403 | Đã chạy Admin/Reception, Doctor GET/PATCH 403 và missing token 401 |
 | PATCH `/invoices/:id` | Admin/Reception; amountPaid, finalAmount, status, allowDebt | 200 khi đủ tiền/ghi nợ; 400 thiếu tiền không ghi nợ hoặc số âm | Đã chạy và GET kiểm tra amountPaid/debt/status |
 | DELETE `/invoices/:id` | Admin | 200; GET sau xóa 404; Doctor/Reception 403, invoice còn nguyên | Đã chạy cả ba role, appointment không bị xóa |
 

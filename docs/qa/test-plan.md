@@ -4,6 +4,8 @@
 
 Mục tiêu của giai đoạn này là xác định các quy tắc nghiệp vụ có thể kiểm chứng, ưu tiên kiểm thử theo rủi ro và chốt phạm vi thực hiện.
 
+Nguồn chuẩn gồm ba PDF và Excel trong `docs/`. [Đối chiếu](source-reconciliation.md) xác nhận baseline 337 ID / 20 use case và tách kết quả PDF/Excel lịch sử khỏi các run mới. Bộ 70 thiết kế dưới đây là focused regression bổ trợ, không thay thế hoặc cộng thêm vào 337 như những kịch bản độc lập. Mọi use case/case gốc có dòng truy vết trong RTM từng run, kể cả khi chưa được automation hoặc manual thực thi.
+
 Ứng dụng trong `client/` và `server/` là đối tượng được kiểm thử. Phần QA do mình thực hiện nằm ở [`testing/`](../../testing/) và [`docs/qa/`](./).
 
 ### Phạm vi chính
@@ -34,7 +36,7 @@ Nguồn chính: [`authController.js`](../../server/src/controllers/authControlle
 - `/auth/me` trả đúng tài khoản của token hợp lệ.
 - Có thể có ba vai trò: `Admin`, `Doctor`, `Reception`.
 
-Trạng thái hiện tại: đăng nhập có 8 API và 5 UI Pass trong lần chạy cục bộ 13/11/2026. Toàn bộ suite hiện có 36 Pass và 2 Fail; xem [test report](test-report.md). Bằng chứng CI lịch sử được giữ trong [BUG-001](bugs/BUG-001.md).
+Trạng thái hiện tại: full run có 34 API Pass, 12 UI Pass và 2 defect regression Fail; xem [test report](test-report.md). Bằng chứng CI lịch sử được giữ trong [BUG-001](bugs/BUG-001.md). Không coi 337 nhãn Pass lịch sử trong Excel là kết quả được xác minh của run này.
 
 ### 2.2 Phân quyền — `AUTHZ`
 

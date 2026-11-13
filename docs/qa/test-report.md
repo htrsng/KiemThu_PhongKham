@@ -1,33 +1,36 @@
-# Test summary report — 13/11/2026
+# Test Execution Report — 13/11/2026
 
-## Mục tiêu và môi trường
+## Baseline thiết kế và nguồn số liệu
 
-Đánh giá bộ QA cho portfolio intern tester, ưu tiên đăng nhập, phân quyền, lịch hẹn/check-in và hóa đơn. Thực thi trên Windows, Node.js 22.15.0, MongoDB 8.2.3 loopback riêng có tên kết thúc `_test`, Cypress 15.17.0 / Electron 138 headless. CI dùng Node.js 24 và MongoDB 7; chưa ghi nhận một lần CI mới cho các thay đổi hiện tại.
+Excel gốc có **337 ID duy nhất / 20 use case**. PDF tổng hợp 314, nhưng phần chi tiết PDF cộng được 334; nhãn kết quả PDF/Excel cũng khác nhau. [Đối chiếu nguồn](source-reconciliation.md) xác định từng chênh lệch; không giả định đây là hai run độc lập vì thiếu Run ID/build/evidence tương ứng. Chọn Excel làm baseline thiết kế; toàn bộ current manual status vẫn Not Run.
 
-Nguồn kiểm thử: working tree dựa trên commit `68a2e6ae63961e04aedc995a30319fa4912231fb`. [Manifest API](evidence/2026-11-13/api-manifest.json) và [hash nguồn](evidence/2026-11-13/source-hashes.json) xác định các file đã chạy; không gán kết quả này cho nguyên trạng base commit.
+Bộ 70 thiết kế focused là bổ trợ, có hành vi chồng lấp với 337 case gốc, không cộng thành 407 test độc lập. RTM từng run chứa cả hai inventory để truy vết, không dùng số dòng đó làm số scenario Pass.
 
-## Kết quả hiện tại
+## Các lần thực thi riêng biệt
 
-| Bộ | Total | Pass | Fail | Blocked / skipped | Not Run |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| API regression | 26 | 26 | 0 | 0 | 0 |
-| Cypress UI | 10 | 10 | 0 | 0 | 0 |
-| Known-defect requirement tests | 2 | 0 | 2 | 0 | 0 |
-| Manual designs | 70 | 0 | 0 | 0 | 70 |
+| Run | Build | API | UI | Defect regression | Tổng |
+| --- | --- | --- | --- | --- | --- |
+| [Baseline QA-20261113T072849286Z-115a62](runs/QA-20261113T072849286Z-115a62/summary.md) | 2b94e3a + working-tree hash | 33 Pass | 11 Pass / 1 Fail | 2 Fail | 44 Pass / 3 Fail |
+| [Retest QA-20261113T073749688Z-18594c](runs/QA-20261113T073749688Z-18594c/summary.md) | 6fb4482 + working-tree hash | 34 Pass | 12 Pass | 2 Fail | **46 Pass / 2 Fail** |
+| [Verification QA-20261113T075024810Z-b5db79](runs/QA-20261113T075024810Z-b5db79/summary.md) | 6fb4482 + working-tree hash | 34 Pass | 12 Pass | 2 Fail | **46 Pass / 2 Fail** |
 
-Tổng tự động: **36 Pass / 38 test thực thi; 2 Fail**. Hai Fail tương ứng BUG-002 và BUG-003; không bị bỏ qua, đổi expected hoặc tính vào Pass. Build frontend đạt; QA audit xác nhận 70 mã case duy nhất, 31 mã yêu cầu duy nhất và mọi case đều được ánh xạ. RTM là coverage thiết kế, không phải tỷ lệ thực thi hay code coverage.
+API bổ sung một ca token hết hạn giữa hai run; không coi hai suite có số lượng hoàn toàn giống nhau. Ca BUG-004 giữ nguyên assertion và dùng fixture mới. Mọi record có Run ID, timestamp UTC, executor, application version/commit/fingerprint, test case ID, expected, actual, status, bug và evidence. Metadata bắt đầu/kết thúc nằm trong từng `run.json`, thời gian Việt Nam là UTC+7.
 
-## Nhận định
+Môi trường local: Windows, Node.js 22.15.0, MongoDB 8.2.3 local `_test`, Cypress 15.17.0 / Electron 138. CI cấu hình Ubuntu, Node.js 24, MongoDB 7; kết quả CI được ghi riêng sau khi workflow thực sự chạy. Build frontend đạt. **11 test hạ tầng reporting/lifecycle Pass**, không cộng vào 48 test nghiệp vụ.
 
-Smoke đăng nhập, RBAC tài khoản/xóa hóa đơn, tạo lịch hợp lệ/quá khứ/trùng, check-in, tạo hóa đơn lần đầu và quy tắc thanh toán được xác minh ở mức assertion cụ thể trong suite. Cypress có check-in qua UI và đọc lại dữ liệu bằng API; ca hóa đơn UI chỉ xác minh hiển thị, chưa chứng minh thao tác thu tiền trên giao diện.
+## Kết quả nghiệp vụ và lifecycle
 
-**Chưa đạt tiêu chí sẵn sàng phát hành.** Hai lỗi High còn mở: cho phép lùi trạng thái đã hoàn thành và tạo trùng hóa đơn khi hoàn thành lặp. Các case manual P0/P1 chưa được thực thi; hai case payroll trong RTM thuộc phạm vi hoãn lại. Không suy ra chất lượng toàn ứng dụng từ regression xanh.
+- BUG-001 tiếp tục Pass: HTTP 401 sai mật khẩu không làm mất lỗi trên form, không tạo session.
+- BUG-002 vẫn Fail: lịch hoàn thành bị PATCH lùi trạng thái, HTTP 200 thay vì 400.
+- BUG-003 vẫn Fail: hoàn thành lặp tạo hai hóa đơn thay vì một.
+- BUG-004 được phát hiện bằng assertion persisted state: UI báo đã thanh toán nhưng amountPaid 0. Commit `6fb4482fca8167ba6a40a956939e25bb9718c987` gửi số tiền thực thu; Retest quan sát amountPaid = finalAmount = 100000, debt = 0. New/Open/Fixed/Retest/Closed được ghi bằng sự kiện thật trong [registry](bugs/registry.json).
 
-## Bằng chứng và hồi quy
+[Execution Excel](runs/QA-20261113T075024810Z-b5db79/execution.xlsx), [JSON](runs/QA-20261113T075024810Z-b5db79/execution.json) và [RTM theo kết quả](runs/QA-20261113T075024810Z-b5db79/traceability.csv) cho phép lọc từng case/use case/bug. Các HTTP observations chỉ lưu status và trường nghiệp vụ an toàn; UI có ảnh/video và network assertions. Audit kiểm tra số record khớp native runner và mọi đường dẫn evidence tồn tại.
 
-- [Danh mục evidence và lệnh chạy](evidence/2026-11-13/README.md).
-- [Bug register](bug-report.md): BUG-001 tiếp tục đạt ca sai mật khẩu; BUG-002/003 còn Fail và chưa có bản sửa để retest.
-- [Workbook manual](test-execution.xlsx): toàn bộ dòng khởi tạo `Not Run`, dành cho người kiểm thử ghi thực thi thật.
-- [Kết quả CI lịch sử 06/11/2026](bugs/BUG-001.md): 8 API + 5 UI trên CI, không cộng dồn để tăng số test hiện tại.
+## Kết luận chất lượng
 
-Log chưa bao gồm một chiến dịch manual, test tải, nhiều browser hoặc xác minh cơ sở dữ liệu production. Số ca Pass hiện tại không phải số yêu cầu được xác minh đầy đủ.
+**Chưa đạt exit criteria phát hành:** hai lỗi High (trong đó BUG-003 P0) còn mở; 337 case gốc chưa có thực thi manual mới; bốn thiết kế thiếu trường cần rà soát. Không có kết quả xác minh đầy đủ cho payroll, doanh thu, SMS/QR, các chức năng kê đơn/tài liệu y khoa, tải hoặc nhiều browser. Các khoảng trống đặc tả/triển khai được ghi trong đối chiếu nguồn, không chuyển thành Pass.
+
+CI chạy đủ API, defect regression và Cypress kể cả khi suite trước Fail, rồi trả nonzero nếu có Fail/Not Run/process error. Artifact vẫn được upload để điều tra. Báo cáo không dùng màu xanh của riêng regression để che hai yêu cầu còn Fail.
+
+[Chỉ mục run và ghi chú exporter](runs/README.md) phân biệt thời gian UI chưa đo được trong hai run đầu với phép đo thật của run verification.
