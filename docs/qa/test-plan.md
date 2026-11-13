@@ -4,7 +4,9 @@
 
 Mục tiêu của giai đoạn này là xác định các quy tắc nghiệp vụ có thể kiểm chứng, ưu tiên kiểm thử theo rủi ro và chốt phạm vi thực hiện.
 
-Nguồn chuẩn gồm ba PDF và Excel trong `docs/`. [Đối chiếu](source-reconciliation.md) xác nhận baseline 337 ID / 20 use case và tách kết quả PDF/Excel lịch sử khỏi các run mới. Bộ 70 thiết kế dưới đây là focused regression bổ trợ, không thay thế hoặc cộng thêm vào 337 như những kịch bản độc lập. Mọi use case/case gốc có dòng truy vết trong RTM từng run, kể cả khi chưa được automation hoặc manual thực thi.
+Nguồn chuẩn gồm ba PDF và Excel trong `docs/`: đặc tả xác định nghiệp vụ; báo cáo cài đặt làm căn cứ kiến trúc/môi trường; PDF kiểm thử và Excel ghi nhận kết quả kiểm thử gốc. [Hồ sơ lịch sử](history/README.md) giữ 337 kết quả Excel và số liệu PDF riêng biệt, không yêu cầu xem như chưa từng test.
+
+Kế hoạch có hai phạm vi: **đợt gốc UC1–UC4 gồm 20 use case / 337 case theo Excel**, và **hồi quy trên build hiện tại** ưu tiên bốn module bên dưới. [RTM gốc](history/rtm.csv) nối trang đặc tả → mã liên quan → case → kết quả lịch sử và automation hiện tại. Bộ 70 thiết kế focused là bổ trợ, không thay thế hoặc cộng thành 407 scenario độc lập.
 
 Ứng dụng trong `client/` và `server/` là đối tượng được kiểm thử. Phần QA do mình thực hiện nằm ở [`testing/`](../../testing/) và [`docs/qa/`](./).
 

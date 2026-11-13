@@ -2,7 +2,9 @@
 
 ## Baseline thiết kế và nguồn số liệu
 
-Excel gốc có **337 ID duy nhất / 20 use case**. PDF tổng hợp 314, nhưng phần chi tiết PDF cộng được 334; nhãn kết quả PDF/Excel cũng khác nhau. [Đối chiếu nguồn](source-reconciliation.md) xác định từng chênh lệch; không giả định đây là hai run độc lập vì thiếu Run ID/build/evidence tương ứng. Chọn Excel làm baseline thiết kế; toàn bộ current manual status vẫn Not Run.
+Excel gốc có **337 ID duy nhất / 20 use case, ghi 337 Pass** trong hồ sơ đã kiểm thử do chủ dự án cung cấp. [Báo cáo lịch sử chuẩn hóa](history/manual-execution.xlsx) giữ nguyên actual/status và trỏ lại sheet/dòng nguồn. PDF ghi **314 case, 288 Pass và 26 Fail**; giữ riêng kết quả đó thay vì gộp với Excel. [Đối chiếu nguồn](source-reconciliation.md) giải thích chênh lệch và các trường metadata chưa ghi trong tài liệu.
+
+`Not Run` trong workbook hoặc RTM của **đợt hồi quy mới** chỉ có nghĩa chưa thực hiện lại thủ công trên build mới, không phải 337 case gốc chưa từng được test. Hồ sơ lịch sử và hồi quy hiện tại là hai lớp kết quả riêng.
 
 Bộ 70 thiết kế focused là bổ trợ, có hành vi chồng lấp với 337 case gốc, không cộng thành 407 test độc lập. RTM từng run chứa cả hai inventory để truy vết, không dùng số dòng đó làm số scenario Pass.
 
@@ -16,7 +18,7 @@ Bộ 70 thiết kế focused là bổ trợ, có hành vi chồng lấp với 33
 
 API bổ sung một ca token hết hạn giữa hai run; không coi hai suite có số lượng hoàn toàn giống nhau. Ca BUG-004 giữ nguyên assertion và dùng fixture mới. Mọi record có Run ID, timestamp UTC, executor, application version/commit/fingerprint, test case ID, expected, actual, status, bug và evidence. Metadata bắt đầu/kết thúc nằm trong từng `run.json`, thời gian Việt Nam là UTC+7.
 
-Môi trường local: Windows, Node.js 22.15.0, MongoDB 8.2.3 local `_test`, Cypress 15.17.0 / Electron 138. CI cấu hình Ubuntu, Node.js 24, MongoDB 7; kết quả CI được ghi riêng sau khi workflow thực sự chạy. Build frontend đạt. **12 test hạ tầng reporting/lifecycle Pass**, không cộng vào 48 test nghiệp vụ.
+Môi trường các run local: Windows, Node.js 22.15.0, MongoDB 8.2.3 local `_test`, Cypress 15.17.0 / Electron 138. CI dùng Ubuntu, Node.js 24, MongoDB 7. Build frontend đạt. Bộ kiểm tra reporting/lifecycle và nhập kết quả lịch sử hiện có **13 test Pass**, không cộng vào 48 test nghiệp vụ.
 
 ## Kết quả nghiệp vụ và lifecycle
 
@@ -29,7 +31,7 @@ Môi trường local: Windows, Node.js 22.15.0, MongoDB 8.2.3 local `_test`, Cyp
 
 ## Kết luận chất lượng
 
-**Chưa đạt exit criteria phát hành:** hai lỗi High (trong đó BUG-003 P0) còn mở; 337 case gốc chưa có thực thi manual mới; bốn thiết kế thiếu trường cần rà soát. Không có kết quả xác minh đầy đủ cho payroll, doanh thu, SMS/QR, các chức năng kê đơn/tài liệu y khoa, tải hoặc nhiều browser. Các khoảng trống đặc tả/triển khai được ghi trong đối chiếu nguồn, không chuyển thành Pass.
+**Build hiện tại chưa đạt exit criteria phát hành:** hai lỗi High (trong đó BUG-003 P0) còn mở và chưa có manual retest mới cho toàn bộ 337 case. Kết quả kiểm thử gốc về payroll/doanh thu và các use case khác vẫn được giữ trong hồ sơ lịch sử; chúng không tự xác nhận lại tính đúng đắn của mã đã thay đổi. Bốn thiết kế thiếu trường được đánh dấu để bổ sung khi thực thi lại.
 
 CI chạy đủ API, defect regression và Cypress kể cả khi suite trước Fail, rồi trả nonzero nếu có Fail/Not Run/process error. Artifact vẫn được upload để điều tra. Báo cáo không dùng màu xanh của riêng regression để che hai yêu cầu còn Fail.
 

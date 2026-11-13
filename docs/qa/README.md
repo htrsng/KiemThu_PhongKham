@@ -26,7 +26,9 @@ Mỗi lần chạy tạo `testing/artifacts/runs/QA-<UTC timestamp>-<random>/`, 
 
 ## Thiết kế và thực thi manual
 
-[337 case gốc](../../testing/manual/source-cases.csv) giữ provenance và trạng thái lịch sử, nhưng current status là Not Run. [70 focused case](../../testing/manual/test-cases.csv) là thiết kế hồi quy bổ trợ, không phải 70 kịch bản độc lập để cộng thêm vào 337. Các mapping ở `testing/trace-links.json` được coi là Partial, vì API test không chứng minh mọi bước UI/manual.
+[Kết quả kiểm thử gốc](history/manual-execution.xlsx) đã được nhập từ 337 case trong Excel đã test, giữ actual/status, date/build nếu có ghi và evidence tới dòng nguồn. [RTM lịch sử](history/rtm.csv) bao phủ đủ 20 use case. Đây là kết quả lịch sử sử dụng được trong hồ sơ dự án, không bị thay bằng Not Run.
+
+Trong [337 case chuẩn hóa](../../testing/manual/source-cases.csv), `Historical status` là kết quả cũ; `Current status` nói về việc retest thủ công trên build mới. [70 focused case](../../testing/manual/test-cases.csv) hỗ trợ automation, không cộng thành các scenario độc lập. Mapping automation ghi Partial vì không thay cho toàn bộ bước UI/manual.
 
 [Workbook manual](test-execution.xlsx) có các cột run/date/build/executor/expected/actual/status/bug/evidence và dropdown Pass/Fail/Blocked/Not Run. Tạo sheet/bản sao riêng cho mỗi lần thực thi, ghi actual thật; không chép kết quả automation thành manual Pass. Bốn thiết kế thiếu trường được ghi trong [đối chiếu nguồn](source-reconciliation.md).
 
