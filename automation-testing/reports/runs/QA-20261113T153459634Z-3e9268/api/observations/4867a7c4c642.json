@@ -1,0 +1,18 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af72e28747c9f34a8bae43a",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã lên lịch"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af72e28747c9f34a8bae442",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã lên lịch"
+    }
+  }
+]

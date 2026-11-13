@@ -11,7 +11,22 @@
 5. Ghi `Actual` bằng điều quan sát được: thông báo, HTTP status, trạng thái sau tải lại, số hóa đơn, amountPaid/finalAmount/debt. Điền thời gian/người test/build cho dòng đã thực hiện. Chọn Pass khi đã đối chiếu đủ Expected; Fail khi khác; Blocked khi thiếu tiền điều kiện/tính năng và ghi lý do; chưa làm giữ Not Run.
 6. Lưu ảnh theo ID case và response liên quan trong cùng thư mục Run ID; dán đường dẫn vào `Evidence`. Ẩn Authorization, token, mật khẩu và dữ liệu cá nhân. Nếu Fail, ghi Bug ID và bước tái hiện; không đổi Expected để khớp Actual.
 
-## Ba luồng cần ưu tiên
+## Thứ tự ưu tiên và bằng chứng
+
+Nếu chưa thể làm đủ 40 case, thực hiện **20 case sau trước** trong chính workbook 40 case, theo từng nhóm bên dưới. Đây vẫn là kế hoạch, không phải kết quả đã chạy:
+
+| Thứ tự | Nhóm | Test case |
+| --- | --- | --- |
+| 1–5 | Đăng nhập và xác thực | TC-AUTH-001, 002, 003, 005, 008 |
+| 6–8 | Phân quyền ba vai trò | TC-AUTHZ-001, 002, 003 |
+| 9–16 | Đặt lịch/check-in/trạng thái | TC-APPT-001, 002, 009, 013, 014, 015, 021, 022 |
+| 17–20 | Thu tiền/thiếu tiền/công nợ/số âm | TC-PAY-003, 007, 008, 010 |
+
+Trước khi chạy, điền Run ID và commit hiện tại lấy từ `git rev-parse HEAD`; ghi hệ điều hành, trình duyệt/phiên bản, URL và tên DB QA. Dùng lịch/hóa đơn khác nhau khi tiền điều kiện khác nhau. Với ca thanh toán, bắt đầu từ hóa đơn chưa thanh toán giá 100.000đ; ghi ID trước thao tác. Bộ chọn này không yêu cầu sửa hoặc đánh lại kết quả cũ trong workbook tổng.
+
+Sau 20 case, tổng hợp đúng Pass/Fail/Blocked/Not Run. Nếu mới làm một phần, chỉ cập nhật các dòng đã có Actual và evidence; không đánh Pass cả nhóm. Gửi bản workbook thực thi cùng ảnh/response đã ẩn token để cập nhật [Tổng hợp QA mới nhất](latest-qa-summary.md). Node/Cypress/Newman không thay thế thao tác manual này.
+
+### Bằng chứng cần giữ cho ba luồng trọng yếu
 
 | Case | Thao tác và bằng chứng cần giữ |
 | --- | --- |

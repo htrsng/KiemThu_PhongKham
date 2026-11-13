@@ -6,7 +6,7 @@ Chạy từ thư mục gốc sau khi chuẩn bị theo [README](../../README.md)
 
 ```sh
 node .github/qa/scripts/audit-qa.js
-node --test .github/qa/unit/qa-reporting.test.js
+node .github/qa/scripts/run-unit.js
 node --env-file=.env.test .github/qa/scripts/run-qa.js
 node --env-file=.env.test .github/qa/scripts/run-postman.js
 ```

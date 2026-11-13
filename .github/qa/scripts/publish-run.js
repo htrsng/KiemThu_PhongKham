@@ -5,7 +5,9 @@ const { redact } = require('../helpers/redact');
 function publishRun(runId) {
   if (!/^QA-[A-Za-z0-9TZ]+-[a-f0-9]+$/.test(runId || '')) throw new Error('Invalid Run ID');
   const source = resolve(runRoot, runId);
-  const execution = JSON.parse(readFileSync(resolve(source, existsSync(resolve(source, 'execution.json')) ? 'execution.json' : 'newman-results.json'), 'utf8'));
+  const record = ['execution.json', 'newman-results.json', 'unit-results.json'].find((file) => existsSync(resolve(source, file)));
+  if (!record) throw new Error('No execution, Newman or unit report found');
+  const execution = JSON.parse(readFileSync(resolve(source, record), 'utf8'));
   if (execution.runId !== runId || !execution.finished) throw new Error('Run must be finished before publication');
   const destination = resolve(root, execution.label === 'postman' ? 'api-testing/reports/newman' : 'automation-testing/reports/runs', runId);
   if (existsSync(destination)) throw new Error('Published runs are immutable; choose a new run');

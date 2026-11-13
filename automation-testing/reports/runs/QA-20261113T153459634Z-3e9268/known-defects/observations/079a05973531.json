@@ -1,0 +1,74 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af72e2c7e907f36721c784c/finish",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 1
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/invoices/6af72e2cc80babd309acb98c",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã thanh toán",
+      "amountPaid": 100000,
+      "finalAmount": 100000,
+      "debt": 0,
+      "paymentMethod": "Chuyển khoản"
+    }
+  },
+  {
+    "method": "PUT",
+    "path": "/api/appointments/6af72e2c7e907f36721c784c",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices/6af72e2cc80babd309acb98c",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã thanh toán",
+      "amountPaid": 100000,
+      "finalAmount": 100000,
+      "debt": 0,
+      "paymentMethod": "Chuyển khoản"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/invoices",
+    "httpStatus": 409,
+    "body": {
+      "error": "Bản ghi đã tồn tại; mỗi lịch hẹn chỉ có một hóa đơn"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 1
+    }
+  }
+]

@@ -1,0 +1,178 @@
+{
+  "generatedAt": "2026-11-13T15:39:36.601Z",
+  "business": {
+    "runId": "QA-20261113T153459634Z-3e9268",
+    "commit": "53f15ae8d2924c9447ca2ebabdc40d6e06e10e76",
+    "workingTreeHash": "9d13f84c13c14d0fa15d7c5562a18c7616a3ac61d51a579abdf4c494857210b9",
+    "started": "2026-11-13T15:34:59.634Z",
+    "finished": "2026-11-13T15:35:57.842Z",
+    "executor": "automation:local",
+    "environment": {
+      "node": "v22.15.0",
+      "platform": "win32",
+      "timezone": "Asia/Saigon",
+      "apiUrl": "http://localhost:5000/api",
+      "baseUrl": "http://localhost:5173"
+    },
+    "report": "automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/execution.json",
+    "counts": {
+      "Pass": 54,
+      "Fail": 11,
+      "Blocked": 0,
+      "Not Run": 0
+    },
+    "suites": {
+      "api": {
+        "Pass": 35,
+        "Fail": 11,
+        "Not Run": 0
+      },
+      "known-defects": {
+        "Pass": 7,
+        "Fail": 0,
+        "Not Run": 0
+      },
+      "ui": {
+        "Pass": 12,
+        "Fail": 0,
+        "Not Run": 0
+      }
+    }
+  },
+  "unit": {
+    "runId": "QA-20261113T153426945Z-cb851f",
+    "commit": "53f15ae8d2924c9447ca2ebabdc40d6e06e10e76",
+    "workingTreeHash": "9d13f84c13c14d0fa15d7c5562a18c7616a3ac61d51a579abdf4c494857210b9",
+    "started": "2026-11-13T15:34:26.945Z",
+    "finished": "2026-11-13T15:34:29.241Z",
+    "executor": "automation:local",
+    "environment": {
+      "node": "v22.15.0",
+      "platform": "win32",
+      "timezone": "Asia/Saigon",
+      "apiUrl": "http://localhost:5000/api",
+      "baseUrl": "http://localhost:5173"
+    },
+    "report": "automation-testing/reports/runs/QA-20261113T153426945Z-cb851f/unit-results.json",
+    "counts": {
+      "tests": 19,
+      "pass": 19,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "scope": "13 reporting/lifecycle tests + 6 fixed-clock controller tests with mocked persistence; not HTTP or manual execution"
+  },
+  "postman": {
+    "runId": "QA-20261113T153601759Z-bf5a0c",
+    "commit": "53f15ae8d2924c9447ca2ebabdc40d6e06e10e76",
+    "workingTreeHash": "9d13f84c13c14d0fa15d7c5562a18c7616a3ac61d51a579abdf4c494857210b9",
+    "started": "2026-11-13T15:36:01.759Z",
+    "finished": "2026-11-13T15:36:04.168Z",
+    "executor": "automation:local",
+    "environment": {
+      "node": "v22.15.0",
+      "platform": "win32",
+      "timezone": "Asia/Saigon",
+      "apiUrl": "http://localhost:5000/api",
+      "baseUrl": "http://localhost:5173"
+    },
+    "report": "api-testing/reports/newman/QA-20261113T153601759Z-bf5a0c/newman-results.json",
+    "stats": {
+      "iterations": {
+        "total": 1,
+        "pending": 0,
+        "failed": 0
+      },
+      "items": {
+        "total": 21,
+        "pending": 0,
+        "failed": 0
+      },
+      "scripts": {
+        "total": 42,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequests": {
+        "total": 21,
+        "pending": 0,
+        "failed": 0
+      },
+      "requests": {
+        "total": 21,
+        "pending": 0,
+        "failed": 0
+      },
+      "tests": {
+        "total": 21,
+        "pending": 0,
+        "failed": 0
+      },
+      "assertions": {
+        "total": 46,
+        "pending": 0,
+        "failed": 0
+      },
+      "testScripts": {
+        "total": 42,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequestScripts": {
+        "total": 0,
+        "pending": 0,
+        "failed": 0
+      }
+    },
+    "failures": []
+  },
+  "manual": {
+    "workbook": "manual-testing/test-execution/manual-regression.xlsx",
+    "counts": {
+      "Pass": 0,
+      "Fail": 0,
+      "Blocked": 0,
+      "Not Run": 40
+    },
+    "sha256": "e961557d12299306de1b56ca72d677c5a6f8ee98d448c77a361db790f1d134b2"
+  },
+  "defects": [
+    {
+      "id": "BUG-001",
+      "state": "Closed",
+      "severity": "Medium",
+      "priority": "P1"
+    },
+    {
+      "id": "BUG-002",
+      "state": "Closed",
+      "severity": "High",
+      "priority": "P1"
+    },
+    {
+      "id": "BUG-003",
+      "state": "Closed",
+      "severity": "High",
+      "priority": "P0"
+    },
+    {
+      "id": "BUG-004",
+      "state": "Closed",
+      "severity": "High",
+      "priority": "P1"
+    },
+    {
+      "id": "BUG-005",
+      "state": "Open",
+      "severity": "High",
+      "priority": "P0"
+    },
+    {
+      "id": "BUG-006",
+      "state": "Open",
+      "severity": "Medium",
+      "priority": "P2"
+    }
+  ]
+}

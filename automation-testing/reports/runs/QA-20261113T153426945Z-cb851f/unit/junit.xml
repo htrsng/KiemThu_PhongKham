@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="TC-APPT-012 / controller clock boundary: now-startTime=-1800001ms allowed=false" time="0.003370" classname="test"/>
+	<testcase name="TC-APPT-012 / controller clock boundary: now-startTime=-1800000ms allowed=true" time="0.000224" classname="test"/>
+	<testcase name="TC-APPT-012 / controller clock boundary: now-startTime=-1799999ms allowed=true" time="0.000192" classname="test"/>
+	<testcase name="TC-APPT-012 / controller clock boundary: now-startTime=1799999ms allowed=true" time="0.000182" classname="test"/>
+	<testcase name="TC-APPT-012 / controller clock boundary: now-startTime=1800000ms allowed=true" time="0.000287" classname="test"/>
+	<testcase name="TC-APPT-012 / controller clock boundary: now-startTime=1800001ms allowed=false" time="0.000129" classname="test"/>
+	<testcase name="CSV preserves multiline Vietnamese fields, commas and quotes" time="0.002349" classname="test"/>
+	<testcase name="Historical execution is preserved separately from new-build manual retest" time="0.011438" classname="test"/>
+	<testcase name="Historical report keeps source status and actual, including explicit missing values" time="0.017122" classname="test"/>
+	<testcase name="Run IDs never reuse or overwrite previous metadata" time="0.223343" classname="test"/>
+	<testcase name="Empty/failed processes become explicit infrastructure Fail, with Excel output" time="0.209410" classname="test"/>
+	<testcase name="Completed execution results cannot be overwritten by the exporter" time="0.139264" classname="test"/>
+	<testcase name="Known credentials and JWTs are removed from artifact text" time="0.000460" classname="test"/>
+	<testcase name="Skipped Node tests remain Not Run instead of becoming Pass" time="0.000241" classname="test"/>
+	<testcase name="Cypress uses native measured duration and assertion error, not guessed zero" time="0.000413" classname="test"/>
+	<testcase name="Cypress state/report mismatches cannot silently become Pass" time="0.001346" classname="test"/>
+	<testcase name="Defects cannot jump from New directly to Closed" time="0.000458" classname="test"/>
+	<testcase name="A claimed fix without a build commit is rejected" time="0.000382" classname="test"/>
+	<testcase name="A failed real retest cannot close a defect" time="0.029425" classname="test"/>
+	<!-- tests 19 -->
+	<!-- suites 0 -->
+	<!-- pass 19 -->
+	<!-- fail 0 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 2054.6294 -->
+</testsuites>

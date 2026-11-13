@@ -30,9 +30,11 @@ Chạy từ thư mục gốc sau khi [cài đặt dự án](README.md#5-hướng
 
 ```sh
 node .github/qa/scripts/audit-qa.js
-node --test .github/qa/unit/qa-reporting.test.js
+node .github/qa/scripts/run-unit.js
 ```
 
 Với thay đổi hành vi ứng dụng, test hoặc cấu hình runner, chạy thêm các suite API/Cypress/Newman liên quan và build frontend khi cần. Thay đổi chỉ ở tài liệu cần kiểm tra liên kết, đường dẫn và tính thống nhất của thông tin; sửa README không được coi là một lần thực thi test nghiệp vụ mới.
 
 Audit run đã hoàn thành bằng `node .github/qa/scripts/audit-run.js <run-directory>`. Đầu ra chạy nằm trong `automation-testing/reports/generated/` và bị Git bỏ qua; công bố bằng chứng được chọn qua [script QA dùng chung](.github/qa/README.md), không ghi đè Run ID đã công bố. Giữ nguyên các chỉnh sửa workbook manual đang làm dở.
+
+[Tổng hợp QA mới nhất](manual-testing/test-execution/latest-qa-summary.md) được sinh từ các run hoàn tất bằng `update-latest-summary.js`. Khi thay đổi registry hoặc công bố run mới, cập nhật trang này và README hiện hành; không sửa báo cáo lịch sử. Unit controller dùng persistence mock phải ghi riêng khỏi HTTP/UI và manual execution.

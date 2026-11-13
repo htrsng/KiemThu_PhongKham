@@ -1,5 +1,7 @@
 # Các lần thực thi
 
+Trạng thái hiện hành ở [Tổng hợp QA mới nhất](../../../manual-testing/test-execution/latest-qa-summary.md); không dùng riêng một run Pass lịch sử để kết luận build hiện tại.
+
 | Run | Mục đích | Kết quả |
 | --- | --- | --- |
 | [QA-20261113T072849286Z-115a62](QA-20261113T072849286Z-115a62/summary.md) | Baseline, phát hiện BUG-004 | 44 Pass / 3 Fail |
@@ -8,6 +10,9 @@
 | [QA-20261113T124125327Z-5e0311](QA-20261113T124125327Z-5e0311/summary.md) | Before Fix: chạy lại đúng hai test BUG-002/003 | 2 Fail; không chạy API/UI |
 | [QA-20261113T124551346Z-2f0e1e](QA-20261113T124551346Z-2f0e1e/summary.md) | After Fix + full regression, thêm 5 defect tests | 34 API + 12 UI + 7 defect tests Pass |
 | [QA-20261113T124931337Z-ba424a](../../../api-testing/reports/newman/QA-20261113T124931337Z-ba424a/summary.md) | Collection Postman thực thi bằng Newman; dữ liệu QA riêng | 21 requests, 46/46 assertions Pass |
+| [QA-20261113T153459634Z-3e9268](QA-20261113T153459634Z-3e9268/summary.md) | Mở rộng HTTP ownership và đầu vào sai, phát hiện BUG-005/006 | 54 Pass / 11 Fail; 65 test nghiệp vụ |
+| [QA-20261113T153426945Z-cb851f](QA-20261113T153426945Z-cb851f/unit-results.json) | Đồng hồ cố định, persistence mock; tách khỏi HTTP/manual | 6 biên controller + 13 reporting/lifecycle Pass |
+| [QA-20261113T153601759Z-bf5a0c](../../../api-testing/reports/newman/QA-20261113T153601759Z-bf5a0c/summary.md) | Chạy lại Newman sau bổ sung coverage HTTP | 21 request, 46/46 assertions Pass |
 
 Mỗi run có build, source fingerprint, executor và thời gian riêng. Không cộng dồn số Pass giữa các run. Hai run đầu có `durationMs = 0` cho UI do exporter chưa đọc được trường thời gian; đây là **không thu được phép đo**, không phải test chạy 0 ms. Bản cuối lấy duration và assertion error từ Mochawesome gốc, có unit test chống lệch trạng thái giữa các reporter. Không chỉnh sửa dữ liệu lịch sử đã công bố để che lỗi exporter.
 

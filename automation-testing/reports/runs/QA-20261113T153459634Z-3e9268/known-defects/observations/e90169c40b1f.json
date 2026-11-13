@@ -1,0 +1,26 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af72e2a7e907f36721c77b4",
+    "httpStatus": 400,
+    "body": {
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af72e2a7e907f36721c77b4",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  }
+]

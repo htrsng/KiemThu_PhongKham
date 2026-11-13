@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="TC-AUTH-002 (API subset): missing both credentials returns 400" time="0.079299" classname="test"/>
+	<testcase name="TC-AUTH-004: uppercase gmail account is normalized" time="0.115726" classname="test"/>
+	<testcase name="TC-AUTH-003: non-gmail email returns 400" time="0.003456" classname="test"/>
+	<testcase name="TC-AUTH-005: wrong password returns 401" time="0.069974" classname="test"/>
+	<testcase name="TC-AUTH-008: locked account returns 403" time="0.070023" classname="test"/>
+	<testcase name="TC-AUTH-001 / TC-AUTH-012 (API): valid login returns token without password" time="0.073479" classname="test"/>
+	<testcase name="TC-AUTH-010 (missing-token subset): /me rejects missing token" time="0.003985" classname="test"/>
+	<testcase name="TC-AUTH-012 (session): /me returns current account without password" time="0.077380" classname="test"/>
+	<testcase name="TC-AUTH-009: /me rejects invalid token" time="0.002744" classname="test"/>
+	<testcase name="TC-AUTH-010 (expired-token subset): signed expired JWT cannot access current account" time="0.157276" classname="test"/>
+	<testcase name="TC-AUTHZ-001: ADMIN account access returns 200" time="0.142362" classname="test"/>
+	<testcase name="TC-AUTHZ-002: DOCTOR account access returns 403" time="0.076135" classname="test"/>
+	<testcase name="TC-AUTHZ-003: RECEPTION account access returns 403" time="0.085516" classname="test"/>
+	<testcase name="TC-APPT-001: create appointment and read persisted fields" time="0.173702" classname="test"/>
+	<testcase name="TC-APPT-002: past appointment returns 400 and creates no data" time="0.097001" classname="test"/>
+	<testcase name="TC-APPT-009: duplicate patient/doctor/day returns 400 without duplicate data" time="0.107045" classname="test"/>
+	<testcase name="TC-APPT-011: check-in offset 29 minutes returns 200" time="0.094409" classname="test"/>
+	<testcase name="TC-APPT-013: check-in offset -31 minutes returns 400" time="0.095580" classname="test"/>
+	<testcase name="TC-APPT-014: check-in offset 0 minutes returns 200" time="0.095110" classname="test"/>
+	<testcase name="TC-APPT-015: repeated check-in returns 400 without modifying state" time="0.087823" classname="test"/>
+	<testcase name="TC-APPT-018: complete treatment and verify exactly one unpaid invoice" time="0.101275" classname="test"/>
+	<testcase name="TC-PAY-003: paid=100000, allowDebt=false returns 200 and persists balance" time="0.091590" classname="test"/>
+	<testcase name="TC-PAY-004: paid=100000, allowDebt=false returns 200 and persists balance" time="0.096522" classname="test"/>
+	<testcase name="TC-PAY-005: paid=100000, allowDebt=false returns 200 and persists balance" time="0.091330" classname="test"/>
+	<testcase name="TC-PAY-006: paid=100000, allowDebt=false returns 200 and persists balance" time="0.095987" classname="test"/>
+	<testcase name="TC-PAY-007: paid=1, allowDebt=false returns 400 and persists balance" time="0.089490" classname="test"/>
+	<testcase name="TC-PAY-008: paid=40000, allowDebt=true returns 200 and persists balance" time="0.091265" classname="test"/>
+	<testcase name="TC-PAY-010: paid=-1, allowDebt=false returns 400 and persists balance" time="0.110685" classname="test"/>
+	<testcase name="TC-AUTHZ-005: Doctor GET invoice returns 403 without exposing or modifying data" time="0.154037" classname="test"/>
+	<testcase name="TC-AUTHZ-005: Doctor PATCH invoice returns 403 without exposing or modifying data" time="0.166997" classname="test"/>
+	<testcase name="TC-AUTH-010 (invoice subset): missing token cannot list invoices" time="0.002547" classname="test"/>
+	<testcase name="TC-AUTHZ-004: ADMIN invoice deletion returns 200" time="0.169229" classname="test"/>
+	<testcase name="TC-AUTHZ-005: DOCTOR invoice deletion returns 403" time="0.163486" classname="test"/>
+	<testcase name="TC-AUTHZ-007: RECEPTION invoice deletion returns 403" time="0.161278" classname="test"/>
+	<testcase name="BUG-005 / TC-AUTHZ-008: Doctor listing and query filters cannot expose another doctor appointments" time="0.229663" classname="test" failure="Only assigned doctor records">
+		<failure type="testCodeFailure" message="Only assigned doctor records">
+[Error [ERR_TEST_FAILURE]: Only assigned doctor records] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: Only assigned doctor records
+      at D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:33:10
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '=='
+  }
+}
+		</failure>
+	</testcase>
+	<testcase name="BUG-005 / TC-AUTHZ-008: Doctor may read own appointment but not foreign appointment by ID" time="0.112086" classname="test" failure="Foreign appointment must be forbidden/hidden, actual 200">
+		<failure type="testCodeFailure" message="Foreign appointment must be forbidden/hidden, actual 200">
+[Error [ERR_TEST_FAILURE]: Foreign appointment must be forbidden/hidden, actual 200] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: Foreign appointment must be forbidden/hidden, actual 200
+      at D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:45:10
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '=='
+  }
+}
+		</failure>
+	</testcase>
+	<testcase name="BUG-005 / TC-AUTHZ-008: Doctor cannot change treatment status on a foreign appointment" time="0.177798" classname="test" failure="Foreign mutation must be rejected, actual 200; persisted Đang điều trị">
+		<failure type="testCodeFailure" message="Foreign mutation must be rejected, actual 200; persisted Đang điều trị">
+[Error [ERR_TEST_FAILURE]: Foreign mutation must be rejected, actual 200; persisted Đang điều trị] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: Foreign mutation must be rejected, actual 200; persisted Đang điều trị
+      at D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:54:10
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '=='
+  }
+}
+		</failure>
+	</testcase>
+	<testcase name="BUG-006 / TC-APPT-025: missing doctorId returns client error and creates no appointment" time="0.091410" classname="test"/>
+	<testcase name="BUG-006 / TC-APPT-025: missing patientId returns client error and creates no appointment" time="0.091374" classname="test" failure="Invalid input must return 4xx, actual 500">
+		<failure type="testCodeFailure" message="Invalid input must return 4xx, actual 500">
+[Error [ERR_TEST_FAILURE]: Invalid input must return 4xx, actual 500] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: Invalid input must return 4xx, actual 500
+      at D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:67:12
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '=='
+  }
+}
+		</failure>
+	</testcase>
+	<testcase name="BUG-006 / TC-APPT-025: missing startTime returns client error and creates no appointment" time="0.096143" classname="test" failure="Invalid input must return 4xx, actual 500">
+		<failure type="testCodeFailure" message="Invalid input must return 4xx, actual 500">
+[Error [ERR_TEST_FAILURE]: Invalid input must return 4xx, actual 500] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: Invalid input must return 4xx, actual 500
+      at D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:67:12
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '=='
+  }
+}
+		</failure>
+	</testcase>
+	<testcase name="BUG-006 / TC-APPT-025: missing endTime returns client error and creates no appointment" time="0.092109" classname="test" failure="Invalid input must return 4xx, actual 500">
+		<failure type="testCodeFailure" message="Invalid input must return 4xx, actual 500">
+[Error [ERR_TEST_FAILURE]: Invalid input must return 4xx, actual 500] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: Invalid input must return 4xx, actual 500
+      at D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:67:12
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '=='
+  }
+}
+		</failure>
+	</testcase>
+	<testcase name="BUG-006 / TC-APPT-025: malformed doctorId returns client error without creating data" time="0.090063" classname="test" failure="Invalid input must return 4xx, actual 500">
+		<failure type="testCodeFailure" message="Invalid input must return 4xx, actual 500">
+[Error [ERR_TEST_FAILURE]: Invalid input must return 4xx, actual 500] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: Invalid input must return 4xx, actual 500
+      at D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:77:12
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '=='
+  }
+}
+		</failure>
+	</testcase>
+	<testcase name="BUG-006 / TC-APPT-025: malformed startTime returns client error without creating data" time="0.100547" classname="test" failure="Invalid input must return 4xx, actual 500">
+		<failure type="testCodeFailure" message="Invalid input must return 4xx, actual 500">
+[Error [ERR_TEST_FAILURE]: Invalid input must return 4xx, actual 500] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: Invalid input must return 4xx, actual 500
+      at D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:77:12
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '=='
+  }
+}
+		</failure>
+	</testcase>
+	<testcase name="BUG-006 / TC-APPT-026: GET malformed appointment ID detail returns client error" time="0.089792" classname="test" failure="Malformed ID must return 4xx, actual 500">
+		<failure type="testCodeFailure" message="Malformed ID must return 4xx, actual 500">
+[Error [ERR_TEST_FAILURE]: Malformed ID must return 4xx, actual 500] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: Malformed ID must return 4xx, actual 500
+      at D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:88:12
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '=='
+  }
+}
+		</failure>
+	</testcase>
+	<testcase name="BUG-006 / TC-APPT-026: PATCH malformed appointment ID detail returns client error" time="0.090957" classname="test" failure="Malformed ID must return 4xx, actual 500">
+		<failure type="testCodeFailure" message="Malformed ID must return 4xx, actual 500">
+[Error [ERR_TEST_FAILURE]: Malformed ID must return 4xx, actual 500] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: Malformed ID must return 4xx, actual 500
+      at D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:88:12
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '=='
+  }
+}
+		</failure>
+	</testcase>
+	<testcase name="BUG-006 / TC-APPT-026: PATCH malformed appointment ID /checkin returns client error" time="0.086665" classname="test" failure="Malformed ID must return 4xx, actual 500">
+		<failure type="testCodeFailure" message="Malformed ID must return 4xx, actual 500">
+[Error [ERR_TEST_FAILURE]: Malformed ID must return 4xx, actual 500] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: Malformed ID must return 4xx, actual 500
+      at D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:88:12
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '=='
+  }
+}
+		</failure>
+	</testcase>
+	<!-- tests 46 -->
+	<!-- suites 0 -->
+	<!-- pass 35 -->
+	<!-- fail 11 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 6010.5259 -->
+</testsuites>

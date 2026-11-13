@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="BUG-002 / TC-APPT-021: completed appointment cannot move backward" time="0.190437" classname="test"/>
+	<testcase name="BUG-003 / TC-APPT-022: repeated completion cannot create duplicate invoices" time="0.108983" classname="test"/>
+	<testcase name="BUG-002 / TC-APPT-021: all update routes reject terminal, backward, skipped and unknown states" time="1.516675" classname="test"/>
+	<testcase name="BUG-002 / TC-APPT-017: metadata PATCH does not implicitly complete an appointment" time="0.118249" classname="test"/>
+	<testcase name="BUG-003 / TC-APPT-022: parallel completion across PUT PATCH and finish creates exactly one invoice" time="0.172272" classname="test"/>
+	<testcase name="BUG-003 / TC-APPT-022: completing again preserves a paid invoice and rejects duplicate invoice POST" time="0.155623" classname="test"/>
+	<testcase name="BUG-003 / TC-APPT-022: retry restores a missing invoice on a completed appointment" time="0.102593" classname="test"/>
+	<!-- tests 7 -->
+	<!-- suites 0 -->
+	<!-- pass 7 -->
+	<!-- fail 0 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 3013.241 -->
+</testsuites>

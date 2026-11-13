@@ -18,7 +18,7 @@ Bắt đầu từ [kế hoạch kiểm thử](test-plan/test-plan.md) và [danh 
 | Chuyển trạng thái | Chuyển trạng thái lịch hẹn hợp lệ; lùi trạng thái/hủy sai | TC-APPT-016 đến 021 |
 | Đoán lỗi | Hoàn thành lịch lặp và tác động tạo trùng hóa đơn | TC-APPT-022 / BUG-003 |
 
-Đây là **ví dụ thiết kế**, không phải bằng chứng mọi ví dụ đã chạy trên build hiện tại. Biên check-in đúng 30 phút chưa được xác minh; automation kiểm tra sớm 29 phút, trễ 31 phút và đúng giờ hiện tại.
+Đây là **ví dụ thiết kế**, không phải bằng chứng mọi ví dụ đã chạy trên build hiện tại. Đúng ±30 phút và lệch 1 ms đã có sáu unit test controller dùng đồng hồ cố định/persistence mock. HTTP kiểm tra sớm 29 phút, trễ 31 phút và đúng giờ hiện tại; chưa có bằng chứng HTTP/UI/manual tại đúng biên.
 
 ## 3. Danh mục test case
 
@@ -43,7 +43,7 @@ Dùng [workbook 40 case](test-execution/manual-regression.xlsx) và [hướng d�
 
 Kết quả học phần có ở [Excel](test-execution/history/manual-execution.xlsx) và [CSV](test-execution/history/manual-execution.csv). Metadata thiếu trong nguồn tiếp tục được ghi rõ là chưa có. Không chép kết quả automation vào trường manual hoặc lấy Expected điền cho Actual lịch sử còn thiếu.
 
-[Báo cáo thực thi](test-execution/test-report.md) tách riêng các run lịch sử và automation. Manual retest 40 case vẫn chờ thực hiện; dự án không khẳng định đã chạy lại thủ công toàn bộ 337 case.
+[Tổng hợp QA mới nhất](test-execution/latest-qa-summary.md) là nguồn trạng thái hiện hành; [báo cáo lịch sử](test-execution/test-report.md) giữ các run trước mở rộng coverage. Manual retest 40 case vẫn chờ thực hiện; hướng dẫn đã chọn 20 case cần làm trước. Dự án không khẳng định đã chạy lại thủ công toàn bộ 337 case.
 
 ## 5. Quản lý lỗi
 
@@ -54,6 +54,8 @@ Kết quả học phần có ở [Excel](test-execution/history/manual-execution
 | [BUG-002](bug-reports/BUG-002.md) | Lịch đã hoàn thành bị lùi trạng thái | Closed sau retest tự động: HTTP 400, trạng thái đã lưu giữ nguyên |
 | [BUG-003](bug-reports/BUG-003.md) | Hoàn thành lặp tạo trùng hóa đơn | Closed sau retest tuần tự/đồng thời: đúng một hóa đơn |
 | [BUG-004](bug-reports/BUG-004.md) | UI thu tiền mặt không lưu số tiền thực thu | Closed sau retest: amountPaid = finalAmount, debt = 0 |
+| [BUG-005](bug-reports/BUG-005.md) | Doctor đọc/cập nhật lịch bác sĩ khác | Open, High/P0; ba test HTTP Fail |
+| [BUG-006](bug-reports/BUG-006.md) | Dữ liệu thiếu/ID sai trả HTTP 500 | Open, Medium/P2; tám test HTTP Fail |
 
 Vòng đời: **New → Open → Fixed → Retest → Closed**; retest thất bại chuyển Reopened. Giữ bằng chứng Trước sửa → Sau sửa → Hồi quy. [Trước sửa](../automation-testing/reports/runs/QA-20261113T124125327Z-5e0311/execution.json) và [Sau sửa / Hồi quy](../automation-testing/reports/runs/QA-20261113T124551346Z-2f0e1e/execution.json) là hai hồ sơ riêng, không ghi đè. Đóng lỗi cần commit sửa và các assertions retest liên kết đều Pass; việc đó không chuyển bộ manual đang chờ thành Pass.
 

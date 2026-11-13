@@ -1,0 +1,440 @@
+TAP version 13
+# Subtest: TC-AUTH-002 (API subset): missing both credentials returns 400
+ok 1 - TC-AUTH-002 (API subset): missing both credentials returns 400
+  ---
+  duration_ms: 79.2992
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-004: uppercase gmail account is normalized
+ok 2 - TC-AUTH-004: uppercase gmail account is normalized
+  ---
+  duration_ms: 115.7258
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-003: non-gmail email returns 400
+ok 3 - TC-AUTH-003: non-gmail email returns 400
+  ---
+  duration_ms: 3.4558
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-005: wrong password returns 401
+ok 4 - TC-AUTH-005: wrong password returns 401
+  ---
+  duration_ms: 69.9737
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-008: locked account returns 403
+ok 5 - TC-AUTH-008: locked account returns 403
+  ---
+  duration_ms: 70.0228
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-001 / TC-AUTH-012 (API): valid login returns token without password
+ok 6 - TC-AUTH-001 / TC-AUTH-012 (API): valid login returns token without password
+  ---
+  duration_ms: 73.4791
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-010 (missing-token subset): /me rejects missing token
+ok 7 - TC-AUTH-010 (missing-token subset): /me rejects missing token
+  ---
+  duration_ms: 3.9851
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-012 (session): /me returns current account without password
+ok 8 - TC-AUTH-012 (session): /me returns current account without password
+  ---
+  duration_ms: 77.3803
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-009: /me rejects invalid token
+ok 9 - TC-AUTH-009: /me rejects invalid token
+  ---
+  duration_ms: 2.744
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-010 (expired-token subset): signed expired JWT cannot access current account
+ok 10 - TC-AUTH-010 (expired-token subset): signed expired JWT cannot access current account
+  ---
+  duration_ms: 157.2758
+  type: 'test'
+  ...
+# Subtest: TC-AUTHZ-001: ADMIN account access returns 200
+ok 11 - TC-AUTHZ-001: ADMIN account access returns 200
+  ---
+  duration_ms: 142.3619
+  type: 'test'
+  ...
+# Subtest: TC-AUTHZ-002: DOCTOR account access returns 403
+ok 12 - TC-AUTHZ-002: DOCTOR account access returns 403
+  ---
+  duration_ms: 76.1345
+  type: 'test'
+  ...
+# Subtest: TC-AUTHZ-003: RECEPTION account access returns 403
+ok 13 - TC-AUTHZ-003: RECEPTION account access returns 403
+  ---
+  duration_ms: 85.5159
+  type: 'test'
+  ...
+# Subtest: TC-APPT-001: create appointment and read persisted fields
+ok 14 - TC-APPT-001: create appointment and read persisted fields
+  ---
+  duration_ms: 173.7025
+  type: 'test'
+  ...
+# Subtest: TC-APPT-002: past appointment returns 400 and creates no data
+ok 15 - TC-APPT-002: past appointment returns 400 and creates no data
+  ---
+  duration_ms: 97.0005
+  type: 'test'
+  ...
+# Subtest: TC-APPT-009: duplicate patient/doctor/day returns 400 without duplicate data
+ok 16 - TC-APPT-009: duplicate patient/doctor/day returns 400 without duplicate data
+  ---
+  duration_ms: 107.0454
+  type: 'test'
+  ...
+# Subtest: TC-APPT-011: check-in offset 29 minutes returns 200
+ok 17 - TC-APPT-011: check-in offset 29 minutes returns 200
+  ---
+  duration_ms: 94.4094
+  type: 'test'
+  ...
+# Subtest: TC-APPT-013: check-in offset -31 minutes returns 400
+ok 18 - TC-APPT-013: check-in offset -31 minutes returns 400
+  ---
+  duration_ms: 95.5796
+  type: 'test'
+  ...
+# Subtest: TC-APPT-014: check-in offset 0 minutes returns 200
+ok 19 - TC-APPT-014: check-in offset 0 minutes returns 200
+  ---
+  duration_ms: 95.1099
+  type: 'test'
+  ...
+# Subtest: TC-APPT-015: repeated check-in returns 400 without modifying state
+ok 20 - TC-APPT-015: repeated check-in returns 400 without modifying state
+  ---
+  duration_ms: 87.8231
+  type: 'test'
+  ...
+# Subtest: TC-APPT-018: complete treatment and verify exactly one unpaid invoice
+ok 21 - TC-APPT-018: complete treatment and verify exactly one unpaid invoice
+  ---
+  duration_ms: 101.2753
+  type: 'test'
+  ...
+# Subtest: TC-PAY-003: paid=100000, allowDebt=false returns 200 and persists balance
+ok 22 - TC-PAY-003: paid=100000, allowDebt=false returns 200 and persists balance
+  ---
+  duration_ms: 91.5897
+  type: 'test'
+  ...
+# Subtest: TC-PAY-004: paid=100000, allowDebt=false returns 200 and persists balance
+ok 23 - TC-PAY-004: paid=100000, allowDebt=false returns 200 and persists balance
+  ---
+  duration_ms: 96.5218
+  type: 'test'
+  ...
+# Subtest: TC-PAY-005: paid=100000, allowDebt=false returns 200 and persists balance
+ok 24 - TC-PAY-005: paid=100000, allowDebt=false returns 200 and persists balance
+  ---
+  duration_ms: 91.3303
+  type: 'test'
+  ...
+# Subtest: TC-PAY-006: paid=100000, allowDebt=false returns 200 and persists balance
+ok 25 - TC-PAY-006: paid=100000, allowDebt=false returns 200 and persists balance
+  ---
+  duration_ms: 95.9868
+  type: 'test'
+  ...
+# Subtest: TC-PAY-007: paid=1, allowDebt=false returns 400 and persists balance
+ok 26 - TC-PAY-007: paid=1, allowDebt=false returns 400 and persists balance
+  ---
+  duration_ms: 89.4903
+  type: 'test'
+  ...
+# Subtest: TC-PAY-008: paid=40000, allowDebt=true returns 200 and persists balance
+ok 27 - TC-PAY-008: paid=40000, allowDebt=true returns 200 and persists balance
+  ---
+  duration_ms: 91.2651
+  type: 'test'
+  ...
+# Subtest: TC-PAY-010: paid=-1, allowDebt=false returns 400 and persists balance
+ok 28 - TC-PAY-010: paid=-1, allowDebt=false returns 400 and persists balance
+  ---
+  duration_ms: 110.6845
+  type: 'test'
+  ...
+# Subtest: TC-AUTHZ-005: Doctor GET invoice returns 403 without exposing or modifying data
+ok 29 - TC-AUTHZ-005: Doctor GET invoice returns 403 without exposing or modifying data
+  ---
+  duration_ms: 154.0374
+  type: 'test'
+  ...
+# Subtest: TC-AUTHZ-005: Doctor PATCH invoice returns 403 without exposing or modifying data
+ok 30 - TC-AUTHZ-005: Doctor PATCH invoice returns 403 without exposing or modifying data
+  ---
+  duration_ms: 166.9966
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-010 (invoice subset): missing token cannot list invoices
+ok 31 - TC-AUTH-010 (invoice subset): missing token cannot list invoices
+  ---
+  duration_ms: 2.5473
+  type: 'test'
+  ...
+# Subtest: TC-AUTHZ-004: ADMIN invoice deletion returns 200
+ok 32 - TC-AUTHZ-004: ADMIN invoice deletion returns 200
+  ---
+  duration_ms: 169.229
+  type: 'test'
+  ...
+# Subtest: TC-AUTHZ-005: DOCTOR invoice deletion returns 403
+ok 33 - TC-AUTHZ-005: DOCTOR invoice deletion returns 403
+  ---
+  duration_ms: 163.4861
+  type: 'test'
+  ...
+# Subtest: TC-AUTHZ-007: RECEPTION invoice deletion returns 403
+ok 34 - TC-AUTHZ-007: RECEPTION invoice deletion returns 403
+  ---
+  duration_ms: 161.2776
+  type: 'test'
+  ...
+# Subtest: BUG-005 / TC-AUTHZ-008: Doctor listing and query filters cannot expose another doctor appointments
+not ok 35 - BUG-005 / TC-AUTHZ-008: Doctor listing and query filters cannot expose another doctor appointments
+  ---
+  duration_ms: 229.6635
+  type: 'test'
+  location: 'D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js:8:10'
+  failureType: 'testCodeFailure'
+  error: 'Only assigned doctor records'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:33:10
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: BUG-005 / TC-AUTHZ-008: Doctor may read own appointment but not foreign appointment by ID
+not ok 36 - BUG-005 / TC-AUTHZ-008: Doctor may read own appointment but not foreign appointment by ID
+  ---
+  duration_ms: 112.086
+  type: 'test'
+  location: 'D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js:8:10'
+  failureType: 'testCodeFailure'
+  error: 'Foreign appointment must be forbidden/hidden, actual 200'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:45:10
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: BUG-005 / TC-AUTHZ-008: Doctor cannot change treatment status on a foreign appointment
+not ok 37 - BUG-005 / TC-AUTHZ-008: Doctor cannot change treatment status on a foreign appointment
+  ---
+  duration_ms: 177.7985
+  type: 'test'
+  location: 'D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js:8:10'
+  failureType: 'testCodeFailure'
+  error: 'Foreign mutation must be rejected, actual 200; persisted Đang điều trị'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:54:10
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: BUG-006 / TC-APPT-025: missing doctorId returns client error and creates no appointment
+ok 38 - BUG-006 / TC-APPT-025: missing doctorId returns client error and creates no appointment
+  ---
+  duration_ms: 91.4104
+  type: 'test'
+  ...
+# Subtest: BUG-006 / TC-APPT-025: missing patientId returns client error and creates no appointment
+not ok 39 - BUG-006 / TC-APPT-025: missing patientId returns client error and creates no appointment
+  ---
+  duration_ms: 91.3739
+  type: 'test'
+  location: 'D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js:8:10'
+  failureType: 'testCodeFailure'
+  error: 'Invalid input must return 4xx, actual 500'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:67:12
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: BUG-006 / TC-APPT-025: missing startTime returns client error and creates no appointment
+not ok 40 - BUG-006 / TC-APPT-025: missing startTime returns client error and creates no appointment
+  ---
+  duration_ms: 96.1427
+  type: 'test'
+  location: 'D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js:8:10'
+  failureType: 'testCodeFailure'
+  error: 'Invalid input must return 4xx, actual 500'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:67:12
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: BUG-006 / TC-APPT-025: missing endTime returns client error and creates no appointment
+not ok 41 - BUG-006 / TC-APPT-025: missing endTime returns client error and creates no appointment
+  ---
+  duration_ms: 92.1089
+  type: 'test'
+  location: 'D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js:8:10'
+  failureType: 'testCodeFailure'
+  error: 'Invalid input must return 4xx, actual 500'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:67:12
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: BUG-006 / TC-APPT-025: malformed doctorId returns client error without creating data
+not ok 42 - BUG-006 / TC-APPT-025: malformed doctorId returns client error without creating data
+  ---
+  duration_ms: 90.0625
+  type: 'test'
+  location: 'D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js:8:10'
+  failureType: 'testCodeFailure'
+  error: 'Invalid input must return 4xx, actual 500'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:77:12
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: BUG-006 / TC-APPT-025: malformed startTime returns client error without creating data
+not ok 43 - BUG-006 / TC-APPT-025: malformed startTime returns client error without creating data
+  ---
+  duration_ms: 100.5471
+  type: 'test'
+  location: 'D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js:8:10'
+  failureType: 'testCodeFailure'
+  error: 'Invalid input must return 4xx, actual 500'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:77:12
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: BUG-006 / TC-APPT-026: GET malformed appointment ID detail returns client error
+not ok 44 - BUG-006 / TC-APPT-026: GET malformed appointment ID detail returns client error
+  ---
+  duration_ms: 89.792
+  type: 'test'
+  location: 'D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js:8:10'
+  failureType: 'testCodeFailure'
+  error: 'Malformed ID must return 4xx, actual 500'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:88:12
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: BUG-006 / TC-APPT-026: PATCH malformed appointment ID detail returns client error
+not ok 45 - BUG-006 / TC-APPT-026: PATCH malformed appointment ID detail returns client error
+  ---
+  duration_ms: 90.9573
+  type: 'test'
+  location: 'D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js:8:10'
+  failureType: 'testCodeFailure'
+  error: 'Malformed ID must return 4xx, actual 500'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:88:12
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: BUG-006 / TC-APPT-026: PATCH malformed appointment ID /checkin returns client error
+not ok 46 - BUG-006 / TC-APPT-026: PATCH malformed appointment ID /checkin returns client error
+  ---
+  duration_ms: 86.6652
+  type: 'test'
+  location: 'D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js:8:10'
+  failureType: 'testCodeFailure'
+  error: 'Malformed ID must return 4xx, actual 500'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    D:\KiemThu_PhongKham\api-testing\automated-tests\coverage-gaps.test.js:88:12
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async D:\KiemThu_PhongKham\.github\qa\helpers\qa-test.js:9:11
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..46
+# tests 46
+# suites 0
+# pass 35
+# fail 11
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6010.5259

@@ -1,0 +1,18 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/auth/me",
+    "httpStatus": 200,
+    "body": {
+      "status": "active"
+    }
+  }
+]

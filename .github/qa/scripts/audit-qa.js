@@ -124,4 +124,14 @@ for (const defect of defects) {
   assert.equal(defect.history.at(-1).state, defect.state, 'Defect state/history mismatch');
   defect.testCaseIds.forEach((id) => assert.ok(ids.has(id) || sourceIds.has(id), `Unknown defect case ${id}`));
 }
+const latest = JSON.parse(readFileSync(resolve(root, 'manual-testing/test-execution/latest-qa-summary.json'), 'utf8'));
+const currentRun = JSON.parse(readFileSync(resolve(root, latest.business.report), 'utf8'));
+assert.deepEqual(latest.business.counts, currentRun.counts, 'Latest summary differs from published business report');
+assert.equal(latest.business.runId, currentRun.runId);
+const currentUnit = JSON.parse(readFileSync(resolve(root, latest.unit.report), 'utf8'));
+assert.deepEqual(latest.unit.counts, currentUnit.counts, 'Latest unit counts differ');
+const currentPostman = JSON.parse(readFileSync(resolve(root, latest.postman.report), 'utf8'));
+assert.deepEqual(latest.postman.stats, currentPostman.stats, 'Latest Newman statistics differ');
+assert.deepEqual(latest.defects, defects.map(({ id, state, severity, priority }) => ({ id, state, severity, priority })), 'Latest defect summary is stale');
+assert.equal(latest.manual.sha256, createHash('sha256').update(readFileSync(resolve(root, latest.manual.workbook))).digest('hex'), 'Manual workbook changed: regenerate latest summary');
 console.log(`QA audit passed: ${source.length} original designs / 20 use cases; ${cases.length} overlapping focused designs / ${rtm.length} requirements; source hashes and bug links valid.`);

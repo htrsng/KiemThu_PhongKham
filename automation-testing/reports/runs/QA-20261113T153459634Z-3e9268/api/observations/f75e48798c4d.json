@@ -1,0 +1,42 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/invoices/6af72e27bd2b62c621922280",
+    "httpStatus": 200,
+    "body": {
+      "deletedCount": 1
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices/6af72e27bd2b62c621922280",
+    "httpStatus": 404,
+    "body": {
+      "error": "Document not found"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af72e27bd2b62c62192227f",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã lên lịch"
+    }
+  }
+]

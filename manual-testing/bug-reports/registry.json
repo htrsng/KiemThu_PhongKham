@@ -159,6 +159,61 @@
           "at": "2026-11-13T07:40:12.814Z"
         }
       ]
+    },
+    {
+      "id": "BUG-005",
+      "title": "Doctor can read and modify appointments assigned to another doctor",
+      "severity": "High",
+      "priority": "P0",
+      "owner": "maintainer",
+      "testCaseIds": [
+        "TC-AUTHZ-008"
+      ],
+      "state": "Open",
+      "history": [
+        {
+          "state": "New",
+          "actor": "qa-maintainer-assisted",
+          "note": "Three HTTP ownership assertions fail; foreign read/update returns 200 and status persists.",
+          "evidence": "automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/execution.json",
+          "at": "2026-11-13T15:38:21.197Z"
+        },
+        {
+          "state": "Open",
+          "actor": "qa-maintainer-assisted",
+          "note": "Reproduced with an owned Doctor account and separate foreign fixture; no fix claimed.",
+          "evidence": "automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/execution.json",
+          "at": "2026-11-13T15:38:21.253Z"
+        }
+      ]
+    },
+    {
+      "id": "BUG-006",
+      "title": "Invalid appointment input and malformed IDs return HTTP 500",
+      "severity": "Medium",
+      "priority": "P2",
+      "owner": "maintainer",
+      "testCaseIds": [
+        "TC-APPT-025",
+        "TC-APPT-026"
+      ],
+      "state": "Open",
+      "history": [
+        {
+          "state": "New",
+          "actor": "qa-maintainer-assisted",
+          "note": "Eight input assertions fail with 500; missing doctorId already returns 4xx and passes. No unintended data mutation observed.",
+          "evidence": "automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/execution.json",
+          "at": "2026-11-13T15:38:21.311Z"
+        },
+        {
+          "state": "Open",
+          "actor": "qa-maintainer-assisted",
+          "note": "Classify validated client input errors as 4xx; no fix or passing retest claimed.",
+          "evidence": "automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/execution.json",
+          "at": "2026-11-13T15:38:21.367Z"
+        }
+      ]
     }
   ]
 }

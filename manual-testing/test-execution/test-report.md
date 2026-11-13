@@ -1,4 +1,6 @@
-# Test Execution Report — 13/11/2026
+# Báo cáo lịch sử — các run trước khi mở rộng coverage ngày 13/11/2026
+
+> **Historical Report:** tổng hợp các build/run được liệt kê bên dưới, kết thúc ở hồi quy commit `931121c` và lần xác minh CI head `cd1eadd`. Không dùng báo cáo này làm trạng thái hiện tại sau khi bổ sung test. Xem [Tổng hợp QA mới nhất](latest-qa-summary.md) để biết kết quả, lỗi Open và tình trạng manual hiện hành. Các kết quả từng run trong báo cáo này được giữ nguyên.
 
 ## Baseline thiết kế và nguồn số liệu
 

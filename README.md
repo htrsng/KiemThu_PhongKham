@@ -31,15 +31,18 @@ Cypress có các luồng kết hợp UI/API. Bộ hiện tại chưa xác minh l
 
 ## 4. Kết quả thực thi kiểm thử
 
+**Nguồn trạng thái hiện hành:** [Tổng hợp QA mới nhất](manual-testing/test-execution/latest-qa-summary.md). Sau khi mở rộng coverage, bộ nghiệp vụ có **54 Pass / 11 Fail**; đã ghi nhận BUG-005/006 Open. Kết quả 53 Pass trước đây thuộc bộ kiểm thử nhỏ hơn, được giữ trong báo cáo lịch sử.
+
 | Hồ sơ | Kết quả | Nguồn |
 | --- | --- | --- |
 | Excel gốc, ghi chú kiểm thử cuối ngày 14/06/2026 | 337 case / 20 use case; ghi nhận 337 Pass | [Workbook kết quả lịch sử](manual-testing/test-execution/history/manual-execution.xlsx) |
 | Bảng tổng hợp trong PDF gốc | 314 case: 288 Pass / 26 Fail | [Báo cáo học phần, trang 36](docs/academic/LT2_N02_KiemThu.pdf#page=36) |
-| Hồi quy nghiệp vụ tự động | 34 API + 12 UI + 7 test hồi quy lỗi: **53 Pass, 0 Fail** | [Kết quả JSON](automation-testing/reports/runs/QA-20261113T124551346Z-2f0e1e/execution.json) |
-| Collection Postman chạy bằng Newman | 21 request; **46/46 assertions Pass** | [Kết quả Newman](api-testing/reports/newman/QA-20261113T124931337Z-ba424a/newman-results.json) |
+| Hồi quy nghiệp vụ mở rộng | 46 API + 12 UI + 7 test hồi quy BUG-002/003: **54 Pass / 11 Fail** | [Kết quả JSON](automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/execution.json) |
+| Biên controller và hạ tầng | **19 Pass**: 6 biên ±30 phút/lệch 1 ms và 13 reporting/lifecycle; không phải HTTP/manual | [Kết quả unit](automation-testing/reports/runs/QA-20261113T153426945Z-cb851f/unit-results.json) |
+| Collection Postman chạy bằng Newman | 21 request; **46/46 assertions Pass** | [Kết quả Newman](api-testing/reports/newman/QA-20261113T153601759Z-bf5a0c/newman-results.json) |
 | Manual regression ưu tiên trên build mới | 40 case: **Not Run** | [Workbook thực thi](manual-testing/test-execution/manual-regression.xlsx) |
 
-[CI đã xác minh sau khi đổi cấu trúc](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43438419642), commit `9b0a162`, xác nhận riêng 53 test nghiệp vụ và 46 assertions Newman Pass. BUG-002/003/004 có bằng chứng sửa lỗi và retest trong [sổ theo dõi lỗi](manual-testing/bug-reports/README.md).
+[CI lịch sử sau khi đổi cấu trúc](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43438419642), commit `9b0a162`, xác nhận 53 test của bộ cũ và 46 assertions Newman Pass; không phải kết quả của bộ mở rộng hiện tại. BUG-002/003/004 vẫn Closed; BUG-005/006 đang Open trong [sổ theo dõi lỗi](manual-testing/bug-reports/README.md). CI phải Fail khi các assertions nghiệp vụ mới còn Fail.
 
 Excel và PDF là hai hồ sơ lịch sử riêng; chênh lệch được giải thích trong [đối chiếu nguồn](docs/requirements/source-reconciliation.md). 70 thiết kế tập trung có chồng lấp với 337 case gốc; bộ manual 40 case là một tập con. Không cộng số thiết kế hoặc assertions tự động thành số case manual đã Pass.
 
@@ -75,6 +78,7 @@ Khi hai dịch vụ đã chạy:
 
 ```sh
 node .github/qa/scripts/audit-qa.js
+node .github/qa/scripts/run-unit.js
 node --env-file=.env.test .github/qa/scripts/run-qa.js
 node --env-file=.env.test .github/qa/scripts/run-postman.js
 ```

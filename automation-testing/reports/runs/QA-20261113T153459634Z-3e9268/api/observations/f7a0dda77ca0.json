@@ -1,0 +1,26 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Reception"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af72e26bd2b62c62192221e/checkin",
+    "httpStatus": 400,
+    "body": {
+      "error": "Only scheduled appointments can be checked in."
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af72e26bd2b62c62192221e",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã đến"
+    }
+  }
+]
