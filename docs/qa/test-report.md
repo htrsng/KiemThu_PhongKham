@@ -1,32 +1,33 @@
-# Test report
+# Test summary report — 13/11/2026
 
-## Phạm vi báo cáo
+## Mục tiêu và môi trường
 
-Báo cáo này chỉ tính kết quả có bằng chứng thực thi. Các test case trong
-`testing/manual/test-cases.tsv` và collection Postman là thiết kế/chuẩn bị,
-không tự động được tính là đã Pass.
+Đánh giá bộ QA cho portfolio intern tester, ưu tiên đăng nhập, phân quyền, lịch hẹn/check-in và hóa đơn. Thực thi trên Windows, Node.js 22.15.0, MongoDB 8.2.3 loopback riêng có tên kết thúc `_test`, Cypress 15.17.0 / Electron 138 headless. CI dùng Node.js 24 và MongoDB 7; chưa ghi nhận một lần CI mới cho các thay đổi hiện tại.
 
-## Kết quả đã xác minh
+Nguồn kiểm thử: working tree dựa trên commit `cfcbd8eddc916e3eec03c67250e4d290237051d0`. [Manifest API](evidence/2026-11-13/api-manifest.json) và [hash nguồn](evidence/2026-11-13/source-hashes.json) xác định các file đã chạy; không gán kết quả này cho nguyên trạng base commit.
 
-| Bộ kiểm thử | Kết quả | Môi trường |
-| --- | --- | --- |
-| API đăng nhập và phiên | 8/8 Pass | GitHub Actions, MongoDB QA riêng |
-| Cypress đăng nhập | 5/5 Pass | GitHub Actions, Electron headless |
-| Frontend production build | Pass | Node.js 24 |
-| Node.js automation syntax | Pass | Node.js 24 |
+## Kết quả hiện tại
 
-**Tổng kết bằng chứng hiện có:** 13 test runtime Pass trong lần CI được ghi nhận.
-Ngoài ra, repository đã chuẩn bị thêm 10 API case và 12 Cypress workflow/RBAC case,
-nhưng chưa được đưa vào con số Pass này nếu chưa có log chạy tương ứng.
+| Bộ | Total | Pass | Fail | Blocked / skipped | Not Run |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| API regression | 26 | 26 | 0 | 0 | 0 |
+| Cypress UI | 10 | 10 | 0 | 0 | 0 |
+| Known-defect requirement tests | 2 | 0 | 2 | 0 | 0 |
+| Manual designs | 70 | 0 | 0 | 0 | 70 |
 
-## Bằng chứng
+Tổng tự động: **36 Pass / 38 test thực thi; 2 Fail**. Hai Fail tương ứng BUG-002 và BUG-003; không bị bỏ qua, đổi expected hoặc tính vào Pass. Build frontend đạt; QA audit xác nhận 70 mã case duy nhất, 31 mã yêu cầu duy nhất và mọi case đều được ánh xạ. RTM là coverage thiết kế, không phải tỷ lệ thực thi hay code coverage.
 
-- [Verification log](./verification.md)
-- [Workflow CI đã xác minh](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/42179238371)
-- Artifact `clinic-qa-evidence` của workflow chứa log, ảnh và video khi có lỗi.
+## Nhận định
 
-## Giới hạn
+Smoke đăng nhập, RBAC tài khoản/xóa hóa đơn, tạo lịch hợp lệ/quá khứ/trùng, check-in, tạo hóa đơn lần đầu và quy tắc thanh toán được xác minh ở mức assertion cụ thể trong suite. Cypress có check-in qua UI và đọc lại dữ liệu bằng API; ca hóa đơn UI chỉ xác minh hiển thị, chưa chứng minh thao tác thu tiền trên giao diện.
 
-Không suy ra độ bao phủ toàn hệ thống từ các kết quả trên. Các module lịch hẹn,
-check-in, phân quyền và thanh toán đã có test automation trong repo nhưng cần một
-lần chạy CI thành công riêng để cập nhật số liệu thực thi tại đây.
+**Chưa đạt tiêu chí sẵn sàng phát hành.** Hai lỗi High còn mở: cho phép lùi trạng thái đã hoàn thành và tạo trùng hóa đơn khi hoàn thành lặp. Các case manual P0/P1 chưa được thực thi; hai case payroll trong RTM thuộc phạm vi hoãn lại. Không suy ra chất lượng toàn ứng dụng từ regression xanh.
+
+## Bằng chứng và hồi quy
+
+- [Danh mục evidence và lệnh chạy](evidence/2026-11-13/README.md).
+- [Bug register](bug-report.md), [regression report](regression-report.md).
+- [Workbook manual](test-execution.xlsx): toàn bộ dòng khởi tạo `Not Run`, dành cho người kiểm thử ghi thực thi thật.
+- [Kết quả lịch sử 06/11/2026](verification.md): 8 API + 5 UI trên CI, không cộng dồn để tăng số test hiện tại.
+
+Log chưa bao gồm một chiến dịch manual, test tải, nhiều browser hoặc xác minh cơ sở dữ liệu production. Số ca Pass hiện tại không phải số yêu cầu được xác minh đầy đủ.

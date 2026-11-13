@@ -1,85 +1,71 @@
-# Hướng dẫn kiểm thử SmileCare
+# Hướng dẫn QA SmileCare
 
-## Giai đoạn 0 — dọn nền
+Ứng dụng trong `client/` và `server/` là đối tượng kiểm thử. Phần QA gồm test design, fixture, automation, bug và báo cáo. Bắt đầu từ [test plan](test-plan.md), [test summary](test-report.md), [API checklist](api-contract.md) hoặc [hướng dẫn demo/CV](portfolio.md).
 
-Ứng dụng trong `client/` và `server/` là đối tượng được kiểm thử. Phần QA do mình thực hiện nằm ở `testing/` và `docs/qa/`. Các mã test case, mã bug, severity và priority dùng theo [quy ước QA](./conventions.md).
+## Bộ đang duy trì
 
-Không có credential thật trong working tree hiện tại. Tuy nhiên lịch sử Git từng chứa file `server/.env` có chuỗi kết nối MongoDB Atlas; chủ sở hữu phải thu hồi/thay credential Atlas đó nếu còn hoạt động. Các seed cũ đã được đổi để nhận mật khẩu qua biến môi trường, không còn mật khẩu mặc định trong mã.
+| Thành phần | Phạm vi |
+| --- | --- |
+| `testing/manual/test-cases.csv` / `.tsv` | 70 thiết kế, chưa có thực thi manual |
+| [RTM](rtm.tsv) | 31 yêu cầu; Designed là ánh xạ thiết kế, có scope Current/Deferred |
+| [Workbook](test-execution.xlsx) | Template manual 70 Not Run, không lấy automation điền Pass |
+| `testing/api/auth.test.js` | 8 test đăng nhập/phiên |
+| `testing/api/authorization-invoice.test.js` | 18 test độc lập: RBAC, appointment/check-in, invoice/payment |
+| `testing/api/known-defects.test.js` | 2 ca tái hiện lỗi, Fail khi BUG-002/003 còn mở |
+| `testing/e2e/cypress/e2e/` | 5 login và 5 UI role/business test |
+| `testing/postman/` | Khám phá/tái hiện API thủ công, chưa có run evidence |
+| [Bug register](bug-report.md), [regression report](regression-report.md) | Trạng thái lỗi, bằng chứng và điều kiện retest |
 
-Mẫu biến môi trường QA ở [`testing/.env.example`](../../testing/.env.example). Dùng [`testing/scripts/prepare-env.js`](../../testing/scripts/prepare-env.js) để sinh giá trị tạm thời; không commit `testing/.env.test`.
+## Chuẩn bị và chạy cục bộ
 
-## Phạm vi đang duy trì
-
-- `testing/api/auth.test.js`: 8 kiểm tra API đăng nhập và phiên.
-- `testing/api/authorization-invoice.test.js`: 10 kiểm tra API phân quyền, lịch hẹn và hóa đơn.
-- `testing/api/`: kiểm thử tự động bằng Node.js, chạy được trong CI và phù hợp để hồi quy.
-- `testing/e2e/cypress/e2e/login.cy.js`: 5 kiểm tra giao diện với backend thật.
-- `testing/e2e/cypress/e2e/core-workflows.cy.js`: 12 kiểm tra workflow và phân quyền.
-- `testing/manual/test-cases.tsv`: 70 test case thiết kế cho bốn module ưu tiên, mở được bằng Excel/Google Sheets.
-- `testing/postman/`: collection và environment để khám phá thủ công, tái hiện và điều tra bug API.
-- `docs/qa/rtm.tsv`: ma trận truy xuất 27 yêu cầu trong phạm vi tới test case.
-- `docs/qa/bug-report.md`: bug report và trạng thái xử lý.
-- `docs/qa/test-report.md`: kết quả runtime đã có bằng chứng.
-- `docs/qa/bugs/`: mỗi bug một file với mô tả, severity, priority và regression test.
-- `docs/qa/evidence/`: quy ước lưu log, ảnh, video và artifact đã chọn lọc.
-- `docs/qa/archive/`: tài liệu và bộ sinh học tập gốc.
-
-## Chuẩn bị môi trường thử nghiệm cục bộ
-
-Chỉ sử dụng MongoDB cục bộ riêng cho QA. Cài thư viện theo README chính. Tại thư mục gốc chạy:
+Cài dependencies theo README gốc. Dùng MongoDB local riêng; không dùng DB triển khai. Tại thư mục gốc:
 
 ```sh
 node testing/scripts/prepare-env.js
 node --env-file=testing/.env.test testing/scripts/seed-test-accounts.js
 ```
 
-File `testing/.env.test` chứa thông tin ngẫu nhiên của lần thử và được Git bỏ qua. Bộ seed chỉ chấp nhận URI MongoDB loopback và tên DB kết thúc `_test`; tạo/cập nhật tài khoản Admin, Admin bị khóa, Doctor và Reception cùng dữ liệu nền QA, không xóa toàn DB. Chạy lại prepare-env sinh một bộ tài khoản mới.
+`prepare-env.js` sinh credential ngẫu nhiên, không lấy bí mật triển khai. File `.env.test` bị Git bỏ qua. Seed chỉ chấp nhận MongoDB loopback và DB kết thúc `_test`; tạo Admin, Admin khóa, Doctor, Reception cùng dữ liệu nền, không xóa DB. Chạy lại prepare-env sẽ thay môi trường/tài khoản của lần chạy; lưu công việc QA đang làm trước khi tạo môi trường mới.
 
-Mở backend bằng môi trường QA, không dùng backend đang nối dữ liệu thật:
+Khởi động trong hai terminal tại thư mục gốc:
 
 ```sh
 node --env-file=testing/.env.test server/server.js
 ```
 
-Trong cửa sổ khác chạy giao diện:
-
 ```sh
-npm run dev --prefix client
+npm --prefix client run dev
 ```
 
-Sau khi ứng dụng sẵn sàng, chạy từ thư mục gốc:
+Chạy kiểm tra và xuất báo cáo:
 
 ```sh
+node testing/scripts/audit-qa.js
 node testing/scripts/wait-for-app.js
-node --env-file=testing/.env.test --test --test-concurrency=1 testing/api/auth.test.js
-node --env-file=testing/.env.test --test --test-concurrency=1 testing/api/authorization-invoice.test.js
-Push-Location testing/e2e
-node --env-file=../.env.test node_modules/cypress/bin/cypress run --spec cypress/e2e/login.cy.js
-Pop-Location
+node --env-file=testing/.env.test testing/scripts/run-api.js
+node --env-file=testing/.env.test testing/scripts/run-api.js --known-defects
 ```
 
-Hoặc nạp biến môi trường vào PowerShell rồi chạy toàn bộ Cypress bằng npm:
+Suite mặc định trả nonzero nếu regression Fail. Suite `--known-defects` hiện trả 1 do hai lỗi đã xác minh; không ghi là Pass. TAP/JUnit và manifest nằm ở `testing/artifacts/api/` và `testing/artifacts/known-defects/`.
 
-```powershell
-Get-Content testing/.env.test | ForEach-Object {
-  if ($_ -match '^([^#=]+)=(.*)$') {
-    Set-Item "Env:$($matches[1])" $matches[2]
-  }
-}
-npm run cy:run --prefix testing/e2e
+Chạy Cypress từ `testing/e2e`:
+
+```sh
+node --env-file=../.env.test node_modules/cypress/bin/cypress run
 ```
 
-Khi chạy một spec riêng, `--spec` phải được tính tương đối từ project
-`testing/e2e`. Không truyền `--project testing/e2e --spec cypress/...` từ thư mục
-gốc, vì Cypress có thể tìm spec trong `D:\KiemThu_PhongKham\cypress\` thay vì
-`testing/e2e/cypress/`.
+Xem [Cypress README](../../testing/e2e/README.md) nếu dùng npm, chỉ chạy smoke hoặc gặp biến `ELECTRON_RUN_AS_NODE` trong terminal IDE.
 
-Không đưa file môi trường QA vào báo cáo công khai. Tài khoản chỉ tồn tại trong DB thử nghiệm, không dùng để triển khai.
+## Dữ liệu và isolation
 
-## Chạy trên GitHub
+Helper `testing/helpers/qa-data.js` chỉ nhận API/MongoDB loopback và DB `_test`. Mỗi test tạo bác sĩ/bệnh nhân/dịch vụ/ca riêng bằng ObjectId và mã ngẫu nhiên. Appointment/invoice tiền điều kiện có thể được insert trực tiếp để test không phụ thuộc luồng trước; thao tác đang kiểm tra vẫn đi qua HTTP hoặc UI. Test mutation dùng GET lại để xác minh persisted state hoặc không có side effect khi bị từ chối.
 
-Workflow `Clinic QA Checks` tự chuẩn bị MongoDB, môi trường và tài khoản tạm, sau đó chạy API và Cypress. Báo cáo, ảnh lỗi và log nằm trong artifact `clinic-qa-evidence`.
+Cleanup chỉ xóa theo ID của fixture do chính process sở hữu; không drop database. Hook sau test và cuối suite dọn fixture trong lần chạy bình thường. Nếu process bị kill cứng, dữ liệu tạm có thể còn trong DB QA. Tài khoản nền seed và audit log đăng nhập được giữ lại; không tuyên bố toàn DB sạch sau chạy.
 
-## Bằng chứng
+## CI và bằng chứng
 
-Ghi rõ commit, môi trường, lệnh và kết quả quan sát. Các bảng ở `archive/` giữ nguyên nội dung lịch sử, kể cả đường dẫn và tên file cũ. Không trộn trạng thái ngẫu nhiên của bộ sinh với kết quả thật từ CI.
+Workflow [Clinic QA Checks](../../.github/workflows/cypress.yml) chạy audit/build/API/Cypress. Lỗi regression làm job Fail. Known-defect suite chạy riêng với `continue-on-error: true`, kết quả thật vẫn có trong summary/artifact; đây là quyết định hiển thị lỗi đã biết, không phải release gate. Artifact `clinic-qa-evidence` được upload với `if: always()`.
+
+[Evidence 13/11/2026](evidence/2026-11-13/README.md) là kết quả local. [Verification cũ](verification.md) là CI lịch sử. Chưa có CI run mới được xác nhận cho working tree hiện tại. Không suy ra toàn bộ hệ thống đạt từ badge xanh.
+
+Chỉ chọn log/ảnh an toàn vào repo; không commit credential hoặc token. Lịch sử Git từng có cấu hình Atlas; nếu credential cũ còn hoạt động, chủ tài khoản cần thay tại nhà cung cấp. Tài liệu và dữ liệu ngẫu nhiên trong `archive/` không phải bằng chứng thực thi.

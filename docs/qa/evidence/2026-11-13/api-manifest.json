@@ -1,0 +1,29 @@
+{
+  "started": "2026-11-13T06:33:55.118Z",
+  "finished": "2026-11-13T06:33:58.303Z",
+  "baseCommit": "cfcbd8eddc916e3eec03c67250e4d290237051d0",
+  "sourceHashes": {
+    "testing/scripts/run-api.js": "b750ee80def9d40caf8adc619b9ecd2b0734b15b88b61cf07c7dc3f5a12a2913",
+    "testing/helpers/qa-data.js": "3cc0f201548bc897aadb8d9d43d56ea1f0f025612f426c7f9e58dd3ad0b7fc69",
+    "server/server.js": "6795a7e49dd794bf66e4c7a4f31213dbfb8643711a5f82a0ae77cc2d5a105524",
+    "server/src/controllers/authController.js": "b1befcd11f06ce473ea4aa2e555ee2700742dc4fba12b454f52a8d15d45d8930",
+    "server/src/controllers/appointmentController.js": "d17a53c900f60b66d9c271f99fb0d907f2a5b0bc0044f0215387cd447ffe03c1",
+    "server/src/routes/appointmentRoutes.js": "cbc7604991b6ba23d55af0ac1f9036dec7c131a4911a25d263e73d8dd1853816",
+    "server/src/routes/invoiceRoutes.js": "387376bc418e9e435534aa89dbddc0a446f6151947aa1e536c57c7d8951c6bc7",
+    "testing/api/auth.test.js": "6ce3ad61abea6b21c7b476ddbcf6b64f3344b5f59083fae3add255e4180ad27c",
+    "testing/api/authorization-invoice.test.js": "bae08ed0cc688af35131df7c3f4db760a0b2acd9aa14797eb28855879a7a1f21"
+  },
+  "node": "v22.15.0",
+  "platform": "win32",
+  "suite": "api",
+  "counts": {
+    "tests": 26,
+    "pass": 26,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "exitCode": 0,
+  "note": "Working tree run; source hashes identify tested files. No credentials included."
+}

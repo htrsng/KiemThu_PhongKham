@@ -1,0 +1,107 @@
+{
+  "note": "Summary extracted from real Mochawesome reports; raw HTML/video remain in local artifacts.",
+  "reports": [
+    {
+      "stats": {
+        "suites": 1,
+        "tests": 5,
+        "passes": 5,
+        "pending": 0,
+        "failures": 0,
+        "start": "2026-11-13T06:37:11.176Z",
+        "end": "2026-11-13T06:37:27.295Z",
+        "duration": 16119,
+        "testsRegistered": 5,
+        "passPercent": 100,
+        "pendingPercent": 0,
+        "other": 0,
+        "hasOther": false,
+        "skipped": 0,
+        "hasSkipped": false
+      },
+      "tests": [
+        {
+          "title": "TC-AUTHZ-001: Admin opens accounts and API returns account records",
+          "state": "passed",
+          "duration": 3952,
+          "error": null
+        },
+        {
+          "title": "TC-AUTHZ-002: DOCTOR has no accounts menu and API returns 403",
+          "state": "passed",
+          "duration": 2420,
+          "error": null
+        },
+        {
+          "title": "TC-AUTHZ-003: RECEPTION has no accounts menu and API returns 403",
+          "state": "passed",
+          "duration": 2384,
+          "error": null
+        },
+        {
+          "title": "TC-APPT-014: Reception checks in a patient through UI and state persists",
+          "state": "passed",
+          "duration": 3409,
+          "error": null
+        },
+        {
+          "title": "TC-PAY-002: Reception opens a real invoice and sees its patient and amount",
+          "state": "passed",
+          "duration": 3555,
+          "error": null
+        }
+      ]
+    },
+    {
+      "stats": {
+        "suites": 1,
+        "tests": 5,
+        "passes": 5,
+        "pending": 0,
+        "failures": 0,
+        "start": "2026-11-13T06:37:29.815Z",
+        "end": "2026-11-13T06:37:37.580Z",
+        "duration": 7765,
+        "testsRegistered": 5,
+        "passPercent": 100,
+        "pendingPercent": 0,
+        "other": 0,
+        "hasOther": false,
+        "skipped": 0,
+        "hasSkipped": false
+      },
+      "tests": [
+        {
+          "title": "Chuyển người chưa đăng nhập về trang đăng nhập",
+          "state": "passed",
+          "duration": 967,
+          "error": null
+        },
+        {
+          "title": "Không gửi biểu mẫu khi thiếu email và mật khẩu",
+          "state": "passed",
+          "duration": 510,
+          "error": null
+        },
+        {
+          "title": "Hiển thị lỗi định dạng email không thuộc gmail.com",
+          "state": "passed",
+          "duration": 1371,
+          "error": null
+        },
+        {
+          "title": "Từ chối mật khẩu sai và không lưu phiên đăng nhập",
+          "state": "passed",
+          "duration": 2296,
+          "error": null
+        },
+        {
+          "title": "Đăng nhập tài khoản thử nghiệm và xác minh phiên bằng API /me",
+          "state": "passed",
+          "duration": 2426,
+          "error": null
+        }
+      ]
+    }
+  ]
+}

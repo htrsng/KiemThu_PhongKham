@@ -1,0 +1,66 @@
+TAP version 13
+# Subtest: BUG-002 / TC-APPT-021: completed appointment cannot move backward
+not ok 1 - BUG-002 / TC-APPT-021: completed appointment cannot move backward
+  ---
+  duration_ms: 183.7143
+  type: 'test'
+  location: 'D:\\KiemThu_PhongKham\\testing\\api\\known-defects.test.js:22:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   persisted: 'Đang điều trị',
+    +   status: 200
+    -   persisted: 'Đã hoàn thành',
+    -   status: 400
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 400
+    persisted: 'Đã hoàn thành'
+  actual:
+    status: 200
+    persisted: 'Đang điều trị'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (D:\KiemThu_PhongKham\testing\api\known-defects.test.js:26:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: BUG-003 / TC-APPT-022: repeated completion cannot create duplicate invoices
+not ok 2 - BUG-003 / TC-APPT-022: repeated completion cannot create duplicate invoices
+  ---
+  duration_ms: 120.1196
+  type: 'test'
+  location: 'D:\\KiemThu_PhongKham\\testing\\api\\known-defects.test.js:28:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Exactly one invoice per completed appointment
+    
+    2 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (D:\KiemThu_PhongKham\testing\api\known-defects.test.js:33:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 880.6473

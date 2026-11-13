@@ -1,0 +1,11 @@
+{
+  "testing/e2e/cypress.config.js": "e3612748adfb2d3af1d8117365580c1ecefa7172658de36ae8b7d75d123bbd13",
+  "testing/e2e/cypress/e2e/login.cy.js": "ebe9e53440ae1222a148f9378a121c1dd0d9aa7a55054f2e6d2b773c95a4cc91",
+  "testing/e2e/cypress/e2e/core-workflows.cy.js": "dfb346b9087bfc78e33ebcb7db5eadbff264f07410304f83255277498a0f6fad",
+  "testing/e2e/cypress/support/commands.js": "d38c7053652cafe3ab62a4d9ddaa00ea6e9e2b8eb2410e96e8a40230ca772c05",
+  "testing/helpers/qa-data.js": "3cc0f201548bc897aadb8d9d43d56ea1f0f025612f426c7f9e58dd3ad0b7fc69",
+  "server/server.js": "6795a7e49dd794bf66e4c7a4f31213dbfb8643711a5f82a0ae77cc2d5a105524",
+  "server/src/controllers/appointmentController.js": "d17a53c900f60b66d9c271f99fb0d907f2a5b0bc0044f0215387cd447ffe03c1",
+  "server/src/routes/appointmentRoutes.js": "cbc7604991b6ba23d55af0ac1f9036dec7c131a4911a25d263e73d8dd1853816",
+  "server/src/routes/invoiceRoutes.js": "387376bc418e9e435534aa89dbddc0a446f6151947aa1e536c57c7d8951c6bc7"
+}
