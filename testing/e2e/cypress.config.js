@@ -33,6 +33,10 @@ module.exports = defineConfig({
   env: {
     ADMIN_USER: process.env.ADMIN_USER || '',
     ADMIN_PASS: process.env.ADMIN_PASS || '',
+    DOCTOR_USER: process.env.DOCTOR_USER || '',
+    DOCTOR_PASS: process.env.DOCTOR_PASS || '',
+    RECEPTION_USER: process.env.RECEPTION_USER || '',
+    RECEPTION_PASS: process.env.RECEPTION_PASS || '',
     LE_TAN_USER: process.env.LE_TAN_USER || '',
     LE_TAN_PASS: process.env.LE_TAN_PASS || '',
     BAC_SI_USER: process.env.BAC_SI_USER || '',

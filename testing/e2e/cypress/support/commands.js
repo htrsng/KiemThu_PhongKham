@@ -2,6 +2,8 @@
 Cypress.Commands.add('login', (role = 'admin') => {
   const users = {
     admin:    { user: Cypress.env('ADMIN_USER'),    pass: Cypress.env('ADMIN_PASS') },
+    doctor:   { user: Cypress.env('DOCTOR_USER'),   pass: Cypress.env('DOCTOR_PASS') },
+    reception:{ user: Cypress.env('RECEPTION_USER'),pass: Cypress.env('RECEPTION_PASS') },
     le_tan:   { user: Cypress.env('LE_TAN_USER'),   pass: Cypress.env('LE_TAN_PASS') },
     bac_si:   { user: Cypress.env('BAC_SI_USER'),   pass: Cypress.env('BAC_SI_PASS') },
     thu_ngan: { user: Cypress.env('THU_NGAN_USER'), pass: Cypress.env('THU_NGAN_PASS') },

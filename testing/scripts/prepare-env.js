@@ -9,7 +9,11 @@ const values = {
   JWT_SECRET: randomBytes(32).toString('hex'),
   ADMIN_USER: `qa-${id}@gmail.com`,
   LOCKED_USER: `qa-locked-${id}@gmail.com`,
+  DOCTOR_USER: `qa-doctor-${id}@gmail.com`,
+  RECEPTION_USER: `qa-reception-${id}@gmail.com`,
   ADMIN_PASS: `Qa!1${randomBytes(16).toString('hex')}`,
+  DOCTOR_PASS: `Qd!1${randomBytes(16).toString('hex')}`,
+  RECEPTION_PASS: `Qr!1${randomBytes(16).toString('hex')}`,
   PORT: '5000', BASE_URL: 'http://localhost:5173', API_URL: 'http://localhost:5000/api',
 };
 const text = Object.entries(values).map(([key, value]) => `${key}=${value}`).join('\n') + '\n';
