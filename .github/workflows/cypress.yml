@@ -31,8 +31,8 @@ jobs:
         run: node .github/qa/scripts/audit-qa.js
       - name: Cai thu vien backend
         run: npm ci --prefix server
-      - name: Kiem tra reporting va defect lifecycle
-        run: node --test .github/qa/unit/qa-reporting.test.js
+      - name: Kiem tra reporting, lifecycle va bien check-in
+        run: node .github/qa/scripts/run-unit.js
       - name: Cai thu vien frontend
         run: npm ci --prefix client
       - name: Bien dich giao dien

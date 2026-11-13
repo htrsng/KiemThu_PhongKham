@@ -7,7 +7,8 @@ const suite = process.argv.includes('--known-defects') ? 'known-defects' : 'api'
 const directory = resolve(runDirectory, suite);
 mkdirSync(directory); // Refuse to overwrite this suite inside the same run.
 const files = suite === 'known-defects' ? ['api-testing/automated-tests/known-defects.test.js']
-  : ['api-testing/automated-tests/auth.test.js', 'api-testing/automated-tests/authorization-invoice.test.js'];
+  : ['api-testing/automated-tests/auth.test.js', 'api-testing/automated-tests/authorization-invoice.test.js',
+    'api-testing/automated-tests/coverage-gaps.test.js'];
 const result = spawnSync(process.execPath, ['--test', '--test-concurrency=1',
   '--test-reporter=tap', `--test-reporter-destination=${directory}/results.tap`,
   '--test-reporter=junit', `--test-reporter-destination=${directory}/junit.xml`,
