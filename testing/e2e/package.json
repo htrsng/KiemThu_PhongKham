@@ -6,8 +6,7 @@
   "scripts": {
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "cy:smoke": "cypress run --spec cypress/e2e/login.cy.js",
-    "cy:legacy": "cypress run --config \"specPattern=cypress/legacy/**/*.cy.js\""
+    "cy:smoke": "cypress run --spec cypress/e2e/login.cy.js"
   },
   "keywords": [],
   "author": "",
