@@ -1,0 +1,122 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70686bd43b1abfc04bad8",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70686bd43b1abfc04bad8",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "PUT",
+    "path": "/api/appointments/6af70686bd43b1abfc04bad8",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "PUT",
+    "path": "/api/appointments/6af70686bd43b1abfc04bad8",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70686bd43b1abfc04bad8/finish",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70686bd43b1abfc04bad8",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "PUT",
+    "path": "/api/appointments/6af70686bd43b1abfc04bad8",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70686bd43b1abfc04bad8/finish",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70686bd43b1abfc04bad8",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "PUT",
+    "path": "/api/appointments/6af70686bd43b1abfc04bad8",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70686bd43b1abfc04bad8/finish",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70686bd43b1abfc04bad8/finish",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70686bd43b1abfc04bad8",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 1
+    }
+  }
+]

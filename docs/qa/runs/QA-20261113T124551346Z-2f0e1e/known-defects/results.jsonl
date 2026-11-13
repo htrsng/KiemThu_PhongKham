@@ -1,0 +1,7 @@
+{"name":"BUG-002 / TC-APPT-021: completed appointment cannot move backward","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":200.4674,"error":null}
+{"name":"BUG-003 / TC-APPT-022: repeated completion cannot create duplicate invoices","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":136.5309,"error":null}
+{"name":"BUG-002 / TC-APPT-021: all update routes reject terminal, backward, skipped and unknown states","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":1602.4556,"error":null}
+{"name":"BUG-002 / TC-APPT-017: metadata PATCH does not implicitly complete an appointment","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":102.0438,"error":null}
+{"name":"BUG-003 / TC-APPT-022: parallel completion across PUT PATCH and finish creates exactly one invoice","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":166.6382,"error":null}
+{"name":"BUG-003 / TC-APPT-022: completing again preserves a paid invoice and rejects duplicate invoice POST","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":131.9196,"error":null}
+{"name":"BUG-003 / TC-APPT-022: retry restores a missing invoice on a completed appointment","file":"D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js","status":"Pass","durationMs":108.9513,"error":null}

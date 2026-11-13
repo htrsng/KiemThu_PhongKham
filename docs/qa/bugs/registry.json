@@ -26,7 +26,7 @@
       "title": "Completed appointment can move backward",
       "severity": "High",
       "priority": "P1",
-      "state": "Open",
+      "state": "Closed",
       "owner": "maintainer",
       "testCaseIds": [
         "TC-APPT-021"
@@ -38,6 +38,30 @@
           "actor": "historical report",
           "evidence": "docs/qa/evidence/2026-11-13/known-defects-results.tap",
           "note": "Imported previously verified open defect."
+        },
+        {
+          "state": "Fixed",
+          "actor": "qa-maintainer-assisted",
+          "note": "Unified transitions, compare-and-set updates, unique invoice index and idempotent upsert implemented.",
+          "evidence": "docs/qa/runs/QA-20261113T124551346Z-2f0e1e/execution.json",
+          "fixCommit": "931121c3c28f9a04991cb090669bd50baa50bd3f",
+          "at": "2026-11-13T12:48:41.331Z"
+        },
+        {
+          "state": "Retest",
+          "actor": "automation:local",
+          "note": "Original assertions plus expanded state, concurrency and invoice persistence tests executed on fix commit.",
+          "evidence": "docs/qa/runs/QA-20261113T124551346Z-2f0e1e/execution.json",
+          "runId": "QA-20261113T124551346Z-2f0e1e",
+          "at": "2026-11-13T12:48:41.430Z"
+        },
+        {
+          "state": "Closed",
+          "actor": "qa-maintainer-assisted",
+          "note": "All linked assertions Pass; full regression 34 API, 12 UI and 7 defect regression tests Pass. Manual suite remains pending.",
+          "evidence": "docs/qa/runs/QA-20261113T124551346Z-2f0e1e/execution.json",
+          "runId": "QA-20261113T124551346Z-2f0e1e",
+          "at": "2026-11-13T12:48:41.535Z"
         }
       ]
     },
@@ -46,7 +70,7 @@
       "title": "Repeated completion creates duplicate invoices",
       "severity": "High",
       "priority": "P0",
-      "state": "Open",
+      "state": "Closed",
       "owner": "maintainer",
       "testCaseIds": [
         "TC-APPT-022"
@@ -58,6 +82,30 @@
           "actor": "historical report",
           "evidence": "docs/qa/evidence/2026-11-13/known-defects-results.tap",
           "note": "Imported previously verified open defect."
+        },
+        {
+          "state": "Fixed",
+          "actor": "qa-maintainer-assisted",
+          "note": "Unified transitions, compare-and-set updates, unique invoice index and idempotent upsert implemented.",
+          "evidence": "docs/qa/runs/QA-20261113T124551346Z-2f0e1e/execution.json",
+          "fixCommit": "931121c3c28f9a04991cb090669bd50baa50bd3f",
+          "at": "2026-11-13T12:48:41.633Z"
+        },
+        {
+          "state": "Retest",
+          "actor": "automation:local",
+          "note": "Original assertions plus expanded state, concurrency and invoice persistence tests executed on fix commit.",
+          "evidence": "docs/qa/runs/QA-20261113T124551346Z-2f0e1e/execution.json",
+          "runId": "QA-20261113T124551346Z-2f0e1e",
+          "at": "2026-11-13T12:48:41.735Z"
+        },
+        {
+          "state": "Closed",
+          "actor": "qa-maintainer-assisted",
+          "note": "All linked assertions Pass; full regression 34 API, 12 UI and 7 defect regression tests Pass. Manual suite remains pending.",
+          "evidence": "docs/qa/runs/QA-20261113T124551346Z-2f0e1e/execution.json",
+          "runId": "QA-20261113T124551346Z-2f0e1e",
+          "at": "2026-11-13T12:48:41.835Z"
         }
       ]
     },

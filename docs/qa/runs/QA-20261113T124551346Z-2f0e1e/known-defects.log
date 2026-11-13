@@ -1,0 +1,4 @@
+QA-20261113T124551346Z-2f0e1e known-defects: {"tests":7,"pass":7,"fail":0,"cancelled":0,"skipped":0,"todo":0}; evidence D:\KiemThu_PhongKham\testing\artifacts\runs\QA-20261113T124551346Z-2f0e1e\known-defects
+
+(node:21804) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 end listeners added to [TestsStream]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)

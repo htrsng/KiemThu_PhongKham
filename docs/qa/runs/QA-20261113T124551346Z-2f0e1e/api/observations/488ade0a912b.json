@@ -1,0 +1,28 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Reception"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70682eaec816516500b42/checkin",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã đến",
+      "checkInTime": "2026-11-13T12:45:54.091Z"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70682eaec816516500b42",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã đến",
+      "checkInTime": "2026-11-13T12:45:54.091Z"
+    }
+  }
+]

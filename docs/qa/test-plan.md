@@ -162,7 +162,7 @@ Test data phải được sinh hoặc tạo trong DB QA. Credential lấy từ b
 
 ## 7. Tiêu chí vào/ra
 
-Đánh giá ngày 13/11/2026: môi trường/build và automation sẵn sàng; **chưa đạt tiêu chí ra**, vì manual chưa thực thi và BUG-002/003 còn Open. Đây là kết quả đánh giá chất lượng, không phải xác nhận sẵn sàng phát hành.
+Đánh giá cập nhật ngày 13/11/2026: môi trường/build đạt; 34 API + 12 UI + 7 defect regression Pass; BUG-002/003 Closed sau retest. Manual regression ưu tiên 40 case đã chuẩn bị nhưng chưa thực thi trên build mới; chưa đủ bằng chứng xác nhận sẵn sàng phát hành toàn ứng dụng. Kết quả lịch sử vẫn được giữ riêng.
 
 ### Tiêu chí vào
 

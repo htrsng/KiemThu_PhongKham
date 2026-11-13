@@ -1,0 +1,214 @@
+TAP version 13
+# Subtest: TC-AUTH-002 (API subset): missing both credentials returns 400
+ok 1 - TC-AUTH-002 (API subset): missing both credentials returns 400
+  ---
+  duration_ms: 68.448
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-004: uppercase gmail account is normalized
+ok 2 - TC-AUTH-004: uppercase gmail account is normalized
+  ---
+  duration_ms: 91.9446
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-003: non-gmail email returns 400
+ok 3 - TC-AUTH-003: non-gmail email returns 400
+  ---
+  duration_ms: 5.0053
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-005: wrong password returns 401
+ok 4 - TC-AUTH-005: wrong password returns 401
+  ---
+  duration_ms: 93.6454
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-008: locked account returns 403
+ok 5 - TC-AUTH-008: locked account returns 403
+  ---
+  duration_ms: 88.3586
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-001 / TC-AUTH-012 (API): valid login returns token without password
+ok 6 - TC-AUTH-001 / TC-AUTH-012 (API): valid login returns token without password
+  ---
+  duration_ms: 95.6431
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-010 (missing-token subset): /me rejects missing token
+ok 7 - TC-AUTH-010 (missing-token subset): /me rejects missing token
+  ---
+  duration_ms: 4.6912
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-012 (session): /me returns current account without password
+ok 8 - TC-AUTH-012 (session): /me returns current account without password
+  ---
+  duration_ms: 104.2448
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-009: /me rejects invalid token
+ok 9 - TC-AUTH-009: /me rejects invalid token
+  ---
+  duration_ms: 3.7527
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-010 (expired-token subset): signed expired JWT cannot access current account
+ok 10 - TC-AUTH-010 (expired-token subset): signed expired JWT cannot access current account
+  ---
+  duration_ms: 191.392
+  type: 'test'
+  ...
+# Subtest: TC-AUTHZ-001: ADMIN account access returns 200
+ok 11 - TC-AUTHZ-001: ADMIN account access returns 200
+  ---
+  duration_ms: 132.5592
+  type: 'test'
+  ...
+# Subtest: TC-AUTHZ-002: DOCTOR account access returns 403
+ok 12 - TC-AUTHZ-002: DOCTOR account access returns 403
+  ---
+  duration_ms: 85.8692
+  type: 'test'
+  ...
+# Subtest: TC-AUTHZ-003: RECEPTION account access returns 403
+ok 13 - TC-AUTHZ-003: RECEPTION account access returns 403
+  ---
+  duration_ms: 91.1975
+  type: 'test'
+  ...
+# Subtest: TC-APPT-001: create appointment and read persisted fields
+ok 14 - TC-APPT-001: create appointment and read persisted fields
+  ---
+  duration_ms: 195.6665
+  type: 'test'
+  ...
+# Subtest: TC-APPT-002: past appointment returns 400 and creates no data
+ok 15 - TC-APPT-002: past appointment returns 400 and creates no data
+  ---
+  duration_ms: 136.9924
+  type: 'test'
+  ...
+# Subtest: TC-APPT-009: duplicate patient/doctor/day returns 400 without duplicate data
+ok 16 - TC-APPT-009: duplicate patient/doctor/day returns 400 without duplicate data
+  ---
+  duration_ms: 123.5935
+  type: 'test'
+  ...
+# Subtest: TC-APPT-011: check-in offset 29 minutes returns 200
+ok 17 - TC-APPT-011: check-in offset 29 minutes returns 200
+  ---
+  duration_ms: 105.0678
+  type: 'test'
+  ...
+# Subtest: TC-APPT-013: check-in offset -31 minutes returns 400
+ok 18 - TC-APPT-013: check-in offset -31 minutes returns 400
+  ---
+  duration_ms: 108.4378
+  type: 'test'
+  ...
+# Subtest: TC-APPT-014: check-in offset 0 minutes returns 200
+ok 19 - TC-APPT-014: check-in offset 0 minutes returns 200
+  ---
+  duration_ms: 115.3299
+  type: 'test'
+  ...
+# Subtest: TC-APPT-015: repeated check-in returns 400 without modifying state
+ok 20 - TC-APPT-015: repeated check-in returns 400 without modifying state
+  ---
+  duration_ms: 101.8355
+  type: 'test'
+  ...
+# Subtest: TC-APPT-018: complete treatment and verify exactly one unpaid invoice
+ok 21 - TC-APPT-018: complete treatment and verify exactly one unpaid invoice
+  ---
+  duration_ms: 116.7528
+  type: 'test'
+  ...
+# Subtest: TC-PAY-003: paid=100000, allowDebt=false returns 200 and persists balance
+ok 22 - TC-PAY-003: paid=100000, allowDebt=false returns 200 and persists balance
+  ---
+  duration_ms: 109.2716
+  type: 'test'
+  ...
+# Subtest: TC-PAY-004: paid=100000, allowDebt=false returns 200 and persists balance
+ok 23 - TC-PAY-004: paid=100000, allowDebt=false returns 200 and persists balance
+  ---
+  duration_ms: 105.9545
+  type: 'test'
+  ...
+# Subtest: TC-PAY-005: paid=100000, allowDebt=false returns 200 and persists balance
+ok 24 - TC-PAY-005: paid=100000, allowDebt=false returns 200 and persists balance
+  ---
+  duration_ms: 108.61
+  type: 'test'
+  ...
+# Subtest: TC-PAY-006: paid=100000, allowDebt=false returns 200 and persists balance
+ok 25 - TC-PAY-006: paid=100000, allowDebt=false returns 200 and persists balance
+  ---
+  duration_ms: 116.0066
+  type: 'test'
+  ...
+# Subtest: TC-PAY-007: paid=1, allowDebt=false returns 400 and persists balance
+ok 26 - TC-PAY-007: paid=1, allowDebt=false returns 400 and persists balance
+  ---
+  duration_ms: 104.3975
+  type: 'test'
+  ...
+# Subtest: TC-PAY-008: paid=40000, allowDebt=true returns 200 and persists balance
+ok 27 - TC-PAY-008: paid=40000, allowDebt=true returns 200 and persists balance
+  ---
+  duration_ms: 138.4667
+  type: 'test'
+  ...
+# Subtest: TC-PAY-010: paid=-1, allowDebt=false returns 400 and persists balance
+ok 28 - TC-PAY-010: paid=-1, allowDebt=false returns 400 and persists balance
+  ---
+  duration_ms: 123.4323
+  type: 'test'
+  ...
+# Subtest: TC-AUTHZ-005: Doctor GET invoice returns 403 without exposing or modifying data
+ok 29 - TC-AUTHZ-005: Doctor GET invoice returns 403 without exposing or modifying data
+  ---
+  duration_ms: 186.1421
+  type: 'test'
+  ...
+# Subtest: TC-AUTHZ-005: Doctor PATCH invoice returns 403 without exposing or modifying data
+ok 30 - TC-AUTHZ-005: Doctor PATCH invoice returns 403 without exposing or modifying data
+  ---
+  duration_ms: 176.2287
+  type: 'test'
+  ...
+# Subtest: TC-AUTH-010 (invoice subset): missing token cannot list invoices
+ok 31 - TC-AUTH-010 (invoice subset): missing token cannot list invoices
+  ---
+  duration_ms: 3.4691
+  type: 'test'
+  ...
+# Subtest: TC-AUTHZ-004: ADMIN invoice deletion returns 200
+ok 32 - TC-AUTHZ-004: ADMIN invoice deletion returns 200
+  ---
+  duration_ms: 200.892
+  type: 'test'
+  ...
+# Subtest: TC-AUTHZ-005: DOCTOR invoice deletion returns 403
+ok 33 - TC-AUTHZ-005: DOCTOR invoice deletion returns 403
+  ---
+  duration_ms: 195.5628
+  type: 'test'
+  ...
+# Subtest: TC-AUTHZ-007: RECEPTION invoice deletion returns 403
+ok 34 - TC-AUTHZ-007: RECEPTION invoice deletion returns 403
+  ---
+  duration_ms: 190.8152
+  type: 'test'
+  ...
+1..34
+# tests 34
+# suites 0
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4513.0878

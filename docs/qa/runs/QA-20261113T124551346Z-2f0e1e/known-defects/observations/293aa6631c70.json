@@ -1,0 +1,482 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba58",
+    "httpStatus": 400,
+    "body": {
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba58",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 0
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba60",
+    "httpStatus": 400,
+    "body": {
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba60",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hủy"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 0
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba68",
+    "httpStatus": 400,
+    "body": {
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba68",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đang điều trị"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 0
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba70",
+    "httpStatus": 400,
+    "body": {
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba70",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã lên lịch"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 0
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba78",
+    "httpStatus": 400,
+    "body": {
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba78",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã đến"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 0
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PUT",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba80",
+    "httpStatus": 400,
+    "body": {
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba80",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 0
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PUT",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba88",
+    "httpStatus": 400,
+    "body": {
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba88",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hủy"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 0
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PUT",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba90",
+    "httpStatus": 400,
+    "body": {
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba90",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đang điều trị"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 0
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PUT",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba98",
+    "httpStatus": 400,
+    "body": {
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70685bd43b1abfc04ba98",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã lên lịch"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 0
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PUT",
+    "path": "/api/appointments/6af70686bd43b1abfc04baa0",
+    "httpStatus": 400,
+    "body": {
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70686bd43b1abfc04baa0",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã đến"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 0
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70686bd43b1abfc04baa8/finish",
+    "httpStatus": 400,
+    "body": {
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70686bd43b1abfc04baa8",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hoàn thành"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 0
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70686bd43b1abfc04bab0/finish",
+    "httpStatus": 400,
+    "body": {
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70686bd43b1abfc04bab0",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã hủy"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 0
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70686bd43b1abfc04bab8/finish",
+    "httpStatus": 400,
+    "body": {
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70686bd43b1abfc04bab8",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đang điều trị"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 0
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70686bd43b1abfc04bac0/finish",
+    "httpStatus": 400,
+    "body": {
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70686bd43b1abfc04bac0",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã lên lịch"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 0
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af70686bd43b1abfc04bac8/finish",
+    "httpStatus": 400,
+    "body": {
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af70686bd43b1abfc04bac8",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã đến"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 0
+    }
+  }
+]

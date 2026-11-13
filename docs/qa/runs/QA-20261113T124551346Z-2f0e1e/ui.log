@@ -1,0 +1,131 @@
+
+Warning: The allowCypressEnv configuration option is enabled. This allows any browser code to read values from Cypress.env(). This is insecure and will be removed in a future major version.
+
+1. Replace Cypress.env() calls with cy.env() (for sensitive values) or Cypress.expose() (for public configuration)
+2. Set allowCypressEnv: false in your Cypress configuration to disable Cypress.env()
+
+Learn more: https://on.cypress.io/cypress-env-migration
+
+
+====================================================================================================
+
+  (Run Starting)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Cypress:        15.17.0                                                                        │
+  │ Browser:        Electron 138 (headless)                                                        │
+  │ Node Version:   v22.15.0 (C:\Program Files\nodejs\node.exe)                                    │
+  │ Specs:          2 found (core-workflows.cy.js, login.cy.js)                                    │
+  │ Searched:       cypress/e2e/**/*.cy.js                                                         │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+Remove .jsons folder D:\KiemThu_PhongKham\testing\artifacts\runs\QA-20261113T124551346Z-2f0e1e\ui\report\.jsons
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  core-workflows.cy.js                                                            (1 of 2)
+
+
+  Independent role and business workflows
+    √ TC-AUTHZ-001: Admin opens accounts and API returns account records
+    √ TC-AUTHZ-002: DOCTOR has no accounts menu and API returns 403
+    √ TC-AUTHZ-003: RECEPTION has no accounts menu and API returns 403
+    √ TC-APPT-014: Reception checks in a patient through UI and state persists
+    √ TC-PAY-002: Reception opens a real invoice and sees its patient and amount
+    √ TC-PAY-017: excessive discount shows a validation error and sends no payment request
+    √ BUG-004 / TC-APPT-014 / TC-APPT-018 / TC-PAY-003: check-in UI to treatment API to cash payment UI
+
+
+  7 passing (27s)
+
+[mochawesome] Report JSON saved to D:\KiemThu_PhongKham\testing\artifacts\runs\QA-20261113T124551346Z-2f0e1e\ui\report\.jsons\mochawesome.json
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        7                                                                                │
+  │ Passing:      7                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  2                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     26 seconds                                                                       │
+  │ Spec Ran:     core-workflows.cy.js                                                             │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Screenshots)
+
+  -  D:\KiemThu_PhongKham\testing\artifacts\runs\QA-20261113T124551346Z-2f0e1e\ui\scr     (1280x720)
+     eenshots\core-workflows.cy.js\reception-checkin-persisted.png                                  
+  -  D:\KiemThu_PhongKham\testing\artifacts\runs\QA-20261113T124551346Z-2f0e1e\ui\scr     (1280x720)
+     eenshots\core-workflows.cy.js\invoice-detail.png                                               
+
+
+  (Video)
+
+  -  Video output: D:\KiemThu_PhongKham\testing\artifacts\runs\QA-20261113T124551346Z-2f0e1e\ui\videos\core-workflows.cy.js.mp4
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  login.cy.js                                                                     (2 of 2)
+
+
+  Đăng nhập — kiểm tra trên backend thật với dữ liệu thử nghiệm
+    √ TC-AUTH-010 (UI subset): redirects a missing session to login
+    √ TC-AUTH-002 (UI): required credentials prevent empty submission
+    √ TC-AUTH-003 (UI): non-gmail email shows validation feedback
+    √ BUG-001 / TC-AUTH-005 (UI): wrong password keeps feedback and no session
+    √ TC-AUTH-001 / TC-AUTH-012 (UI): login session matches API current account
+
+
+  5 passing (11s)
+
+[mochawesome] Report JSON saved to D:\KiemThu_PhongKham\testing\artifacts\runs\QA-20261113T124551346Z-2f0e1e\ui\report\.jsons\mochawesome_001.json
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        5                                                                                │
+  │ Passing:      5                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     10 seconds                                                                       │
+  │ Spec Ran:     login.cy.js                                                                      │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Video output: D:\KiemThu_PhongKham\testing\artifacts\runs\QA-20261113T124551346Z-2f0e1e\ui\videos\login.cy.js.mp4
+
+Start generate report process
+Read and merge jsons from "D:\KiemThu_PhongKham\testing\artifacts\runs\QA-20261113T124551346Z-2f0e1e\ui\report\.jsons"
+Copy media folder from "D:\KiemThu_PhongKham\testing\artifacts\runs\QA-20261113T124551346Z-2f0e1e\ui\screenshots" to "D:\KiemThu_PhongKham\testing\artifacts\runs\QA-20261113T124551346Z-2f0e1e\ui\report\screenshots"
+Copy media folder from "D:\KiemThu_PhongKham\testing\artifacts\runs\QA-20261113T124551346Z-2f0e1e\ui\videos" to "D:\KiemThu_PhongKham\testing\artifacts\runs\QA-20261113T124551346Z-2f0e1e\ui\report\videos"
+Enhance report
+Create HTML report
+HTML report successfully created!
+D:\KiemThu_PhongKham\testing\artifacts\runs\QA-20261113T124551346Z-2f0e1e\ui\report\index.html
+
+====================================================================================================
+
+  (Run Finished)
+
+
+       Spec                                              Tests  Passing  Failing  Pending  Skipped  
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ √  core-workflows.cy.js                     00:26        7        7        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ √  login.cy.js                              00:10        5        5        -        -        - │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+    √  All specs passed!                        00:37       12       12        -        -        -  
+
+

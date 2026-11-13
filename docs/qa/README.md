@@ -30,7 +30,7 @@ Mỗi lần chạy tạo `testing/artifacts/runs/QA-<UTC timestamp>-<random>/`, 
 
 Trong [337 case chuẩn hóa](../../testing/manual/source-cases.csv), `Historical status` là kết quả cũ; `Current status` nói về việc retest thủ công trên build mới. [70 focused case](../../testing/manual/test-cases.csv) hỗ trợ automation, không cộng thành các scenario độc lập. Mapping automation ghi Partial vì không thay cho toàn bộ bước UI/manual.
 
-[Workbook manual](test-execution.xlsx) có các cột run/date/build/executor/expected/actual/status/bug/evidence và dropdown Pass/Fail/Blocked/Not Run. Tạo sheet/bản sao riêng cho mỗi lần thực thi, ghi actual thật; không chép kết quả automation thành manual Pass. Bốn thiết kế thiếu trường được ghi trong [đối chiếu nguồn](source-reconciliation.md).
+[Suite manual ưu tiên 40 case](manual-regression.xlsx) có metadata, dữ liệu thực tế, steps/expected/actual/status/bug/evidence và dropdown. Làm theo [hướng dẫn thực thi](manual-regression.md), tạo bản sao riêng cho mỗi run, không chép automation thành manual Pass. [Workbook tổng](test-execution.xlsx) vẫn được giữ riêng. Bốn thiết kế thiếu trường đã hoàn thiện trong bản chuẩn hóa, có truy xuất chỉnh sửa ở [đối chiếu nguồn](source-reconciliation.md).
 
 `node testing/scripts/normalize-sources.js` chuẩn hóa lại CSV và metadata từ Excel gốc. Khi cần workbook trống, chỉ định output rõ ràng, ví dụ `--workbook=testing/artifacts/blank-execution.xlsx`; không ghi đè workbook đã có kết quả manual.
 
@@ -42,10 +42,18 @@ Cypress bật test isolation, retry = 0, không dùng chờ thời gian cố đ�
 
 ## Bug và CI
 
-[Bug register](bug-report.md) liên kết [registry.json](bugs/registry.json) chứa lifecycle có actor/time/evidence. Công cụ `testing/scripts/defect.js` kiểm tra bước chuyển trạng thái, commit sửa và kết quả Retest trước khi đóng. BUG-004 là ví dụ thực tế trước/sau; BUG-002/003 chưa được sửa và tiếp tục Fail.
+[Bug register](bug-report.md) liên kết [registry.json](bugs/registry.json) chứa lifecycle có actor/time/evidence. Công cụ `testing/scripts/defect.js` kiểm tra bước chuyển trạng thái, commit sửa và kết quả Retest trước khi đóng. BUG-002/003/004 đã có bằng chứng trước/sau sửa và Closed sau retest; full regression mới nhất có 53 Pass. Summary CI tách Automation API + UI và Defect regression, không dùng nhãn known defect để bỏ qua Fail.
 
 [GitHub Actions](../../.github/workflows/cypress.yml) chạy audit, unit reporting, build và một full QA run. Không có `continue-on-error` che defect regression. Mọi Fail làm job Fail; step audit run và upload artifact `clinic-qa-evidence` vẫn chạy khi Fail. Green badge không thay thế exit criteria hoặc manual execution.
 
 ## Postman
 
-Import collection/environment trong `testing/postman/`, chọn **SmileCare QA - Local** và điền tài khoản QA từ `.env.test`. Chạy Authentication → RBAC → Appointments/Check-in → Invoices/Payments. Điền ID và thời gian từ DB QA có ca trực phù hợp; collection tự lưu token/ID tạo mới. Chưa có Postman runner evidence trong các run hiện tại. Không xuất environment đã có token/password. [API checklist](api-contract.md).
+Cài `npm ci --prefix testing/postman`, rồi chạy từ thư mục gốc:
+
+```sh
+node --env-file=testing/.env.test testing/scripts/run-postman.js
+```
+
+Runner tạo dữ liệu riêng cho toàn collection, truyền tài khoản và token trong bộ nhớ, dọn fixture sau khi chạy. [Bằng chứng Newman thực tế](runs/QA-20261113T124931337Z-ba424a/newman-results.json): 21 request, 46/46 assertions Pass. Chỉ lưu tên request/assertion, HTTP status, thời gian và projection nghiệp vụ; không xuất environment/raw response chứa token. Đây là automation Newman, không phải manual GUI.
+
+Cũng có thể import collection/environment trong `testing/postman/`, chọn **SmileCare QA - Local**, điền tài khoản QA từ `.env.test`. Chuẩn bị ID bệnh nhân/bác sĩ/dịch vụ, ca trực bao phủ giờ hẹn trong 30 phút tới và một invoiceId có sẵn để kiểm tra RBAC. Chạy Authentication → RBAC → Appointments/Check-in → Invoices/Payments; collection tự lưu token và ID mới. Không xuất environment đã có token/password. [API checklist](api-contract.md).
