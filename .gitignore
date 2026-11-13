@@ -15,6 +15,7 @@ testing/.env
 
 # Logs
 **/*.log
+!docs/qa/runs/**/*.log
 
 # OS
 .DS_Store
