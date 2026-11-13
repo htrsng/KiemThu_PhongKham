@@ -18,6 +18,11 @@ const Holiday = require('../models/Holiday');
 const WorkShift = require('../models/WorkShift');
 const Shift = require('../models/Shift');
 
+const seedPassword = process.env.SEED_PASSWORD;
+if (!seedPassword) {
+  throw new Error('Thiếu SEED_PASSWORD. Chỉ chạy seeder trên DB thử nghiệm với mật khẩu được cấp qua môi trường.');
+}
+
 // Connect to DB
 mongoose.connect(process.env.MONGODB_URI, {
   dbName: process.env.MONGODB_DB || 'smilecare',
@@ -78,10 +83,10 @@ const seedData = async () => {
 
     // 2. Admin & Reception Accounts
     await Account.create({
-      accountCode: 'ACC-001', fullName: 'System Admin', username: 'admin', email: 'admin@gmail.com', password: 'admin123', role: 'Admin', status: 'active'
+      accountCode: 'ACC-001', fullName: 'System Admin', username: 'admin', email: 'admin@gmail.com', password: seedPassword, role: 'Admin', status: 'active'
     });
     const receptionAccount = await Account.create({
-      accountCode: 'ACC-002', fullName: 'Lễ tân Ngọc Mai', username: 'reception', email: 'reception@gmail.com', password: 'admin123', role: 'Reception', status: 'active'
+      accountCode: 'ACC-002', fullName: 'Lễ tân Ngọc Mai', username: 'reception', email: 'reception@gmail.com', password: seedPassword, role: 'Reception', status: 'active'
     });
 
     // 3. Generate 10 Doctors
@@ -111,7 +116,7 @@ const seedData = async () => {
             fullName: doctors[i].fullName,
             username: `doctor${i+1}`,
             email: `doctor${i+1}@gmail.com`,
-            password: 'admin123',
+            password: seedPassword,
             role: 'Doctor',
             referenceId: doctors[i]._id,
             status: 'active'

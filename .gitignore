@@ -5,6 +5,9 @@
 .env
 **/.env
 server/.env
+testing/.env
+**/.env.local
+**/.env.test
 
 # Build outputs
 **/dist/
@@ -21,6 +24,7 @@ Thumbs.db
 **/cypress/videos/
 **/cypress/screenshots/
 **/cypress/reports/
+**/coverage/
 **/__pycache__/
 *.pyc
 

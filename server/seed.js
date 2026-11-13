@@ -15,6 +15,20 @@ const Appointment = require('./src/models/Appointment');
 const TreatmentRecord = require('./src/models/TreatmentRecord');
 const Invoice = require('./src/models/Invoice');
 
+const seedPasswords = {
+  admin: process.env.SEED_ADMIN_PASSWORD,
+  reception: process.env.SEED_RECEPTION_PASSWORD,
+  cashier: process.env.SEED_CASHIER_PASSWORD,
+  doctor: process.env.SEED_DOCTOR_PASSWORD,
+};
+
+if (Object.values(seedPasswords).some((password) => !password)) {
+  throw new Error(
+    'Thiếu mật khẩu seed. Chỉ chạy trên DB thử nghiệm với SEED_ADMIN_PASSWORD, ' +
+    'SEED_RECEPTION_PASSWORD, SEED_CASHIER_PASSWORD và SEED_DOCTOR_PASSWORD.',
+  );
+}
+
 // Constants for Mock Data
 const hoViet = ['Nguyễn', 'Trần', 'Lê', 'Phạm', 'Hoàng', 'Huỳnh', 'Phan', 'Vũ', 'Đặng', 'Bùi'];
 const tenViet = ['Văn An', 'Thị Bình', 'Văn Cường', 'Thị Dung', 'Văn Em', 'Thị Phương', 'Văn Hùng', 'Thị Lan', 'Văn Minh', 'Thị Nga', 'Văn Hưng', 'Thị Ngọc', 'Văn Sơn', 'Thị Yến', 'Văn Tùng'];
@@ -137,10 +151,10 @@ const runSeed = async () => {
 
     // 6. Accounts (Sequential .save() for bcrypt)
     const accounts = [
-      { accountCode: 'A01', username: 'admin', password: 'Admin@123', role: 'Admin', fullName: 'Nguyen Van Admin', email: 'admin@smilecare.vn' },
-      { accountCode: 'A02', username: 'letan01', password: 'Letan@123', role: 'Reception', fullName: 'Trần Thị Lễ Tân', email: 'letan01@smilecare.vn' },
-      { accountCode: 'A03', username: 'thungan01', password: 'Thungan@123', role: 'Reception', fullName: 'Lê Thu Ngân', email: 'thungan01@smilecare.vn' },
-      { accountCode: 'A04', username: 'bacsi01', password: 'Bacsi@123', role: 'Doctor', fullName: 'BS. Nguyễn Minh Đức', email: 'bacsi01@smilecare.vn', referenceId: doctors[0]._id }
+      { accountCode: 'A01', username: 'admin', password: seedPasswords.admin, role: 'Admin', fullName: 'Nguyen Van Admin', email: 'admin@smilecare.vn' },
+      { accountCode: 'A02', username: 'letan01', password: seedPasswords.reception, role: 'Reception', fullName: 'Trần Thị Lễ Tân', email: 'letan01@smilecare.vn' },
+      { accountCode: 'A03', username: 'thungan01', password: seedPasswords.cashier, role: 'Reception', fullName: 'Lê Thu Ngân', email: 'thungan01@smilecare.vn' },
+      { accountCode: 'A04', username: 'bacsi01', password: seedPasswords.doctor, role: 'Doctor', fullName: 'BS. Nguyễn Minh Đức', email: 'bacsi01@smilecare.vn', referenceId: doctors[0]._id }
     ];
     
     for (let i = 1; i < doctors.length; i++) {
@@ -148,7 +162,7 @@ const runSeed = async () => {
         accountCode: `A${String(i+4).padStart(2,'0')}`,
         username: `bacsi${String(i+1).padStart(2,'0')}`,
         email: `bacsi${String(i+1).padStart(2,'0')}@smilecare.vn`,
-        password: 'Bacsi@123',
+        password: seedPasswords.doctor,
         role: 'Doctor',
         fullName: doctors[i].fullName,
         referenceId: doctors[i]._id
