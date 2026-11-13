@@ -1,0 +1,68 @@
+TAP version 13
+# Subtest: BUG-002 / TC-APPT-021: completed appointment cannot move backward
+not ok 1 - BUG-002 / TC-APPT-021: completed appointment cannot move backward
+  ---
+  duration_ms: 603.8432
+  type: 'test'
+  location: 'D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js:8:10'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   persisted: 'Đang điều trị',
+    +   status: 200
+    -   persisted: 'Đã hoàn thành',
+    -   status: 400
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 400
+    persisted: 'Đã hoàn thành'
+  actual:
+    status: 200
+    persisted: 'Đang điều trị'
+  operator: 'deepStrictEqual'
+  stack: |-
+    D:\KiemThu_PhongKham\testing\api\known-defects.test.js:27:10
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async D:\KiemThu_PhongKham\testing\helpers\qa-test.js:9:11
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: BUG-003 / TC-APPT-022: repeated completion cannot create duplicate invoices
+not ok 2 - BUG-003 / TC-APPT-022: repeated completion cannot create duplicate invoices
+  ---
+  duration_ms: 185.1117
+  type: 'test'
+  location: 'D:\\KiemThu_PhongKham\\testing\\helpers\\qa-test.js:8:10'
+  failureType: 'testCodeFailure'
+  error: |-
+    Exactly one invoice per completed appointment
+    
+    2 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    D:\KiemThu_PhongKham\testing\api\known-defects.test.js:34:10
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async D:\KiemThu_PhongKham\testing\helpers\qa-test.js:9:11
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1441.3386

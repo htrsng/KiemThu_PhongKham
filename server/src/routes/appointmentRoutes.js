@@ -13,14 +13,6 @@ router.patch('/:id/checkin', appointmentController.checkIn);
 router.post('/walk-in', appointmentController.walkIn);
 router.patch('/:id/finish', appointmentController.finishTreatment);
 
-const STATE_ORDER = {
-  'Đã lên lịch': 1,
-  'Đã đến': 2,
-  'Đang điều trị': 3,
-  'Đã hoàn thành': 4,
-  'Đã hủy': 5 // Special case
-};
-
 router.route('/')
   .get(factory.getAll(Appointment))
   .post(async (req, res, next) => {
@@ -99,48 +91,8 @@ router.route('/')
 
 router.route('/:id')
   .get(factory.getOne(Appointment))
-  .put(async (req, res, next) => {
-    try {
-      const apt = await Appointment.findById(req.params.id);
-      if (!apt) return res.status(404).json({ error: 'Not found' });
-      
-      if (req.body.status) {
-         const oldOrder = STATE_ORDER[apt.status];
-         const newOrder = STATE_ORDER[req.body.status];
-         if (req.body.status === 'Đã hủy') {
-            if (apt.status !== 'Đã lên lịch') {
-               return res.status(400).json({ error: 'Chỉ có thể hủy lịch khi đang ở trạng thái Đã lên lịch' });
-            }
-         } else if (newOrder <= oldOrder) {
-            return res.status(400).json({ error: 'Không thể lùi trạng thái hoặc trạng thái không hợp lệ' });
-         }
-      }
-      factory.updateOne(Appointment)(req, res, next);
-    } catch (err) {
-      next(err);
-    }
-  })
-  .patch(async (req, res, next) => {
-    try {
-      const apt = await Appointment.findById(req.params.id);
-      if (!apt) return res.status(404).json({ error: 'Not found' });
-      
-      if (req.body.status) {
-         const oldOrder = STATE_ORDER[apt.status];
-         const newOrder = STATE_ORDER[req.body.status];
-         if (req.body.status === 'Đã hủy') {
-            if (apt.status !== 'Đã lên lịch') {
-               return res.status(400).json({ error: 'Chỉ có thể hủy lịch khi đang ở trạng thái Đã lên lịch' });
-            }
-         } else if (newOrder <= oldOrder) {
-            return res.status(400).json({ error: 'Không thể lùi trạng thái' });
-         }
-      }
-      factory.updateOne(Appointment)(req, res, next);
-    } catch (err) {
-      next(err);
-    }
-  })
+  .put(appointmentController.updateAppointment)
+  .patch(appointmentController.updateAppointment)
   .delete(factory.deleteOne(Appointment));
 
 module.exports = router;

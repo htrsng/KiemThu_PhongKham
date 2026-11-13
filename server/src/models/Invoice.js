@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const invoiceSchema = new mongoose.Schema({
-  appointmentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Appointment', required: true },
+  appointmentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Appointment', required: true, unique: true },
   patientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient', required: true },
   patientName: { type: String },
   doctorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor' },

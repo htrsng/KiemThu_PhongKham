@@ -26,9 +26,10 @@ exports.checkIn = async (req, res, next) => {
 
     apt.status = 'Đã đến';
     apt.checkInTime = now;
-    await apt.save();
-
-    res.json({ data: apt.toJSON() });
+    const updated = await Appointment.findOneAndUpdate({ _id: apt._id, status: 'Đã lên lịch', updatedAt: apt.updatedAt },
+      { $set: { status: apt.status, checkInTime: now } }, { new: true, runValidators: true });
+    if (!updated) return res.status(409).json({ error: 'Lịch hẹn vừa thay đổi; vui lòng tải lại' });
+    res.json({ data: updated.toJSON() });
   } catch (error) {
     next(error);
   }
@@ -80,24 +81,54 @@ exports.walkIn = async (req, res, next) => {
     }
 };
 
-exports.finishTreatment = async (req, res, next) => {
+// One transition policy for PUT, PATCH and the explicit finish endpoint.
+const transitions = {
+  'Đã lên lịch': ['Đã đến', 'Đã hủy'],
+  'Đã đến': ['Đang điều trị'],
+  'Đang điều trị': ['Đã hoàn thành'],
+  'Đã hoàn thành': [],
+  'Đã hủy': [],
+};
+exports.updateAppointment = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { status, notes } = req.body; // Expect status: 'Đã hoàn thành'
-
     const apt = await Appointment.findById(id);
     if (!apt) return res.status(404).json({ error: 'Appointment not found' });
-
-    apt.status = status || 'Đã hoàn thành';
-    if (notes) apt.notes = notes;
-    await apt.save();
-
-    // If finished, generate invoice
-    if (apt.status === 'Đã hoàn thành') {
+    const status = req.body.status ?? apt.status;
+    const replay = apt.status === 'Đã hoàn thành' && status === apt.status;
+    if (!Object.hasOwn(transitions, status)
+        || (status !== apt.status && !transitions[apt.status].includes(status))) {
+      return res.status(400).json({ error: 'Chuyển trạng thái lịch hẹn không hợp lệ' });
+    }
+    if (['Đã hoàn thành', 'Đã hủy'].includes(apt.status) && !replay) {
+      return res.status(400).json({ error: 'Không thể sửa lịch hẹn đã kết thúc' });
+    }
+    let updated = apt;
+    if (!replay) {
+      const fields = ['patientId', 'patientName', 'doctorId', 'doctorName', 'serviceId', 'serviceName',
+        'startTime', 'endTime', 'notes', 'difficulty'];
+      const changes = Object.fromEntries(fields.filter((key) => Object.hasOwn(req.body, key)).map((key) => [key, req.body[key]]));
+      changes.status = status;
+      if (status === 'Đã đến' && apt.status === 'Đã lên lịch') {
+        const minutes = (Date.now() - new Date(apt.startTime)) / 60000;
+        if (Math.abs(minutes) > 30) return res.status(400).json({ error: 'Check-in chỉ trong khoảng ±30 phút' });
+        changes.checkInTime = new Date();
+      }
+      // Compare-and-set prevents a concurrent stale request from moving the state backwards.
+      updated = await Appointment.findOneAndUpdate({ _id: id, status: apt.status, updatedAt: apt.updatedAt },
+        { $set: changes }, { new: true, runValidators: true });
+      if (!updated) {
+        updated = await Appointment.findById(id);
+        if (status !== 'Đã hoàn thành' || updated?.status !== status) {
+          return res.status(409).json({ error: 'Lịch hẹn vừa thay đổi; tải lại trước khi cập nhật' });
+        }
+      }
+    }
+    if (status === 'Đã hoàn thành') {
+        // Retry repairs a failed invoice write; $setOnInsert never resets a paid invoice.
         const service = await Service.findById(apt.serviceId);
         const amount = service ? service.basePrice : 500000;
-
-        await Invoice.create({
+        const invoice = {
             appointmentId: apt._id,
             patientId: apt.patientId,
             patientName: apt.patientName,
@@ -106,11 +137,22 @@ exports.finishTreatment = async (req, res, next) => {
             totalAmount: amount,
             finalAmount: amount,
             status: 'Chưa thanh toán'
-        });
+        };
+        try {
+          await Invoice.updateOne({ appointmentId: apt._id }, { $setOnInsert: invoice }, { upsert: true, runValidators: true });
+        } catch (error) {
+          // Another request won the unique appointmentId insert.
+          if (error.code !== 11000 || !await Invoice.exists({ appointmentId: apt._id })) throw error;
+        }
     }
 
-    res.json({ data: apt.toJSON() });
+    res.json({ data: updated.toJSON() });
   } catch (error) {
     next(error);
   }
+};
+
+exports.finishTreatment = (req, res, next) => {
+  req.body = { ...req.body, status: req.body.status ?? 'Đã hoàn thành' };
+  return exports.updateAppointment(req, res, next);
 };

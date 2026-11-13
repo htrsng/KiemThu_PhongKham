@@ -51,7 +51,7 @@ require('./src/jobs/reminderJob');
 const app = express();
 
 // Connect to database
-connectDB();
+const databaseReady = connectDB();
 
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
@@ -76,7 +76,6 @@ app.use('/api/dashboard', dashboardRoutes);
 // Custom Appointment Routes
 app.patch('/api/appointments/:id/checkin', protect, appointmentController.checkIn);
 app.post('/api/appointments/walk-in', protect, appointmentController.walkIn);
-app.patch('/api/appointments/:id', protect, appointmentController.finishTreatment); // Overrides generic patch for logic
 
 // Mount generic resource routes
 app.use('/api/accounts', protect, accountRoutes);
@@ -105,6 +104,7 @@ app.use('/api/treatment-records', protect, treatmentRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
+  if (err.code === 11000) return res.status(409).json({ error: 'Bản ghi đã tồn tại; mỗi lịch hẹn chỉ có một hóa đơn' });
   console.error(err.stack);
   const message = err.message || 'Internal Server Error';
   res.status(500).json({ error: message });
@@ -112,6 +112,6 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+databaseReady.then(() => app.listen(PORT, () => {
   console.log(`SmileCare backend is running on port ${PORT}`);
-});
+}));
