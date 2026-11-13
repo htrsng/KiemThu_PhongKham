@@ -45,7 +45,7 @@ Thông tin đăng nhập lấy từ `.env.test` bị Git bỏ qua. HTTP observat
 
 ## 5. Hướng dẫn chạy
 
-Hoàn thành [cài đặt dự án](../README.md#6-hướng-dẫn-chạy-kiểm-thử), mở cả API và frontend. Chạy từ thư mục gốc:
+Hoàn thành [cài đặt dự án](../README.md#5-hướng-dẫn-chạy-kiểm-thử), mở cả API và frontend. Chạy từ thư mục gốc:
 
 ```sh
 npm ci --prefix automation-testing

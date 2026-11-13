@@ -8,19 +8,7 @@ SmileCare là hệ thống quản lý phòng khám nha khoa trong đồ án họ
 
 Ứng dụng trong `client/` và `server/` là đối tượng kiểm thử. Hồ sơ QA được chia thành `manual-testing/`, `api-testing/` và `automation-testing/`.
 
-## 2. Trách nhiệm QA của tôi
-
-Trong đồ án nhóm, tôi được phân công lập kế hoạch, thiết kế test case, kiểm thử thủ công/website và kiểm thử tự động. Hồ sơ này trình bày công việc đó cùng các phần hoàn thiện sau học phần:
-
-- Phân tích yêu cầu, thiết kế trường hợp hợp lệ/không hợp lệ bằng phân vùng tương đương, phân tích giá trị biên, bảng quyết định và chuyển trạng thái.
-- Giữ kết quả thực thi học phần, có truy xuất về tài liệu nguồn.
-- Ghi nhận lỗi có thể tái hiện, kèm mức độ nghiêm trọng, độ ưu tiên, kết quả mong đợi/thực tế và bằng chứng.
-- Duy trì hồi quy API/Cypress, kiểm tra dữ liệu đã lưu và bằng chứng trước/sau sửa lỗi.
-- Chuẩn bị bộ manual regression ưu tiên; việc thực thi bộ này trên build mới **vẫn chưa hoàn thành**.
-
-Nguồn đóng góp nhóm và các phần có AI hỗ trợ được trình bày tại [Bối cảnh dự án](#7-bối-cảnh-dự-án).
-
-## 3. Phạm vi kiểm thử
+## 2. Phạm vi kiểm thử
 
 | Nhóm chức năng | Phạm vi có bằng chứng |
 | --- | --- |
@@ -31,7 +19,7 @@ Nguồn đóng góp nhóm và các phần có AI hỗ trợ được trình bày
 
 Cypress có các luồng kết hợp UI/API. Bộ hiện tại chưa xác minh lại mọi tính năng học phần hoặc mọi bước trên giao diện. Phạm vi và giới hạn được ghi trong từng README chuyên môn.
 
-## 4. Tài liệu kiểm thử
+## 3. Tài liệu kiểm thử
 
 | Nhóm | Nội dung |
 | --- | --- |
@@ -41,7 +29,7 @@ Cypress có các luồng kết hợp UI/API. Bộ hiện tại chưa xác minh l
 
 [Đặc tả](docs/requirements/LT2_N02_DacTa.pdf) và [tài liệu học phần](docs/academic/) được giữ để đối chiếu nguồn. Công cụ chạy test/báo cáo dùng chung nằm trong `.github/qa/`. [CONTRIBUTING.md](CONTRIBUTING.md) quy định cách quản lý bằng chứng và lỗi.
 
-## 5. Kết quả thực thi kiểm thử
+## 4. Kết quả thực thi kiểm thử
 
 | Hồ sơ | Kết quả | Nguồn |
 | --- | --- | --- |
@@ -55,7 +43,7 @@ Cypress có các luồng kết hợp UI/API. Bộ hiện tại chưa xác minh l
 
 Excel và PDF là hai hồ sơ lịch sử riêng; chênh lệch được giải thích trong [đối chiếu nguồn](docs/requirements/source-reconciliation.md). 70 thiết kế tập trung có chồng lấp với 337 case gốc; bộ manual 40 case là một tập con. Không cộng số thiết kế hoặc assertions tự động thành số case manual đã Pass.
 
-## 6. Hướng dẫn chạy kiểm thử
+## 5. Hướng dẫn chạy kiểm thử
 
 Yêu cầu: Node.js 24, npm và MongoDB cục bộ cổng 27017. Chạy lệnh từ thư mục gốc:
 
@@ -92,9 +80,3 @@ node --env-file=.env.test .github/qa/scripts/run-postman.js
 ```
 
 Test nghiệp vụ Fail hoặc test tự động chưa chạy làm QA trả lỗi; không bỏ qua test hồi quy lỗi. Cách chạy riêng API, Cypress có giao diện/headless và thực thi manual nằm trong ba README chuyên môn. Công cụ tạo dữ liệu yêu cầu dịch vụ loopback và tên database kết thúc bằng `_test`.
-
-## 7. Bối cảnh dự án
-
-Dự án bắt nguồn từ đồ án nhóm trong học phần. [Báo cáo kiểm thử gốc](docs/academic/LT2_N02_KiemThu.pdf#page=2) phân công Nguyễn Thị Huyền Trang phụ trách các công việc QA; phần ứng dụng và kết quả học phần có đóng góp của các thành viên trong nhóm. Mã client/server được giữ để tái hiện kiểm thử, không trình bày là phần mềm do một cá nhân tự phát triển toàn bộ.
-
-Các phần chuẩn hóa nguồn, cải tiến automation/báo cáo và sửa lỗi sau học phần có AI hỗ trợ. File học phần gốc và bằng chứng đã công bố được giữ nguyên; kết quả trên build mới có Run ID/build riêng. Không đổi kết quả lịch sử thành một lần thực thi manual mới.

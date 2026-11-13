@@ -4,7 +4,7 @@
 
 ## Trang cần làm
 
-1. Cài/chạy ứng dụng theo [README](../../README.md#6-hướng-dẫn-chạy-kiểm-thử). Chỉ dùng DB có tên kết thúc `_test`; không dùng dữ liệu bệnh nhân thật. Tài khoản QA lấy từ `.env.test` trên máy, không chụp hoặc commit mật khẩu.
+1. Cài/chạy ứng dụng theo [README](../../README.md#5-hướng-dẫn-chạy-kiểm-thử). Chỉ dùng DB có tên kết thúc `_test`; không dùng dữ liệu bệnh nhân thật. Tài khoản QA lấy từ `.env.test` trên máy, không chụp hoặc commit mật khẩu.
 2. **Save As** workbook thành bản riêng, ví dụ `manual-testing/test-execution/manual-runs/MAN-20261113-01/execution.xlsx`. Điền sheet `Run setup`: Run ID, tên người test, giờ/timezone, URL, trình duyệt và commit lấy từ `git rev-parse HEAD`.
 3. Chuẩn bị một bác sĩ/dịch vụ và bệnh nhân giả qua UI Admin; ghi ID thực tế từ Network. Tạo ca trực hôm nay bao phủ giờ hẹn. Mỗi ca cần lịch/hóa đơn riêng khi trạng thái hoặc thanh toán khác nhau; không dùng lại hóa đơn đã thanh toán để thử case chưa thanh toán. Dùng giá 100.000đ cho luồng thanh toán cơ bản.
 4. Làm từng case theo `Precondition`, `Planned data`, `Steps`. Ghi dữ liệu/ID thực tế vào `Actual data / IDs`. Với trường hợp không có nút tương ứng trên UI, dùng request từ DevTools Network hoặc Postman và ghi rõ đây là thao tác API thủ công. Không tính kết quả Node/Cypress/Newman thành manual Pass.

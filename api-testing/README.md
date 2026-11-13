@@ -41,7 +41,7 @@ Fixture yêu cầu API/MongoDB loopback và database kết thúc bằng `_test`.
 
 ## 5. Hướng dẫn chạy
 
-Hoàn thành [cài đặt dự án](../README.md#6-hướng-dẫn-chạy-kiểm-thử), mở API rồi chạy từ thư mục gốc:
+Hoàn thành [cài đặt dự án](../README.md#5-hướng-dẫn-chạy-kiểm-thử), mở API rồi chạy từ thư mục gốc:
 
 ```sh
 # Bộ API và hồi quy lỗi; không cần mở UI

@@ -26,7 +26,7 @@ Sử dụng thống nhất các mục điều hướng và đường dẫn trong
 
 ## Kiểm tra thay đổi
 
-Chạy từ thư mục gốc sau khi [cài đặt dự án](README.md#6-hướng-dẫn-chạy-kiểm-thử):
+Chạy từ thư mục gốc sau khi [cài đặt dự án](README.md#5-hướng-dẫn-chạy-kiểm-thử):
 
 ```sh
 node .github/qa/scripts/audit-qa.js
