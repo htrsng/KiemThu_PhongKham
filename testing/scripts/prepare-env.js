@@ -18,8 +18,9 @@ const values = {
 };
 const text = Object.entries(values).map(([key, value]) => `${key}=${value}`).join('\n') + '\n';
 if (process.env.GITHUB_ENV) {
-  console.log(`::add-mask::${values.ADMIN_PASS}`);
-  console.log(`::add-mask::${values.JWT_SECRET}`);
+  for (const key of ['ADMIN_PASS', 'DOCTOR_PASS', 'RECEPTION_PASS', 'JWT_SECRET']) {
+    console.log(`::add-mask::${values[key]}`);
+  }
   appendFileSync(process.env.GITHUB_ENV, text);
 } else {
   writeFileSync(resolve(__dirname, '../.env.test'), text, { mode: 0o600 });

@@ -10,36 +10,36 @@ async function login(body) {
   });
   return { status: response.status, body: await response.json() };
 }
-test('Thiếu thông tin đăng nhập trả 400', async () => {
+test('TC-AUTH-002 (API subset): missing both credentials returns 400', async () => {
   assert.equal((await login({})).status, 400);
 });
-test('Email không đúng định dạng nghiệp vụ trả 400', async () => {
+test('TC-AUTH-003: non-gmail email returns 400', async () => {
   const result = await login({ email: 'qa@example.invalid', password });
   assert.equal(result.status, 400); assert.equal(result.body.error, 'invalid_email_format');
 });
-test('Mật khẩu sai trả 401', async () => {
+test('TC-AUTH-005: wrong password returns 401', async () => {
   const result = await login({ email, password: `${password}invalid` });
   assert.equal(result.status, 401); assert.equal(result.body.error, 'wrong_password');
 });
-test('Tài khoản khóa trả 403', async () => {
+test('TC-AUTH-008: locked account returns 403', async () => {
   const result = await login({ email: process.env.LOCKED_USER, password });
   assert.equal(result.status, 403); assert.equal(result.body.error, 'locked');
 });
-test('Đăng nhập đúng trả token và không trả mật khẩu', async () => {
+test('TC-AUTH-001 / TC-AUTH-012 (API): valid login returns token without password', async () => {
   const result = await login({ email, password });
   assert.equal(result.status, 200); assert.ok(result.body.token);
   assert.equal(result.body.account.email, email); assert.equal(result.body.account.password, undefined);
 });
-test('API /me từ chối khi không có token', async () => {
+test('TC-AUTH-010 (missing-token subset): /me rejects missing token', async () => {
   assert.equal((await fetch(`${base}/auth/me`)).status, 401);
 });
-test('API /me xác nhận đúng tài khoản của phiên', async () => {
+test('TC-AUTH-012 (session): /me returns current account without password', async () => {
   const loginResult = await login({ email, password });
   const response = await fetch(`${base}/auth/me`, { headers: { Authorization: `Bearer ${loginResult.body.token}` } });
   assert.equal(response.status, 200);
   const body = await response.json(); assert.equal(body.data.email, email);
   assert.equal(body.data.password, undefined);
 });
-test('API /me từ chối token không hợp lệ', async () => {
+test('TC-AUTH-009: /me rejects invalid token', async () => {
   assert.equal((await fetch(`${base}/auth/me`, { headers: { Authorization: 'Bearer invalid-test-token' } })).status, 401);
 });
