@@ -1,0 +1,300 @@
+{
+  "info": {
+    "_postman_id": "smilecare-qa-api",
+    "name": "SmileCare QA API",
+    "description": "API checks for authentication, RBAC, appointments/check-in and invoices. Fill the QA environment with local test values only.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('Response time is below 1500 ms', function () { pm.expect(pm.response.responseTime).to.be.below(1500); });",
+          "pm.test('Response is JSON for API calls', function () { pm.expect(pm.response.headers.get('Content-Type') || '').to.include('application/json'); });"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"email\":\"{{adminEmail}}\",\"password\":\"{{adminPassword}}\"}" },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "const body = pm.response.json();",
+              "pm.expect(body).to.have.property('token').that.is.a('string');",
+              "pm.expect(body).to.have.property('account').that.is.an('object');",
+              "pm.expect(body.account).to.not.have.property('password');",
+              "pm.environment.set('adminToken', body.token);"
+            ] }
+          }]
+        },
+        {
+          "name": "Login Doctor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"email\":\"{{doctorEmail}}\",\"password\":\"{{doctorPassword}}\"}" },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "const body = pm.response.json();",
+              "pm.expect(body.token).to.be.a('string');",
+              "pm.expect(body.account.role).to.eql('Doctor');",
+              "pm.environment.set('doctorToken', body.token);"
+            ] }
+          }]
+        },
+        {
+          "name": "Login Reception",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"email\":\"{{receptionEmail}}\",\"password\":\"{{receptionPassword}}\"}" },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "const body = pm.response.json();",
+              "pm.expect(body.account.role).to.eql('Reception');",
+              "pm.environment.set('receptionToken', body.token);"
+            ] }
+          }]
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/auth/me"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "const body = pm.response.json();",
+              "pm.expect(body.data).to.be.an('object');",
+              "pm.expect(body.data).to.not.have.property('password');"
+            ] }
+          }]
+        },
+        {
+          "name": "Reject Missing Token",
+          "request": { "method": "GET", "url": "{{baseUrl}}/auth/me" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 401', function () { pm.response.to.have.status(401); });"
+          ] } }]
+        },
+        {
+          "name": "Reject Invalid Token",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer invalid-token" }],
+            "url": "{{baseUrl}}/auth/me"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 401', function () { pm.response.to.have.status(401); });"
+          ] } }]
+        }
+      ]
+    },
+    {
+      "name": "RBAC",
+      "item": [
+        {
+          "name": "Admin can list accounts",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }], "url": "{{baseUrl}}/accounts" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "pm.expect(pm.response.json().data).to.be.an('array');"
+          ] } }]
+        },
+        {
+          "name": "Doctor cannot list accounts",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{doctorToken}}" }], "url": "{{baseUrl}}/accounts" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 403', function () { pm.response.to.have.status(403); });"
+          ] } }]
+        },
+        {
+          "name": "Reception cannot list accounts",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{receptionToken}}" }], "url": "{{baseUrl}}/accounts" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 403', function () { pm.response.to.have.status(403); });"
+          ] } }]
+        },
+        {
+          "name": "Doctor cannot delete invoice",
+          "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{doctorToken}}" }], "url": "{{baseUrl}}/invoices/{{invoiceId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 403', function () { pm.response.to.have.status(403); });"
+          ] } }]
+        },
+        {
+          "name": "Reception cannot delete invoice",
+          "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{receptionToken}}" }], "url": "{{baseUrl}}/invoices/{{invoiceId}}" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 403', function () { pm.response.to.have.status(403); });"
+          ] } }]
+        }
+      ]
+    },
+    {
+      "name": "Appointments and Check-in",
+      "item": [
+        {
+          "name": "Create Appointment",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"patientId\":\"{{patientId}}\",\"patientName\":\"QA Patient\",\"doctorId\":\"{{doctorId}}\",\"doctorName\":\"QA Doctor\",\"serviceId\":\"{{serviceId}}\",\"serviceName\":\"QA Service\",\"startTime\":\"{{futureStartTime}}\",\"endTime\":\"{{futureEndTime}}\",\"status\":\"Đã lên lịch\",\"difficulty\":0}" },
+            "url": "{{baseUrl}}/appointments"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 201', function () { pm.response.to.have.status(201); });",
+            "const body = pm.response.json();",
+            "pm.expect(body.data).to.be.an('object');",
+            "pm.expect(body.data.status).to.eql('Đã lên lịch');",
+            "pm.environment.set('appointmentId', body.data.id);"
+          ] } }]
+        },
+        {
+          "name": "Check-in Appointment",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{receptionToken}}" }],
+            "url": "{{baseUrl}}/appointments/{{appointmentId}}/checkin"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "pm.expect(pm.response.json().data.status).to.eql('Đã đến');",
+            "pm.expect(pm.response.json().data).to.have.property('checkInTime');"
+          ] } }]
+        },
+        {
+          "name": "Finish Treatment Once",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{doctorToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"status\":\"Đang điều trị\"}" },
+            "url": "{{baseUrl}}/appointments/{{appointmentId}}"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "pm.expect(pm.response.json().data.status).to.eql('Đang điều trị');"
+          ] } }]
+        },
+        {
+          "name": "Finish Treatment Creates Invoice",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{doctorToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"status\":\"Đã hoàn thành\"}" },
+            "url": "{{baseUrl}}/appointments/{{appointmentId}}"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "pm.expect(pm.response.json().data.status).to.eql('Đã hoàn thành');"
+          ] } }]
+        },
+        {
+          "name": "Reject Repeated Completion",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{doctorToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"status\":\"Đã hoàn thành\"}" },
+            "url": "{{baseUrl}}/appointments/{{appointmentId}}"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 400', function () { pm.response.to.have.status(400); });"
+          ] } }]
+        }
+      ]
+    },
+    {
+      "name": "Invoices and Payments",
+      "item": [
+        {
+          "name": "List Invoices",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{receptionToken}}" }], "url": "{{baseUrl}}/invoices" },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "pm.expect(pm.response.json().data).to.be.an('array');"
+          ] } }]
+        },
+        {
+          "name": "Create Invoice",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{receptionToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"appointmentId\":\"{{appointmentId}}\",\"patientId\":\"{{patientId}}\",\"patientName\":\"QA Patient\",\"totalAmount\":{{amount}},\"finalAmount\":{{amount}},\"status\":\"Chưa thanh toán\"}" },
+            "url": "{{baseUrl}}/invoices"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 201', function () { pm.response.to.have.status(201); });",
+            "const body = pm.response.json();",
+            "pm.expect(body.data).to.have.property('id');",
+            "pm.expect(body.data.status).to.eql('Chưa thanh toán');",
+            "pm.environment.set('invoiceId', body.data.id);"
+          ] } }]
+        },
+        {
+          "name": "Reject Negative Payment",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{receptionToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"amountPaid\":-1,\"finalAmount\":{{amount}}}" },
+            "url": "{{baseUrl}}/invoices/{{invoiceId}}"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 400', function () { pm.response.to.have.status(400); });"
+          ] } }]
+        },
+        {
+          "name": "Reject Underpayment Without Debt",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{receptionToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"amountPaid\":50000,\"finalAmount\":{{amount}},\"status\":\"Đã thanh toán\"}" },
+            "url": "{{baseUrl}}/invoices/{{invoiceId}}"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 400', function () { pm.response.to.have.status(400); });"
+          ] } }]
+        },
+        {
+          "name": "Pay With Debt",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{receptionToken}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"amountPaid\":50000,\"finalAmount\":{{amount}},\"allowDebt\":true,\"paymentMethod\":\"Tiền mặt\",\"status\":\"Đã thanh toán\"}" },
+            "url": "{{baseUrl}}/invoices/{{invoiceId}}"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "const body = pm.response.json();",
+            "pm.expect(body.data.debt).to.eql(50000);",
+            "pm.expect(body.data.status).to.eql('Đã thanh toán');"
+          ] } }]
+        }
+      ]
+    }
+  ]
+}

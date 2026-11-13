@@ -26,9 +26,9 @@ Xem [mô tả hồi quy](./login-error-regression.md) và [phạm vi kiểm th�
 
 Build frontend và kiểm tra cú pháp các script Node đã đạt. Việc chạy MongoDB/Cypress cục bộ trong môi trường hỗ trợ gặp giới hạn khởi động/tải gói, nên các kiểm tra tích hợp được xác minh trên GitHub Actions.
 
-Bộ hiện tại chỉ tập trung vào đăng nhập và phiên. Kết quả không xác nhận đầy đủ lịch khám, thanh toán, phân quyền mọi tài nguyên, tiền lương, bảo mật hay hiệu năng của toàn ứng dụng.
+Bộ QA hiện ưu tiên đăng nhập, phân quyền, lịch hẹn/check-in và thanh toán/hóa đơn. Kết quả trong lần CI được liên kết ở trên mới xác nhận runtime cho đăng nhập và phiên; các bộ automation mới cần một lần chạy CI riêng trước khi ghi nhận Pass trong test report. Không suy ra từ đó rằng lịch khám, thanh toán, tiền lương, bảo mật hay hiệu năng của toàn ứng dụng đã được xác nhận đầy đủ.
 
-Tài liệu và bộ sinh cũ được lưu tại `docs/qa/archive/`; các kịch bản chưa hoàn thiện ở `testing/e2e/cypress/legacy/`. Không tính chúng vào số ca đã xác minh.
+Tài liệu và bộ sinh cũ được lưu tại `docs/qa/archive/`. Không tính chúng vào số ca đã xác minh.
 
 ## Cấu hình cục bộ
 
