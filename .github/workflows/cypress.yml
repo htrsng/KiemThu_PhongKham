@@ -8,7 +8,7 @@ on:
 permissions:
   contents: read
 jobs:
-  verified-login:
+  qa-regression:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     services:
@@ -25,6 +25,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Kiem tra test design va RTM
+        run: node testing/scripts/audit-qa.js
       - name: Cai thu vien backend
         run: npm ci --prefix server
       - name: Cai thu vien frontend
@@ -43,17 +45,23 @@ jobs:
           (cd server && nohup npm start > ../testing/artifacts/backend.log 2>&1 &)
           (cd client && nohup npm run dev -- --host 0.0.0.0 > ../testing/artifacts/frontend.log 2>&1 &)
           node testing/scripts/wait-for-app.js
-      - name: Kiem thu API dang nhap
-        run: node --test --test-concurrency=1 testing/api/auth.test.js
-      - name: Kiem thu API phan quyen va hoa don
-        run: node --test --test-concurrency=1 testing/api/authorization-invoice.test.js
-      - name: Kiem thu giao dien dang nhap
+      - name: API regression va bao cao TAP JUnit
+        run: node testing/scripts/run-api.js
+      - name: Cypress UI regression (khong retry)
         run: npm run cy:run --prefix testing/e2e
-      - name: Lap lai smoke login ba lan de kiem tra flaky
+      - name: Tai hien bug dang mo (non-blocking, expected Fail)
+        id: known
+        continue-on-error: true
+        run: node testing/scripts/run-api.js --known-defects
+      - name: Ghi ket qua suite vao job summary
+        if: always()
+        env:
+          KNOWN_OUTCOME: ${{ steps.known.outcome }}
         run: |
-          for attempt in 1 2 3; do
-            npm run cy:smoke --prefix testing/e2e
-          done
+          echo '## SmileCare QA' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Regression failures fail the job. Known-defect requirements run separately and are non-blocking.' >> "$GITHUB_STEP_SUMMARY"
+          echo "Known-defect step outcome: $KNOWN_OUTCOME. See TAP/JUnit in clinic-qa-evidence; failed requirements are not passes." >> "$GITHUB_STEP_SUMMARY"
+          echo 'Manual execution is not performed by this workflow. A green job is not a release-readiness decision.' >> "$GITHUB_STEP_SUMMARY"
       - name: Luu bao cao va log
         if: always()
         uses: actions/upload-artifact@v4
