@@ -32,7 +32,8 @@ export function PaymentManagementPage() {
 
     const { mutate: updateInvoiceStatus } = useMutation({
         mutationFn: async ({ id, status, method, finalAmount }: { id: string, status: string, method: string, finalAmount: number }) => {
-            return api.patch(`/invoices/${id}`, { status, paymentMethod: method, finalAmount });
+            return api.patch(`/invoices/${id}`, { status, paymentMethod: method, finalAmount,
+                amountPaid: finalAmount, allowDebt: false });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['invoices'] });
@@ -121,6 +122,7 @@ export function PaymentManagementPage() {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <input 
                             type="text" 
+                            data-testid="invoice-search"
                             placeholder="Tìm tên KH hoặc mã HD..." 
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -134,6 +136,7 @@ export function PaymentManagementPage() {
                         {filteredInvoices.map(inv => (
                             <div 
                                 key={inv.id} 
+                                data-testid={`invoice-row-${inv.id}`}
                                 onClick={() => {
                                     setSelectedInvoice(inv);
                                     setDiscount(0);
@@ -236,6 +239,7 @@ export function PaymentManagementPage() {
                                             </label>
                                             <div className="flex gap-2">
                                                 <select 
+                                                    data-testid="payment-discount-type"
                                                     value={discountType} 
                                                     onChange={(e) => setDiscountType(e.target.value as 'VND' | 'PERCENT')}
                                                     className="border-slate-300 rounded-xl"
@@ -245,6 +249,7 @@ export function PaymentManagementPage() {
                                                 </select>
                                                 <input 
                                                     type="number" 
+                                                    data-testid="payment-discount"
                                                     value={discount} 
                                                     onChange={(e) => setDiscount(Number(e.target.value) || 0)}
                                                     className="flex-1 border-slate-300 rounded-xl"
@@ -256,6 +261,7 @@ export function PaymentManagementPage() {
                                         <div>
                                             <label className="block text-sm font-semibold text-slate-700 mb-1">Phương thức</label>
                                             <select 
+                                                data-testid="payment-method"
                                                 value={paymentMethod} 
                                                 onChange={(e) => setPaymentMethod(e.target.value)}
                                                 className="w-full border-slate-300 rounded-xl"
@@ -273,6 +279,7 @@ export function PaymentManagementPage() {
                                         <div className="flex gap-2">
                                             <input 
                                                 type="number" 
+                                                data-testid="payment-extra-charge"
                                                 value={extraCharge} 
                                                 onChange={(e) => setExtraCharge(Number(e.target.value) || 0)}
                                                 className="w-32 border-slate-300 rounded-xl"
@@ -292,6 +299,7 @@ export function PaymentManagementPage() {
                                     <div className="pt-4 mt-2 border-t border-slate-200">
                                         <button 
                                             onClick={handlePayment}
+                                            data-testid="payment-confirm"
                                             className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all font-lg"
                                         >
                                             <CheckCircle className="w-5 h-5" />
