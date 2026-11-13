@@ -1,14 +1,15 @@
-// Retain original workbooks/PDFs; historical Pass labels are never execution evidence.
+// Preserve the user's historical execution and keep it separate from new-build regression.
 const Excel = require('../../server/node_modules/exceljs');
 const { readFileSync, writeFileSync, readdirSync } = require('node:fs');
 const { resolve, relative } = require('node:path');
 const { createHash } = require('node:crypto');
 const { parseCsv, csv } = require('../helpers/tabular');
+const { exportHistoricalExecution } = require('../helpers/historical-report');
 const root = resolve(__dirname, '../..');
 const text = (value) => value == null ? '' : typeof value === 'object'
   ? value.text || value.richText?.map((part) => part.text).join('') || String(value.result ?? '') : String(value);
 async function main() {
-  const source = readdirSync(resolve(root, 'docs')).filter((name) => name.endsWith('.xlsx'));
+  const source = readdirSync(resolve(root, 'docs')).filter((name) => name.endsWith('.xlsx') && !name.startsWith('~$'));
   if (source.length !== 1) throw new Error('Expected exactly one original test-case workbook in docs/.');
   const file = `docs/${source[0]}`;
   const workbook = new Excel.Workbook();
@@ -17,6 +18,11 @@ async function main() {
   const releaseRisks = new Set(['TC-UC11-002', 'TC-UC11-020', 'TC-UC24-001', 'TC-UC24-004', 'TC-UC24-006', 'TC-UC24-010',
     'TC-UC31-001', 'TC-UC31-006', 'TC-UC31-010', 'TC-UC33-001', 'TC-UC33-004', 'TC-UC33-008', 'TC-UC33-010', 'TC-UC33-013', 'TC-UC33-016']);
   workbook.eachSheet((sheet) => {
+    let lastTested = '';
+    sheet.eachRow((noteRow) => noteRow.eachCell((cell) => {
+      const note = text(cell.value);
+      if (/ngày kiểm thử cuối cùng/i.test(note)) lastTested = note.match(/\d{2}\/\d{2}\/\d{4}/)?.[0] || '';
+    }));
     sheet.eachRow((row, number) => {
       const id = text(row.getCell(1).value).trim();
       if (!/^TC-UC\d+-\d+$/.test(id)) return;
@@ -30,14 +36,15 @@ async function main() {
         Priority: releaseRisks.has(id) ? 'P0' : ({ High: 'P1', Medium: 'P2', Low: 'P3' })[value(3)] || 'Needs review',
         'Original priority': value(3), Technique: value(4), Steps: value(6), 'Test data': value(8),
         Expected: value(9) || value(7), 'Step expected': value(7),
-        'Design review': missing.length ? `Needs review: ${missing.join(', ')}` : 'Imported; not validated against implementation',
+        'Design review': missing.length ? `Needs review: ${missing.join(', ')}` : 'Historical execution imported; current build not retested manually',
         'Historical status': value(11), 'Historical actual': value(10), 'Historical remarks': value(12),
+        'Historical last tested': lastTested, 'Historical build': value(12).match(/Build\s+v[\w.]+/i)?.[0] || '',
         'Current status': 'Not Run', 'Source file': file, 'Source sheet': sheet.name, 'Source row': number });
     });
   });
   if (new Set(cases.map((item) => item.ID)).size !== cases.length) throw new Error('Duplicate source case IDs');
   writeFileSync(resolve(root, 'testing/manual/source-cases.csv'), '\uFEFF' + csv(cases));
-  const sources = readdirSync(resolve(root, 'docs')).filter((name) => /\.(pdf|xlsx)$/.test(name)).sort()
+  const sources = readdirSync(resolve(root, 'docs')).filter((name) => /\.(pdf|xlsx)$/.test(name) && !name.startsWith('~$')).sort()
     .map((name) => ({ file: `docs/${name}`, sha256: createHash('sha256').update(readFileSync(resolve(root, 'docs', name))).digest('hex') }));
   // Counts transcribed from PDF pages 26/34/35/36, independently reviewed against extracted text.
   const pdfSummary = { UC1: 70, UC2: 92, UC3: 80, UC4: 72 };
@@ -49,15 +56,16 @@ async function main() {
       summary: pdfSummary, reportedTotal: 314, reportedPassed: 288, reportedFailed: 26,
       detailedUc4Count: 92, detailedUc4Pages: [33, 34, 35] },
     differences: Object.fromEntries(Object.keys(groups).map((group) => [group, groups[group] - pdfSummary[group]])),
-    designIssues: issues, disposition: 'Excel is the 337-case design baseline. Historical PDF/Excel results are unverified, inconsistent snapshots, not a new run. No evidence establishes separate execution versions.',
+    designIssues: issues, disposition: 'User-provided completed test records: Excel reports 337 Pass; PDF reports 288 Pass / 26 Fail on 314 cases. Preserve these historical results separately. Their chronology is not recorded, and neither is a regression result for the current build.',
     priorityPolicy: '15 role/booking/check-in/payment risks are P0. Other High -> P1, Medium -> P2, Low -> P3; original labels are retained separately.' };
   writeFileSync(resolve(root, 'docs/qa/source-reconciliation.json'), JSON.stringify(reconciliation, null, 2) + '\n');
+  await exportHistoricalExecution(root, cases, reconciliation);
   const output = new Excel.Workbook();
   output.creator = 'SmileCare QA';
   const instructions = output.addWorksheet('Summary');
-  instructions.addRows([['Inventory', 'Count', 'Execution status'], ['Original designs', cases.length, 'All Not Run'],
+  instructions.addRows([['Inventory', 'Count', 'Execution status'], ['Original cases for a new retest', cases.length, 'New retest: Not Run; previous results remain in history/'],
     ['Focused regression designs', 70, 'Separate overlapping designs, not 407 independent scenarios'],
-    ['Historical labels', reconciliation.excel.historicalPassLabels, 'Not verified; excluded from current Pass count'],
+    ['Historical completed results', reconciliation.excel.historicalPassLabels, 'Imported original execution; separate from the current build'],
     ['Priority', '', reconciliation.priorityPolicy], ['Actual execution', '', 'Stored per Run ID; do not replace manual results with automation.']]);
   const focused = parseCsv(readFileSync(resolve(root, 'testing/manual/test-cases.csv'), 'utf8'));
   for (const [name, data] of [['Source designs', cases], ['Focused designs', focused]]) {

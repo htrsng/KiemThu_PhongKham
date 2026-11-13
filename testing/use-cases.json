@@ -1,0 +1,182 @@
+[
+  {
+    "id": "UC1.1",
+    "name": "Quản lý người dùng",
+    "specPage": 17,
+    "implementation": [
+      "client/src/pages/AccountManagementPage.tsx",
+      "server/src/routes/accountRoutes.js"
+    ]
+  },
+  {
+    "id": "UC1.2",
+    "name": "Quản lý bác sĩ",
+    "specPage": 18,
+    "implementation": [
+      "client/src/pages/DoctorManagementPage.tsx",
+      "server/src/routes/doctorRoutes.js"
+    ]
+  },
+  {
+    "id": "UC1.3",
+    "name": "Quản lý danh mục dịch vụ",
+    "specPage": 19,
+    "implementation": [
+      "client/src/pages/ServiceCategoryPage.tsx",
+      "server/src/routes/serviceRoutes.js"
+    ]
+  },
+  {
+    "id": "UC1.4",
+    "name": "Thiết lập bảng giá dịch vụ",
+    "specPage": 20,
+    "implementation": [
+      "client/src/pages/ServiceCategoryPage.tsx",
+      "server/src/routes/pricingRoutes.js"
+    ]
+  },
+  {
+    "id": "UC2.1",
+    "name": "Thiết lập ngày nghỉ",
+    "specPage": 30,
+    "implementation": [
+      "client/src/pages/ScheduleManagementPage.tsx",
+      "server/src/models/Holiday.js"
+    ]
+  },
+  {
+    "id": "UC2.2",
+    "name": "Thiết lập ca làm việc",
+    "specPage": 31,
+    "implementation": [
+      "client/src/pages/ScheduleManagementPage.tsx",
+      "server/src/routes/workShiftRoutes.js"
+    ]
+  },
+  {
+    "id": "UC2.3",
+    "name": "Đăng ký lịch trực bác sĩ",
+    "specPage": 32,
+    "implementation": [
+      "client/src/pages/ScheduleManagementPage.tsx",
+      "server/src/controllers/shiftController.js"
+    ]
+  },
+  {
+    "id": "UC2.4",
+    "name": "Đăng ký lịch khám bệnh nhân",
+    "specPage": 33,
+    "implementation": [
+      "client/src/pages/AppointmentManagementPage.tsx",
+      "server/src/routes/appointmentRoutes.js"
+    ]
+  },
+  {
+    "id": "UC2.5",
+    "name": "Theo dõi lịch khám",
+    "specPage": 34,
+    "implementation": [
+      "client/src/pages/AppointmentManagementPage.tsx",
+      "server/src/routes/appointmentRoutes.js"
+    ]
+  },
+  {
+    "id": "UC3.1",
+    "name": "Tiếp đón và check-in",
+    "specPage": 41,
+    "implementation": [
+      "client/src/pages/ReceptionPage.tsx",
+      "server/src/controllers/appointmentController.js"
+    ]
+  },
+  {
+    "id": "UC3.2",
+    "name": "Khám bệnh và cập nhật hồ sơ",
+    "specPage": 43,
+    "implementation": [
+      "client/src/pages/DoctorExaminationPage.tsx",
+      "server/src/routes/treatmentRoutes.js"
+    ]
+  },
+  {
+    "id": "UC3.3",
+    "name": "Thanh toán chi phí khám bệnh",
+    "specPage": 45,
+    "implementation": [
+      "client/src/pages/PaymentManagementPage.tsx",
+      "server/src/routes/invoiceRoutes.js"
+    ]
+  },
+  {
+    "id": "UC3.4",
+    "name": "Thống kê doanh thu",
+    "specPage": 46,
+    "implementation": [
+      "client/src/pages/RevenueStatisticsPage.tsx",
+      "server/src/routes/reportRoutes.js"
+    ]
+  },
+  {
+    "id": "UC4.1",
+    "name": "Thiết lập tiền cơ bản",
+    "specPage": 50,
+    "implementation": [
+      "client/src/pages/PayrollSettingsPage.tsx",
+      "server/src/controllers/payrollController.js"
+    ]
+  },
+  {
+    "id": "UC4.2",
+    "name": "Thiết lập hệ số ca",
+    "specPage": 51,
+    "implementation": [
+      "client/src/pages/PayrollSettingsPage.tsx",
+      "server/src/controllers/payrollController.js"
+    ]
+  },
+  {
+    "id": "UC4.3",
+    "name": "Thiết lập hệ số bệnh nhân",
+    "specPage": 52,
+    "implementation": [
+      "client/src/pages/ShiftCoefficientPage.tsx",
+      "server/src/controllers/payrollController.js"
+    ]
+  },
+  {
+    "id": "UC4.4",
+    "name": "Lập phiếu lương",
+    "specPage": 53,
+    "implementation": [
+      "client/src/pages/DoctorPayrollPage.tsx",
+      "server/src/controllers/payrollController.js"
+    ]
+  },
+  {
+    "id": "UC4.5",
+    "name": "Báo cáo lương tháng",
+    "specPage": 55,
+    "implementation": [
+      "client/src/pages/DoctorPayrollPage.tsx",
+      "server/src/controllers/reportController.js"
+    ]
+  },
+  {
+    "id": "UC4.6",
+    "name": "Báo cáo lương năm một bác sĩ",
+    "specPage": 55,
+    "implementation": [
+      "client/src/components/YearlyDoctorPayrollModal.tsx",
+      "server/src/controllers/reportController.js"
+    ]
+  },
+  {
+    "id": "UC4.7",
+    "name": "Báo cáo lương năm tất cả bác sĩ",
+    "specPage": 56,
+    "implementation": [
+      "client/src/pages/DoctorPayrollPage.tsx",
+      "server/src/controllers/reportController.js"
+    ]
+  }
+]

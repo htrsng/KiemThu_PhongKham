@@ -20,6 +20,7 @@ testing/.env
 # OS
 .DS_Store
 Thumbs.db
+**/~$*
 
 # Generated test output
 **/cypress/videos/

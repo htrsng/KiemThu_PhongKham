@@ -70,12 +70,32 @@ for (const file of reconciliation.sources) {
 }
 for (const row of source) {
   assert.match(row.Priority, /^P[0-3]$/, `${row.ID}: invalid priority`);
-  assert.equal(row['Current status'], 'Not Run', 'Historical labels cannot become verified Pass');
+  assert.equal(row['Current status'], 'Not Run', 'A new manual retest must not inherit historical Pass');
   assert.ok(row.Description && row['Source row'] && row['Source sheet'], `${row.ID}: missing provenance`);
   if (!row.Steps || !row.Expected || !row['Test data']) assert.match(row['Design review'], /Needs review/, 'Incomplete design must be flagged');
 }
 const links = JSON.parse(readFileSync(resolve(root, 'testing/trace-links.json'), 'utf8'));
 const sourceIds = new Set(source.map((row) => row.ID));
+const historical = parseCsv(readFileSync(resolve(root, 'docs/qa/history/manual-execution.csv'), 'utf8'));
+const historicalTrace = parseCsv(readFileSync(resolve(root, 'docs/qa/history/rtm.csv'), 'utf8'));
+assert.equal(historical.length, source.length, 'Historical results missing');
+assert.equal(historicalTrace.length, source.length, 'Historical traceability incomplete');
+assert.equal(new Set(historical.map((row) => row['Test Case ID'])).size, source.length, 'Duplicate historical results');
+assert.equal(new Set(historicalTrace.map((row) => row['Use case'])).size, 20, 'Missing historical use case');
+for (const row of historical) {
+  const original = source.find((item) => item.ID === row['Test Case ID']);
+  assert.ok(original, 'Unknown imported historical case');
+  const status = /^(Pass|Passed)$/i.test(original['Historical status']) ? 'Pass' : original['Historical status'];
+  assert.equal(row.Status, status, 'Historical result must match source');
+  assert.equal(row.Actual, original['Historical actual'] || 'Not recorded in original result', 'Do not invent historical actual');
+}
+const useCases = JSON.parse(readFileSync(resolve(root, 'testing/use-cases.json'), 'utf8'));
+assert.equal(useCases.length, 20);
+for (const item of useCases) {
+  assert.ok(reconciliation.excel.useCases[item.id] > 0, `Unknown use case ${item.id}`);
+  assert.ok(Number.isInteger(item.specPage) && item.specPage > 0);
+  item.implementation.forEach((file) => readFileSync(resolve(root, file)));
+}
 for (const [id, targets] of Object.entries(links)) {
   assert.ok(ids.has(id), `Unknown focused case ${id}`);
   targets.forEach((target) => assert.ok(sourceIds.has(target), `Unknown source case ${target}`));

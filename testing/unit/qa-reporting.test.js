@@ -14,11 +14,25 @@ test('CSV preserves multiline Vietnamese fields, commas and quotes', () => {
   const rows = [{ ID: 'TC-1', Expected: 'Tiền mặt, "đã thu"\nDòng 2' }];
   assert.deepEqual(parseCsv('\uFEFF' + csv(rows)), rows);
 });
-test('337 historical Pass labels do not become current manual Pass', () => {
+test('Historical execution is preserved separately from new-build manual retest', () => {
   const rows = parseCsv(readFileSync(resolve(root, 'testing/manual/source-cases.csv'), 'utf8'));
   assert.equal(rows.length, 337);
   assert.equal(rows.filter((row) => /^(Pass|Passed)$/.test(row['Historical status'])).length, 337);
   assert.equal(rows.filter((row) => row['Current status'] === 'Not Run').length, 337);
+});
+test('Historical report keeps source status and actual, including explicit missing values', () => {
+  const source = parseCsv(readFileSync(resolve(root, 'testing/manual/source-cases.csv'), 'utf8'));
+  const historical = parseCsv(readFileSync(resolve(root, 'docs/qa/history/manual-execution.csv'), 'utf8'));
+  assert.equal(historical.length, 337);
+  assert.equal(new Set(historical.map((row) => row['Test Case ID'])).size, 337);
+  for (const row of historical) {
+    const original = source.find((item) => item.ID === row['Test Case ID']);
+    assert.equal(row.Status, 'Pass');
+    assert.equal(row['Original status'], original['Historical status']);
+    assert.equal(row.Actual, original['Historical actual'] || 'Not recorded in original result');
+    assert.equal(row['Last tested (sheet note)'], '14/06/2026');
+  }
+  assert.equal(historical.filter((row) => row.Actual === 'Not recorded in original result').length, 5);
 });
 test('Run IDs never reuse or overwrite previous metadata', () => {
   const first = createRun('reporting-unit');

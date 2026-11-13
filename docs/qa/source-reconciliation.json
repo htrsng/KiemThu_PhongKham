@@ -111,6 +111,6 @@
       ]
     }
   ],
-  "disposition": "Excel is the 337-case design baseline. Historical PDF/Excel results are unverified, inconsistent snapshots, not a new run. No evidence establishes separate execution versions.",
+  "disposition": "User-provided completed test records: Excel reports 337 Pass; PDF reports 288 Pass / 26 Fail on 314 cases. Preserve these historical results separately. Their chronology is not recorded, and neither is a regression result for the current build.",
   "priorityPolicy": "15 role/booking/check-in/payment risks are P0. Other High -> P1, Medium -> P2, Low -> P3; original labels are retained separately."
 }
