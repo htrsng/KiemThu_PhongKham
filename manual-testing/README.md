@@ -1,61 +1,67 @@
-# Chạy và quản lý kiểm thử
+# Manual Testing
 
-Hồ sơ manual được chia thành [test plan](test-plan/test-plan.md), [test scenarios](test-scenarios/scenarios.md), [test cases](test-cases/), [test execution](test-execution/), [bug reports](bug-reports/README.md) và [RTM](rtm/). [Suite ưu tiên 40 case](test-execution/manual-regression.xlsx) vẫn Not Run trên build mới; kết quả lịch sử 337 case được giữ riêng. API và Cypress có chỉ mục riêng tại [api-testing](../api-testing/README.md), [automation-testing](../automation-testing/README.md).
+[Project overview](../README.md) | [API Testing](../api-testing/README.md) | [Automation Testing](../automation-testing/README.md)
 
-Chuẩn bị API/UI theo [README](../README.md). Fixture chỉ chấp nhận API/MongoDB loopback và DB tên kết thúc `_test`. File `.env.test` được sinh riêng cho QA và bị Git bỏ qua.
+## 1. Overview
 
-## Thực thi
+Manual testing turns SmileCare's clinic requirements into scenarios, test cases, execution records and reproducible defect reports. The academic baseline covers 20 use cases across catalogs, scheduling, reception/treatment, payments, revenue and payroll. Current regression planning prioritizes authentication, role permissions, appointments/check-in and invoices/payments.
 
-```sh
-node .github/qa/scripts/audit-qa.js
-node --env-file=.env.test .github/qa/scripts/run-qa.js
-```
+Start with the [test plan](test-plan/test-plan.md) and [scenario catalog](test-scenarios/scenarios.md). Design coverage, academic execution and current-build retesting are recorded separately.
 
-Có thể lọc `--suite=api` (API + defect regression) hoặc `--suite=ui` (Cypress). Runner tự bỏ biến `ELECTRON_RUN_AS_NODE` khỏi process Cypress nếu terminal IDE có đặt biến này. Để kiểm tra riêng hạ tầng báo cáo/lifecycle: `node --test .github/qa/unit/qa-reporting.test.js`.
+## 2. Test Design Techniques
 
-Mỗi lần chạy tạo `automation-testing/reports/generated/runs/QA-<UTC timestamp>-<random>/`, không dùng lại thư mục cũ. `run.json` ghi ngày giờ, executor (`QA_EXECUTOR` hoặc actor CI), version ứng dụng, commit, working-tree hash và hash nguồn. Các suite vẫn được thử tiếp khi suite trước Fail; cuối run trả exit code 1 nếu có Fail, process error hoặc test tự động Not Run.
+| Technique | Application | Design examples |
+| --- | --- | --- |
+| Equivalence Partitioning (EP) | Valid/invalid email; insufficient payment with/without debt permission | TC-AUTH-003, TC-PAY-007/008 |
+| Boundary Value Analysis (BVA) | Check-in time limits, minimum password length, 100% discount, negative surcharge | TC-AUTH-006, TC-APPT-011 to 014, TC-PAY-012/016 |
+| Decision Table | Fixed/percentage discount combined with a surcharge | TC-PAY-013/014 |
+| State Transition | Valid appointment progression; invalid backward/cancellation transitions | TC-APPT-016 to 021 |
+| Error Guessing | Repeated completion and duplicate invoice side effects | TC-APPT-022 / BUG-003 |
 
-| File trong run | Ý nghĩa |
-| --- | --- |
-| `summary.md` | Kết quả đúng lần chạy, không cộng dồn lịch sử |
-| `execution.json` / `.csv` / `.xlsx` | Run ID, date, build, executor, case ID, expected, observed actual, status, bug và evidence |
-| `traceability.csv` | Toàn bộ 20 use case / 337 case gốc và inventory 70 focused case; manual và automation tách riêng |
-| `api/`, `known-defects/` | TAP, JUnit, JSON events và HTTP observations đã giới hạn trường |
-| `ui/` | Kết quả Cypress, HTML/JSON report, screenshots và video |
-| `*.log` | Output process đã lọc credential/JWT |
+These are **design examples**, not evidence that every example was executed on the current build. The exact 30-minute check-in boundary remains unverified; automation exercises 29 minutes early, 31 minutes late and the current time.
 
-`node .github/qa/scripts/audit-run.js <run-directory>` kiểm tra trạng thái, số lượng, metadata, case ID và các evidence link. `node --env-file=.env.test .github/qa/scripts/publish-run.js <Run-ID>` chọn log/report/ảnh để đưa vào `automation-testing/reports/runs/`, không copy video/HTML lớn và không cho ghi đè run đã công bố. Xem lại ảnh trước khi commit.
+## 3. Test Case Inventory
 
-## Thiết kế và thực thi manual
+| Inventory | Purpose | Execution interpretation |
+| --- | --- | --- |
+| [337 original cases](test-cases/source-cases.csv) / 20 use cases | Normalized academic workbook with source sheet/row and original results | Original Excel records 337 Pass; historical execution, not current-build retest |
+| [70 focused cases](test-cases/test-cases.csv) | Supplementary regression designs with steps, data, expected results, priority and technique | Selected assertions are automated; the full inventory is not manually retested |
+| [40-case priority suite](test-cases/regression-suite.csv) | Subset covering Auth/RBAC, appointments/check-in, payments and BUG-002/003/004 | **Not Run** on the current build until a tester records an actual execution |
 
-[Kết quả kiểm thử gốc](test-execution/history/manual-execution.xlsx) đã được nhập từ 337 case trong Excel đã test, giữ actual/status, date/build nếu có ghi và evidence tới dòng nguồn. [RTM lịch sử](rtm/historical-rtm.csv) bao phủ đủ 20 use case. Đây là kết quả lịch sử sử dụng được trong hồ sơ dự án, không bị thay bằng Not Run.
+The 70 focused cases overlap the original 337: **do not count them as 407 independent scenarios**. The 40-case suite is a subset, not an additional inventory. Partial automation coverage does not establish a complete manual Pass.
 
-Trong [337 case chuẩn hóa](test-cases/source-cases.csv), `Historical status` là kết quả cũ; `Current status` nói về việc retest thủ công trên build mới. [70 focused case](test-cases/test-cases.csv) hỗ trợ automation, không cộng thành các scenario độc lập. Mapping automation ghi Partial vì không thay cho toàn bộ bước UI/manual.
+Four missing design fields were completed through a [correction overlay](test-cases/source-corrections.json), preserving original files, historical status and missing historical Actual fields. [Source reconciliation](../docs/requirements/source-reconciliation.md) also explains the separate PDF summary: 314 cases, 288 Pass / 26 Fail. The chronology of the Excel and PDF results is not established.
 
-[Suite manual ưu tiên 40 case](test-execution/manual-regression.xlsx) có metadata, dữ liệu thực tế, steps/expected/actual/status/bug/evidence và dropdown. Làm theo [hướng dẫn thực thi](test-execution/manual-regression.md), tạo bản sao riêng cho mỗi run, không chép automation thành manual Pass. [Workbook tổng](test-execution/test-execution.xlsx) vẫn được giữ riêng. Bốn thiết kế thiếu trường đã hoàn thiện trong bản chuẩn hóa, có truy xuất chỉnh sửa ở [đối chiếu nguồn](../docs/requirements/source-reconciliation.md).
+## 4. Test Execution
 
-`node .github/qa/scripts/normalize-sources.js` chuẩn hóa lại CSV và metadata từ Excel gốc. Khi cần workbook trống, chỉ định output rõ ràng, ví dụ `--workbook=automation-testing/reports/generated/blank-execution.xlsx`; không ghi đè workbook đã có kết quả manual.
+Use the [40-case execution workbook](test-execution/manual-regression.xlsx) and [execution guide](test-execution/manual-regression.md). The [general workbook](test-execution/test-execution.xlsx) is retained separately.
 
-## Dữ liệu và isolation
+1. Save a new copy for each Run ID. Record build commit, environment/browser, executor and actual date/time.
+2. Prepare synthetic data and record the patient/appointment/invoice IDs used. Perform the documented steps against that build.
+3. Compare observations with **Expected**. Record the real message, HTTP status, persisted state, invoice count or balance in **Actual**, with screenshots or sanitized responses.
+4. Mark **Pass** after observing the expected result; **Fail** for a mismatch; **Blocked** with the missing prerequisite/feature; leave untouched cases **Not Run**. Add a Bug ID when relevant.
 
-Mỗi test có doctor/patient/service/shift và ID riêng. Fixture tiền điều kiện có thể được insert trực tiếp; hành vi đang kiểm tra đi qua HTTP hoặc UI. Mutation có GET lại để kiểm tra dữ liệu và side effect. Cleanup chỉ xóa ID thuộc fixture do process sở hữu, không drop DB; tài khoản seed và audit log được giữ lại. Kill cứng có thể để lại dữ liệu tạm trong DB QA.
+Academic results are available as [Excel](test-execution/history/manual-execution.xlsx) and [CSV](test-execution/history/manual-execution.csv). Missing source metadata remains explicitly unrecorded. Never copy automated outcomes into manual fields or replace missing historical Actual with Expected.
 
-Cypress bật test isolation, retry = 0, không dùng chờ thời gian cố định và không nuốt exception chung. Luồng check-in và thu tiền thao tác qua selector `data-testid`; giai đoạn bác sĩ điều trị trong E2E dùng API, không được mô tả là UI E2E toàn bộ.
+The [execution report](test-execution/test-report.md) separates historical and automated runs. The 40-case manual retest is still pending; the project does not claim a new manual run across all 337 cases.
 
-## Bug và CI
+## 5. Defect Management
 
-[Bug register](bug-reports/README.md) liên kết [registry.json](bug-reports/registry.json) chứa lifecycle có actor/time/evidence. Công cụ `.github/qa/scripts/defect.js` kiểm tra bước chuyển trạng thái, commit sửa và kết quả Retest trước khi đóng. BUG-002/003/004 đã có bằng chứng trước/sau sửa và Closed sau retest; full regression mới nhất có 53 Pass. Summary CI tách Automation API + UI và Defect regression, không dùng nhãn known defect để bỏ qua Fail.
+The [bug register](bug-reports/README.md) links preconditions, reproduction steps, expected/actual behavior, severity, priority and evidence. The [machine-readable registry](bug-reports/registry.json) records lifecycle events.
 
-[GitHub Actions](../.github/workflows/cypress.yml) chạy audit, unit reporting, build và một full QA run. Không có `continue-on-error` che defect regression. Mọi Fail làm job Fail; step audit run và upload artifact `clinic-qa-evidence` vẫn chạy khi Fail. Green badge không thay thế exit criteria hoặc manual execution.
+| Defect | Behavior | Verified disposition |
+| --- | --- | --- |
+| [BUG-002](bug-reports/BUG-002.md) | Completed appointment moved backward | Closed after automated retest: HTTP 400 and unchanged persisted state |
+| [BUG-003](bug-reports/BUG-003.md) | Repeated completion created duplicate invoices | Closed after sequential/concurrent retest: exactly one invoice |
+| [BUG-004](bug-reports/BUG-004.md) | Cash payment UI failed to persist received amount | Closed after retest: amountPaid = finalAmount, debt = 0 |
 
-## Postman
+Follow **New -> Open -> Fixed -> Retest -> Closed**; failed retest leads to Reopened. Preserve Before Fix -> After Fix -> Regression evidence. [Before Fix](../automation-testing/reports/runs/QA-20261113T124125327Z-5e0311/execution.json) and [After Fix / Regression](../automation-testing/reports/runs/QA-20261113T124551346Z-2f0e1e/execution.json) are separate immutable records. Closing a bug requires a fix commit and passing linked retest assertions; it does not mark the pending manual suite Pass.
 
-Cài `npm ci --prefix api-testing/postman`, rồi chạy từ thư mục gốc:
+## 6. Requirements Traceability
 
-```sh
-node --env-file=.env.test .github/qa/scripts/run-postman.js
-```
+- [Historical RTM](rtm/historical-rtm.csv): 337 original cases across 20 use cases, specification pages, implementation references and historical results.
+- [Focused RTM](rtm/rtm.tsv): 31 requirements; 30 Current and one Deferred payroll requirement. Coverage means Designed, not executed.
+- [Focused-to-source links](rtm/trace-links.json): related case mappings, not proof of complete scenario equivalence.
+- [Per-run RTM](../automation-testing/reports/runs/QA-20261113T124551346Z-2f0e1e/traceability.csv): manual status and partial automation status in separate fields.
 
-Runner tạo dữ liệu riêng cho toàn collection, truyền tài khoản và token trong bộ nhớ, dọn fixture sau khi chạy. [Bằng chứng Newman thực tế](../api-testing/reports/newman/QA-20261113T124931337Z-ba424a/newman-results.json): 21 request, 46/46 assertions Pass. Chỉ lưu tên request/assertion, HTTP status, thời gian và projection nghiệp vụ; không xuất environment/raw response chứa token. Đây là automation Newman, không phải manual GUI.
-
-Cũng có thể import collection/environment trong `api-testing/postman/`, chọn **SmileCare QA - Local**, điền tài khoản QA từ `.env.test`. Chuẩn bị ID bệnh nhân/bác sĩ/dịch vụ, ca trực bao phủ giờ hẹn trong 30 phút tới và một invoiceId có sẵn để kiểm tra RBAC. Chạy Authentication → RBAC → Appointments/Check-in → Invoices/Payments; collection tự lưu token và ID mới. Không xuất environment đã có token/password. [API checklist](../api-testing/api-contract.md).
+Run `node .github/qa/scripts/audit-qa.js` from the repository root after changing designs/mappings. Follow [CONTRIBUTING.md](../CONTRIBUTING.md) to preserve source and evidence integrity.

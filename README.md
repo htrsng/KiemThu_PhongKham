@@ -1,78 +1,79 @@
-# SmileCare — Dự án kiểm thử hệ thống quản lý phòng khám
+# SmileCare - Software Testing Portfolio
 
 [![Clinic QA Checks](https://github.com/htrsng/KiemThu_PhongKham/actions/workflows/cypress.yml/badge.svg)](https://github.com/htrsng/KiemThu_PhongKham/actions/workflows/cypress.yml)
 
-Dự án QA học tập cho ứng dụng nha khoa React/TypeScript, Express và MongoDB. Hồ sơ gồm kiểm thử gốc theo 20 use case và bộ hồi quy API/Cypress trên phiên bản mã hiện tại.
+## 1. Project Overview
 
-## Cấu trúc hồ sơ
+SmileCare is an academic dental clinic management system built with React/TypeScript, Express and MongoDB. This repository presents its QA work for a **Software Tester Intern portfolio**: requirements analysis, test design, historical execution records, defect reports, API checks and Cypress regression.
 
-```text
-KiemThu_PhongKham/
-├── manual-testing/       # Test plan, scenarios, cases, execution, bugs và RTM
-├── api-testing/          # API automated tests, Postman collection và reports
-├── automation-testing/   # Cypress, fixtures và reports
-├── docs/
-│   ├── requirements/     # Đặc tả và đối chiếu nguồn
-│   └── academic/         # Báo cáo cài đặt, kiểm thử và Excel học phần gốc
-├── client/
-├── server/
-├── .github/
-│   ├── workflows/
-│   └── qa/               # Scripts, helpers và unit tests dùng chung
-└── README.md
-```
+The application in `client/` and `server/` is the system under test. Testing materials are organized into `manual-testing/`, `api-testing/` and `automation-testing/`.
 
-Bắt đầu từ [Manual testing](manual-testing/README.md), [API testing](api-testing/README.md) hoặc [Cypress automation](automation-testing/README.md). [Hạ tầng QA dùng chung](.github/qa/README.md) quản lý Run ID, báo cáo và lifecycle. Các run cũ giữ nguyên nội dung, hash và kết quả; [bảng chuyển đường dẫn](automation-testing/reports/legacy-paths.json) giúp tra các đường dẫn nguồn ghi trong hồ sơ cũ.
+## 2. My QA Responsibilities
 
-## Kết quả kiểm thử
+My assigned QA responsibilities in the academic group project included test planning, test case design, manual/website testing and automation. This portfolio documents that work and subsequent maintenance:
 
-| Đợt / nguồn | Kết quả | Báo cáo |
+- Review requirements and design positive/negative cases using EP, BVA, decision tables and state transitions.
+- Preserve academic execution records with traceability to their original sources.
+- Document reproducible defects with severity, priority, expected/actual results and evidence.
+- Maintain API/Cypress regression, persisted-state assertions and Before Fix / After Fix records.
+- Prepare a priority manual regression suite; its new-build execution is **still pending**.
+
+The attribution and AI-assisted portfolio additions are explained in [Project Background](#7-project-background).
+
+## 3. Testing Scope
+
+| Area | Demonstrated scope |
+| --- | --- |
+| Authentication and RBAC | Login/session validation; Admin/Doctor/Reception access checks |
+| Appointments and check-in | Booking constraints, check-in time/status, appointment transitions and repeated completion |
+| Invoices and payments | Invoice uniqueness, payment methods, received amount/debt and rejected payment mutations |
+| Academic baseline | 20 use cases, also including catalogs, revenue and payroll; historical results do not establish current-build coverage |
+
+Cypress includes hybrid UI/API workflows. The current suite does not verify every academic feature or every UI step. See each specialist README for coverage boundaries.
+
+## 4. Testing Documentation
+
+| Track | What to review |
+| --- | --- |
+| [Manual Testing](manual-testing/README.md) | Test plan, scenarios, techniques, 337 original/70 focused cases, execution, defect reports and RTM |
+| [API Testing](api-testing/README.md) | Endpoints, positive/negative/auth checks, business assertions, Postman/Newman and reports |
+| [Automation Testing](automation-testing/README.md) | Cypress scenarios, framework, data isolation, UI/API boundaries, CI and evidence |
+
+The [specification](docs/requirements/LT2_N02_DacTa.pdf) and [academic records](docs/academic/) retain source context. Shared runner/reporting utilities live in `.github/qa/`. [CONTRIBUTING.md](CONTRIBUTING.md) defines evidence and defect-management rules.
+
+## 5. Test Execution Results
+
+| Record | Result | Source |
 | --- | --- | --- |
-| Excel kiểm thử gốc, ghi chú cuối 14/06/2026 | **337 case / 20 use case; 337 Pass theo kết quả đã ghi** | [Excel chuẩn hóa](manual-testing/test-execution/history/manual-execution.xlsx) · [CSV](manual-testing/test-execution/history/manual-execution.csv) |
-| Báo cáo PDF gốc, tháng 6/2026 | **314 case: 288 Pass, 26 Fail** theo bảng tổng hợp | [PDF trang 36](docs/academic/LT2_N02_KiemThu.pdf#page=36) |
-| Hồi quy sau sửa BUG-002/003 | **34 API + 12 Cypress + 7 defect regression: 53 Pass, 0 Fail** | [Test report](manual-testing/test-execution/test-report.md) · [Execution Excel](automation-testing/reports/runs/QA-20261113T124551346Z-2f0e1e/execution.xlsx) |
-| Postman collection chạy bằng Newman | **21 request, 46/46 assertions Pass** | [Bằng chứng thực thi](api-testing/reports/newman/QA-20261113T124931337Z-ba424a/newman-results.json) |
-| Manual regression trên build mới | **40 case ưu tiên: Not Run**, cần thực thi thủ công | [Workbook](manual-testing/test-execution/manual-regression.xlsx) · [Cách thực hiện](manual-testing/test-execution/manual-regression.md) |
+| Original Excel, last-tested sheet note 14 June 2026 | 337 cases / 20 use cases; 337 recorded Pass | [Historical execution workbook](manual-testing/test-execution/history/manual-execution.xlsx) |
+| Original PDF summary | 314 cases: 288 Pass / 26 Fail | [Academic report, page 36](docs/academic/LT2_N02_KiemThu.pdf#page=36) |
+| Automated business regression | 34 API + 12 UI + 7 defect tests: **53 Pass, 0 Fail** | [Execution JSON](automation-testing/reports/runs/QA-20261113T124551346Z-2f0e1e/execution.json) |
+| Postman collection via Newman | 21 requests; **46/46 assertions Pass** | [Newman JSON](api-testing/reports/newman/QA-20261113T124931337Z-ba424a/newman-results.json) |
+| Priority manual retest on the new build | 40 cases: **Not Run** | [Execution template](manual-testing/test-execution/manual-regression.xlsx) |
 
-Hai hồ sơ gốc có số liệu khác nhau; giữ riêng từng kết quả và [ghi rõ đối chiếu](docs/requirements/source-reconciliation.md). Kết quả cũ là kết quả lịch sử đã kiểm thử, không bị chuyển thành Not Run. `Not Run` trong workbook hồi quy chỉ nói đến các case chưa thực hiện lại trên build mới.
+[CI verification after restructuring](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43438419642), commit `9b0a162`, independently confirms 53 business tests and 46 Newman assertions Pass. BUG-002/003/004 have verified fix/retest evidence in the [bug register](manual-testing/bug-reports/README.md).
 
-## Phạm vi và sản phẩm QA
+Excel and PDF counts are separate historical records; their differences are explained in [source reconciliation](docs/requirements/source-reconciliation.md). The 70 focused designs overlap the 337 originals, and the 40-case manual suite is a subset. Neither design counts nor automated assertions are additional manual Pass results.
 
-- **UC1–UC4:** danh mục, lịch khám, tiếp đón/khám bệnh, thanh toán, tiền lương và báo cáo theo tài liệu gốc.
-- [RTM 337 case](manual-testing/rtm/historical-rtm.csv) nối use case → trang đặc tả → mã liên quan → kết quả lịch sử → evidence và automation hiện tại.
-- [Test plan](manual-testing/test-plan/test-plan.md), [bug register](manual-testing/bug-reports/README.md), báo cáo CSV/Excel/JSON và bằng chứng trước/sau sửa lỗi.
-- API positive/negative/RBAC; Cypress có selector ổn định, dữ liệu riêng từng test và kiểm tra dữ liệu lưu sau thao tác.
-- BUG-002/003/004 có bằng chứng trước/sau sửa và lifecycle Fixed → Retest → Closed; test vẫn giữ assertion nghiệp vụ, CI lưu artifacts khi Fail.
-- Bốn case gốc thiếu trường đã được bổ sung ở [bản thiết kế chuẩn hóa](manual-testing/test-cases/source-corrections.json), không sửa kết quả lịch sử.
+## 6. How to Run Tests
 
-70 thiết kế focused trong `manual-testing/test-cases/test-cases.csv` hỗ trợ automation và có nội dung chồng lấp với 337 case gốc; không cộng thành 407 scenario độc lập. Hồi quy mới ưu tiên đăng nhập, phân quyền, lịch hẹn/check-in và thanh toán; chưa xác nhận lại toàn bộ 20 use case.
-
-## Kiến trúc kiểm thử
-
-```mermaid
-flowchart LR
-  Source[Đặc tả và báo cáo cài đặt] --> Cases[337 case gốc]
-  Cases --> History[Kết quả kiểm thử lịch sử]
-  Cases --> Regression[Hồi quy API và Cypress]
-  Regression --> Reports[Run ID, build, actual và evidence]
-  Reports --> Bugs[Bug report và retest]
-  CI[GitHub Actions] --> Regression
-```
-
-## Chạy dự án
-
-Yêu cầu Node.js 24, npm và MongoDB local cổng 27017. Từ thư mục gốc:
+Prerequisites: Node.js 24, npm and local MongoDB on port 27017. Run commands from the repository root:
 
 ```sh
 npm ci --prefix server
 npm ci --prefix client
 npm ci --prefix automation-testing
 npm ci --prefix api-testing/postman
+```
+
+On a fresh checkout, generate the ignored QA environment once and seed synthetic accounts. Reuse an existing `.env.test` for subsequent runs; the generator replaces it.
+
+```sh
 node .github/qa/scripts/prepare-env.js
 node --env-file=.env.test .github/qa/scripts/seed-test-accounts.js
 ```
 
-Mở backend và frontend ở hai terminal:
+Start API and frontend in separate terminals:
 
 ```sh
 node --env-file=.env.test server/server.js
@@ -82,7 +83,7 @@ node --env-file=.env.test server/server.js
 npm --prefix client run dev
 ```
 
-Chạy hồi quy khi API/UI sẵn sàng:
+With both services running:
 
 ```sh
 node .github/qa/scripts/audit-qa.js
@@ -90,12 +91,10 @@ node --env-file=.env.test .github/qa/scripts/run-qa.js
 node --env-file=.env.test .github/qa/scripts/run-postman.js
 ```
 
-Mỗi test Fail, chưa chạy hoặc lỗi tiến trình làm QA trả exit code 1; không bỏ qua defect regression để làm CI xanh. Newman cũng trả nonzero khi có request/script/assertion thất bại. [Hướng dẫn QA](manual-testing/README.md) ghi vị trí báo cáo và cách chạy riêng suite.
+Any failed business test or unexecuted automated test fails the QA run; defect tests are not bypassed. For API-only, Cypress UI/headless and manual execution instructions, use the three specialist READMEs above. Fixture operations require loopback services and a database ending in `_test`.
 
-Khi khởi động, backend tạo unique index trên `Invoice.appointmentId`. Nếu DB cũ có hóa đơn trùng, backend dừng và báo lỗi index; cần đối chiếu hồ sơ tài chính trước khi xử lý, không tự xóa/gộp dữ liệu. Cơ chế hoàn thành cho phép retry để khôi phục hóa đơn thiếu sau lỗi ghi; không phải transaction nguyên tử giữa hai collection.
+## 7. Project Background
 
-## Nguồn và đóng góp
+This project originated as group coursework. The [academic test report](docs/academic/LT2_N02_KiemThu.pdf#page=2) assigns Nguyen Thi Huyen Trang QA responsibilities; application implementation and academic results include group contributions. The client/server code is retained for reproducibility and is not presented as software developed entirely by one person.
 
-[Đặc tả](docs/requirements/LT2_N02_DacTa.pdf), [cài đặt](docs/academic/LT2_N02_CaiDat-1.pdf), [báo cáo kiểm thử](docs/academic/LT2_N02_KiemThu.pdf) và Excel gốc được giữ để truy xuất nguồn. [Chỉ mục hồ sơ lịch sử](manual-testing/test-execution/history/README.md) phân biệt dữ liệu gốc, phần chuẩn hóa và hồi quy mới.
-
-Báo cáo gốc phân công Nguyễn Thị Huyền Trang làm kế hoạch, test case, manual/website testing và automation. Ứng dụng `client/`/`server/` là đối tượng kiểm thử; phần chuẩn hóa và automation bổ sung có AI hỗ trợ. Không nhận toàn bộ phần mềm là sản phẩm cá nhân tự phát triển. Không commit credential hoặc dữ liệu bệnh nhân thật.
+Subsequent source normalization, automation/reporting improvements and defect fixes were AI-assisted. Original academic files and published execution evidence are preserved; current-build results carry their own Run IDs/builds. Historical results are not relabeled as a new manual execution.
