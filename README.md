@@ -1,63 +1,63 @@
-# SmileCare - Software Testing Portfolio
+# SmileCare — Hồ sơ dự án kiểm thử phần mềm
 
-[![Clinic QA Checks](https://github.com/htrsng/KiemThu_PhongKham/actions/workflows/cypress.yml/badge.svg)](https://github.com/htrsng/KiemThu_PhongKham/actions/workflows/cypress.yml)
+[![Kiểm tra QA](https://github.com/htrsng/KiemThu_PhongKham/actions/workflows/cypress.yml/badge.svg)](https://github.com/htrsng/KiemThu_PhongKham/actions/workflows/cypress.yml)
 
-## 1. Project Overview
+## 1. Tổng quan dự án
 
-SmileCare is an academic dental clinic management system built with React/TypeScript, Express and MongoDB. This repository presents its QA work for a **Software Tester Intern portfolio**: requirements analysis, test design, historical execution records, defect reports, API checks and Cypress regression.
+SmileCare là hệ thống quản lý phòng khám nha khoa trong đồ án học phần, sử dụng React/TypeScript, Express và MongoDB. Kho mã trình bày công việc QA phục vụ ứng tuyển **Thực tập sinh Kiểm thử phần mềm**: phân tích yêu cầu, thiết kế kiểm thử, kết quả thực thi lịch sử, báo cáo lỗi, kiểm thử API và hồi quy bằng Cypress.
 
-The application in `client/` and `server/` is the system under test. Testing materials are organized into `manual-testing/`, `api-testing/` and `automation-testing/`.
+Ứng dụng trong `client/` và `server/` là đối tượng kiểm thử. Hồ sơ QA được chia thành `manual-testing/`, `api-testing/` và `automation-testing/`.
 
-## 2. My QA Responsibilities
+## 2. Trách nhiệm QA của tôi
 
-My assigned QA responsibilities in the academic group project included test planning, test case design, manual/website testing and automation. This portfolio documents that work and subsequent maintenance:
+Trong đồ án nhóm, tôi được phân công lập kế hoạch, thiết kế test case, kiểm thử thủ công/website và kiểm thử tự động. Hồ sơ này trình bày công việc đó cùng các phần hoàn thiện sau học phần:
 
-- Review requirements and design positive/negative cases using EP, BVA, decision tables and state transitions.
-- Preserve academic execution records with traceability to their original sources.
-- Document reproducible defects with severity, priority, expected/actual results and evidence.
-- Maintain API/Cypress regression, persisted-state assertions and Before Fix / After Fix records.
-- Prepare a priority manual regression suite; its new-build execution is **still pending**.
+- Phân tích yêu cầu, thiết kế trường hợp hợp lệ/không hợp lệ bằng phân vùng tương đương, phân tích giá trị biên, bảng quyết định và chuyển trạng thái.
+- Giữ kết quả thực thi học phần, có truy xuất về tài liệu nguồn.
+- Ghi nhận lỗi có thể tái hiện, kèm mức độ nghiêm trọng, độ ưu tiên, kết quả mong đợi/thực tế và bằng chứng.
+- Duy trì hồi quy API/Cypress, kiểm tra dữ liệu đã lưu và bằng chứng trước/sau sửa lỗi.
+- Chuẩn bị bộ manual regression ưu tiên; việc thực thi bộ này trên build mới **vẫn chưa hoàn thành**.
 
-The attribution and AI-assisted portfolio additions are explained in [Project Background](#7-project-background).
+Nguồn đóng góp nhóm và các phần có AI hỗ trợ được trình bày tại [Bối cảnh dự án](#7-bối-cảnh-dự-án).
 
-## 3. Testing Scope
+## 3. Phạm vi kiểm thử
 
-| Area | Demonstrated scope |
+| Nhóm chức năng | Phạm vi có bằng chứng |
 | --- | --- |
-| Authentication and RBAC | Login/session validation; Admin/Doctor/Reception access checks |
-| Appointments and check-in | Booking constraints, check-in time/status, appointment transitions and repeated completion |
-| Invoices and payments | Invoice uniqueness, payment methods, received amount/debt and rejected payment mutations |
-| Academic baseline | 20 use cases, also including catalogs, revenue and payroll; historical results do not establish current-build coverage |
+| Xác thực và phân quyền | Kiểm tra đăng nhập/phiên làm việc; quyền của Admin, Doctor và Reception |
+| Lịch hẹn và check-in | Điều kiện đặt lịch, thời gian/trạng thái check-in, chuyển trạng thái và hoàn thành lặp |
+| Hóa đơn và thanh toán | Tính duy nhất hóa đơn, phương thức thanh toán, số tiền thực thu/công nợ và từ chối cập nhật sai |
+| Hồ sơ học phần | 20 use case, có cả danh mục, doanh thu và tiền lương; kết quả cũ không tự xác nhận phạm vi đã kiểm thử trên build mới |
 
-Cypress includes hybrid UI/API workflows. The current suite does not verify every academic feature or every UI step. See each specialist README for coverage boundaries.
+Cypress có các luồng kết hợp UI/API. Bộ hiện tại chưa xác minh lại mọi tính năng học phần hoặc mọi bước trên giao diện. Phạm vi và giới hạn được ghi trong từng README chuyên môn.
 
-## 4. Testing Documentation
+## 4. Tài liệu kiểm thử
 
-| Track | What to review |
+| Nhóm | Nội dung |
 | --- | --- |
-| [Manual Testing](manual-testing/README.md) | Test plan, scenarios, techniques, 337 original/70 focused cases, execution, defect reports and RTM |
-| [API Testing](api-testing/README.md) | Endpoints, positive/negative/auth checks, business assertions, Postman/Newman and reports |
-| [Automation Testing](automation-testing/README.md) | Cypress scenarios, framework, data isolation, UI/API boundaries, CI and evidence |
+| [Kiểm thử thủ công](manual-testing/README.md) | Kế hoạch, kịch bản, kỹ thuật, 337 case gốc/70 case tập trung, thực thi, báo cáo lỗi và RTM |
+| [Kiểm thử API](api-testing/README.md) | Endpoint, trường hợp hợp lệ/không hợp lệ, xác thực/phân quyền, assertions, Postman/Newman và báo cáo |
+| [Kiểm thử tự động](automation-testing/README.md) | Kịch bản Cypress, cấu trúc, dữ liệu riêng, phạm vi UI/API, CI và bằng chứng |
 
-The [specification](docs/requirements/LT2_N02_DacTa.pdf) and [academic records](docs/academic/) retain source context. Shared runner/reporting utilities live in `.github/qa/`. [CONTRIBUTING.md](CONTRIBUTING.md) defines evidence and defect-management rules.
+[Đặc tả](docs/requirements/LT2_N02_DacTa.pdf) và [tài liệu học phần](docs/academic/) được giữ để đối chiếu nguồn. Công cụ chạy test/báo cáo dùng chung nằm trong `.github/qa/`. [CONTRIBUTING.md](CONTRIBUTING.md) quy định cách quản lý bằng chứng và lỗi.
 
-## 5. Test Execution Results
+## 5. Kết quả thực thi kiểm thử
 
-| Record | Result | Source |
+| Hồ sơ | Kết quả | Nguồn |
 | --- | --- | --- |
-| Original Excel, last-tested sheet note 14 June 2026 | 337 cases / 20 use cases; 337 recorded Pass | [Historical execution workbook](manual-testing/test-execution/history/manual-execution.xlsx) |
-| Original PDF summary | 314 cases: 288 Pass / 26 Fail | [Academic report, page 36](docs/academic/LT2_N02_KiemThu.pdf#page=36) |
-| Automated business regression | 34 API + 12 UI + 7 defect tests: **53 Pass, 0 Fail** | [Execution JSON](automation-testing/reports/runs/QA-20261113T124551346Z-2f0e1e/execution.json) |
-| Postman collection via Newman | 21 requests; **46/46 assertions Pass** | [Newman JSON](api-testing/reports/newman/QA-20261113T124931337Z-ba424a/newman-results.json) |
-| Priority manual retest on the new build | 40 cases: **Not Run** | [Execution template](manual-testing/test-execution/manual-regression.xlsx) |
+| Excel gốc, ghi chú kiểm thử cuối ngày 14/06/2026 | 337 case / 20 use case; ghi nhận 337 Pass | [Workbook kết quả lịch sử](manual-testing/test-execution/history/manual-execution.xlsx) |
+| Bảng tổng hợp trong PDF gốc | 314 case: 288 Pass / 26 Fail | [Báo cáo học phần, trang 36](docs/academic/LT2_N02_KiemThu.pdf#page=36) |
+| Hồi quy nghiệp vụ tự động | 34 API + 12 UI + 7 test hồi quy lỗi: **53 Pass, 0 Fail** | [Kết quả JSON](automation-testing/reports/runs/QA-20261113T124551346Z-2f0e1e/execution.json) |
+| Collection Postman chạy bằng Newman | 21 request; **46/46 assertions Pass** | [Kết quả Newman](api-testing/reports/newman/QA-20261113T124931337Z-ba424a/newman-results.json) |
+| Manual regression ưu tiên trên build mới | 40 case: **Not Run** | [Workbook thực thi](manual-testing/test-execution/manual-regression.xlsx) |
 
-[CI verification after restructuring](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43438419642), commit `9b0a162`, independently confirms 53 business tests and 46 Newman assertions Pass. BUG-002/003/004 have verified fix/retest evidence in the [bug register](manual-testing/bug-reports/README.md).
+[CI đã xác minh sau khi đổi cấu trúc](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43438419642), commit `9b0a162`, xác nhận riêng 53 test nghiệp vụ và 46 assertions Newman Pass. BUG-002/003/004 có bằng chứng sửa lỗi và retest trong [sổ theo dõi lỗi](manual-testing/bug-reports/README.md).
 
-Excel and PDF counts are separate historical records; their differences are explained in [source reconciliation](docs/requirements/source-reconciliation.md). The 70 focused designs overlap the 337 originals, and the 40-case manual suite is a subset. Neither design counts nor automated assertions are additional manual Pass results.
+Excel và PDF là hai hồ sơ lịch sử riêng; chênh lệch được giải thích trong [đối chiếu nguồn](docs/requirements/source-reconciliation.md). 70 thiết kế tập trung có chồng lấp với 337 case gốc; bộ manual 40 case là một tập con. Không cộng số thiết kế hoặc assertions tự động thành số case manual đã Pass.
 
-## 6. How to Run Tests
+## 6. Hướng dẫn chạy kiểm thử
 
-Prerequisites: Node.js 24, npm and local MongoDB on port 27017. Run commands from the repository root:
+Yêu cầu: Node.js 24, npm và MongoDB cục bộ cổng 27017. Chạy lệnh từ thư mục gốc:
 
 ```sh
 npm ci --prefix server
@@ -66,14 +66,14 @@ npm ci --prefix automation-testing
 npm ci --prefix api-testing/postman
 ```
 
-On a fresh checkout, generate the ignored QA environment once and seed synthetic accounts. Reuse an existing `.env.test` for subsequent runs; the generator replaces it.
+Với bản tải mới, tạo môi trường QA một lần và seed tài khoản giả lập. Các lần sau dùng lại `.env.test` đang có; lệnh sinh môi trường sẽ ghi đè file này.
 
 ```sh
 node .github/qa/scripts/prepare-env.js
 node --env-file=.env.test .github/qa/scripts/seed-test-accounts.js
 ```
 
-Start API and frontend in separate terminals:
+Mở API và frontend ở hai terminal riêng:
 
 ```sh
 node --env-file=.env.test server/server.js
@@ -83,7 +83,7 @@ node --env-file=.env.test server/server.js
 npm --prefix client run dev
 ```
 
-With both services running:
+Khi hai dịch vụ đã chạy:
 
 ```sh
 node .github/qa/scripts/audit-qa.js
@@ -91,10 +91,10 @@ node --env-file=.env.test .github/qa/scripts/run-qa.js
 node --env-file=.env.test .github/qa/scripts/run-postman.js
 ```
 
-Any failed business test or unexecuted automated test fails the QA run; defect tests are not bypassed. For API-only, Cypress UI/headless and manual execution instructions, use the three specialist READMEs above. Fixture operations require loopback services and a database ending in `_test`.
+Test nghiệp vụ Fail hoặc test tự động chưa chạy làm QA trả lỗi; không bỏ qua test hồi quy lỗi. Cách chạy riêng API, Cypress có giao diện/headless và thực thi manual nằm trong ba README chuyên môn. Công cụ tạo dữ liệu yêu cầu dịch vụ loopback và tên database kết thúc bằng `_test`.
 
-## 7. Project Background
+## 7. Bối cảnh dự án
 
-This project originated as group coursework. The [academic test report](docs/academic/LT2_N02_KiemThu.pdf#page=2) assigns Nguyen Thi Huyen Trang QA responsibilities; application implementation and academic results include group contributions. The client/server code is retained for reproducibility and is not presented as software developed entirely by one person.
+Dự án bắt nguồn từ đồ án nhóm trong học phần. [Báo cáo kiểm thử gốc](docs/academic/LT2_N02_KiemThu.pdf#page=2) phân công Nguyễn Thị Huyền Trang phụ trách các công việc QA; phần ứng dụng và kết quả học phần có đóng góp của các thành viên trong nhóm. Mã client/server được giữ để tái hiện kiểm thử, không trình bày là phần mềm do một cá nhân tự phát triển toàn bộ.
 
-Subsequent source normalization, automation/reporting improvements and defect fixes were AI-assisted. Original academic files and published execution evidence are preserved; current-build results carry their own Run IDs/builds. Historical results are not relabeled as a new manual execution.
+Các phần chuẩn hóa nguồn, cải tiến automation/báo cáo và sửa lỗi sau học phần có AI hỗ trợ. File học phần gốc và bằng chứng đã công bố được giữ nguyên; kết quả trên build mới có Run ID/build riêng. Không đổi kết quả lịch sử thành một lần thực thi manual mới.

@@ -1,38 +1,38 @@
-# Contributing
+# Quy ước đóng góp
 
-Use the same entry points and paths as the [project overview](README.md): [Manual Testing](manual-testing/README.md), [API Testing](api-testing/README.md) and [Automation Testing](automation-testing/README.md).
+Sử dụng thống nhất các mục điều hướng và đường dẫn trong [tổng quan dự án](README.md): [Kiểm thử thủ công](manual-testing/README.md), [Kiểm thử API](api-testing/README.md) và [Kiểm thử tự động](automation-testing/README.md).
 
-## Repository responsibilities
+## Vai trò các thư mục
 
-| Location | Content |
+| Vị trí | Nội dung |
 | --- | --- |
-| `manual-testing/` | Test plan, scenarios, cases, execution, bug reports and RTM |
-| `api-testing/` | Node API tests, Postman/Newman and API report index |
-| `automation-testing/` | Cypress specs/support, shared data fixtures and reports |
-| `docs/requirements/`, `docs/academic/` | Specification, source reconciliation and original academic records |
-| `.github/qa/`, `.github/workflows/` | Shared runners/reporting helpers and CI |
-| `client/`, `server/` | Application under test |
+| `manual-testing/` | Kế hoạch, kịch bản, test case, thực thi, báo cáo lỗi và RTM |
+| `api-testing/` | Test API Node, Postman/Newman và chỉ mục báo cáo API |
+| `automation-testing/` | Spec/support Cypress, fixture dữ liệu dùng chung và báo cáo |
+| `docs/requirements/`, `docs/academic/` | Đặc tả, đối chiếu nguồn và tài liệu học phần gốc |
+| `.github/qa/`, `.github/workflows/` | Runner/công cụ báo cáo dùng chung và CI |
+| `client/`, `server/` | Ứng dụng được kiểm thử |
 
-## Test and evidence rules
+## Quy tắc kiểm thử và bằng chứng
 
-- Use synthetic data, loopback services and a QA database ending in `_test`. Never commit `.env.test`, passwords, tokens, real patient data or installed dependencies.
-- Every automated test needs observable assertions, isolated data and cleanup by owned IDs. Check stored state after business mutations when relevant.
-- `manual-testing/test-cases/source-cases.csv` preserves 337 historical cases; historical results live in `manual-testing/test-execution/history/`. The 70 focused cases overlap that inventory, and the 40-case suite is a priority subset. Do not add those counts together or inherit historical Pass into new-build retest.
-- Record actual manual execution with build, date/time, executor, Expected, Actual, status, Bug ID and evidence. Automation Partial is not a complete manual Pass.
-- Give every automated run a unique Run ID/build/executor and directory. Do not edit published results. Retain Before Fix, After Fix and Regression evidence; use `automation-testing/reports/legacy-paths.json` to resolve paths from older records.
-- Use `BUG-xxx`, `TC-AREA-xxx` and `REQ-AREA-xxx` identifiers. Defects need reproducible steps, expected/actual, environment and evidence. Preserve original academic identifiers when importing sources.
-- Severity: Critical (data loss/system blocker), High (major business impact), Medium (impact with a workaround), Low (minor impact). Priority: P0 release blocker, P1 current cycle, P2 next cycle, P3 backlog.
-- Follow New -> Open -> Fixed -> Retest -> Closed; failed retest leads to Reopened. Never remove assertions to turn Fail into Pass. The lifecycle tool requires fix/evidence verification before closing a defect.
+- Dùng dữ liệu giả, dịch vụ loopback và database QA kết thúc bằng `_test`. Không commit `.env.test`, mật khẩu, token, dữ liệu bệnh nhân thật hoặc thư viện đã cài.
+- Mỗi test tự động cần assertions cho kết quả quan sát được, dữ liệu riêng và cleanup theo ID sở hữu. Kiểm tra dữ liệu đã lưu sau thao tác nghiệp vụ khi phù hợp.
+- `manual-testing/test-cases/source-cases.csv` giữ 337 case lịch sử; kết quả lịch sử ở `manual-testing/test-execution/history/`. Bộ 70 case tập trung có chồng lấp; bộ 40 case là tập con ưu tiên. Không cộng các số lượng này hoặc kế thừa Pass lịch sử cho retest build mới.
+- Ghi thực thi manual thật với build, ngày giờ, người thực hiện, Expected, Actual, trạng thái, Bug ID và bằng chứng. Automation Partial không có nghĩa toàn bộ case đã Pass manual.
+- Mỗi run tự động có Run ID/build/người chạy và thư mục riêng. Không sửa kết quả đã công bố. Giữ bằng chứng Trước sửa, Sau sửa và Hồi quy; dùng `automation-testing/reports/legacy-paths.json` để tìm đường dẫn từ hồ sơ cũ.
+- Dùng định danh `BUG-xxx`, `TC-AREA-xxx`, `REQ-AREA-xxx`. Lỗi cần bước tái hiện, expected/actual, môi trường và bằng chứng. Giữ mã học phần gốc khi nhập dữ liệu nguồn.
+- Severity: Critical — mất dữ liệu/chặn hệ thống; High — ảnh hưởng nghiệp vụ lớn; Medium — có ảnh hưởng nhưng có cách khắc phục tạm; Low — ảnh hưởng nhỏ. Priority: P0 — chặn phát hành; P1 — chu kỳ hiện tại; P2 — chu kỳ sau; P3 — backlog.
+- Vòng đời: New → Open → Fixed → Retest → Closed; retest thất bại chuyển Reopened. Không xóa assertions để đổi Fail thành Pass. Công cụ lifecycle yêu cầu kiểm tra commit sửa/bằng chứng trước khi đóng lỗi.
 
-## Validation
+## Kiểm tra thay đổi
 
-Run from the repository root after following [project setup](README.md#6-how-to-run-tests):
+Chạy từ thư mục gốc sau khi [cài đặt dự án](README.md#6-hướng-dẫn-chạy-kiểm-thử):
 
 ```sh
 node .github/qa/scripts/audit-qa.js
 node --test .github/qa/unit/qa-reporting.test.js
 ```
 
-For changes affecting application behavior, tests or runner configuration, also run the relevant API/Cypress/Newman suites and frontend build as applicable. Documentation-only edits require link, path and factual consistency checks; no new business-test execution is implied by editing a README.
+Với thay đổi hành vi ứng dụng, test hoặc cấu hình runner, chạy thêm các suite API/Cypress/Newman liên quan và build frontend khi cần. Thay đổi chỉ ở tài liệu cần kiểm tra liên kết, đường dẫn và tính thống nhất của thông tin; sửa README không được coi là một lần thực thi test nghiệp vụ mới.
 
-Audit a completed run with `node .github/qa/scripts/audit-run.js <run-directory>`. Runtime output is ignored under `automation-testing/reports/generated/`; publish selected evidence using the [shared QA scripts](.github/qa/README.md), never overwrite an existing published Run ID. Preserve any in-progress manual workbook edits.
+Audit run đã hoàn thành bằng `node .github/qa/scripts/audit-run.js <run-directory>`. Đầu ra chạy nằm trong `automation-testing/reports/generated/` và bị Git bỏ qua; công bố bằng chứng được chọn qua [script QA dùng chung](.github/qa/README.md), không ghi đè Run ID đã công bố. Giữ nguyên các chỉnh sửa workbook manual đang làm dở.
