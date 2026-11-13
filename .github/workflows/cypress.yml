@@ -5,11 +5,6 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
-    inputs:
-      run_legacy:
-        description: 'Chạy thêm bộ kiểm thử cũ chưa xác minh (có thể thất bại)'
-        type: boolean
-        default: false
 permissions:
   contents: read
 jobs:
@@ -50,11 +45,15 @@ jobs:
           node testing/scripts/wait-for-app.js
       - name: Kiem thu API dang nhap
         run: node --test --test-concurrency=1 testing/api/auth.test.js
+      - name: Kiem thu API phan quyen va hoa don
+        run: node --test --test-concurrency=1 testing/api/authorization-invoice.test.js
       - name: Kiem thu giao dien dang nhap
-        run: npm run cy:smoke --prefix testing/e2e
-      - name: Bo kiem thu cu, chi chay khi duoc chon thu cong
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_legacy }}
-        run: npm run cy:legacy --prefix testing/e2e
+        run: npm run cy:run --prefix testing/e2e
+      - name: Lap lai smoke login ba lan de kiem tra flaky
+        run: |
+          for attempt in 1 2 3; do
+            npm run cy:smoke --prefix testing/e2e
+          done
       - name: Luu bao cao va log
         if: always()
         uses: actions/upload-artifact@v4
