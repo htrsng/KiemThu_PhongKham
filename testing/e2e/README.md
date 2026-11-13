@@ -1,31 +1,24 @@
-# Kiểm thử giao diện bằng Cypress
+# Cypress UI
 
-Bộ đang duy trì ở `cypress/e2e/login.cy.js` và `cypress/e2e/core-workflows.cy.js`, tổng cộng 17 case E2E/API-hybrid. Các kịch bản Cypress legacy chưa xác minh đã được loại bỏ để tránh nhầm với bộ kiểm thử đang duy trì.
+Bộ đang duy trì gồm 5 test đăng nhập và 5 test vai trò/nghiệp vụ. Lần chạy 13/11/2026 đạt 10/10 trên Electron, retry = 0. [Bằng chứng](../../docs/qa/evidence/2026-11-13/README.md).
 
-Đọc [hướng dẫn QA](../../docs/qa/README.md) để tạo tài khoản thử nghiệm, chạy API và cấu hình môi trường. Các giá trị trong `.env.example` chỉ là mẫu; Cypress không tự đọc file này.
+Sau khi chuẩn bị QA và khởi động API/UI theo [hướng dẫn](../../docs/qa/README.md), từ thư mục `testing/e2e` chạy:
 
-- `npm run cy:open`: mở Cypress tương tác sau khi đã nạp môi trường.
-- `npm run cy:smoke`: chạy smoke login.
-- `npm run cy:run`: chạy toàn bộ 17 case Cypress.
-
-Từ thư mục gốc, nạp môi trường QA khi chạy bằng npm:
-
-```powershell
-Get-Content testing/.env.test | ForEach-Object {
-  if ($_ -match '^([^#=]+)=(.*)$') {
-    Set-Item "Env:$($matches[1])" $matches[2]
-  }
-}
-npm run cy:smoke --prefix testing/e2e
-npm run cy:run --prefix testing/e2e
-```
-
-Hoặc chuyển vào `testing/e2e` trước khi truyền `--spec`:
-
-```powershell
-Push-Location testing/e2e
+```sh
+node --env-file=../.env.test node_modules/cypress/bin/cypress run
 node --env-file=../.env.test node_modules/cypress/bin/cypress run --spec cypress/e2e/login.cy.js
-Pop-Location
 ```
 
-Báo cáo do cypress-mochawesome-reporter tạo trực tiếp trong `cypress/reports/`; không cần script merge cũ với công cụ chưa khai báo.
+`npm run cy:open`, `cy:smoke`, `cy:run` cũng dùng được khi đã nạp biến môi trường vào shell. Cypress không tự đọc `.env.example` hoặc `.env.test`.
+
+Nếu terminal IDE đặt `ELECTRON_RUN_AS_NODE=1`, bỏ biến đó trong terminal chạy Cypress. Với PowerShell:
+
+```powershell
+Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue
+```
+
+`core-workflows.cy.js` dùng Node task `qa:create` tạo dữ liệu tiền điều kiện với ID riêng; mỗi `afterEach` dọn dữ liệu do helper sở hữu. Luồng check-in thực hiện bằng nút trên giao diện, đợi request alias và GET lại trạng thái; invoice test kiểm tra patient, số tiền và trạng thái chưa thanh toán. Không chia sẻ appointment/invoice giữa các test, không dùng chờ thời gian cố định.
+
+Hai lỗi nghiệp vụ API có suite riêng `testing/api/known-defects.test.js`; không che lỗi bằng retry hoặc đổi expected. Cypress hiện chưa tự động hóa thao tác thu tiền trên UI hoặc toàn bộ state transition.
+
+HTML/JSON ở `cypress/reports/`, video ở `cypress/videos/`, screenshot ở `cypress/screenshots/`. Hai screenshot thành công phục vụ demo được tạo có chủ đích; khi Fail, Cypress tự chụp thêm ảnh. Raw artifacts không commit; chỉ chọn bằng chứng không chứa credential vào `docs/qa/evidence/`.

@@ -15,18 +15,29 @@ module.exports = defineConfig({
     screenshotsFolder: 'cypress/screenshots',
     screenshotOnRunFailure: true,
     retries: {
-      runMode: 2,
+      runMode: 0,
       openMode: 0
     },
     reporter: 'cypress-mochawesome-reporter',
     reporterOptions: {
       reportDir: 'cypress/reports',
       overwrite: false,
+      removeJsonsFolderAfterMerge: false,
       html: true,
       json: true
     },
     setupNodeEvents(on, config) {
-      require('cypress-mochawesome-reporter/plugin')(on);
+      const { beforeRunHook, afterRunHook } = require('cypress-mochawesome-reporter/lib');
+      const fixtures = require('../helpers/qa-data');
+      on('before:run', beforeRunHook);
+      on('task', {
+        'qa:create': fixtures.createFixture,
+        'qa:cleanup': fixtures.cleanupAll,
+      });
+      on('after:run', async (results) => {
+        try { await afterRunHook(results); }
+        finally { await fixtures.cleanupAll(); }
+      });
       return config;
     }
   },
