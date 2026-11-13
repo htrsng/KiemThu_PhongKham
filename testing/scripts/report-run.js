@@ -83,7 +83,8 @@ async function reportRun(directory) {
   }
   await workbook.xlsx.writeFile(resolve(directory, 'execution.xlsx'));
   const summary = `# Test Run ${manifest.runId}\n\nBuild: ${manifest.applicationVersion} / ${manifest.commit}. Source hash: ${manifest.workingTreeHash}.\n\nExecutor: ${manifest.executor}. Started: ${manifest.started}.\n\n| Status | Count |\n| --- | ---: |\n${Object.entries(counts).map(([status, count]) => `| ${status} | ${count} |`).join('\n')}\n\nManual: 337 original designs and 70 overlapping focused designs remain Not Run. Automation mappings are partial, not full manual Pass.\n\n[Execution CSV](execution.csv) · [Excel](execution.xlsx) · [RTM with results](traceability.csv) · [JSON](execution.json)\n`;
-  writeFileSync(resolve(directory, 'summary.md'), summary);
+  writeFileSync(resolve(directory, 'summary.md'), summary + '\n' + require('../helpers/suite-summary').suiteSummary(results)
+    + '\n\nEvery failing business assertion still fails CI, including defect regression.\n');
   return { manifest, counts, results };
 }
 if (require.main === module) reportRun(resolve(process.argv[2])).catch((error) => { console.error(error); process.exitCode = 1; });

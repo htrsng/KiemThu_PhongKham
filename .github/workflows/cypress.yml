@@ -39,6 +39,8 @@ jobs:
         run: npm run build --prefix client
       - name: Cai Cypress
         run: npm ci --prefix testing/e2e
+      - name: Cai Newman
+        run: npm ci --prefix testing/postman
       - name: Sinh moi truong QA tam thoi
         run: node testing/scripts/prepare-env.js
       - name: Tao tai khoan trong DB thu nghiem
@@ -57,6 +59,9 @@ jobs:
         env:
           QA_AUDIT_DIR: ${{ steps.qa.outputs.run_dir }}
         run: node testing/scripts/audit-run.js "$QA_AUDIT_DIR"
+      - name: Postman collection via Newman
+        if: always() && steps.qa.outputs.run_dir != ''
+        run: node testing/scripts/run-postman.js
       - name: Luu bao cao va log
         if: always()
         uses: actions/upload-artifact@v4

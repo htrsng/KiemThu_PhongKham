@@ -32,7 +32,7 @@ async function main() {
   const report = await reportRun(run.directory);
   console.log(`Results: ${JSON.stringify(report.counts)}\n${run.directory}/summary.md`);
   if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY,
-    `\n## ${run.manifest.runId}\n\nBuild: ${run.manifest.commit}\n\n${JSON.stringify(report.counts)}\n\nAll suites attempted. Known defects are reported as Fail, not hidden passes. Download clinic-qa-evidence for per-case results and traceability.\n`);
+    `\n## ${run.manifest.runId}\n\nBuild: ${run.manifest.commit}\n\n${require('../helpers/suite-summary').suiteSummary(report.results)}\n\nAll suites attempted. Any failed business test fails CI. Download clinic-qa-evidence for per-case results and traceability.\n`);
   process.exitCode = outcomes.some((outcome) => outcome.exitCode !== 0) || report.counts.Fail || report.counts['Not Run'] ? 1 : 0;
 }
 main().catch((error) => { console.error(error); process.exitCode = 1; });
