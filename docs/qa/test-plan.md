@@ -1,4 +1,4 @@
-# Kế hoạch kiểm thử theo rủi ro — Giai đoạn 1
+# Kế hoạch kiểm thử theo rủi ro — Portfolio QA
 
 ## 1. Mục tiêu và phạm vi
 
@@ -34,7 +34,7 @@ Nguồn chính: [`authController.js`](../../server/src/controllers/authControlle
 - `/auth/me` trả đúng tài khoản của token hợp lệ.
 - Có thể có ba vai trò: `Admin`, `Doctor`, `Reception`.
 
-Trạng thái hiện tại: **đã xác minh 8 ca API và 5 ca UI**, xem [`verification.md`](./verification.md).
+Trạng thái hiện tại: đăng nhập có 8 API và 5 UI Pass trong lần chạy cục bộ 13/11/2026. Toàn bộ suite hiện có 36 Pass và 2 Fail; xem [test report](test-report.md). Kết quả CI cũ ghi riêng tại [verification.md](verification.md).
 
 ### 2.2 Phân quyền — `AUTHZ`
 
@@ -158,6 +158,8 @@ Test data phải được sinh hoặc tạo trong DB QA. Credential lấy từ b
 
 ## 7. Tiêu chí vào/ra
 
+Đánh giá ngày 13/11/2026: môi trường/build và automation sẵn sàng; **chưa đạt tiêu chí ra**, vì manual chưa thực thi và BUG-002/003 còn Open. Đây là kết quả đánh giá chất lượng, không phải xác nhận sẵn sàng phát hành.
+
 ### Tiêu chí vào
 
 - Build frontend thành công.
@@ -191,10 +193,12 @@ Một người có thể kiêm nhiều vai trò trong dự án học tập, như
 | Kỹ thuật | Áp dụng | Test case |
 |---|---|---|
 | Equivalence Partitioning (EP) | Email hợp lệ/không hợp lệ, mật khẩu hợp lệ/không hợp lệ, giảm giá, phụ phí | `TC-AUTH-003`–`TC-AUTH-005`, `TC-PAY-005`–`TC-PAY-008` |
-| Boundary Value Analysis (BVA) | Check-in 29/30/31 phút, giảm giá 0/100%, phụ phí 0 và âm, mật khẩu biên | `TC-AUTH-006`–`TC-AUTH-007`, `TC-APPT-011`–`TC-APPT-013`, `TC-PAY-009`–`TC-PAY-012` |
-| State transition | Năm trạng thái lịch hẹn, chuyển tiến hợp lệ và chuyển lùi/hủy sai | `TC-APPT-014`–`TC-APPT-020` |
-| Decision table | Tổ hợp giảm giá × phụ phí × phương thức thanh toán và điều kiện ghi nợ | `TC-PAY-013`–`TC-PAY-016` |
+| Boundary Value Analysis (BVA) | Check-in 29/30/31 phút, giảm giá 0/100%, phụ phí âm, mật khẩu biên | `TC-AUTH-006`–`TC-AUTH-007`, `TC-APPT-011`–`TC-APPT-014`, `TC-PAY-009`–`TC-PAY-012`, `TC-PAY-016` |
+| State transition | Chuyển tiến hợp lệ, chuyển lùi/hủy sai và cập nhật hoàn thành lặp | `TC-APPT-015`–`TC-APPT-022` |
+| Decision table | Bốn phương thức thanh toán, giảm giá và phụ phí | `TC-PAY-003`–`TC-PAY-006`, `TC-PAY-013`–`TC-PAY-015` |
 | RBAC matrix | Ba vai trò với chức năng chính và endpoint bị hạn chế | `TC-AUTHZ-001`–`TC-AUTHZ-012` |
 | Error guessing | Cập nhật hoàn thành nhiều lần, token sai/hết hạn, dữ liệu thiếu và thao tác lặp | `TC-AUTH-008`–`TC-AUTH-010`, `TC-APPT-021`–`TC-APPT-024`, `TC-PAY-017`–`TC-PAY-018` |
 
 Danh sách case đầy đủ nằm ở [`test-cases.tsv`](../../testing/manual/test-cases.tsv), có thể mở trực tiếp bằng Excel hoặc import vào Google Sheets. Ma trận truy xuất nằm ở [`rtm.tsv`](./rtm.tsv).
+
+RTM có 31 yêu cầu, gồm 30 Current và 1 Deferred về payroll. Các yêu cầu được suy ra từ mã nguồn/quy tắc học tập, chưa phải hợp đồng được stakeholder phê duyệt. Bốn yêu cầu được bổ sung để bao phủ đăng nhập thành công, biên mật khẩu, trường bắt buộc lịch hẹn và tính duy nhất hóa đơn. Mọi case đã có ánh xạ, nhưng `Designed` không phải runtime coverage. Chi tiết endpoint và nhánh chưa chạy ở [API checklist](api-contract.md).

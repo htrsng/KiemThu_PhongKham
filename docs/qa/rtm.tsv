@@ -1,28 +1,32 @@
-Requirement ID	Module	Requirement	Test case IDs	Coverage
-REQ-AUTH-001	Đăng nhập	Email và mật khẩu bắt buộc	TC-AUTH-002	Covered
-REQ-AUTH-002	Đăng nhập	Email phải có đuôi gmail.com	TC-AUTH-003, TC-AUTH-004	Covered
-REQ-AUTH-003	Đăng nhập	Sai mật khẩu trả 401 và không tạo phiên	TC-AUTH-005	Covered
-REQ-AUTH-004	Đăng nhập	Tài khoản locked bị từ chối	TC-AUTH-008	Covered
-REQ-AUTH-005	Đăng nhập	Token hợp lệ truy cập /me, token sai/hết hạn bị từ chối	TC-AUTH-009, TC-AUTH-010, TC-AUTH-012	Covered
-REQ-AUTH-006	Đăng nhập	Đăng xuất xóa phiên	TC-AUTH-011	Covered
-REQ-AUTHZ-001	Phân quyền	Hệ thống có Admin, Doctor, Reception	TC-AUTHZ-001, TC-AUTHZ-002, TC-AUTHZ-003, TC-AUTHZ-010	Covered
-REQ-AUTHZ-002	Phân quyền	Chỉ Admin quản lý tài khoản	TC-AUTHZ-001, TC-AUTHZ-002, TC-AUTHZ-003	Covered
-REQ-AUTHZ-003	Phân quyền	Admin/Reception thao tác hóa đơn, Doctor bị chặn	TC-AUTHZ-004, TC-AUTHZ-005, TC-AUTHZ-006, TC-AUTHZ-007	Covered
-REQ-AUTHZ-004	Phân quyền	Doctor chỉ xem payroll phù hợp, Reception không được xem	TC-AUTHZ-008, TC-AUTHZ-009	Covered
-REQ-AUTHZ-005	Phân quyền	Không tự khóa hoặc xóa account hiện tại	TC-AUTHZ-011, TC-AUTHZ-012	Covered
-REQ-APPT-001	Lịch hẹn	Không đặt lịch quá khứ	TC-APPT-002	Covered
-REQ-APPT-002	Lịch hẹn	Bác sĩ phải có ca trực và không nghỉ phép	TC-APPT-003, TC-APPT-004	Covered
-REQ-APPT-003	Lịch hẹn	Không vượt sức chứa; lịch hủy không tính	TC-APPT-007, TC-APPT-008	Covered
-REQ-APPT-004	Lịch hẹn	Không trùng bệnh nhân/bác sĩ trong ngày	TC-APPT-009, TC-APPT-010	Covered
-REQ-APPT-005	Lịch hẹn	Có năm trạng thái nghiệp vụ	TC-APPT-016, TC-APPT-017, TC-APPT-018, TC-APPT-019, TC-APPT-020	Covered
-REQ-APPT-006	Lịch hẹn	Trạng thái chỉ tiến về trước và không hủy sau khi đã đến	TC-APPT-020, TC-APPT-021, TC-APPT-026	Covered
-REQ-APPT-007	Lịch hẹn	Check-in trong khoảng ±30 phút	TC-APPT-011, TC-APPT-012, TC-APPT-013, TC-APPT-014	Covered
-REQ-APPT-008	Lịch hẹn	Walk-in tái sử dụng bệnh nhân theo số điện thoại	TC-APPT-023, TC-APPT-024	Covered
-REQ-PAY-001	Thanh toán	Hóa đơn gắn appointment/patient và có trạng thái mặc định	TC-PAY-001, TC-PAY-002	Covered
-REQ-PAY-002	Thanh toán	Có bốn phương thức thanh toán theo model	TC-PAY-003, TC-PAY-004, TC-PAY-005, TC-PAY-006	Covered
-REQ-PAY-003	Thanh toán	Thanh toán đủ không tạo công nợ	TC-PAY-003, TC-PAY-004, TC-PAY-005, TC-PAY-006	Covered
-REQ-PAY-004	Thanh toán	Thanh toán thiếu cần cho phép ghi nợ	TC-PAY-007, TC-PAY-008	Covered
-REQ-PAY-005	Thanh toán	Số tiền nhận không âm	TC-PAY-009, TC-PAY-010	Covered
-REQ-PAY-006	Thanh toán	Giảm giá và phụ phí tính thành tiền đúng	TC-PAY-011, TC-PAY-012, TC-PAY-013, TC-PAY-014, TC-PAY-015, TC-PAY-016, TC-PAY-017	Covered
-REQ-PAY-007	Thanh toán	Hoàn tiền trong 7 ngày, quá hạn bị từ chối	TC-PAY-018, TC-PAY-019	Covered
-REQ-PAY-008	Thanh toán	Chỉ Admin được xóa hóa đơn	TC-AUTHZ-004, TC-AUTHZ-007, TC-PAY-020	Covered
+Requirement ID	Module	Requirement	Test case IDs	Coverage	Scope
+REQ-AUTH-001	Đăng nhập	Email và mật khẩu bắt buộc	TC-AUTH-002	Designed	Current
+REQ-AUTH-002	Đăng nhập	Email phải có đuôi gmail.com	TC-AUTH-003, TC-AUTH-004	Designed	Current
+REQ-AUTH-003	Đăng nhập	Sai mật khẩu trả 401 và không tạo phiên	TC-AUTH-005	Designed	Current
+REQ-AUTH-004	Đăng nhập	Tài khoản locked bị từ chối	TC-AUTH-008	Designed	Current
+REQ-AUTH-005	Đăng nhập	Token hợp lệ truy cập /me, token sai/hết hạn bị từ chối	TC-AUTH-009, TC-AUTH-010, TC-AUTH-012	Designed	Current
+REQ-AUTH-006	Đăng nhập	Đăng xuất xóa phiên	TC-AUTH-011	Designed	Current
+REQ-AUTHZ-001	Phân quyền	Hệ thống có Admin, Doctor, Reception	TC-AUTHZ-001, TC-AUTHZ-002, TC-AUTHZ-003, TC-AUTHZ-010	Designed	Current
+REQ-AUTHZ-002	Phân quyền	Chỉ Admin quản lý tài khoản	TC-AUTHZ-001, TC-AUTHZ-002, TC-AUTHZ-003	Designed	Current
+REQ-AUTHZ-003	Phân quyền	Admin/Reception thao tác hóa đơn, Doctor bị chặn	TC-AUTHZ-004, TC-AUTHZ-005, TC-AUTHZ-006, TC-AUTHZ-007	Designed	Current
+REQ-AUTHZ-004	Phân quyền	Doctor chỉ xem payroll phù hợp, Reception không được xem	TC-AUTHZ-008, TC-AUTHZ-009	Designed	Deferred
+REQ-AUTHZ-005	Phân quyền	Không tự khóa hoặc xóa account hiện tại	TC-AUTHZ-011, TC-AUTHZ-012	Designed	Current
+REQ-APPT-001	Lịch hẹn	Không đặt lịch quá khứ	TC-APPT-002	Designed	Current
+REQ-APPT-002	Lịch hẹn	Bác sĩ phải có ca trực và không nghỉ phép	TC-APPT-003, TC-APPT-004, TC-APPT-001, TC-APPT-005, TC-APPT-006	Designed	Current
+REQ-APPT-003	Lịch hẹn	Không vượt sức chứa; lịch hủy không tính	TC-APPT-007, TC-APPT-008	Designed	Current
+REQ-APPT-004	Lịch hẹn	Không trùng bệnh nhân/bác sĩ trong ngày	TC-APPT-009, TC-APPT-010	Designed	Current
+REQ-APPT-005	Lịch hẹn	Có năm trạng thái nghiệp vụ	TC-APPT-016, TC-APPT-017, TC-APPT-018, TC-APPT-019, TC-APPT-020	Designed	Current
+REQ-APPT-006	Lịch hẹn	Trạng thái chỉ tiến về trước và không hủy sau khi đã đến	TC-APPT-020, TC-APPT-021, TC-APPT-026, TC-APPT-017, TC-APPT-018	Designed	Current
+REQ-APPT-007	Lịch hẹn	Check-in trong khoảng ±30 phút	TC-APPT-011, TC-APPT-012, TC-APPT-013, TC-APPT-014, TC-APPT-015	Designed	Current
+REQ-APPT-008	Lịch hẹn	Walk-in tái sử dụng bệnh nhân theo số điện thoại	TC-APPT-023, TC-APPT-024	Designed	Current
+REQ-PAY-001	Thanh toán	Hóa đơn gắn appointment/patient và có trạng thái mặc định	TC-PAY-001, TC-PAY-002	Designed	Current
+REQ-PAY-002	Thanh toán	Có bốn phương thức thanh toán theo model	TC-PAY-003, TC-PAY-004, TC-PAY-005, TC-PAY-006	Designed	Current
+REQ-PAY-003	Thanh toán	Thanh toán đủ không tạo công nợ	TC-PAY-003, TC-PAY-004, TC-PAY-005, TC-PAY-006	Designed	Current
+REQ-PAY-004	Thanh toán	Thanh toán thiếu cần cho phép ghi nợ	TC-PAY-007, TC-PAY-008	Designed	Current
+REQ-PAY-005	Thanh toán	Số tiền nhận không âm	TC-PAY-009, TC-PAY-010	Designed	Current
+REQ-PAY-006	Thanh toán	Giảm giá và phụ phí tính thành tiền đúng	TC-PAY-011, TC-PAY-012, TC-PAY-013, TC-PAY-014, TC-PAY-015, TC-PAY-016, TC-PAY-017	Designed	Current
+REQ-PAY-007	Thanh toán	Hoàn tiền trong 7 ngày, quá hạn bị từ chối	TC-PAY-018, TC-PAY-019	Designed	Current
+REQ-PAY-008	Thanh toán	Chỉ Admin được xóa hóa đơn	TC-AUTHZ-004, TC-AUTHZ-007, TC-PAY-020	Designed	Current
+REQ-AUTH-007	Đăng nhập	Đăng nhập đúng trả token và account không có mật khẩu	TC-AUTH-001, TC-AUTH-012	Designed	Current
+REQ-AUTH-008	Đăng nhập	Dữ liệu account hỗ trợ biên mật khẩu 8 ký tự và kiểm tra độ mạnh	TC-AUTH-006, TC-AUTH-007	Designed	Current
+REQ-APPT-009	Lịch hẹn	Trường bắt buộc khi tạo lịch phải được kiểm tra	TC-APPT-025	Designed	Current
+REQ-PAY-009	Thanh toán	Hoàn thành lặp không tạo nhiều hóa đơn cho cùng lịch	TC-APPT-022	Designed	Current
