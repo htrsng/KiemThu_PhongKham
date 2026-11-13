@@ -45,4 +45,6 @@ CI chạy đủ API, defect regression và Cypress kể cả khi suite trước 
 
 ## Xác minh GitHub Actions
 
-[Run 43389244707](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43389244707), head 9e0aee325b363f6dc23e8a80919bfebca1120c90, Node.js 24.22.2/Linux/MongoDB 7: 34 API Pass, 12 UI Pass, BUG-002/003 Fail. Bước audit và upload artifact đều Success. Artifact clinic-qa-evidence có 85 file; đã tải và kiểm tra mọi evidence link, HTML report, video và screenshot. [Metadata xác minh](ci-verification.json).
+[Run sau sửa 43428859109](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43428859109) **Success**, head `cd1eadde006c041268c8608989ed757c6d29f1f1`: 34 API + 12 UI + 7 defect tests Pass; Newman 6.2.3 chạy 21 requests, 46 assertions Pass. Audit thiết kế, reporting/lifecycle, build và audit evidence đều Success. Đã tải artifact `clinic-qa-evidence` ID 14038484917, kiểm tra 99 file, mọi evidence link, HTML report, video và screenshots. [Metadata xác minh sau sửa](ci-after-fix.json) ghi đúng commit và Run ID CI, không thay thế metadata lịch sử.
+
+Lần xác minh lịch sử trước sửa: [Run 43389244707](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43389244707), head 9e0aee325b363f6dc23e8a80919bfebca1120c90, Node.js 24.22.2/Linux/MongoDB 7: 34 API Pass, 12 UI Pass, BUG-002/003 Fail. Bước audit và upload artifact đều Success. Artifact có 85 file; [metadata cũ](ci-verification.json) được giữ nguyên.

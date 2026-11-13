@@ -1,0 +1,53 @@
+{
+  "workflowRunId": 43428859109,
+  "head": "cd1eadde006c041268c8608989ed757c6d29f1f1",
+  "testRunId": "QA-20261113T125429845Z-036af9",
+  "environment": {
+    "node": "v24.22.2",
+    "platform": "linux",
+    "timezone": "UTC",
+    "apiUrl": "http://localhost:5000/api",
+    "baseUrl": "http://localhost:5173"
+  },
+  "counts": {
+    "Pass": 53,
+    "Fail": 0,
+    "Blocked": 0,
+    "Not Run": 0
+  },
+  "suites": {
+    "api": {
+      "Pass": 34,
+      "Fail": 0
+    },
+    "known-defects": {
+      "Pass": 7,
+      "Fail": 0
+    },
+    "ui": {
+      "Pass": 12,
+      "Fail": 0
+    }
+  },
+  "failedTests": [],
+  "artifactFiles": 99,
+  "allCaseEvidencePresent": true,
+  "hasVideos": true,
+  "hasHtmlReport": true,
+  "hasScreenshots": true,
+  "postman": {
+    "runId": "QA-20261113T125548045Z-5e52b1",
+    "tool": "Newman 6.2.3",
+    "requests": {
+      "total": 21,
+      "pending": 0,
+      "failed": 0
+    },
+    "assertions": {
+      "total": 46,
+      "pending": 0,
+      "failed": 0
+    },
+    "failures": []
+  }
+}
