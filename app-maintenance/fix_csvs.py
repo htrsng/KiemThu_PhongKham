@@ -51,9 +51,9 @@ for file in ["UC4.6_BaoCaoLuongMotBacSi.csv", "UC4.7_BaoCaoLuongTatCaBacSi.csv"]
 # 5. Create UC0.1_DangNhap.csv
 uc01_header = ["TC ID","Req Ref","Priority","Test Type","Test Case Description","Step to Perform","Step Expected Result","Test Case Input Value","Overall Expected Result","Status","Remarks"]
 uc01_rows = [
-    ["TC-UC01-001","UC0.1","High","Positive","Đăng nhập thành công với tài khoản đúng","1. Nhập Username, Password đúng\n2. Bấm Đăng nhập","Nút bấm phản hồi","User: admin01, Pass: Admin@123","Đăng nhập thành công, chuyển hướng vào Dashboard.","Pass","Build v1.0"],
+    ["TC-UC01-001","UC0.1","High","Positive","Đăng nhập thành công với tài khoản đúng","1. Nhập Username, Password đúng\n2. Bấm Đăng nhập","Nút bấm phản hồi","User: <QA_ADMIN>, Pass: <QA_PASSWORD>","Đăng nhập thành công, chuyển hướng vào Dashboard.","Pass","Build v1.0"],
     ["TC-UC01-002","UC0.1","High","Negative","Đăng nhập sai mật khẩu","1. Nhập Username đúng, Pass sai\n2. Bấm Đăng nhập","Hệ thống xử lý","User: admin01, Pass: Sai123","Báo lỗi Sai tên đăng nhập hoặc mật khẩu.","Pass","Build v1.0"],
-    ["TC-UC01-003","UC0.1","High","Negative","Đăng nhập sai tên người dùng","1. Nhập Username sai, Pass đúng\n2. Bấm Đăng nhập","Hệ thống xử lý","User: no_exist, Pass: Admin@123","Báo lỗi Sai tên đăng nhập hoặc mật khẩu.","Pass","Build v1.0"],
+    ["TC-UC01-003","UC0.1","High","Negative","Đăng nhập sai tên người dùng","1. Nhập Username sai, Pass đúng\n2. Bấm Đăng nhập","Hệ thống xử lý","User: <UNKNOWN_USER>, Pass: <QA_PASSWORD>","Báo lỗi Sai tên đăng nhập hoặc mật khẩu.","Pass","Build v1.0"],
     ["TC-UC01-004","UC0.1","Medium","Negative","Bỏ trống tài khoản hoặc mật khẩu","1. Để trống input\n2. Bấm Đăng nhập","Validate tại FE","User: (trống)","Hiển thị cảnh báo Vui lòng nhập thông tin bắt buộc.","Pass","Build v1.0"],
     ["TC-UC01-005","UC0.1","High","Business Rule","Đăng nhập sai quá 5 lần -> Khóa tài khoản","1. Nhập sai Pass 5 lần liên tiếp","Đếm số lần sai","Sai 5 lần","Lần thứ 6 báo lỗi: Tài khoản đã bị khóa do nhập sai nhiều lần.","Pass","Build v1.0"],
     ["TC-UC01-006","UC0.1","High","Security","Session Timeout (Hết hạn phiên đăng nhập)","1. Đăng nhập thành công\n2. Để máy không thao tác 30 phút\n3. Thao tác tiếp","Kiểm tra token timeout","Thời gian chờ > 30p","Hệ thống tự động đẩy ra màn hình Login, yêu cầu đăng nhập lại.","Pass","Build v1.0"],
