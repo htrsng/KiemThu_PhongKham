@@ -76,6 +76,23 @@ for (const row of source) {
 }
 const links = JSON.parse(readFileSync(resolve(root, 'testing/trace-links.json'), 'utf8'));
 const sourceIds = new Set(source.map((row) => row.ID));
+const corrections = JSON.parse(readFileSync(resolve(root, 'testing/manual/source-corrections.json'), 'utf8'));
+assert.equal(Object.keys(corrections).length, 4);
+assert.equal(reconciliation.unresolvedDesignIssues, 0, 'Unresolved original design fields');
+for (const [id, correction] of Object.entries(corrections)) {
+  const item = source.find((row) => row.ID === id);
+  assert.ok(item && item['Design correction'] === correction.reference, `Missing correction provenance: ${id}`);
+  for (const [field, value] of Object.entries(correction.fields)) assert.equal(item[field], value);
+  assert.ok(item.Steps && item.Expected && item['Step expected'] && item['Test data'], `Incomplete revised design: ${id}`);
+}
+const manual = parseCsv(readFileSync(resolve(root, 'testing/manual/regression-suite.csv'), 'utf8'));
+assert.equal(manual.length, 40);
+assert.equal(new Set(manual.map((item) => item['Test Case ID'])).size, 40);
+manual.forEach((item) => {
+  assert.ok(ids.has(item['Test Case ID']) && item.Steps && item.Expected);
+  assert.equal(item.Status, 'Not Run', 'The committed template must not imply a manual execution');
+  assert.equal(item.Actual, '');
+});
 const historical = parseCsv(readFileSync(resolve(root, 'docs/qa/history/manual-execution.csv'), 'utf8'));
 const historicalTrace = parseCsv(readFileSync(resolve(root, 'docs/qa/history/rtm.csv'), 'utf8'));
 assert.equal(historical.length, source.length, 'Historical results missing');

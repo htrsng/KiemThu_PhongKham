@@ -43,6 +43,17 @@ async function main() {
     });
   });
   if (new Set(cases.map((item) => item.ID)).size !== cases.length) throw new Error('Duplicate source case IDs');
+  const corrections = JSON.parse(readFileSync(resolve(root, 'testing/manual/source-corrections.json'), 'utf8'));
+  for (const item of cases) {
+    item['Original steps'] = item.Steps;
+    item['Original expected'] = item.Expected;
+    item['Design correction'] = '';
+    if (corrections[item.ID]) {
+      Object.assign(item, corrections[item.ID].fields);
+      item['Design correction'] = corrections[item.ID].reference;
+      item['Design review'] = 'Design completed in source-corrections.json; current build not retested manually';
+    }
+  }
   writeFileSync(resolve(root, 'testing/manual/source-cases.csv'), '\uFEFF' + csv(cases));
   const sources = readdirSync(resolve(root, 'docs')).filter((name) => /\.(pdf|xlsx)$/.test(name) && !name.startsWith('~$')).sort()
     .map((name) => ({ file: `docs/${name}`, sha256: createHash('sha256').update(readFileSync(resolve(root, 'docs', name))).digest('hex') }));
@@ -56,7 +67,9 @@ async function main() {
       summary: pdfSummary, reportedTotal: 314, reportedPassed: 288, reportedFailed: 26,
       detailedUc4Count: 92, detailedUc4Pages: [33, 34, 35] },
     differences: Object.fromEntries(Object.keys(groups).map((group) => [group, groups[group] - pdfSummary[group]])),
-    designIssues: issues, disposition: 'User-provided completed test records: Excel reports 337 Pass; PDF reports 288 Pass / 26 Fail on 314 cases. Preserve these historical results separately. Their chronology is not recorded, and neither is a regression result for the current build.',
+    designIssues: issues.map((issue) => ({ ...issue, resolution: corrections[issue.id] ? 'Completed in derived design; original preserved' : 'Needs review', correction: corrections[issue.id]?.reference || '' })),
+    unresolvedDesignIssues: issues.filter((issue) => !corrections[issue.id]).length,
+    disposition: 'User-provided completed test records: Excel reports 337 Pass; PDF reports 288 Pass / 26 Fail on 314 cases. Preserve these historical results separately. Their chronology is not recorded, and neither is a regression result for the current build.',
     priorityPolicy: '15 role/booking/check-in/payment risks are P0. Other High -> P1, Medium -> P2, Low -> P3; original labels are retained separately.' };
   writeFileSync(resolve(root, 'docs/qa/source-reconciliation.json'), JSON.stringify(reconciliation, null, 2) + '\n');
   await exportHistoricalExecution(root, cases, reconciliation);
@@ -89,6 +102,6 @@ async function main() {
     if (resolve(root, destination) === resolve(root, file)) throw new Error('Refusing to overwrite the original workbook');
     await output.xlsx.writeFile(resolve(root, destination));
   }
-  console.log(`Normalized ${cases.length} cases across ${Object.keys(totals).length} use cases; ${issues.length} designs need field review.`);
+  console.log(`Normalized ${cases.length} cases across ${Object.keys(totals).length} use cases; ${issues.length} original gaps, ${reconciliation.unresolvedDesignIssues} unresolved in derived designs.`);
 }
 main().catch((error) => { console.error(error.message); process.exitCode = 1; });

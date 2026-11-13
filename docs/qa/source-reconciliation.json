@@ -84,7 +84,9 @@
       "missing": [
         "Steps",
         "Overall expected"
-      ]
+      ],
+      "resolution": "Completed in derived design; original preserved",
+      "correction": "docs/LT2_N02_DacTa.pdf#page=46; UC3 4_DoanhThu row 6"
     },
     {
       "id": "TC-UC33-014",
@@ -92,7 +94,9 @@
       "row": 15,
       "missing": [
         "Input"
-      ]
+      ],
+      "resolution": "Completed in derived design; original preserved",
+      "correction": "docs/LT2_N02_DacTa.pdf#page=45; UC3 3_ThanhToan row 15"
     },
     {
       "id": "TC-UC31-004",
@@ -100,7 +104,9 @@
       "row": 5,
       "missing": [
         "Step expected"
-      ]
+      ],
+      "resolution": "Completed in derived design; original preserved",
+      "correction": "docs/LT2_N02_DacTa.pdf#page=41; UC3 1_CheckIn row 5"
     },
     {
       "id": "TC-UC13-001",
@@ -108,9 +114,12 @@
       "row": 2,
       "missing": [
         "Overall expected"
-      ]
+      ],
+      "resolution": "Completed in derived design; original preserved",
+      "correction": "docs/LT2_N02_DacTa.pdf#page=19; UC1 3_QuanLyDichVu row 2"
     }
   ],
+  "unresolvedDesignIssues": 0,
   "disposition": "User-provided completed test records: Excel reports 337 Pass; PDF reports 288 Pass / 26 Fail on 314 cases. Preserve these historical results separately. Their chronology is not recorded, and neither is a regression result for the current build.",
   "priorityPolicy": "15 role/booking/check-in/payment risks are P0. Other High -> P1, Medium -> P2, Low -> P3; original labels are retained separately."
 }

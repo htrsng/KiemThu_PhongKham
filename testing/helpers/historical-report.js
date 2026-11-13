@@ -13,7 +13,7 @@ async function exportHistoricalExecution(root, cases, reconciliation) {
     Build: item['Historical build'] || 'Not recorded for this case',
     Executor: 'Not recorded per case; QA assignment in test-report PDF page 2',
     Description: item.Description, Priority: item.Priority, 'Original priority': item['Original priority'],
-    Steps: item.Steps || 'Not recorded', Expected: item.Expected || 'Not recorded',
+    Steps: (item['Original steps'] ?? item.Steps) || 'Not recorded', Expected: (item['Original expected'] ?? item.Expected) || 'Not recorded',
     Actual: item['Historical actual'] || 'Not recorded in original result',
     Status: /^(Passed|Pass)$/i.test(item['Historical status']) ? 'Pass' : item['Historical status'],
     'Original status': item['Historical status'],
