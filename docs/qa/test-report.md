@@ -4,7 +4,7 @@
 
 Đánh giá bộ QA cho portfolio intern tester, ưu tiên đăng nhập, phân quyền, lịch hẹn/check-in và hóa đơn. Thực thi trên Windows, Node.js 22.15.0, MongoDB 8.2.3 loopback riêng có tên kết thúc `_test`, Cypress 15.17.0 / Electron 138 headless. CI dùng Node.js 24 và MongoDB 7; chưa ghi nhận một lần CI mới cho các thay đổi hiện tại.
 
-Nguồn kiểm thử: working tree dựa trên commit `cfcbd8eddc916e3eec03c67250e4d290237051d0`. [Manifest API](evidence/2026-11-13/api-manifest.json) và [hash nguồn](evidence/2026-11-13/source-hashes.json) xác định các file đã chạy; không gán kết quả này cho nguyên trạng base commit.
+Nguồn kiểm thử: working tree dựa trên commit `68a2e6ae63961e04aedc995a30319fa4912231fb`. [Manifest API](evidence/2026-11-13/api-manifest.json) và [hash nguồn](evidence/2026-11-13/source-hashes.json) xác định các file đã chạy; không gán kết quả này cho nguyên trạng base commit.
 
 ## Kết quả hiện tại
 
@@ -26,8 +26,8 @@ Smoke đăng nhập, RBAC tài khoản/xóa hóa đơn, tạo lịch hợp lệ/
 ## Bằng chứng và hồi quy
 
 - [Danh mục evidence và lệnh chạy](evidence/2026-11-13/README.md).
-- [Bug register](bug-report.md), [regression report](regression-report.md).
+- [Bug register](bug-report.md): BUG-001 tiếp tục đạt ca sai mật khẩu; BUG-002/003 còn Fail và chưa có bản sửa để retest.
 - [Workbook manual](test-execution.xlsx): toàn bộ dòng khởi tạo `Not Run`, dành cho người kiểm thử ghi thực thi thật.
-- [Kết quả lịch sử 06/11/2026](verification.md): 8 API + 5 UI trên CI, không cộng dồn để tăng số test hiện tại.
+- [Kết quả CI lịch sử 06/11/2026](bugs/BUG-001.md): 8 API + 5 UI trên CI, không cộng dồn để tăng số test hiện tại.
 
 Log chưa bao gồm một chiến dịch manual, test tải, nhiều browser hoặc xác minh cơ sở dữ liệu production. Số ca Pass hiện tại không phải số yêu cầu được xác minh đầy đủ.

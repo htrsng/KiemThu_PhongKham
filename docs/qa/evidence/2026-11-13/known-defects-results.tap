@@ -2,7 +2,7 @@ TAP version 13
 # Subtest: BUG-002 / TC-APPT-021: completed appointment cannot move backward
 not ok 1 - BUG-002 / TC-APPT-021: completed appointment cannot move backward
   ---
-  duration_ms: 183.7143
+  duration_ms: 238.2246
   type: 'test'
   location: 'D:\\KiemThu_PhongKham\\testing\\api\\known-defects.test.js:22:1'
   failureType: 'testCodeFailure'
@@ -35,7 +35,7 @@ not ok 1 - BUG-002 / TC-APPT-021: completed appointment cannot move backward
 # Subtest: BUG-003 / TC-APPT-022: repeated completion cannot create duplicate invoices
 not ok 2 - BUG-003 / TC-APPT-022: repeated completion cannot create duplicate invoices
   ---
-  duration_ms: 120.1196
+  duration_ms: 158.7646
   type: 'test'
   location: 'D:\\KiemThu_PhongKham\\testing\\api\\known-defects.test.js:28:1'
   failureType: 'testCodeFailure'
@@ -63,4 +63,4 @@ not ok 2 - BUG-003 / TC-APPT-022: repeated completion cannot create duplicate in
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 880.6473
+# duration_ms 962.8713

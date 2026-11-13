@@ -1,71 +1,49 @@
-# Hướng dẫn QA SmileCare
+# Hướng dẫn kiểm thử
 
-Ứng dụng trong `client/` và `server/` là đối tượng kiểm thử. Phần QA gồm test design, fixture, automation, bug và báo cáo. Bắt đầu từ [test plan](test-plan.md), [test summary](test-report.md), [API checklist](api-contract.md) hoặc [hướng dẫn demo/CV](portfolio.md).
+Cài đặt, tạo môi trường và khởi động ứng dụng theo [README](../../README.md). Bộ QA chỉ dùng API/MongoDB loopback và database có tên kết thúc `_test`.
 
-## Bộ đang duy trì
+## Các bộ kiểm thử
 
-| Thành phần | Phạm vi |
+| Bộ | Nội dung |
 | --- | --- |
-| `testing/manual/test-cases.csv` / `.tsv` | 70 thiết kế, chưa có thực thi manual |
-| [RTM](rtm.tsv) | 31 yêu cầu; Designed là ánh xạ thiết kế, có scope Current/Deferred |
-| [Workbook](test-execution.xlsx) | Template manual 70 Not Run, không lấy automation điền Pass |
-| `testing/api/auth.test.js` | 8 test đăng nhập/phiên |
-| `testing/api/authorization-invoice.test.js` | 18 test độc lập: RBAC, appointment/check-in, invoice/payment |
-| `testing/api/known-defects.test.js` | 2 ca tái hiện lỗi, Fail khi BUG-002/003 còn mở |
-| `testing/e2e/cypress/e2e/` | 5 login và 5 UI role/business test |
-| `testing/postman/` | Khám phá/tái hiện API thủ công, chưa có run evidence |
-| [Bug register](bug-report.md), [regression report](regression-report.md) | Trạng thái lỗi, bằng chứng và điều kiện retest |
+| `testing/api/auth.test.js` | 8 test đăng nhập và phiên |
+| `testing/api/authorization-invoice.test.js` | 18 test phân quyền, lịch hẹn, check-in và hóa đơn |
+| `testing/api/known-defects.test.js` | 2 test tái hiện BUG-002 và BUG-003 |
+| `testing/e2e/cypress/e2e/` | 5 test đăng nhập và 5 test vai trò/nghiệp vụ UI |
+| [Manual cases](../../testing/manual/test-cases.csv) | 70 thiết kế; [workbook](test-execution.xlsx) để ghi actual, status, bug và evidence |
+| [RTM](rtm.tsv) | 31 yêu cầu: 30 Current, 1 Deferred về payroll; Designed không có nghĩa đã Pass |
 
-## Chuẩn bị và chạy cục bộ
+## Chạy và đọc kết quả
 
-Cài dependencies theo README gốc. Dùng MongoDB local riêng; không dùng DB triển khai. Tại thư mục gốc:
-
-```sh
-node testing/scripts/prepare-env.js
-node --env-file=testing/.env.test testing/scripts/seed-test-accounts.js
-```
-
-`prepare-env.js` sinh credential ngẫu nhiên, không lấy bí mật triển khai. File `.env.test` bị Git bỏ qua. Seed chỉ chấp nhận MongoDB loopback và DB kết thúc `_test`; tạo Admin, Admin khóa, Doctor, Reception cùng dữ liệu nền, không xóa DB. Chạy lại prepare-env sẽ thay môi trường/tài khoản của lần chạy; lưu công việc QA đang làm trước khi tạo môi trường mới.
-
-Khởi động trong hai terminal tại thư mục gốc:
-
-```sh
-node --env-file=testing/.env.test server/server.js
-```
-
-```sh
-npm --prefix client run dev
-```
-
-Chạy kiểm tra và xuất báo cáo:
+Từ thư mục gốc, sau khi API/UI sẵn sàng:
 
 ```sh
 node testing/scripts/audit-qa.js
-node testing/scripts/wait-for-app.js
 node --env-file=testing/.env.test testing/scripts/run-api.js
 node --env-file=testing/.env.test testing/scripts/run-api.js --known-defects
 ```
 
-Suite mặc định trả nonzero nếu regression Fail. Suite `--known-defects` hiện trả 1 do hai lỗi đã xác minh; không ghi là Pass. TAP/JUnit và manifest nằm ở `testing/artifacts/api/` và `testing/artifacts/known-defects/`.
+Suite regression trả nonzero khi có test Fail. Suite `--known-defects` hiện trả exit code 1 do hai lỗi mở; không tính chúng vào Pass. TAP/JUnit và manifest nằm ở `testing/artifacts/api/` và `testing/artifacts/known-defects/`.
 
-Chạy Cypress từ `testing/e2e`:
+Cypress chạy tại `testing/e2e`:
 
 ```sh
 node --env-file=../.env.test node_modules/cypress/bin/cypress run
+node --env-file=../.env.test node_modules/cypress/bin/cypress run --spec cypress/e2e/login.cy.js
 ```
 
-Xem [Cypress README](../../testing/e2e/README.md) nếu dùng npm, chỉ chạy smoke hoặc gặp biến `ELECTRON_RUN_AS_NODE` trong terminal IDE.
+HTML/JSON ở `cypress/reports/`, ảnh ở `cypress/screenshots/`, video ở `cypress/videos/`. Nếu terminal IDE có `ELECTRON_RUN_AS_NODE=1`, bỏ biến này trước khi chạy Cypress; với PowerShell dùng `Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue`.
 
-## Dữ liệu và isolation
+Fixture tạo bác sĩ, bệnh nhân, dịch vụ và ca riêng cho từng test; thao tác được kiểm tra đi qua API/UI và được GET lại để xác minh dữ liệu. Hook cleanup chỉ xóa ID do helper sở hữu, không drop DB. Tài khoản seed và audit log được giữ lại; process bị kill cứng có thể để lại fixture tạm.
 
-Helper `testing/helpers/qa-data.js` chỉ nhận API/MongoDB loopback và DB `_test`. Mỗi test tạo bác sĩ/bệnh nhân/dịch vụ/ca riêng bằng ObjectId và mã ngẫu nhiên. Appointment/invoice tiền điều kiện có thể được insert trực tiếp để test không phụ thuộc luồng trước; thao tác đang kiểm tra vẫn đi qua HTTP hoặc UI. Test mutation dùng GET lại để xác minh persisted state hoặc không có side effect khi bị từ chối.
+## Postman
 
-Cleanup chỉ xóa theo ID của fixture do chính process sở hữu; không drop database. Hook sau test và cuối suite dọn fixture trong lần chạy bình thường. Nếu process bị kill cứng, dữ liệu tạm có thể còn trong DB QA. Tài khoản nền seed và audit log đăng nhập được giữ lại; không tuyên bố toàn DB sạch sau chạy.
+Import collection và environment trong `testing/postman/`, chọn **SmileCare QA - Local**. Điền tài khoản QA tương ứng từ `testing/.env.test`; không xuất environment đã có mật khẩu/token.
+
+Chạy Authentication → RBAC → Appointments and Check-in → Invoices and Payments. Với request tạo lịch, điền `patientId`, `doctorId`, `serviceId`, `futureStartTime`, `futureEndTime` từ DB QA có ca trực phù hợp. Collection lưu token và ID tạo mới trong environment. Chưa có kết quả Postman runner được ghi nhận; ngưỡng response time 1500 ms chỉ là assertion của collection, không phải kết luận hiệu năng.
 
 ## CI và bằng chứng
 
-Workflow [Clinic QA Checks](../../.github/workflows/cypress.yml) chạy audit/build/API/Cypress. Lỗi regression làm job Fail. Known-defect suite chạy riêng với `continue-on-error: true`, kết quả thật vẫn có trong summary/artifact; đây là quyết định hiển thị lỗi đã biết, không phải release gate. Artifact `clinic-qa-evidence` được upload với `if: always()`.
+[Workflow](../../.github/workflows/cypress.yml) chạy audit, build, API và Cypress. Regression Fail làm job Fail; suite lỗi đã biết chạy riêng, non-blocking, kết quả vẫn được ghi vào summary và artifact `clinic-qa-evidence`. Artifact được upload kể cả khi test Fail.
 
-[Evidence 13/11/2026](evidence/2026-11-13/README.md) là kết quả local. [Verification cũ](verification.md) là CI lịch sử. Chưa có CI run mới được xác nhận cho working tree hiện tại. Không suy ra toàn bộ hệ thống đạt từ badge xanh.
-
-Chỉ chọn log/ảnh an toàn vào repo; không commit credential hoặc token. Lịch sử Git từng có cấu hình Atlas; nếu credential cũ còn hoạt động, chủ tài khoản cần thay tại nhà cung cấp. Tài liệu và dữ liệu ngẫu nhiên trong `archive/` không phải bằng chứng thực thi.
+[Test report](test-report.md) ghi phạm vi và giới hạn; [evidence](evidence/2026-11-13/README.md) chứa log và ảnh lần chạy cục bộ. Workbook manual bắt đầu với 70 Not Run, chỉ cập nhật khi thực hiện từng bước thật. Quy ước đóng góp ở [CONTRIBUTING](../../CONTRIBUTING.md).

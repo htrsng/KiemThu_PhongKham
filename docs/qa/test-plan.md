@@ -34,7 +34,7 @@ Nguồn chính: [`authController.js`](../../server/src/controllers/authControlle
 - `/auth/me` trả đúng tài khoản của token hợp lệ.
 - Có thể có ba vai trò: `Admin`, `Doctor`, `Reception`.
 
-Trạng thái hiện tại: đăng nhập có 8 API và 5 UI Pass trong lần chạy cục bộ 13/11/2026. Toàn bộ suite hiện có 36 Pass và 2 Fail; xem [test report](test-report.md). Kết quả CI cũ ghi riêng tại [verification.md](verification.md).
+Trạng thái hiện tại: đăng nhập có 8 API và 5 UI Pass trong lần chạy cục bộ 13/11/2026. Toàn bộ suite hiện có 36 Pass và 2 Fail; xem [test report](test-report.md). Bằng chứng CI lịch sử được giữ trong [BUG-001](bugs/BUG-001.md).
 
 ### 2.2 Phân quyền — `AUTHZ`
 
@@ -138,7 +138,7 @@ Thang điểm:
    - boundary;
    - phân quyền;
    - lỗi API và trạng thái dữ liệu sau thao tác.
-4. Mỗi lỗi phát hiện dùng mã `BUG-<số>`, ghi severity và priority theo [`conventions.md`](./conventions.md).
+4. Mỗi lỗi phát hiện dùng mã `BUG-<số>`, ghi severity và priority theo [quy ước đóng góp](../../CONTRIBUTING.md).
 5. Không đánh dấu Pass chỉ vì trang mở được; phải kiểm tra kết quả quan sát được và dữ liệu/API liên quan.
 
 ## 6. Môi trường và công cụ
@@ -199,6 +199,6 @@ Một người có thể kiêm nhiều vai trò trong dự án học tập, như
 | RBAC matrix | Ba vai trò với chức năng chính và endpoint bị hạn chế | `TC-AUTHZ-001`–`TC-AUTHZ-012` |
 | Error guessing | Cập nhật hoàn thành nhiều lần, token sai/hết hạn, dữ liệu thiếu và thao tác lặp | `TC-AUTH-008`–`TC-AUTH-010`, `TC-APPT-021`–`TC-APPT-024`, `TC-PAY-017`–`TC-PAY-018` |
 
-Danh sách case đầy đủ nằm ở [`test-cases.tsv`](../../testing/manual/test-cases.tsv), có thể mở trực tiếp bằng Excel hoặc import vào Google Sheets. Ma trận truy xuất nằm ở [`rtm.tsv`](./rtm.tsv).
+Danh sách case đầy đủ nằm ở [`test-cases.csv`](../../testing/manual/test-cases.csv), có thể mở trực tiếp bằng Excel hoặc import vào Google Sheets. Ma trận truy xuất nằm ở [`rtm.tsv`](./rtm.tsv).
 
 RTM có 31 yêu cầu, gồm 30 Current và 1 Deferred về payroll. Các yêu cầu được suy ra từ mã nguồn/quy tắc học tập, chưa phải hợp đồng được stakeholder phê duyệt. Bốn yêu cầu được bổ sung để bao phủ đăng nhập thành công, biên mật khẩu, trường bắt buộc lịch hẹn và tính duy nhất hóa đơn. Mọi case đã có ánh xạ, nhưng `Designed` không phải runtime coverage. Chi tiết endpoint và nhánh chưa chạy ở [API checklist](api-contract.md).

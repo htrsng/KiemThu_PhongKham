@@ -2,7 +2,7 @@
 
 Lần chạy cục bộ trên Windows, Node.js 22.15.0, MongoDB 8.2.3 local riêng `_test`, Cypress 15.17.0 / Electron 138 headless, timezone Asia/Saigon. Thời gian máy đọc trong manifest là UTC (cộng 7 giờ để đối chiếu giờ Việt Nam). CI dùng MongoDB 7 và Node.js 24; chưa có run mới để đối chiếu hai môi trường.
 
-Nguồn: working tree dựa trên commit `cfcbd8eddc916e3eec03c67250e4d290237051d0`; không phải nguyên trạng commit đó. Hash SHA-256 trong các manifest và `source-hashes.json` giúp đối chiếu đúng file đã chạy. Tài liệu được cập nhật sau khi chạy; hash chỉ mô tả các file nguồn được liệt kê.
+Nguồn: working tree dựa trên commit `68a2e6ae63961e04aedc995a30319fa4912231fb`; không phải nguyên trạng commit đó. Hash SHA-256 trong các manifest và `source-hashes.json` giúp đối chiếu đúng file đã chạy. Tài liệu được cập nhật sau khi chạy; hash chỉ mô tả các file nguồn được liệt kê.
 
 | File | Nguồn / ý nghĩa |
 | --- | --- |
