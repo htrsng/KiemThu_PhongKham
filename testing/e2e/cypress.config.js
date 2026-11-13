@@ -48,12 +48,6 @@ module.exports = defineConfig({
     DOCTOR_PASS: process.env.DOCTOR_PASS || '',
     RECEPTION_USER: process.env.RECEPTION_USER || '',
     RECEPTION_PASS: process.env.RECEPTION_PASS || '',
-    LE_TAN_USER: process.env.LE_TAN_USER || '',
-    LE_TAN_PASS: process.env.LE_TAN_PASS || '',
-    BAC_SI_USER: process.env.BAC_SI_USER || '',
-    BAC_SI_PASS: process.env.BAC_SI_PASS || '',
-    THU_NGAN_USER: process.env.THU_NGAN_USER || '',
-    THU_NGAN_PASS: process.env.THU_NGAN_PASS || '',
     API_URL: process.env.API_URL || 'http://localhost:5000/api'
   }
 });

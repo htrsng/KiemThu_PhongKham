@@ -1,6 +1,5 @@
 import './commands';
 import 'cypress-mochawesome-reporter/register';
-require('cypress-plugin-tab');
 
 beforeEach(() => {
   // Xóa storage trước mỗi test tránh dùng dữ liệu cũ

@@ -1,3 +1,0 @@
-{
-  "_comment": "Legacy fixture intentionally contains no credentials. Use Cypress environment variables from .env.example."
-}

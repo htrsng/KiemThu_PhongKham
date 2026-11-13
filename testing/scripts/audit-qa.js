@@ -12,9 +12,7 @@ function rows(file) {
     return Object.fromEntries(headers.map((key, index) => [key, fields[index]]));
   });
 }
-const cases = rows('testing/manual/test-cases.tsv');
 const rtm = rows('docs/qa/rtm.tsv');
-const ids = new Set(cases.map((row) => row.ID));
 // CSV may contain quoted commas/newlines. Parse records rather than splitting lines.
 function csvRecords(text) {
   const records = [];
@@ -35,8 +33,14 @@ function csvRecords(text) {
   return records;
 }
 const csv = csvRecords(readFileSync(resolve(root, 'testing/manual/test-cases.csv'), 'utf8'));
-const headers = Object.keys(cases[0]);
-assert.deepEqual(csv, [headers, ...cases.map((row) => headers.map((key) => row[key]))], 'CSV/TSV differ');
+const headers = csv.shift();
+assert.ok(headers?.includes('ID'), 'Missing CSV header');
+const cases = csv.map((fields) => {
+  assert.equal(fields.length, headers.length, 'Invalid test case CSV columns');
+  return Object.fromEntries(headers.map((key, index) => [key, fields[index]]));
+});
+assert.ok(cases.length > 0, 'Empty test case inventory');
+const ids = new Set(cases.map((row) => row.ID));
 assert.equal(ids.size, cases.length, 'Duplicate test case IDs');
 assert.equal(new Set(rtm.map((row) => row['Requirement ID'])).size, rtm.length, 'Duplicate requirement IDs');
 for (const row of cases) {
