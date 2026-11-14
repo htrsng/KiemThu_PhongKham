@@ -93,6 +93,7 @@ module.exports = defineConfig({
     DOCTOR_PASS: process.env.DOCTOR_PASS || '',
     RECEPTION_USER: process.env.RECEPTION_USER || '',
     RECEPTION_PASS: process.env.RECEPTION_PASS || '',
+    LOCKED_USER: process.env.LOCKED_USER || '',
     API_URL: process.env.API_URL || 'http://localhost:5000/api'
   }
 });

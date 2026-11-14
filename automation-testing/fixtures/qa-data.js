@@ -42,7 +42,9 @@ async function createFixture(options = {}) {
   const start = new Date(Date.now() + (options.offsetMinutes ?? 5) * 60000);
   const appointment = { ...ids, doctorName, patientName, serviceName: `QA Service ${key}`,
     startTime: start.toISOString(), endTime: new Date(+start + 30 * 60000).toISOString(), status: options.status || 'Đã lên lịch' };
-  await Shift.create({ doctorId: ids.doctorId, doctorName, date: start.toISOString().slice(0, 10), startTime: '00:00', endTime: '23:59' });
+  if (options.withShift !== false) {
+    await Shift.create({ doctorId: ids.doctorId, doctorName, date: start.toISOString().slice(0, 10), startTime: '00:00', endTime: '23:59' });
+  }
   let appointmentId;
   let invoiceId;
   if (options.appointment !== false) {
