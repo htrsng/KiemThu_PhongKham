@@ -74,6 +74,8 @@ Mỗi lần chạy tạo thư mục riêng trong `automation-testing/reports/gen
 
 Xem [chỉ mục báo cáo](reports/README.md). Số liệu thuộc từng run riêng; không cộng dồn run lịch sử/run mới hoặc coi assertions Newman là các case manual độc lập bổ sung.
 
+[Workbook ưu tiên 40 case đã điền](../manual-testing/test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx) ghi 38 Pass / 1 Fail / 1 Blocked, ảnh manual đang bổ sung. [Bộ API/UI hỗ trợ 40 case](../manual-testing/test-execution/assisted-runs/README.md) là một run riêng; không cộng vào 46 API test chuẩn hoặc coi toàn bộ kết quả đó là xác minh manual có ảnh.
+
 ## 7. Lỗi và giới hạn đã biết
 
 [Registry](../manual-testing/bug-reports/registry.json) có **hai lỗi Open**: [BUG-005](../manual-testing/bug-reports/BUG-005.md), High/P0 — bác sĩ đọc/cập nhật lịch bác sĩ khác; [BUG-006](../manual-testing/bug-reports/BUG-006.md), Medium/P2 — dữ liệu thiếu/ID sai trả 500. Chưa có bản sửa/retest Pass cho hai lỗi này. BUG-002/003 vẫn Closed theo retest đã ghi; bằng chứng trước sửa giữ nguyên.

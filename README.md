@@ -42,11 +42,13 @@ Cypress có các luồng kết hợp UI/API. Bộ hiện tại chưa xác minh l
 | Hồi quy nghiệp vụ mở rộng | 46 API + 12 UI + 7 test hồi quy BUG-002/003: **54 Pass / 11 Fail** | [Kết quả JSON](automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/execution.json) |
 | Biên controller và hạ tầng | **19 Pass**: 6 biên ±30 phút/lệch 1 ms và 13 reporting/lifecycle; không phải HTTP/manual | [Kết quả unit](automation-testing/reports/runs/QA-20261113T153426945Z-cb851f/unit-results.json) |
 | Collection Postman chạy bằng Newman | 21 request; **46/46 assertions Pass** | [Kết quả Newman](api-testing/reports/newman/QA-20261113T153601759Z-bf5a0c/newman-results.json) |
-| Manual regression ưu tiên trên build mới | 40 case: **Not Run** | [Workbook thực thi](manual-testing/test-execution/manual-regression.xlsx) |
+| Bộ regression ưu tiên 40 case — kết quả đã ghi | **38 Pass / 1 Fail / 1 Blocked**; ảnh manual đang bổ sung | [Workbook đã điền](manual-testing/test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx) |
 
 [CI đã xác minh cho bộ mở rộng](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43455436873), head `420cc74`: **Failed do 11 assertions của BUG-005/006**, cùng kết quả 54 Pass / 11 Fail như local. Unit/build/audit evidence và Newman đạt; [metadata xác minh](automation-testing/reports/ci-coverage-verification.json) ghi rõ run/build và artifact. BUG-002/003/004 vẫn Closed; BUG-005/006 đang Open trong [sổ theo dõi lỗi](manual-testing/bug-reports/README.md).
 
 Excel và PDF là hai hồ sơ lịch sử riêng; chênh lệch được giải thích trong [đối chiếu nguồn](docs/requirements/source-reconciliation.md). 70 thiết kế tập trung có chồng lấp với 337 case gốc; bộ manual 40 case là một tập con. Không cộng số thiết kế hoặc assertions tự động thành số case manual đã Pass.
+
+Bộ 40 case đã ghi Actual và trạng thái trong workbook. `TC-PAY-016` Fail do phụ phí âm vẫn được thanh toán; `TC-APPT-014` Blocked do chưa xác minh thời điểm bằng nhau tuyệt đối. [Kết quả API/UI hỗ trợ](manual-testing/test-execution/assisted-runs/README.md) được giữ riêng; ảnh manual đang bổ sung. Mẫu `manual-regression.xlsx` ở thư mục tổng là mẫu tái sử dụng, không phải nguồn kết quả mới nhất.
 
 ## 5. Hướng dẫn chạy kiểm thử
 

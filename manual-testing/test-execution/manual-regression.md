@@ -1,6 +1,8 @@
 # Thực thi manual regression ưu tiên
 
-[Workbook 40 case](manual-regression.xlsx) gồm 8 Authentication, 6 RBAC, 14 Appointment/Check-in và 12 Payment/Invoice; có BUG-002/003/004. Đây là kế hoạch thực thi mới, **40 Not Run**, chưa phải kết quả manual. Case được chọn từ bộ focused có liên kết nguồn gốc khi phù hợp; không cộng vào 337 case lịch sử.
+[Mẫu workbook 40 case](manual-regression.xlsx) gồm 8 Authentication, 6 RBAC, 14 Appointment/Check-in và 12 Payment/Invoice; có BUG-002/003/004. Mẫu trống giữ **40 Not Run** để tái sử dụng cho lần chạy mới. Case được chọn từ bộ focused có liên kết nguồn gốc khi phù hợp; không cộng vào 337 case lịch sử.
+
+**Cập nhật đợt MAN-20261114-01:** [workbook đã điền](manual-runs/MAN-20261114-01/manual-regression.xlsx) ghi **38 Pass / 1 Fail / 1 Blocked**. Ảnh manual đang bổ sung; [nguồn API/UI hỗ trợ](assisted-runs/README.md) được lưu riêng. Hướng dẫn bên dưới tiếp tục dùng cho đợt mới hoặc retest các dòng Fail/Blocked.
 
 ## Trang cần làm
 

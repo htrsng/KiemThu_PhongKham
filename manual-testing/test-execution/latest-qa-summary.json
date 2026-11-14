@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T15:51:03.056Z",
+  "generatedAt": "2026-11-14T16:36:14.449Z",
   "business": {
     "runId": "QA-20261113T153459634Z-3e9268",
     "commit": "53f15ae8d2924c9447ca2ebabdc40d6e06e10e76",
@@ -128,14 +128,26 @@
     "failures": []
   },
   "manual": {
-    "workbook": "manual-testing/test-execution/manual-regression.xlsx",
+    "workbook": "manual-testing/test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx",
     "counts": {
-      "Pass": 0,
-      "Fail": 0,
-      "Blocked": 0,
-      "Not Run": 40
+      "Pass": 38,
+      "Fail": 1,
+      "Blocked": 1,
+      "Not Run": 0
     },
-    "sha256": "e961557d12299306de1b56ca72d677c5a6f8ee98d448c77a361db790f1d134b2"
+    "sha256": "c8aa18174675e2cf39f195156a20f1fc2c89a7954a5a0b08614c4e98b67439dc",
+    "recordType": "workbook-recorded",
+    "evidenceStatus": "Manual screenshots pending; recorded counts are not independent certification of human execution",
+    "missingEvidence": [
+      {
+        "caseId": "TC-AUTH-001",
+        "evidence": "evidence/TC-AUTH-001-dashboard.png"
+      },
+      {
+        "caseId": "TC-AUTH-002",
+        "evidence": "evidence/TC-AUTH-002-required-fields.png"
+      }
+    ]
   },
   "defects": [
     {

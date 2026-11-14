@@ -6,9 +6,11 @@ Mở [file Excel đã điền](QA-20261114T151532131Z-c5d60f/manual-regression-r
 | --- | --- | --- |
 | Đánh giá 40 dòng trong Excel | 38 Pass / 1 Fail / 1 Blocked | Kết quả assertions API/UI thực tế có ghi giới hạn xác minh |
 | Cypress native cùng run | 39 Pass / 1 Fail | TC-APPT-014 kiểm tra HTTP gần giờ hiện tại Pass; Excel giữ Blocked vì chưa chứng minh điều kiện đúng thời điểm tuyệt đối |
-| Sheet Execution được sao chép từ file bạn đang làm | 2 Pass / 38 Not Run | Giữ nguyên dữ liệu manual đã lưu; không tự thay thành kết quả automation |
+| Sheet Execution trong snapshot hỗ trợ lúc tạo file | 2 Pass / 38 Not Run | Giữ nguyên dữ liệu đã lưu tại thời điểm tạo snapshot; không phải trạng thái workbook hiện tại |
 
 Đây là **kết quả hỗ trợ tự động API/UI**, không phải xác nhận bạn đã trực tiếp thực thi manual đủ 40 case. Test qua API dùng request thật; test giao diện dùng Cypress. Không suy diễn Actual/Pass chỉ từ việc đọc code.
+
+**Workbook hiện tại** ở [MAN-20261114-01/manual-regression.xlsx](../manual-runs/MAN-20261114-01/manual-regression.xlsx) đã ghi 38 Pass / 1 Fail / 1 Blocked; ảnh manual đang bổ sung. File snapshot hỗ trợ bên trên giữ nguyên nội dung để truy vết.
 
 ## Cách sử dụng file
 

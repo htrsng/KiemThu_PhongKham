@@ -74,6 +74,8 @@ Job summary tách **Automation API + UI** và **Defect regression**. Assertion n
 
 ## 7. Kết quả và bằng chứng
 
+[Bộ 40 case ưu tiên](../manual-testing/test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx) đã ghi 38 Pass / 1 Fail / 1 Blocked; ảnh manual đang bổ sung. Spec chạy hỗ trợ ở `cypress/assisted/priority-40.cy.js`, ngoài glob của 12 test chuẩn. [Chi tiết nguồn hỗ trợ](../manual-testing/test-execution/assisted-runs/README.md) phân biệt native runner 39 Pass / 1 Fail với đánh giá Excel có một case Blocked do giới hạn thời gian.
+
 - [Tổng hợp hồi quy đã công bố](reports/runs/QA-20261113T153459634Z-3e9268/summary.md): 12 UI Pass, tách khỏi API 35 Pass / 11 Fail và 7 test hồi quy BUG-002/003 Pass.
 - [JSON thực thi](reports/runs/QA-20261113T153459634Z-3e9268/execution.json) / [Excel](reports/runs/QA-20261113T153459634Z-3e9268/execution.xlsx): build, expected/actual, thời gian, trạng thái, case/bug và bằng chứng.
 - [Ảnh check-in](reports/runs/QA-20261113T153459634Z-3e9268/ui/screenshots/core-workflows.cy.js/reception-checkin-persisted.png) / [ảnh hóa đơn](reports/runs/QA-20261113T153459634Z-3e9268/ui/screenshots/core-workflows.cy.js/invoice-detail.png).
