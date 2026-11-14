@@ -29,6 +29,8 @@ Cypress có các luồng kết hợp UI/API. Bộ hiện tại chưa xác minh l
 
 [Đặc tả](docs/requirements/LT2_N02_DacTa.pdf) và [tài liệu học phần](docs/academic/) được giữ để đối chiếu nguồn. Công cụ chạy test/báo cáo dùng chung nằm trong `.github/qa/`. [CONTRIBUTING.md](CONTRIBUTING.md) quy định cách quản lý bằng chứng và lỗi.
 
+[Đối chiếu 6 bug với test case và mã kiểm thử](manual-testing/bug-reports/bug-testcase-map.md) giải thích trạng thái Open/Closed, lý do severity/priority và cách tính 46 API / 12 Cypress test.
+
 ## 4. Kết quả thực thi kiểm thử
 
 **Nguồn trạng thái hiện hành:** [Tổng hợp QA mới nhất](manual-testing/test-execution/latest-qa-summary.md). Sau khi mở rộng coverage, bộ nghiệp vụ có **54 Pass / 11 Fail**; đã ghi nhận BUG-005/006 Open. Kết quả 53 Pass trước đây thuộc bộ kiểm thử nhỏ hơn, được giữ trong báo cáo lịch sử.

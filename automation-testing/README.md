@@ -10,6 +10,8 @@ Một số test kết hợp thao tác UI, tiền điều kiện API và kiểm t
 
 ## 2. Kịch bản đã tự động hóa
 
+Xem [danh mục đủ 12 test](reports/cypress-test-catalog.csv) và [giải thích từng case/bug liên quan](../manual-testing/bug-reports/bug-testcase-map.md#5-giải-thích-đủ-12-cypress-test). Bộ chuẩn gồm 5 login, 3 RBAC, 1 check-in, 1 xem hóa đơn, 1 validation giảm giá và 1 luồng hybrid.
+
 | Spec | Kịch bản | Phạm vi xác minh |
 | --- | --- | --- |
 | [login.cy.js](cypress/e2e/login.cy.js) | Chuyển hướng khi thiếu phiên; trường bắt buộc; email sai; phản hồi sai mật khẩu; phiên hợp lệ | Thao tác/assertions UI, response đăng nhập và tài khoản hiện tại |

@@ -62,6 +62,8 @@ Mỗi lần chạy tạo thư mục riêng trong `automation-testing/reports/gen
 
 ## 6. Kết quả kiểm thử
 
+[Danh mục đầy đủ 46 API test](reports/api-test-catalog.csv) và [bảng giải thích bug/test case](../manual-testing/bug-reports/bug-testcase-map.md) chỉ rõ nhóm, mã nguồn, assertions tham chiếu và bằng chứng. 46 test runtime gắn với 33 mã thiết kế; bảy test trong known-defects là suite riêng.
+
 | Bằng chứng | Kết quả đã ghi nhận |
 | --- | --- |
 | [TAP API](../automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/api/results.tap) / [JUnit](../automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/api/junit.xml) | 35 Pass / 11 Fail; 46 test |

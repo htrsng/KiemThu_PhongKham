@@ -1,5 +1,7 @@
 # Bug register
 
+[Bảng bug ↔ test case và hướng dẫn giải thích khi phỏng vấn](bug-testcase-map.md) nêu rõ 6 bug, hai trạng thái Open, lý do severity/priority và cách tính 46 API / 12 Cypress test.
+
 | ID | Tóm tắt | Severity | Priority | Trạng thái | Bằng chứng |
 | --- | --- | --- | --- | --- | --- |
 | [BUG-001](BUG-001.md) | Sai mật khẩu làm mất thông báo lỗi trên form | Medium | P1 | Closed, theo CI lịch sử | [Chi tiết](BUG-001.md) |
