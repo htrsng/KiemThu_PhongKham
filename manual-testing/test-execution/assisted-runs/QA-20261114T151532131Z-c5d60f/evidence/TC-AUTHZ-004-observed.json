@@ -1,0 +1,49 @@
+{
+  "caseId": "TC-AUTHZ-004",
+  "executionMethod": "Cypress API trực tiếp",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Pass",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "HTTP 200; hóa đơn bị xóa",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:16:17.754Z",
+      "fixtureKey": "0c9796c41181d96b",
+      "appointmentId": "6af87b41b5d8581883b850fa",
+      "invoiceId": "6af87b41b5d8581883b850fb",
+      "patientId": "6af87b41b5d8581883b850f4",
+      "doctorId": "6af87b41b5d8581883b850f3",
+      "serviceId": "6af87b41b5d8581883b850f5",
+      "startTime": "2026-11-14T15:21:17.733Z",
+      "setupStatus": "Đã hoàn thành"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:17.984Z",
+      "method": "DELETE",
+      "path": "/invoices/6af87b41b5d8581883b850fb",
+      "httpStatus": 200
+    },
+    {
+      "observedAt": "2026-11-14T15:16:18.194Z",
+      "method": "GET",
+      "path": "/invoices/6af87b41b5d8581883b850fb",
+      "httpStatus": 404,
+      "error": "Document not found"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:18.393Z",
+      "method": "GET",
+      "path": "/appointments/6af87b41b5d8581883b850fa",
+      "httpStatus": 200,
+      "id": "6af87b41b5d8581883b850fa",
+      "status": "Đã hoàn thành",
+      "patientId": "6af87b41b5d8581883b850f4",
+      "doctorId": "6af87b41b5d8581883b850f3",
+      "startTime": "2026-11-14T15:21:17.733Z"
+    }
+  ],
+  "error": null
+}

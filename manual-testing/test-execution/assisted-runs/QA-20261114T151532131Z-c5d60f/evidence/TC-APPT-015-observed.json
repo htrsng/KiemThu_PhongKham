@@ -1,0 +1,42 @@
+{
+  "caseId": "TC-APPT-015",
+  "executionMethod": "Cypress API trực tiếp",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Pass",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "HTTP 400; không thay đổi trạng thái",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:16:24.748Z",
+      "fixtureKey": "663dde149cc72628",
+      "appointmentId": "6af87b48b5d8581883b85149",
+      "patientId": "6af87b48b5d8581883b85143",
+      "doctorId": "6af87b48b5d8581883b85142",
+      "serviceId": "6af87b48b5d8581883b85144",
+      "startTime": "2026-11-14T15:16:24.741Z",
+      "setupStatus": "Đã đến"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:25.010Z",
+      "method": "PATCH",
+      "path": "/appointments/6af87b48b5d8581883b85149/checkin",
+      "httpStatus": 400,
+      "error": "Only scheduled appointments can be checked in."
+    },
+    {
+      "observedAt": "2026-11-14T15:16:25.264Z",
+      "method": "GET",
+      "path": "/appointments/6af87b48b5d8581883b85149",
+      "httpStatus": 200,
+      "id": "6af87b48b5d8581883b85149",
+      "status": "Đã đến",
+      "patientId": "6af87b48b5d8581883b85143",
+      "doctorId": "6af87b48b5d8581883b85142",
+      "startTime": "2026-11-14T15:16:24.741Z"
+    }
+  ],
+  "error": null
+}

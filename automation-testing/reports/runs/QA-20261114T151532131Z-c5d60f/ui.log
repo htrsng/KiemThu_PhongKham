@@ -1,0 +1,137 @@
+
+Warning: The allowCypressEnv configuration option is enabled. This allows any browser code to read values from Cypress.env(). This is insecure and will be removed in a future major version.
+
+1. Replace Cypress.env() calls with cy.env() (for sensitive values) or Cypress.expose() (for public configuration)
+2. Set allowCypressEnv: false in your Cypress configuration to disable Cypress.env()
+
+Learn more: https://on.cypress.io/cypress-env-migration
+
+
+====================================================================================================
+
+  (Run Starting)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Cypress:        15.17.0                                                                        │
+  │ Browser:        Electron 138 (headless)                                                        │
+  │ Node Version:   v22.15.0 (C:\Program Files\nodejs\node.exe)                                    │
+  │ Specs:          1 found (priority-40.cy.js)                                                    │
+  │ Searched:       D:\KiemThu_PhongKham\automation-testing\cypress\assisted\priority-40.cy.js     │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+Remove .jsons folder D:\KiemThu_PhongKham\automation-testing\reports\generated\runs\QA-20261114T151532131Z-c5d60f\ui\report\.jsons
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  priority-40.cy.js                                                               (1 of 1)
+
+
+  Assisted verification of 40 priority cases (API/UI, not manual)
+    √ TC-AUTH-001: valid Admin login through UI and response assertions (6092ms)
+    √ TC-AUTH-002: empty email and empty password blocked by UI validation
+    √ TC-AUTH-003: invalid email rejected by API
+    √ TC-AUTH-004: uppercase Gmail login canonicalizes email
+    √ TC-AUTH-005: wrong password keeps UI error and creates no session
+    √ TC-AUTH-008: locked account rejected
+    √ TC-AUTH-009: invalid token cannot read current account
+    √ TC-AUTH-011: UI logout clears session and protects accounts route (5221ms)
+    √ TC-AUTHZ-001: ADMIN accounts API and navigation permissions
+    √ TC-AUTHZ-002: DOCTOR accounts API and navigation permissions
+    √ TC-AUTHZ-003: RECEPTION accounts API and navigation permissions
+    √ TC-AUTHZ-004: Admin deletes unpaid fixture invoice
+    √ TC-AUTHZ-005: Doctor invoice GET and PATCH both forbidden
+    √ TC-AUTHZ-007: Reception cannot delete invoice and original remains
+    √ TC-APPT-001: appointment creation returns 201 and persisted inventory matches
+    √ TC-APPT-002: appointment creation returns 400 and persisted inventory matches
+    √ TC-APPT-003: appointment creation returns 400 and persisted inventory matches
+    √ TC-APPT-009: appointment creation returns 400 and persisted inventory matches
+    √ TC-APPT-011: check-in offset 29 initial Đã lên lịch
+    √ TC-APPT-013: check-in offset -31 initial Đã lên lịch
+    √ TC-APPT-014: check-in offset 0 initial Đã lên lịch
+    √ TC-APPT-015: check-in offset 0 initial Đã đến
+    √ TC-APPT-016: UI check-in changes scheduled to arrived (5391ms)
+    √ TC-APPT-018: Đang điều trị to Đã hoàn thành returns 200
+    √ TC-APPT-019: Đã lên lịch to Đã hủy returns 200
+    √ TC-APPT-020: Đã đến to Đã hủy returns 400
+    √ TC-APPT-021: Đã hoàn thành to Đang điều trị returns 400
+    √ TC-APPT-022: repeated completion leaves exactly one invoice
+    √ TC-PAY-001: create invoice returns default unpaid state
+    √ TC-PAY-002: UI displays unpaid invoice patient amount and state (5109ms)
+    √ TC-PAY-003: cash payment UI persists paid amount and zero debt (5434ms)
+    √ TC-PAY-004: Chuyển khoản paid 100000 debt false
+    √ TC-PAY-005: Thẻ tín dụng paid 100000 debt false
+    √ TC-PAY-006: Thẻ ATM paid 100000 debt false
+    √ TC-PAY-007: Tiền mặt paid 50000 debt false
+    √ TC-PAY-008: Tiền mặt paid 40000 debt true
+    √ TC-PAY-010: Tiền mặt paid -1 debt false
+    √ TC-PAY-012: full percentage discount UI persists zero final amount (6989ms)
+    1) TC-PAY-016: invalid negative surcharge is rejected by UI
+    √ TC-PAY-017: invalid excessive discount is rejected by UI (5860ms)
+
+
+  39 passing (1m)
+  1 failing
+
+  1) Assisted verification of 40 priority cases (API/UI, not manual)
+       TC-PAY-016: invalid negative surcharge is rejected by UI:
+     AssertionError: invalid payment requests must not be sent: expected 1 to equal 0
+      at Context.eval (webpack://smilecare-e2e/./cypress/assisted/priority-40.cy.js:269:70)
+      at getRet (http://localhost:5173/__cypress/runner/cypress_runner.js:123004:20)
+      at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1777:23)
+      at Promise.attempt.Promise.try (http://localhost:5173/__cypress/runner/cypress_runner.js:4285:29)
+      at Context.thenFn (http://localhost:5173/__cypress/runner/cypress_runner.js:123015:66)
+      at Context.then (http://localhost:5173/__cypress/runner/cypress_runner.js:123266:21)
+
+
+
+[mochawesome] Report JSON saved to D:\KiemThu_PhongKham\automation-testing\reports\generated\runs\QA-20261114T151532131Z-c5d60f\ui\report\.jsons\mochawesome.json
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        40                                                                               │
+  │ Passing:      39                                                                               │
+  │ Failing:      1                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  1                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     1 minute, 21 seconds                                                             │
+  │ Spec Ran:     priority-40.cy.js                                                                │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Screenshots)
+
+  -  D:\KiemThu_PhongKham\automation-testing\reports\generated\runs\QA-20261114T15153     (1280x720)
+     2131Z-c5d60f\ui\screenshots\priority-40.cy.js\Assisted verification of 40 priori               
+     ty cases (APIUI, not manual) -- TC-PAY-016 invalid negative surcharge is rejecte               
+     d by UI (failed).png                                                                           
+
+
+  (Video)
+
+  -  Video output: D:\KiemThu_PhongKham\automation-testing\reports\generated\runs\QA-20261114T151532131Z-c5d60f\ui\videos\priority-40.cy.js.mp4
+
+Start generate report process
+Read and merge jsons from "D:\KiemThu_PhongKham\automation-testing\reports\generated\runs\QA-20261114T151532131Z-c5d60f\ui\report\.jsons"
+Copy media folder from "D:\KiemThu_PhongKham\automation-testing\reports\generated\runs\QA-20261114T151532131Z-c5d60f\ui\screenshots" to "D:\KiemThu_PhongKham\automation-testing\reports\generated\runs\QA-20261114T151532131Z-c5d60f\ui\report\screenshots"
+Copy media folder from "D:\KiemThu_PhongKham\automation-testing\reports\generated\runs\QA-20261114T151532131Z-c5d60f\ui\videos" to "D:\KiemThu_PhongKham\automation-testing\reports\generated\runs\QA-20261114T151532131Z-c5d60f\ui\report\videos"
+Enhance report
+Create HTML report
+HTML report successfully created!
+D:\KiemThu_PhongKham\automation-testing\reports\generated\runs\QA-20261114T151532131Z-c5d60f\ui\report\index.html
+
+====================================================================================================
+
+  (Run Finished)
+
+
+       Spec                                              Tests  Passing  Failing  Pending  Skipped  
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ ×  priority-40.cy.js                        01:21       40       39        1        -        - │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+    ×  1 of 1 failed (100%)                     01:21       40       39        1        -        -  
+
+

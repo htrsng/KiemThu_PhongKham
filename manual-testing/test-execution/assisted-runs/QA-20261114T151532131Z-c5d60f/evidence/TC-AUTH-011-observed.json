@@ -1,0 +1,23 @@
+{
+  "caseId": "TC-AUTH-011",
+  "executionMethod": "Cypress UI + API",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Pass",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "Token bị xóa; redirect login; route không truy cập được",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:16:05.590Z",
+      "logoutClearsToken": true,
+      "protectedRouteRedirectsToLogin": true
+    },
+    {
+      "observedAt": "2026-11-14T15:16:05.613Z",
+      "screenshotPending": "TC-AUTH-011-logout"
+    }
+  ],
+  "error": null
+}

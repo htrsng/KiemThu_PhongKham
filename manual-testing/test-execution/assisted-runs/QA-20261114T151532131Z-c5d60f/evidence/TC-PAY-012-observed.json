@@ -1,0 +1,50 @@
+{
+  "caseId": "TC-PAY-012",
+  "executionMethod": "Cypress UI + API",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Pass",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "finalAmount = 0; API lưu trạng thái Đã thanh toán; số tiền không âm",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:16:49.673Z",
+      "fixtureKey": "232a9c834f8a7ca9",
+      "appointmentId": "6af87b61b5d8581883b851d1",
+      "invoiceId": "6af87b61b5d8581883b851d2",
+      "patientId": "6af87b61b5d8581883b851cb",
+      "doctorId": "6af87b61b5d8581883b851ca",
+      "serviceId": "6af87b61b5d8581883b851cc",
+      "startTime": "2026-11-14T15:21:49.642Z",
+      "setupStatus": "Đã hoàn thành"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:55.914Z",
+      "enteredDiscountType": "PERCENT",
+      "enteredDiscount": 100,
+      "extraCharge": 0
+    },
+    {
+      "observedAt": "2026-11-14T15:16:56.396Z",
+      "method": "GET",
+      "path": "/invoices/6af87b61b5d8581883b851d2",
+      "httpStatus": 200,
+      "id": "6af87b61b5d8581883b851d2",
+      "status": "Đã thanh toán",
+      "patientId": "6af87b61b5d8581883b851cb",
+      "doctorId": "6af87b61b5d8581883b851ca",
+      "totalAmount": 100000,
+      "finalAmount": 0,
+      "amountPaid": 0,
+      "debt": 0,
+      "paymentMethod": "Tiền mặt"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:56.440Z",
+      "screenshotPending": "TC-PAY-012-full-discount"
+    }
+  ],
+  "error": null
+}

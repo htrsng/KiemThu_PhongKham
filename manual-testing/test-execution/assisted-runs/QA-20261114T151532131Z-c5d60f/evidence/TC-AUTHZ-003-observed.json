@@ -1,0 +1,25 @@
+{
+  "caseId": "TC-AUTHZ-003",
+  "executionMethod": "Cypress UI + API",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Pass",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "HTTP 403; menu accounts không hiển thị",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:16:17.169Z",
+      "method": "GET",
+      "path": "/accounts",
+      "httpStatus": 403,
+      "error": "User role Reception is not authorized to access this route"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:17.400Z",
+      "screenshotPending": "TC-AUTHZ-003-permissions"
+    }
+  ],
+  "error": null
+}

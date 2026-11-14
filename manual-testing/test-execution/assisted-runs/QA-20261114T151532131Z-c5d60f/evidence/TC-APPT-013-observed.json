@@ -1,0 +1,42 @@
+{
+  "caseId": "TC-APPT-013",
+  "executionMethod": "Cypress API trực tiếp",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Pass",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "HTTP 400; không đổi trạng thái",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:16:23.475Z",
+      "fixtureKey": "801224b966c3eaef",
+      "appointmentId": "6af87b47b5d8581883b85139",
+      "patientId": "6af87b47b5d8581883b85133",
+      "doctorId": "6af87b47b5d8581883b85132",
+      "serviceId": "6af87b47b5d8581883b85134",
+      "startTime": "2026-11-14T14:45:23.465Z",
+      "setupStatus": "Đã lên lịch"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:23.672Z",
+      "method": "PATCH",
+      "path": "/appointments/6af87b47b5d8581883b85139/checkin",
+      "httpStatus": 400,
+      "error": "Đã quá hạn Check-in (trễ hơn 30 phút)"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:23.932Z",
+      "method": "GET",
+      "path": "/appointments/6af87b47b5d8581883b85139",
+      "httpStatus": 200,
+      "id": "6af87b47b5d8581883b85139",
+      "status": "Đã lên lịch",
+      "patientId": "6af87b47b5d8581883b85133",
+      "doctorId": "6af87b47b5d8581883b85132",
+      "startTime": "2026-11-14T14:45:23.465Z"
+    }
+  ],
+  "error": null
+}

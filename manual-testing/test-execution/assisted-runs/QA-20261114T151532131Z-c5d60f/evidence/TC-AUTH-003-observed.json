@@ -1,0 +1,23 @@
+{
+  "caseId": "TC-AUTH-003",
+  "executionMethod": "Cypress API trực tiếp",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Pass",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "HTTP 400; error invalid_email_format; không lưu token",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:15:56.956Z",
+      "method": "POST",
+      "path": "/auth/login",
+      "httpStatus": 400,
+      "tokenPresent": false,
+      "passwordPresent": false,
+      "error": "invalid_email_format"
+    }
+  ],
+  "error": null
+}

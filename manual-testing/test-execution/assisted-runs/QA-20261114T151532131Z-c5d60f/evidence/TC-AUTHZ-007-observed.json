@@ -1,0 +1,47 @@
+{
+  "caseId": "TC-AUTHZ-007",
+  "executionMethod": "Cypress API trực tiếp",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Pass",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "HTTP 403; hóa đơn còn nguyên",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:16:19.550Z",
+      "fixtureKey": "d073edec67e6d64d",
+      "appointmentId": "6af87b43b5d8581883b8510c",
+      "invoiceId": "6af87b43b5d8581883b8510d",
+      "patientId": "6af87b43b5d8581883b85106",
+      "doctorId": "6af87b43b5d8581883b85105",
+      "serviceId": "6af87b43b5d8581883b85107",
+      "startTime": "2026-11-14T15:21:19.522Z",
+      "setupStatus": "Đã lên lịch"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:19.752Z",
+      "method": "DELETE",
+      "path": "/invoices/6af87b43b5d8581883b8510d",
+      "httpStatus": 403,
+      "error": "User role Reception is not authorized to access this route"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:19.995Z",
+      "method": "GET",
+      "path": "/invoices/6af87b43b5d8581883b8510d",
+      "httpStatus": 200,
+      "id": "6af87b43b5d8581883b8510d",
+      "status": "Chưa thanh toán",
+      "patientId": "6af87b43b5d8581883b85106",
+      "doctorId": "6af87b43b5d8581883b85105",
+      "totalAmount": 100000,
+      "finalAmount": 100000,
+      "amountPaid": 0,
+      "debt": 0,
+      "paymentMethod": "Tiền mặt"
+    }
+  ],
+  "error": null
+}

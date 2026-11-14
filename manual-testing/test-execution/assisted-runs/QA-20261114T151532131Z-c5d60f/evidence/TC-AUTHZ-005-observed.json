@@ -1,0 +1,54 @@
+{
+  "caseId": "TC-AUTHZ-005",
+  "executionMethod": "Cypress API trực tiếp",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Pass",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "HTTP 403",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:16:18.698Z",
+      "fixtureKey": "853f9b646bac7245",
+      "appointmentId": "6af87b42b5d8581883b85103",
+      "invoiceId": "6af87b42b5d8581883b85104",
+      "patientId": "6af87b42b5d8581883b850fd",
+      "doctorId": "6af87b42b5d8581883b850fc",
+      "serviceId": "6af87b42b5d8581883b850fe",
+      "startTime": "2026-11-14T15:21:18.679Z",
+      "setupStatus": "Đã lên lịch"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:18.911Z",
+      "method": "GET",
+      "path": "/invoices/6af87b42b5d8581883b85104",
+      "httpStatus": 403,
+      "error": "User role Doctor is not authorized to access this route"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:19.108Z",
+      "method": "PATCH",
+      "path": "/invoices/6af87b42b5d8581883b85104",
+      "httpStatus": 403,
+      "error": "User role Doctor is not authorized to access this route"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:19.342Z",
+      "method": "GET",
+      "path": "/invoices/6af87b42b5d8581883b85104",
+      "httpStatus": 200,
+      "id": "6af87b42b5d8581883b85104",
+      "status": "Chưa thanh toán",
+      "patientId": "6af87b42b5d8581883b850fd",
+      "doctorId": "6af87b42b5d8581883b850fc",
+      "totalAmount": 100000,
+      "finalAmount": 100000,
+      "amountPaid": 0,
+      "debt": 0,
+      "paymentMethod": "Tiền mặt"
+    }
+  ],
+  "error": null
+}

@@ -1,0 +1,27 @@
+{
+  "caseId": "TC-AUTH-004",
+  "executionMethod": "Cypress API trực tiếp",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Pass",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "HTTP 200; token được cấp; account.email bằng email chữ thường đã seed",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:15:57.256Z",
+      "method": "POST",
+      "path": "/auth/login",
+      "httpStatus": 200,
+      "tokenPresent": true,
+      "passwordPresent": false,
+      "role": "Admin"
+    },
+    {
+      "observedAt": "2026-11-14T15:15:57.276Z",
+      "canonicalEmailMatchesSeed": true
+    }
+  ],
+  "error": null
+}

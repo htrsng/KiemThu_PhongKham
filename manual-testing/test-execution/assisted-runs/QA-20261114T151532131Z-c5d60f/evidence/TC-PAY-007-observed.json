@@ -1,0 +1,47 @@
+{
+  "caseId": "TC-PAY-007",
+  "executionMethod": "Cypress API trực tiếp",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Pass",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "HTTP 400; invoice không chuyển Đã thanh toán",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:16:47.648Z",
+      "fixtureKey": "ac1a4dda6dd4c787",
+      "appointmentId": "6af87b5fb5d8581883b851b6",
+      "invoiceId": "6af87b5fb5d8581883b851b7",
+      "patientId": "6af87b5fb5d8581883b851b0",
+      "doctorId": "6af87b5fb5d8581883b851af",
+      "serviceId": "6af87b5fb5d8581883b851b1",
+      "startTime": "2026-11-14T15:21:47.632Z",
+      "setupStatus": "Đã hoàn thành"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:47.835Z",
+      "method": "PATCH",
+      "path": "/invoices/6af87b5fb5d8581883b851b7",
+      "httpStatus": 400,
+      "error": "Số tiền nhận không đủ. Vui lòng xác nhận Ghi nợ nếu muốn tiếp tục."
+    },
+    {
+      "observedAt": "2026-11-14T15:16:48.075Z",
+      "method": "GET",
+      "path": "/invoices/6af87b5fb5d8581883b851b7",
+      "httpStatus": 200,
+      "id": "6af87b5fb5d8581883b851b7",
+      "status": "Chưa thanh toán",
+      "patientId": "6af87b5fb5d8581883b851b0",
+      "doctorId": "6af87b5fb5d8581883b851af",
+      "totalAmount": 100000,
+      "finalAmount": 100000,
+      "amountPaid": 0,
+      "debt": 0,
+      "paymentMethod": "Tiền mặt"
+    }
+  ],
+  "error": null
+}

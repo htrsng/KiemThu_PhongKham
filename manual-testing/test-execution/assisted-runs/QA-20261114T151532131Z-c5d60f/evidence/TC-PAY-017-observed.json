@@ -1,0 +1,62 @@
+{
+  "caseId": "TC-PAY-017",
+  "executionMethod": "Cypress UI + API",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Pass",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "Toast lỗi; không gửi thanh toán",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:17:02.671Z",
+      "fixtureKey": "e45d313bc517036a",
+      "appointmentId": "6af87b6eb5d8581883b851e3",
+      "invoiceId": "6af87b6eb5d8581883b851e4",
+      "patientId": "6af87b6eb5d8581883b851dd",
+      "doctorId": "6af87b6eb5d8581883b851dc",
+      "serviceId": "6af87b6eb5d8581883b851de",
+      "startTime": "2026-11-14T15:22:02.656Z",
+      "setupStatus": "Đã hoàn thành"
+    },
+    {
+      "observedAt": "2026-11-14T15:17:07.885Z",
+      "enteredField": "discount",
+      "enteredValue": 100001
+    },
+    {
+      "observedAt": "2026-11-14T15:17:08.342Z",
+      "method": "GET",
+      "path": "/invoices/6af87b6eb5d8581883b851e4",
+      "httpStatus": 200,
+      "id": "6af87b6eb5d8581883b851e4",
+      "status": "Chưa thanh toán",
+      "patientId": "6af87b6eb5d8581883b851dd",
+      "doctorId": "6af87b6eb5d8581883b851dc",
+      "totalAmount": 100000,
+      "finalAmount": 100000,
+      "amountPaid": 0,
+      "debt": 0,
+      "paymentMethod": "Tiền mặt"
+    },
+    {
+      "observedAt": "2026-11-14T15:17:08.366Z",
+      "invalidPaymentRequests": 0,
+      "id": "6af87b6eb5d8581883b851e4",
+      "status": "Chưa thanh toán",
+      "patientId": "6af87b6eb5d8581883b851dd",
+      "doctorId": "6af87b6eb5d8581883b851dc",
+      "totalAmount": 100000,
+      "finalAmount": 100000,
+      "amountPaid": 0,
+      "debt": 0,
+      "paymentMethod": "Tiền mặt"
+    },
+    {
+      "observedAt": "2026-11-14T15:17:08.388Z",
+      "screenshotPending": "TC-PAY-017-actual-result"
+    }
+  ],
+  "error": null
+}

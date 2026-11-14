@@ -1,0 +1,55 @@
+{
+  "caseId": "TC-PAY-008",
+  "executionMethod": "Cypress API trực tiếp",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Pass",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "HTTP 200; debt = finalAmount - amountPaid",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:16:48.313Z",
+      "fixtureKey": "3273f9a08851987c",
+      "appointmentId": "6af87b60b5d8581883b851bf",
+      "invoiceId": "6af87b60b5d8581883b851c0",
+      "patientId": "6af87b60b5d8581883b851b9",
+      "doctorId": "6af87b60b5d8581883b851b8",
+      "serviceId": "6af87b60b5d8581883b851ba",
+      "startTime": "2026-11-14T15:21:48.294Z",
+      "setupStatus": "Đã hoàn thành"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:48.548Z",
+      "method": "PATCH",
+      "path": "/invoices/6af87b60b5d8581883b851c0",
+      "httpStatus": 200,
+      "id": "6af87b60b5d8581883b851c0",
+      "status": "Đã thanh toán",
+      "patientId": "6af87b60b5d8581883b851b9",
+      "doctorId": "6af87b60b5d8581883b851b8",
+      "totalAmount": 100000,
+      "finalAmount": 100000,
+      "amountPaid": 40000,
+      "debt": 60000,
+      "paymentMethod": "Tiền mặt"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:48.750Z",
+      "method": "GET",
+      "path": "/invoices/6af87b60b5d8581883b851c0",
+      "httpStatus": 200,
+      "id": "6af87b60b5d8581883b851c0",
+      "status": "Đã thanh toán",
+      "patientId": "6af87b60b5d8581883b851b9",
+      "doctorId": "6af87b60b5d8581883b851b8",
+      "totalAmount": 100000,
+      "finalAmount": 100000,
+      "amountPaid": 40000,
+      "debt": 60000,
+      "paymentMethod": "Tiền mặt"
+    }
+  ],
+  "error": null
+}

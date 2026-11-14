@@ -1,0 +1,53 @@
+{
+  "caseId": "TC-APPT-014",
+  "executionMethod": "Cypress API trực tiếp",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Blocked",
+  "scope": "HTTP 200 và checkInTime đã lưu; chưa xác minh now == startTime đúng 0 ms. Cần kiểm soát đồng hồ/đối chiếu thời gian trước khi kết luận đầy đủ case.",
+  "expected": "HTTP 200; ghi checkInTime",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:16:24.129Z",
+      "fixtureKey": "a48a188ba0821c7a",
+      "appointmentId": "6af87b48b5d8581883b85141",
+      "patientId": "6af87b48b5d8581883b8513b",
+      "doctorId": "6af87b48b5d8581883b8513a",
+      "serviceId": "6af87b48b5d8581883b8513c",
+      "startTime": "2026-11-14T15:16:24.108Z",
+      "setupStatus": "Đã lên lịch"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:24.365Z",
+      "method": "PATCH",
+      "path": "/appointments/6af87b48b5d8581883b85141/checkin",
+      "httpStatus": 200,
+      "id": "6af87b48b5d8581883b85141",
+      "status": "Đã đến",
+      "patientId": "6af87b48b5d8581883b8513b",
+      "doctorId": "6af87b48b5d8581883b8513a",
+      "startTime": "2026-11-14T15:16:24.108Z",
+      "checkInTime": "2026-11-14T15:16:24.355Z"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:24.559Z",
+      "method": "GET",
+      "path": "/appointments/6af87b48b5d8581883b85141",
+      "httpStatus": 200,
+      "id": "6af87b48b5d8581883b85141",
+      "status": "Đã đến",
+      "patientId": "6af87b48b5d8581883b8513b",
+      "doctorId": "6af87b48b5d8581883b8513a",
+      "startTime": "2026-11-14T15:16:24.108Z",
+      "checkInTime": "2026-11-14T15:16:24.355Z"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:24.579Z",
+      "actualCheckInOffsetMs": 247,
+      "timingScope": "Real HTTP clock; not a frozen exact-instant test"
+    }
+  ],
+  "error": null
+}

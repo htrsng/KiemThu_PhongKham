@@ -1,0 +1,22 @@
+{
+  "caseId": "TC-AUTH-009",
+  "executionMethod": "Cypress API trực tiếp",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Pass",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "HTTP 401; không trả dữ liệu user",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:16:00.353Z",
+      "method": "GET",
+      "path": "/auth/me",
+      "httpStatus": 401,
+      "invalidToken": true,
+      "dataPresent": false
+    }
+  ],
+  "error": null
+}

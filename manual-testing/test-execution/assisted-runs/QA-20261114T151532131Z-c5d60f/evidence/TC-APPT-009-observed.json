@@ -1,0 +1,38 @@
+{
+  "caseId": "TC-APPT-009",
+  "executionMethod": "Cypress API trực tiếp",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Pass",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "HTTP 400; lỗi đã đặt lịch trong ngày",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:16:22.214Z",
+      "fixtureKey": "acdff9485f23eb3d",
+      "appointmentId": "6af87b46b5d8581883b85129",
+      "patientId": "6af87b46b5d8581883b85123",
+      "doctorId": "6af87b46b5d8581883b85122",
+      "serviceId": "6af87b46b5d8581883b85124",
+      "startTime": "2026-11-14T15:21:22.204Z",
+      "setupStatus": "Đã lên lịch"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:22.400Z",
+      "method": "POST",
+      "path": "/appointments",
+      "httpStatus": 400,
+      "error": "Bệnh nhân đã đặt lịch với bác sĩ này trong ngày hôm nay"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:22.626Z",
+      "method": "GET",
+      "path": "/appointments?doctorId=6af87b46b5d8581883b85122",
+      "httpStatus": 200,
+      "recordCount": 1
+    }
+  ],
+  "error": null
+}

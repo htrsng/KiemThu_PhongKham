@@ -1,0 +1,62 @@
+{
+  "caseId": "TC-PAY-016",
+  "executionMethod": "Cypress UI + API",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Fail",
+  "assessedStatus": "Fail",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "Validation từ chối; không tạo thành tiền âm",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:16:56.682Z",
+      "fixtureKey": "d63f136aed472368",
+      "appointmentId": "6af87b68b5d8581883b851da",
+      "invoiceId": "6af87b68b5d8581883b851db",
+      "patientId": "6af87b68b5d8581883b851d4",
+      "doctorId": "6af87b68b5d8581883b851d3",
+      "serviceId": "6af87b68b5d8581883b851d5",
+      "startTime": "2026-11-14T15:21:56.664Z",
+      "setupStatus": "Đã hoàn thành"
+    },
+    {
+      "observedAt": "2026-11-14T15:17:01.696Z",
+      "enteredField": "extraCharge",
+      "enteredValue": -1
+    },
+    {
+      "observedAt": "2026-11-14T15:17:02.005Z",
+      "method": "GET",
+      "path": "/invoices/6af87b68b5d8581883b851db",
+      "httpStatus": 200,
+      "id": "6af87b68b5d8581883b851db",
+      "status": "Đã thanh toán",
+      "patientId": "6af87b68b5d8581883b851d4",
+      "doctorId": "6af87b68b5d8581883b851d3",
+      "totalAmount": 100000,
+      "finalAmount": 99999,
+      "amountPaid": 99999,
+      "debt": 0,
+      "paymentMethod": "Tiền mặt"
+    },
+    {
+      "observedAt": "2026-11-14T15:17:02.032Z",
+      "invalidPaymentRequests": 1,
+      "id": "6af87b68b5d8581883b851db",
+      "status": "Đã thanh toán",
+      "patientId": "6af87b68b5d8581883b851d4",
+      "doctorId": "6af87b68b5d8581883b851d3",
+      "totalAmount": 100000,
+      "finalAmount": 99999,
+      "amountPaid": 99999,
+      "debt": 0,
+      "paymentMethod": "Tiền mặt"
+    },
+    {
+      "observedAt": "2026-11-14T15:17:02.050Z",
+      "screenshotPending": "TC-PAY-016-actual-result"
+    }
+  ],
+  "error": "AssertionError: invalid payment requests must not be sent: expected 1 to equal 0"
+}

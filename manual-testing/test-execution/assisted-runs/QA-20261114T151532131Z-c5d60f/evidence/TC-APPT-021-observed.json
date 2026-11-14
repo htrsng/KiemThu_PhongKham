@@ -1,0 +1,42 @@
+{
+  "caseId": "TC-APPT-021",
+  "executionMethod": "Cypress API trực tiếp",
+  "runId": "QA-20261114T151532131Z-c5d60f",
+  "commit": "11fed6b81597ed4f11f7162d488de638803a8889",
+  "workingTreeHash": "bbded22f029140f47ec647f944d4510c210ba6d40f07bd606cc4d58e6ee6341a",
+  "nativeStatus": "Pass",
+  "assessedStatus": "Pass",
+  "scope": "Assertions API/UI theo case; không phải manual execution.",
+  "expected": "HTTP 400; trạng thái giữ nguyên",
+  "observations": [
+    {
+      "observedAt": "2026-11-14T15:16:32.795Z",
+      "fixtureKey": "a9a35b26597ef78b",
+      "appointmentId": "6af87b50b5d8581883b85171",
+      "patientId": "6af87b50b5d8581883b8516b",
+      "doctorId": "6af87b50b5d8581883b8516a",
+      "serviceId": "6af87b50b5d8581883b8516c",
+      "startTime": "2026-11-14T15:21:32.762Z",
+      "setupStatus": "Đã hoàn thành"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:33.094Z",
+      "method": "PATCH",
+      "path": "/appointments/6af87b50b5d8581883b85171",
+      "httpStatus": 400,
+      "error": "Chuyển trạng thái lịch hẹn không hợp lệ"
+    },
+    {
+      "observedAt": "2026-11-14T15:16:33.276Z",
+      "method": "GET",
+      "path": "/appointments/6af87b50b5d8581883b85171",
+      "httpStatus": 200,
+      "id": "6af87b50b5d8581883b85171",
+      "status": "Đã hoàn thành",
+      "patientId": "6af87b50b5d8581883b8516b",
+      "doctorId": "6af87b50b5d8581883b8516a",
+      "startTime": "2026-11-14T15:21:32.762Z"
+    }
+  ],
+  "error": null
+}
