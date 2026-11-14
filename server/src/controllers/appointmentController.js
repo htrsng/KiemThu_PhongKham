@@ -94,6 +94,11 @@ exports.updateAppointment = async (req, res, next) => {
     const { id } = req.params;
     const apt = await Appointment.findById(id);
     if (!apt) return res.status(404).json({ error: 'Appointment not found' });
+    const start = new Date(req.body.startTime ?? apt.startTime);
+    const end = new Date(req.body.endTime ?? apt.endTime);
+    if (!Number.isFinite(start.getTime()) || !Number.isFinite(end.getTime()) || end <= start) {
+      return res.status(400).json({ error: 'Appointment end must be after a valid start' });
+    }
     const status = req.body.status ?? apt.status;
     const replay = apt.status === 'Đã hoàn thành' && status === apt.status;
     if (!Object.hasOwn(transitions, status)

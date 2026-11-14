@@ -5,22 +5,72 @@ const Shift = require('../models/Shift');
 const WorkShift = require('../models/WorkShift');
 const LeaveRequest = require('../models/LeaveRequest');
 const appointmentController = require('../controllers/appointmentController');
-const { authorize } = require('../middlewares/auth');
 
 const router = express.Router();
+const validId = (value) => typeof value === 'string' && /^[a-f0-9]{24}$/i.test(value);
+
+// Scope every appointment route, including check-in and finish, to the authenticated doctor.
+router.use(async (req, res, next) => {
+  try {
+    if (req.user.role === 'Doctor') {
+      const doctorId = req.user.referenceId;
+      if (!doctorId) return res.status(403).json({ error: 'Doctor profile is required' });
+      req.appointmentDoctorId = doctorId;
+      if (Object.hasOwn(req.body || {}, 'doctorId') && String(req.body.doctorId) !== String(doctorId)) {
+        return res.status(403).json({ error: 'Cannot assign appointments to another doctor' });
+      }
+    }
+    next();
+  } catch (error) { next(error); }
+});
+router.param('id', async (req, res, next, id) => {
+  try {
+    if (!validId(id)) return res.status(400).json({ error: 'Invalid appointment ID' });
+    if (req.appointmentDoctorId && !await Appointment.exists({ _id: id, doctorId: req.appointmentDoctorId })) {
+      return res.status(404).json({ error: 'Appointment not found' });
+    }
+    next();
+  } catch (error) { next(error); }
+});
+router.use((req, res, next) => {
+  for (const field of ['doctorId', 'patientId', 'serviceId']) {
+    if (Object.hasOwn(req.body || {}, field) && !validId(req.body[field])) {
+      return res.status(400).json({ error: `Invalid ${field}` });
+    }
+  }
+  for (const field of ['startTime', 'endTime']) {
+    if (Object.hasOwn(req.body || {}, field) &&
+        (typeof req.body[field] !== 'string' || !req.body[field].trim() || !Number.isFinite(Date.parse(req.body[field])))) {
+      return res.status(400).json({ error: `Invalid ${field}` });
+    }
+  }
+  next();
+});
 
 router.patch('/:id/checkin', appointmentController.checkIn);
 router.post('/walk-in', appointmentController.walkIn);
 router.patch('/:id/finish', appointmentController.finishTreatment);
 
 router.route('/')
-  .get(factory.getAll(Appointment))
+  .get((req, res, next) => {
+    if (req.appointmentDoctorId) {
+      // Trusted scope is merged after all query parameters, never supplied by the caller.
+      req.resourceScope = { doctorId: req.appointmentDoctorId };
+    }
+    return factory.getAll(Appointment)(req, res, next);
+  })
   .post(async (req, res, next) => {
     try {
       const { doctorId, patientId, startTime, endTime } = req.body;
+      if (!validId(doctorId) || !validId(patientId) || !startTime || !endTime) {
+        return res.status(400).json({ error: 'doctorId, patientId, startTime and endTime are required' });
+      }
       const start = new Date(startTime);
       const end = new Date(endTime);
       
+      if (!Number.isFinite(start.getTime()) || !Number.isFinite(end.getTime()) || end <= start) {
+        return res.status(400).json({ error: 'Appointment end must be after a valid start' });
+      }
       const today = new Date();
       if (start < today) {
          return res.status(400).json({ error: 'Không thể đặt lịch hẹn trong quá khứ' });

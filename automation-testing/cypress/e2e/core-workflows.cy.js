@@ -91,14 +91,14 @@ describe('Independent role and business workflows', () => {
   });
 
   it('BUG-004 / TC-APPT-014 / TC-APPT-018 / TC-PAY-003: check-in UI to treatment API to cash payment UI', () => {
-    cy.task('qa:create', { offsetMinutes: 0 }, { log: false }).then((f) => {
+    cy.task('qa:create', { offsetMinutes: 0, doctorAccount: true }, { log: false }).then((f) => {
       cy.login('reception');
       cy.intercept('PATCH', `**/api/appointments/${f.appointmentId}/checkin`).as('flowCheckin');
       cy.get('[data-testid="nav-reception"]').click();
       cy.get(`[data-testid="apt-row-${f.appointmentId}"]`).contains('button', 'Check-in').click();
       cy.wait('@flowCheckin').its('response.statusCode').should('equal', 200);
-      token('DOCTOR').then((auth) => {
-        const headers = { Authorization: `Bearer ${auth}` };
+      cy.then(() => {
+        const headers = { Authorization: `Bearer ${f.doctorToken}` };
         cy.request({ method: 'PATCH', url: `${api()}/appointments/${f.appointmentId}`, headers, body: { status: 'Đang điều trị' }, log: false });
         cy.request({ method: 'PATCH', url: `${api()}/appointments/${f.appointmentId}`, headers, body: { status: 'Đã hoàn thành' }, log: false });
       });

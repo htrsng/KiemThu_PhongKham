@@ -1,6 +1,6 @@
 exports.getAll = (Model) => async (req, res, next) => {
   try {
-    const filter = { ...req.query };
+    const filter = { ...req.query, ...req.resourceScope };
     const excludeFields = ['limit', 'skip', 'sort'];
     excludeFields.forEach((el) => delete filter[el]);
 

@@ -74,8 +74,8 @@ app.use('/api/dashboard', dashboardRoutes);
 
 
 // Custom Appointment Routes
-app.patch('/api/appointments/:id/checkin', protect, appointmentController.checkIn);
-app.post('/api/appointments/walk-in', protect, appointmentController.walkIn);
+
+
 
 // Mount generic resource routes
 app.use('/api/accounts', protect, accountRoutes);
@@ -105,6 +105,7 @@ app.use('/api/treatment-records', protect, treatmentRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
   if (err.code === 11000) return res.status(409).json({ error: 'Bản ghi đã tồn tại; mỗi lịch hẹn chỉ có một hóa đơn' });
+  if (['ValidationError', 'CastError'].includes(err.name)) return res.status(400).json({ error: 'Invalid request data' });
   console.error(err.stack);
   const message = err.message || 'Internal Server Error';
   res.status(500).json({ error: message });

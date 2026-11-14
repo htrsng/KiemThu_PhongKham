@@ -33,7 +33,7 @@ async function createFixture(options = {}) {
   if (options.doctorAccount) {
     const account = await Account.create({ accountCode: `QA-${key}`, fullName: doctorName,
       username: `qa-${key}`, email: `qa-fixture-${key}@gmail.com`,
-      password: `Qa!1${randomBytes(16).toString('hex')}`, role: 'Doctor', status: 'active', referenceId: ids.doctorId });
+      password: options.doctorPassword || `Qa!1${randomBytes(16).toString('hex')}`, role: 'Doctor', status: 'active', referenceId: ids.doctorId });
     ids.accountId = account._id;
     doctorToken = jwt.sign({ id: String(account._id) }, process.env.JWT_SECRET, { expiresIn: '1h' });
   }
@@ -56,7 +56,7 @@ async function createFixture(options = {}) {
       invoiceId = String(invoice._id);
     }
   }
-  return JSON.parse(JSON.stringify({ key, appointment, appointmentId, invoiceId, patientName, doctorToken }));
+  return JSON.parse(JSON.stringify({ key, appointment, appointmentId, invoiceId, patientName, doctorToken, doctorEmail: options.doctorAccount ? `qa-fixture-${key}@gmail.com` : undefined }));
 }
 async function cleanupFixture(key) {
   const ids = owned.get(key);

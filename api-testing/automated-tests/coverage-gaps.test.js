@@ -53,6 +53,23 @@ test('BUG-005 / TC-AUTHZ-008: Doctor cannot change treatment status on a foreign
   const stored = await call(`/appointments/${other.appointmentId}`, await admin());
   assert.ok([403, 404].includes(result.status), `Foreign mutation must be rejected, actual ${result.status}; persisted ${stored.body.data.status}`);
   assert.equal(stored.body.data.status, 'Đã đến');
+  for (const [method, suffix, body] of [
+    ['PUT', '', { notes: 'forbidden replacement' }],
+    ['PATCH', '/checkin', {}], ['PATCH', '/finish', {}], ['DELETE', '', undefined],
+  ]) {
+    const denied = await call(`/appointments/${other.appointmentId}${suffix}`, own.doctorToken, method, body);
+    assert.ok([403, 404].includes(denied.status), `${method} ${suffix} must enforce ownership`);
+  }
+  const unchanged = await call(`/appointments/${other.appointmentId}`, await admin());
+  assert.equal(unchanged.body.data.status, stored.body.data.status);
+  const ownUpdate = await call(`/appointments/${own.appointmentId}`, own.doctorToken, 'PATCH', { notes: 'allowed own update' });
+  assert.equal(ownUpdate.status, 200);
+  assert.equal(ownUpdate.body.data.notes, 'allowed own update');
+  const reassigned = await call(`/appointments/${own.appointmentId}`, own.doctorToken, 'PATCH', { doctorId: other.appointment.doctorId });
+  assert.equal(reassigned.status, 403);
+  const stillOwn = await call(`/appointments/${own.appointmentId}`, own.doctorToken);
+  assert.equal(stillOwn.body.data.doctorId, own.appointment.doctorId);
+
 });
 
 for (const field of ['doctorId', 'patientId', 'startTime', 'endTime']) {

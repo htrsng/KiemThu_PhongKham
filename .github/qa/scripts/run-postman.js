@@ -10,13 +10,13 @@ async function main() {
   assertLocalQa();
   const run = createRun('postman');
   try {
-    const data = await createFixture({ appointment: false });
+    const data = await createFixture({ appointment: false, doctorAccount: true, doctorPassword: process.env.DOCTOR_PASS });
     const existing = await createFixture({ status: 'Đã hoàn thành', invoice: true });
     const collectionPath = resolve(root, 'api-testing/postman/smilecare-qa.postman_collection.json');
     const collectionText = readFileSync(collectionPath, 'utf8');
     const values = { baseUrl: process.env.API_URL || 'http://localhost:5000/api',
       adminEmail: process.env.ADMIN_USER, adminPassword: process.env.ADMIN_PASS,
-      doctorEmail: process.env.DOCTOR_USER, doctorPassword: process.env.DOCTOR_PASS,
+      doctorEmail: data.doctorEmail, doctorPassword: process.env.DOCTOR_PASS,
       receptionEmail: process.env.RECEPTION_USER, receptionPassword: process.env.RECEPTION_PASS,
       patientId: data.appointment.patientId, doctorId: data.appointment.doctorId, serviceId: data.appointment.serviceId,
       futureStartTime: data.appointment.startTime, futureEndTime: data.appointment.endTime,
