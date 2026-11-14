@@ -1,0 +1,10 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/auth/me",
+    "httpStatus": 401,
+    "body": {
+      "error": "Not authorized to access this route"
+    }
+  }
+]

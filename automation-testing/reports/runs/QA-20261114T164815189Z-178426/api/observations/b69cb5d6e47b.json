@@ -1,0 +1,98 @@
+[
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af890d311b7e96a767bab61",
+    "httpStatus": 404,
+    "body": {
+      "error": "Appointment not found"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af890d311b7e96a767bab61",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã đến"
+    }
+  },
+  {
+    "method": "PUT",
+    "path": "/api/appointments/6af890d311b7e96a767bab61",
+    "httpStatus": 404,
+    "body": {
+      "error": "Appointment not found"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af890d311b7e96a767bab61/checkin",
+    "httpStatus": 404,
+    "body": {
+      "error": "Appointment not found"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af890d311b7e96a767bab61/finish",
+    "httpStatus": 404,
+    "body": {
+      "error": "Appointment not found"
+    }
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/appointments/6af890d311b7e96a767bab61",
+    "httpStatus": 404,
+    "body": {
+      "error": "Appointment not found"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af890d311b7e96a767bab61",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã đến"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af890d311b7e96a767bab59",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã lên lịch"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/appointments/6af890d311b7e96a767bab59",
+    "httpStatus": 403,
+    "body": {
+      "error": "Cannot assign appointments to another doctor"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af890d311b7e96a767bab59",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã lên lịch"
+    }
+  }
+]

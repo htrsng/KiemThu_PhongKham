@@ -4,7 +4,7 @@
 
 ## 1. Tổng quan
 
-Kiểm thử API xác minh xác thực, phân quyền và nghiệp vụ phòng khám trên ứng dụng Express/MongoDB. Bộ Node gồm **46 test API HTTP và 7 test hồi quy BUG-002/003**. Bộ HTTP mở rộng hiện có 35 Pass / 11 Fail, phát hiện BUG-005/006. Collection Postman và unit controller được báo cáo riêng. [Tổng hợp QA mới nhất](../manual-testing/test-execution/latest-qa-summary.md) là nguồn trạng thái hiện hành.
+Kiểm thử API xác minh xác thực, phân quyền và nghiệp vụ phòng khám trên ứng dụng Express/MongoDB. Bộ Node gồm **46 test API HTTP và 7 test hồi quy BUG-002/003**. Retest sau sửa BUG-005/006 đạt 46 Pass / 0 Fail cho API; 7 test hồi quy lỗi cũng Pass. Collection Postman và unit controller được báo cáo riêng. [Tổng hợp QA mới nhất](../manual-testing/test-execution/latest-qa-summary.md) là nguồn trạng thái hiện hành.
 
 ## 2. Phạm vi API
 
@@ -12,11 +12,11 @@ Kiểm thử API xác minh xác thực, phân quyền và nghiệp vụ phòng k
 | --- | --- | --- |
 | Xác thực | POST `/auth/login`, GET `/auth/me` | HTTP status, token/phiên làm việc, vai trò, không trả mật khẩu, từ chối token thiếu/sai/hết hạn |
 | Phân quyền | GET `/accounts`; GET/PATCH/DELETE `/invoices/:id` | Quyền Admin/Doctor/Reception; cập nhật bị cấm không làm đổi dữ liệu |
-| Quyền theo bác sĩ | GET danh sách/chi tiết, PATCH `/appointments/:id` với tài khoản Doctor có referenceId riêng | Ba assertions về lịch bác sĩ khác Fail, ghi BUG-005 |
+| Quyền theo bác sĩ | Danh sách/chi tiết, PUT/PATCH, check-in, finish, DELETE; chặn đổi sang bác sĩ khác | Ba test Pass sau sửa BUG-005, gồm kiểm tra lịch của mình vẫn cập nhật được |
 | Đặt lịch/check-in | POST `/appointments`, PATCH `/appointments/:id/checkin` | Tạo hợp lệ, từ chối lịch quá khứ/trùng, quy tắc giờ/trạng thái và checkInTime đã lưu |
 | Trạng thái điều trị | PUT/PATCH `/appointments/:id`, PATCH `/appointments/:id/finish` | Chuyển tiến, từ chối chuyển sai, hoàn thành lặp và đồng thời |
 | Hóa đơn/thanh toán | GET `/invoices?appointmentId=:id`, PATCH/DELETE `/invoices/:id` | Hóa đơn duy nhất, phương thức thanh toán, số tiền thực thu/công nợ, số tiền âm/thiếu và quyền xóa |
-| Dữ liệu thiếu/ID sai | POST thiếu doctorId/patientId/startTime/endTime, doctorId/startTime sai định dạng; GET/PATCH/check-in ID sai | Một Pass, tám Fail; kỳ vọng 4xx và không tạo/sửa dữ liệu, ghi BUG-006 |
+| Dữ liệu thiếu/ID sai | POST thiếu doctorId/patientId/startTime/endTime, doctorId/startTime sai định dạng; GET/PATCH/check-in ID sai | Chín test Pass sau sửa BUG-006; trả 4xx và không tạo/sửa dữ liệu |
 
 [Hợp đồng API và checklist](api-contract.md) ghi đầu vào, response kỳ vọng và các nhánh chưa kiểm tra. Base URL: `http://localhost:5000/api`. Bảng trên mô tả assertions đã kiểm tra, không khẳng định bao phủ toàn bộ endpoint/nhánh xử lý.
 
@@ -66,11 +66,11 @@ Mỗi lần chạy tạo thư mục riêng trong `automation-testing/reports/gen
 
 | Bằng chứng | Kết quả đã ghi nhận |
 | --- | --- |
-| [TAP API](../automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/api/results.tap) / [JUnit](../automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/api/junit.xml) | 35 Pass / 11 Fail; 46 test |
-| [TAP hồi quy lỗi](../automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/known-defects/results.tap) / [JUnit](../automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/known-defects/junit.xml) | 7 Pass |
-| [JSON thực thi](../automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/execution.json) | Build, expected/actual, trạng thái và bằng chứng từng test; kết quả UI được phân loại riêng |
-| [JSON Newman](reports/newman/QA-20261113T153601759Z-bf5a0c/newman-results.json) | 21 request; 46/46 assertions Pass; không có lỗi |
-| [CI đã xác minh bộ mở rộng](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43455436873) | API 35 Pass / 11 Fail; hồi quy BUG-002/003 7 Pass; UI 12 Pass; unit 19 Pass; Newman 46 assertions Pass. Job Failed do BUG-005/006 |
+| [TAP API](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/api/results.tap) / [JUnit](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/api/junit.xml) | 46 Pass / 0 Fail; 46 test |
+| [TAP hồi quy lỗi](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/known-defects/results.tap) / [JUnit](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/known-defects/junit.xml) | 7 Pass |
+| [JSON thực thi](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/execution.json) | Build, expected/actual, trạng thái và bằng chứng từng test; kết quả UI được phân loại riêng |
+| [JSON Newman](reports/newman/QA-20261114T164829754Z-c4f8d8/newman-results.json) | 21 request; 46/46 assertions Pass; không có lỗi |
+| [CI lịch sử trước sửa](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43455436873) | API 35 Pass / 11 Fail; hồi quy BUG-002/003 7 Pass; UI 12 Pass. Job Failed do BUG-005/006; không phải kết quả retest local mới |
 
 Xem [chỉ mục báo cáo](reports/README.md). Số liệu thuộc từng run riêng; không cộng dồn run lịch sử/run mới hoặc coi assertions Newman là các case manual độc lập bổ sung.
 
@@ -78,6 +78,6 @@ Xem [chỉ mục báo cáo](reports/README.md). Số liệu thuộc từng run r
 
 ## 7. Lỗi và giới hạn đã biết
 
-[Registry](../manual-testing/bug-reports/registry.json) có **hai lỗi Open**: [BUG-005](../manual-testing/bug-reports/BUG-005.md), High/P0 — bác sĩ đọc/cập nhật lịch bác sĩ khác; [BUG-006](../manual-testing/bug-reports/BUG-006.md), Medium/P2 — dữ liệu thiếu/ID sai trả 500. Chưa có bản sửa/retest Pass cho hai lỗi này. BUG-002/003 vẫn Closed theo retest đã ghi; bằng chứng trước sửa giữ nguyên.
+[BUG-005](../manual-testing/bug-reports/BUG-005.md) và [BUG-006](../manual-testing/bug-reports/BUG-006.md) đã Closed sau sửa tại commit `1bb247a` và retest 46/46 API Pass. Quyền theo bác sĩ áp dụng cả danh sách, chi tiết, PUT/PATCH, check-in, finish và DELETE; test xác minh lịch khác không bị sửa và bác sĩ vẫn cập nhật được lịch của mình. Đầu vào thiếu/sai được trả 4xx trước khi xử lý. Bằng chứng trước sửa giữ nguyên. Workbook 40 case vẫn còn phát hiện phụ phí âm và một case Blocked, chưa được bộ retest này xác nhận giải quyết.
 
 Coverage mới xác minh các trường hợp cụ thể trên, không chứng minh toàn bộ endpoint/phân quyền đều được kiểm tra. Biên đúng 30 phút mới có bằng chứng controller, chưa phải HTTP/UI/manual. Thanh toán kết hợp và toàn bộ chính sách hóa đơn chính thức chưa được xác nhận là đã triển khai/Pass trên build mới. Xem [giới hạn API](api-contract.md), [đối chiếu nguồn](../docs/requirements/source-reconciliation.md) và [tổng hợp mới nhất](../manual-testing/test-execution/latest-qa-summary.md).

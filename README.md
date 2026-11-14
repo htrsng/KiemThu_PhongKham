@@ -33,18 +33,18 @@ Cypress có các luồng kết hợp UI/API. Bộ hiện tại chưa xác minh l
 
 ## 4. Kết quả thực thi kiểm thử
 
-**Nguồn trạng thái hiện hành:** [Tổng hợp QA mới nhất](manual-testing/test-execution/latest-qa-summary.md). Sau khi mở rộng coverage, bộ nghiệp vụ có **54 Pass / 11 Fail**; đã ghi nhận BUG-005/006 Open. Kết quả 53 Pass trước đây thuộc bộ kiểm thử nhỏ hơn, được giữ trong báo cáo lịch sử.
+**Nguồn trạng thái hiện hành:** [Tổng hợp QA mới nhất](manual-testing/test-execution/latest-qa-summary.md). Retest sau sửa BUG-005/006 đạt **65 Pass / 0 Fail**: 46 API, 12 Cypress UI/hybrid và 7 hồi quy BUG-002/003. Cả 6 bug trong registry đã Closed theo bằng chứng tương ứng; báo cáo trước sửa được giữ nguyên.
 
 | Hồ sơ | Kết quả | Nguồn |
 | --- | --- | --- |
 | Excel gốc, ghi chú kiểm thử cuối ngày 14/06/2026 | 337 case / 20 use case; ghi nhận 337 Pass | [Workbook kết quả lịch sử](manual-testing/test-execution/history/manual-execution.xlsx) |
 | Bảng tổng hợp trong PDF gốc | 314 case: 288 Pass / 26 Fail | [Báo cáo học phần, trang 36](docs/academic/LT2_N02_KiemThu.pdf#page=36) |
-| Hồi quy nghiệp vụ mở rộng | 46 API + 12 UI + 7 test hồi quy BUG-002/003: **54 Pass / 11 Fail** | [Kết quả JSON](automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/execution.json) |
-| Biên controller và hạ tầng | **19 Pass**: 6 biên ±30 phút/lệch 1 ms và 13 reporting/lifecycle; không phải HTTP/manual | [Kết quả unit](automation-testing/reports/runs/QA-20261113T153426945Z-cb851f/unit-results.json) |
-| Collection Postman chạy bằng Newman | 21 request; **46/46 assertions Pass** | [Kết quả Newman](api-testing/reports/newman/QA-20261113T153601759Z-bf5a0c/newman-results.json) |
+| Hồi quy nghiệp vụ mở rộng | 46 API + 12 UI + 7 test hồi quy BUG-002/003: **65 Pass / 0 Fail** | [Kết quả JSON](automation-testing/reports/runs/QA-20261114T164815189Z-178426/execution.json) |
+| Biên controller và hạ tầng | **19 Pass**: 6 biên ±30 phút/lệch 1 ms và 13 reporting/lifecycle; không phải HTTP/manual | [Kết quả unit](automation-testing/reports/runs/QA-20261114T164835731Z-7ba849/unit-results.json) |
+| Collection Postman chạy bằng Newman | 21 request; **46/46 assertions Pass** | [Kết quả Newman](api-testing/reports/newman/QA-20261114T164829754Z-c4f8d8/newman-results.json) |
 | Bộ regression ưu tiên 40 case — kết quả đã ghi | **38 Pass / 1 Fail / 1 Blocked**; ảnh manual đang bổ sung | [Workbook đã điền](manual-testing/test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx) |
 
-[CI đã xác minh cho bộ mở rộng](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43455436873), head `420cc74`: **Failed do 11 assertions của BUG-005/006**, cùng kết quả 54 Pass / 11 Fail như local. Unit/build/audit evidence và Newman đạt; [metadata xác minh](automation-testing/reports/ci-coverage-verification.json) ghi rõ run/build và artifact. BUG-002/003/004 vẫn Closed; BUG-005/006 đang Open trong [sổ theo dõi lỗi](manual-testing/bug-reports/README.md).
+[CI trước sửa](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43455436873), head `420cc74`, từng Failed do 11 assertions của BUG-005/006. Retest local trên commit `1bb247a` đã đạt 65/65; trạng thái lần chạy GitHub mới nhất nằm ở badge đầu trang. [Sổ theo dõi lỗi](manual-testing/bug-reports/README.md) giữ lịch sử Fixed → Retest → Closed và bằng chứng trước/sau sửa.
 
 Excel và PDF là hai hồ sơ lịch sử riêng; chênh lệch được giải thích trong [đối chiếu nguồn](docs/requirements/source-reconciliation.md). 70 thiết kế tập trung có chồng lấp với 337 case gốc; bộ manual 40 case là một tập con. Không cộng số thiết kế hoặc assertions tự động thành số case manual đã Pass.
 

@@ -70,15 +70,15 @@ Dùng QA runner headless để tạo báo cáo thực thi hoàn chỉnh. Chế �
 
 Job summary tách **Automation API + UI** và **Defect regression**. Assertion nghiệp vụ Fail, test tự động bị bỏ qua/chưa chạy hoặc lỗi process đều làm QA runner thất bại. Không dùng `continue-on-error` để bỏ qua lỗi đã biết. Upload artifact vẫn chạy sau test Fail khi có bằng chứng.
 
-[CI đã xác minh bộ mở rộng](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43455436873), head `420cc74`: Failed do 11 assertions của BUG-005/006 trong API; Cypress vẫn 12 Pass. Unit/build/audit evidence và Newman đạt. [Tổng hợp hiện hành](../manual-testing/test-execution/latest-qa-summary.md) ghi rõ 54 Pass / 11 Fail và metadata CI. Không dùng riêng Cypress Pass để kết luận cả build đạt.
+[CI lịch sử trước sửa](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43455436873), head `420cc74`, Failed do 11 assertions của BUG-005/006. Retest local trên commit `1bb247a` đạt **65 Pass / 0 Fail**, gồm 12 Cypress Pass. Luồng điều trị dùng token bác sĩ được gán lịch fixture, không dùng tài khoản bác sĩ không phụ trách. [Tổng hợp hiện hành](../manual-testing/test-execution/latest-qa-summary.md) dẫn kết quả mới; CI lịch sử được giữ nguyên.
 
 ## 7. Kết quả và bằng chứng
 
 [Bộ 40 case ưu tiên](../manual-testing/test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx) đã ghi 38 Pass / 1 Fail / 1 Blocked; ảnh manual đang bổ sung. Spec chạy hỗ trợ ở `cypress/assisted/priority-40.cy.js`, ngoài glob của 12 test chuẩn. [Chi tiết nguồn hỗ trợ](../manual-testing/test-execution/assisted-runs/README.md) phân biệt native runner 39 Pass / 1 Fail với đánh giá Excel có một case Blocked do giới hạn thời gian.
 
-- [Tổng hợp hồi quy đã công bố](reports/runs/QA-20261113T153459634Z-3e9268/summary.md): 12 UI Pass, tách khỏi API 35 Pass / 11 Fail và 7 test hồi quy BUG-002/003 Pass.
-- [JSON thực thi](reports/runs/QA-20261113T153459634Z-3e9268/execution.json) / [Excel](reports/runs/QA-20261113T153459634Z-3e9268/execution.xlsx): build, expected/actual, thời gian, trạng thái, case/bug và bằng chứng.
-- [Ảnh check-in](reports/runs/QA-20261113T153459634Z-3e9268/ui/screenshots/core-workflows.cy.js/reception-checkin-persisted.png) / [ảnh hóa đơn](reports/runs/QA-20261113T153459634Z-3e9268/ui/screenshots/core-workflows.cy.js/invoice-detail.png).
+- [Tổng hợp hồi quy đã công bố](reports/runs/QA-20261114T164815189Z-178426/summary.md): 12 UI Pass, tách khỏi API 46 Pass / 0 Fail và 7 test hồi quy BUG-002/003 Pass.
+- [JSON thực thi](reports/runs/QA-20261114T164815189Z-178426/execution.json) / [Excel](reports/runs/QA-20261114T164815189Z-178426/execution.xlsx): build, expected/actual, thời gian, trạng thái, case/bug và bằng chứng.
+- [Ảnh check-in](reports/runs/QA-20261114T164815189Z-178426/ui/screenshots/core-workflows.cy.js/reception-checkin-persisted.png) / [ảnh hóa đơn](reports/runs/QA-20261114T164815189Z-178426/ui/screenshots/core-workflows.cy.js/invoice-detail.png).
 - [Chỉ mục báo cáo](reports/README.md) và [lịch sử các run](reports/runs/README.md): trước sửa, sau sửa, hồi quy và các giới hạn reporter lịch sử.
 
 Run mới ghi vào `reports/generated/runs/<Run-ID>/`, bị Git bỏ qua. Artifact CI **clinic-qa-evidence** chứa ảnh, video, HTML/JSON Mochawesome và log process; tải từ đúng workflow run. Bản công bố trong Git chỉ chọn báo cáo/ảnh, không chứa toàn bộ video/HTML. Nội dung evidence của run cũ được giữ nguyên; [bảng ánh xạ đường dẫn](reports/legacy-paths.json) giải thích các vị trí nguồn đã chuyển.

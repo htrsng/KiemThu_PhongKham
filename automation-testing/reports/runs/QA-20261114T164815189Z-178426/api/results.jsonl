@@ -1,0 +1,46 @@
+{"name":"TC-AUTH-002 (API subset): missing both credentials returns 400","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":51.0679,"error":null}
+{"name":"TC-AUTH-004: uppercase gmail account is normalized","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":69.8303,"error":null}
+{"name":"TC-AUTH-003: non-gmail email returns 400","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":2.937,"error":null}
+{"name":"TC-AUTH-005: wrong password returns 401","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":67.002,"error":null}
+{"name":"TC-AUTH-008: locked account returns 403","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":68.952,"error":null}
+{"name":"TC-AUTH-001 / TC-AUTH-012 (API): valid login returns token without password","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":65.385,"error":null}
+{"name":"TC-AUTH-010 (missing-token subset): /me rejects missing token","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":3.376,"error":null}
+{"name":"TC-AUTH-012 (session): /me returns current account without password","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":78.9172,"error":null}
+{"name":"TC-AUTH-009: /me rejects invalid token","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":2.0107,"error":null}
+{"name":"TC-AUTH-010 (expired-token subset): signed expired JWT cannot access current account","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":124.4432,"error":null}
+{"name":"TC-AUTHZ-001: ADMIN account access returns 200","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":103.99,"error":null}
+{"name":"TC-AUTHZ-002: DOCTOR account access returns 403","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":75.5175,"error":null}
+{"name":"TC-AUTHZ-003: RECEPTION account access returns 403","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":69.4515,"error":null}
+{"name":"TC-APPT-001: create appointment and read persisted fields","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":138.4052,"error":null}
+{"name":"TC-APPT-002: past appointment returns 400 and creates no data","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":81.9432,"error":null}
+{"name":"TC-APPT-009: duplicate patient/doctor/day returns 400 without duplicate data","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":89.2231,"error":null}
+{"name":"TC-APPT-011: check-in offset 29 minutes returns 200","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":86.946,"error":null}
+{"name":"TC-APPT-013: check-in offset -31 minutes returns 400","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":81.5213,"error":null}
+{"name":"TC-APPT-014: check-in offset 0 minutes returns 200","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":85.7081,"error":null}
+{"name":"TC-APPT-015: repeated check-in returns 400 without modifying state","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":95.6815,"error":null}
+{"name":"TC-APPT-018: complete treatment and verify exactly one unpaid invoice","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":88.1812,"error":null}
+{"name":"TC-PAY-003: paid=100000, allowDebt=false returns 200 and persists balance","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":82.8028,"error":null}
+{"name":"TC-PAY-004: paid=100000, allowDebt=false returns 200 and persists balance","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":90.1955,"error":null}
+{"name":"TC-PAY-005: paid=100000, allowDebt=false returns 200 and persists balance","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":85.3018,"error":null}
+{"name":"TC-PAY-006: paid=100000, allowDebt=false returns 200 and persists balance","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":87.7257,"error":null}
+{"name":"TC-PAY-007: paid=1, allowDebt=false returns 400 and persists balance","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":84.8985,"error":null}
+{"name":"TC-PAY-008: paid=40000, allowDebt=true returns 200 and persists balance","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":118.6304,"error":null}
+{"name":"TC-PAY-010: paid=-1, allowDebt=false returns 400 and persists balance","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":116.4727,"error":null}
+{"name":"TC-AUTHZ-005: Doctor GET invoice returns 403 without exposing or modifying data","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":146.8773,"error":null}
+{"name":"TC-AUTHZ-005: Doctor PATCH invoice returns 403 without exposing or modifying data","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":145.3301,"error":null}
+{"name":"TC-AUTH-010 (invoice subset): missing token cannot list invoices","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":1.7646,"error":null}
+{"name":"TC-AUTHZ-004: ADMIN invoice deletion returns 200","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":153.4585,"error":null}
+{"name":"TC-AUTHZ-005: DOCTOR invoice deletion returns 403","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":153.2059,"error":null}
+{"name":"TC-AUTHZ-007: RECEPTION invoice deletion returns 403","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":165.4471,"error":null}
+{"name":"BUG-005 / TC-AUTHZ-008: Doctor listing and query filters cannot expose another doctor appointments","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":188.243,"error":null}
+{"name":"BUG-005 / TC-AUTHZ-008: Doctor may read own appointment but not foreign appointment by ID","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":102.1374,"error":null}
+{"name":"BUG-005 / TC-AUTHZ-008: Doctor cannot change treatment status on a foreign appointment","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":260.7318,"error":null}
+{"name":"BUG-006 / TC-APPT-025: missing doctorId returns client error and creates no appointment","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":82.8846,"error":null}
+{"name":"BUG-006 / TC-APPT-025: missing patientId returns client error and creates no appointment","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":95.999,"error":null}
+{"name":"BUG-006 / TC-APPT-025: missing startTime returns client error and creates no appointment","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":85.7631,"error":null}
+{"name":"BUG-006 / TC-APPT-025: missing endTime returns client error and creates no appointment","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":91.7232,"error":null}
+{"name":"BUG-006 / TC-APPT-025: malformed doctorId returns client error without creating data","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":84.2705,"error":null}
+{"name":"BUG-006 / TC-APPT-025: malformed startTime returns client error without creating data","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":84.1319,"error":null}
+{"name":"BUG-006 / TC-APPT-026: GET malformed appointment ID detail returns client error","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":80.3085,"error":null}
+{"name":"BUG-006 / TC-APPT-026: PATCH malformed appointment ID detail returns client error","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":85.1346,"error":null}
+{"name":"BUG-006 / TC-APPT-026: PATCH malformed appointment ID /checkin returns client error","file":"D:\\KiemThu_PhongKham\\.github\\qa\\helpers\\qa-test.js","status":"Pass","durationMs":82.6397,"error":null}

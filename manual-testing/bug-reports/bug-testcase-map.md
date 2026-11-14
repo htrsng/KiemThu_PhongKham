@@ -1,5 +1,15 @@
 # Đối chiếu bug, test case và mã kiểm thử
 
+## Cập nhật sau sửa — 14/11/2026
+
+Trạng thái hiện hành: **6 bug trong registry đều Closed**. BUG-005/006 được sửa tại commit `1bb247a`, [retest](../../automation-testing/reports/runs/QA-20261114T164815189Z-178426/execution.json) đạt **46 API + 7 hồi quy lỗi + 12 Cypress = 65 Pass / 0 Fail**. BUG-005 có ba test Pass, BUG-006 có chín test Pass. Xem chi tiết bản sửa trong [BUG-005](BUG-005.md) và [BUG-006](BUG-006.md).
+
+Khi phỏng vấn, trình bày quá trình phát hiện → sửa → retest: trước sửa 11 test Fail, sau sửa toàn bộ Pass. Phần bên dưới là **hồ sơ giải thích kết quả trước sửa**, nên các từ Open/Fail và ví dụ câu trả lời ở đó phản ánh thời điểm phát hiện, không phải trạng thái hiện hành. Hai catalog CSV cũng giữ nhãn run trước sửa trong từng dòng; nguồn kết quả mới là retest trên.
+
+Phát hiện phụ phí âm trong workbook 40 case chưa được bản sửa này giải quyết; không nói 6 Closed nghĩa là phần mềm không còn lỗi.
+
+---
+
 Tài liệu dùng để đọc hiểu dự án và chuẩn bị phỏng vấn. Số liệu lấy từ [registry](registry.json) và [run mở rộng đã công bố](../../automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/execution.json), không suy ra từ số dòng trong Excel.
 
 ## 1. Sáu bug đang được quản lý

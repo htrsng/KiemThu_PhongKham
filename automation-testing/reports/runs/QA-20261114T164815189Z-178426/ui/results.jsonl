@@ -1,0 +1,12 @@
+{"name":"TC-AUTHZ-001: Admin opens accounts and API returns account records","status":"Pass","durationMs":3298,"error":null,"observations":[],"screenshots":[]}
+{"name":"TC-AUTHZ-002: DOCTOR has no accounts menu and API returns 403","status":"Pass","durationMs":2535,"error":null,"observations":[],"screenshots":[]}
+{"name":"TC-AUTHZ-003: RECEPTION has no accounts menu and API returns 403","status":"Pass","durationMs":2472,"error":null,"observations":[],"screenshots":[]}
+{"name":"TC-APPT-014: Reception checks in a patient through UI and state persists","status":"Pass","durationMs":3185,"error":null,"observations":[{"httpStatus":200,"appointmentStatus":"Đã đến","checkInTime":"2026-11-14T16:48:44.061Z"}],"screenshots":[]}
+{"name":"TC-PAY-002: Reception opens a real invoice and sees its patient and amount","status":"Pass","durationMs":3350,"error":null,"observations":[{"httpStatus":200,"invoiceStatus":"Chưa thanh toán","finalAmount":100000}],"screenshots":[]}
+{"name":"TC-PAY-017: excessive discount shows a validation error and sends no payment request","status":"Pass","durationMs":3825,"error":null,"observations":[{"invoiceStatus":"Chưa thanh toán","amountPaid":0,"invalidPaymentRequests":0}],"screenshots":[]}
+{"name":"BUG-004 / TC-APPT-014 / TC-APPT-018 / TC-PAY-003: check-in UI to treatment API to cash payment UI","status":"Pass","durationMs":3770,"error":null,"observations":[{"status":"Đã thanh toán","paymentMethod":"Tiền mặt","amountPaid":100000,"finalAmount":100000,"debt":0}],"screenshots":[]}
+{"name":"TC-AUTH-010 (UI subset): redirects a missing session to login","status":"Pass","durationMs":1326,"error":null,"observations":[],"screenshots":[]}
+{"name":"TC-AUTH-002 (UI): required credentials prevent empty submission","status":"Pass","durationMs":522,"error":null,"observations":[],"screenshots":[]}
+{"name":"TC-AUTH-003 (UI): non-gmail email shows validation feedback","status":"Pass","durationMs":1377,"error":null,"observations":[],"screenshots":[]}
+{"name":"BUG-001 / TC-AUTH-005 (UI): wrong password keeps feedback and no session","status":"Pass","durationMs":2101,"error":null,"observations":[],"screenshots":[]}
+{"name":"TC-AUTH-001 / TC-AUTH-012 (UI): login session matches API current account","status":"Pass","durationMs":1958,"error":null,"observations":[],"screenshots":[]}

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="TC-AUTH-002 (API subset): missing both credentials returns 400" time="0.051068" classname="test"/>
+	<testcase name="TC-AUTH-004: uppercase gmail account is normalized" time="0.069830" classname="test"/>
+	<testcase name="TC-AUTH-003: non-gmail email returns 400" time="0.002937" classname="test"/>
+	<testcase name="TC-AUTH-005: wrong password returns 401" time="0.067002" classname="test"/>
+	<testcase name="TC-AUTH-008: locked account returns 403" time="0.068952" classname="test"/>
+	<testcase name="TC-AUTH-001 / TC-AUTH-012 (API): valid login returns token without password" time="0.065385" classname="test"/>
+	<testcase name="TC-AUTH-010 (missing-token subset): /me rejects missing token" time="0.003376" classname="test"/>
+	<testcase name="TC-AUTH-012 (session): /me returns current account without password" time="0.078917" classname="test"/>
+	<testcase name="TC-AUTH-009: /me rejects invalid token" time="0.002011" classname="test"/>
+	<testcase name="TC-AUTH-010 (expired-token subset): signed expired JWT cannot access current account" time="0.124443" classname="test"/>
+	<testcase name="TC-AUTHZ-001: ADMIN account access returns 200" time="0.103990" classname="test"/>
+	<testcase name="TC-AUTHZ-002: DOCTOR account access returns 403" time="0.075518" classname="test"/>
+	<testcase name="TC-AUTHZ-003: RECEPTION account access returns 403" time="0.069451" classname="test"/>
+	<testcase name="TC-APPT-001: create appointment and read persisted fields" time="0.138405" classname="test"/>
+	<testcase name="TC-APPT-002: past appointment returns 400 and creates no data" time="0.081943" classname="test"/>
+	<testcase name="TC-APPT-009: duplicate patient/doctor/day returns 400 without duplicate data" time="0.089223" classname="test"/>
+	<testcase name="TC-APPT-011: check-in offset 29 minutes returns 200" time="0.086946" classname="test"/>
+	<testcase name="TC-APPT-013: check-in offset -31 minutes returns 400" time="0.081521" classname="test"/>
+	<testcase name="TC-APPT-014: check-in offset 0 minutes returns 200" time="0.085708" classname="test"/>
+	<testcase name="TC-APPT-015: repeated check-in returns 400 without modifying state" time="0.095682" classname="test"/>
+	<testcase name="TC-APPT-018: complete treatment and verify exactly one unpaid invoice" time="0.088181" classname="test"/>
+	<testcase name="TC-PAY-003: paid=100000, allowDebt=false returns 200 and persists balance" time="0.082803" classname="test"/>
+	<testcase name="TC-PAY-004: paid=100000, allowDebt=false returns 200 and persists balance" time="0.090195" classname="test"/>
+	<testcase name="TC-PAY-005: paid=100000, allowDebt=false returns 200 and persists balance" time="0.085302" classname="test"/>
+	<testcase name="TC-PAY-006: paid=100000, allowDebt=false returns 200 and persists balance" time="0.087726" classname="test"/>
+	<testcase name="TC-PAY-007: paid=1, allowDebt=false returns 400 and persists balance" time="0.084899" classname="test"/>
+	<testcase name="TC-PAY-008: paid=40000, allowDebt=true returns 200 and persists balance" time="0.118630" classname="test"/>
+	<testcase name="TC-PAY-010: paid=-1, allowDebt=false returns 400 and persists balance" time="0.116473" classname="test"/>
+	<testcase name="TC-AUTHZ-005: Doctor GET invoice returns 403 without exposing or modifying data" time="0.146877" classname="test"/>
+	<testcase name="TC-AUTHZ-005: Doctor PATCH invoice returns 403 without exposing or modifying data" time="0.145330" classname="test"/>
+	<testcase name="TC-AUTH-010 (invoice subset): missing token cannot list invoices" time="0.001765" classname="test"/>
+	<testcase name="TC-AUTHZ-004: ADMIN invoice deletion returns 200" time="0.153458" classname="test"/>
+	<testcase name="TC-AUTHZ-005: DOCTOR invoice deletion returns 403" time="0.153206" classname="test"/>
+	<testcase name="TC-AUTHZ-007: RECEPTION invoice deletion returns 403" time="0.165447" classname="test"/>
+	<testcase name="BUG-005 / TC-AUTHZ-008: Doctor listing and query filters cannot expose another doctor appointments" time="0.188243" classname="test"/>
+	<testcase name="BUG-005 / TC-AUTHZ-008: Doctor may read own appointment but not foreign appointment by ID" time="0.102137" classname="test"/>
+	<testcase name="BUG-005 / TC-AUTHZ-008: Doctor cannot change treatment status on a foreign appointment" time="0.260732" classname="test"/>
+	<testcase name="BUG-006 / TC-APPT-025: missing doctorId returns client error and creates no appointment" time="0.082885" classname="test"/>
+	<testcase name="BUG-006 / TC-APPT-025: missing patientId returns client error and creates no appointment" time="0.095999" classname="test"/>
+	<testcase name="BUG-006 / TC-APPT-025: missing startTime returns client error and creates no appointment" time="0.085763" classname="test"/>
+	<testcase name="BUG-006 / TC-APPT-025: missing endTime returns client error and creates no appointment" time="0.091723" classname="test"/>
+	<testcase name="BUG-006 / TC-APPT-025: malformed doctorId returns client error without creating data" time="0.084270" classname="test"/>
+	<testcase name="BUG-006 / TC-APPT-025: malformed startTime returns client error without creating data" time="0.084132" classname="test"/>
+	<testcase name="BUG-006 / TC-APPT-026: GET malformed appointment ID detail returns client error" time="0.080308" classname="test"/>
+	<testcase name="BUG-006 / TC-APPT-026: PATCH malformed appointment ID detail returns client error" time="0.085135" classname="test"/>
+	<testcase name="BUG-006 / TC-APPT-026: PATCH malformed appointment ID /checkin returns client error" time="0.082640" classname="test"/>
+	<!-- tests 46 -->
+	<!-- suites 0 -->
+	<!-- pass 46 -->
+	<!-- fail 0 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 5488.246 -->
+</testsuites>

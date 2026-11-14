@@ -1,0 +1,18 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af890d311b7e96a767bab48",
+    "httpStatus": 200,
+    "body": {
+      "status": "Đã lên lịch"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments/6af890d311b7e96a767bab50",
+    "httpStatus": 404,
+    "body": {
+      "error": "Appointment not found"
+    }
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Reception"
+    }
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/invoices/6af890d1fa889491133a15b8",
+    "httpStatus": 400,
+    "body": {
+      "error": "Số tiền nhận không đủ. Vui lòng xác nhận Ghi nợ nếu muốn tiếp tục."
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/invoices/6af890d1fa889491133a15b8",
+    "httpStatus": 200,
+    "body": {
+      "status": "Chưa thanh toán",
+      "amountPaid": 0,
+      "finalAmount": 100000,
+      "debt": 0,
+      "paymentMethod": "Tiền mặt"
+    }
+  }
+]

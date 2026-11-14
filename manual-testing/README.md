@@ -56,8 +56,8 @@ Kết quả học phần có ở [Excel](test-execution/history/manual-execution
 | [BUG-002](bug-reports/BUG-002.md) | Lịch đã hoàn thành bị lùi trạng thái | Closed sau retest tự động: HTTP 400, trạng thái đã lưu giữ nguyên |
 | [BUG-003](bug-reports/BUG-003.md) | Hoàn thành lặp tạo trùng hóa đơn | Closed sau retest tuần tự/đồng thời: đúng một hóa đơn |
 | [BUG-004](bug-reports/BUG-004.md) | UI thu tiền mặt không lưu số tiền thực thu | Closed sau retest: amountPaid = finalAmount, debt = 0 |
-| [BUG-005](bug-reports/BUG-005.md) | Doctor đọc/cập nhật lịch bác sĩ khác | Open, High/P0; ba test HTTP Fail |
-| [BUG-006](bug-reports/BUG-006.md) | Dữ liệu thiếu/ID sai trả HTTP 500 | Open, Medium/P2; tám test HTTP Fail |
+| [BUG-005](bug-reports/BUG-005.md) | Doctor đọc/cập nhật lịch bác sĩ khác | Closed, High/P0; ba test HTTP Pass sau sửa |
+| [BUG-006](bug-reports/BUG-006.md) | Dữ liệu thiếu/ID sai trả HTTP 500 | Closed, Medium/P2; chín test HTTP Pass sau sửa |
 
 Vòng đời: **New → Open → Fixed → Retest → Closed**; retest thất bại chuyển Reopened. Giữ bằng chứng Trước sửa → Sau sửa → Hồi quy. [Trước sửa](../automation-testing/reports/runs/QA-20261113T124125327Z-5e0311/execution.json) và [Sau sửa / Hồi quy](../automation-testing/reports/runs/QA-20261113T124551346Z-2f0e1e/execution.json) là hai hồ sơ riêng, không ghi đè. Đóng lỗi cần commit sửa và assertions retest liên kết đều Pass; kết quả trong workbook và nguồn automation được ghi đúng phạm vi.
 

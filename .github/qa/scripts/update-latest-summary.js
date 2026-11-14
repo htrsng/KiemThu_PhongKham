@@ -80,6 +80,16 @@ async function main() {
         'Chế độ `--manual-recorded=true` ghi nhận số liệu workbook khi ảnh còn đang bổ sung và liệt kê evidence chưa có trong JSON; không đồng nghĩa đã xác minh đầy đủ manual. Bỏ tùy chọn này khi muốn kiểm tra nghiêm ngặt sự tồn tại của evidence.');
     content += `\n## Hồ sơ 40 case đã cập nhật\n\n- [Workbook đã điền](${link(manualFile)}): ${counts.Pass} Pass / ${counts.Fail} Fail / ${counts.Blocked} Blocked; mẫu trống không còn được dùng làm kết quả hiện tại.\n- [Nguồn API/UI hỗ trợ](assisted-runs/README.md) giữ kết quả và observations riêng. Không cộng bộ hỗ trợ này vào 65 test nghiệp vụ CI.\n- TC-PAY-016 Fail vì phụ phí âm vẫn được thanh toán; TC-APPT-014 Blocked vì chưa kiểm soát thời điểm tuyệt đối. Đây không phải xác nhận hai trường hợp đã được sửa.\n- Ảnh manual còn đang bổ sung; JSON hiện ghi ${missingEvidence.length} đường dẫn evidence trong workbook chưa tìm thấy. Các link JSON API/UI có sẵn không thay thế nhãn ảnh manual.\n`;
   }
+  if (!open.length) {
+    content = content.replace('BUG-002/003/004 vẫn Closed theo retest đã ghi. Có 0 lỗi chưa Closed trong registry hiện tại. Các test mới mở rộng coverage; run cũ 53 Pass không bao gồm các assertions mới này, nên không có mâu thuẫn khi run mới phát hiện Fail.',
+      'Cả 6 bug trong registry đã Closed theo bằng chứng retest tương ứng. BUG-005/006 được sửa tại commit 1bb247a; báo cáo trước sửa 54 Pass / 11 Fail được giữ nguyên. Bộ chuẩn hiện đạt 65 Pass / 0 Fail.')
+      .replace('**Chưa đạt điều kiện phát hành** khi còn lỗi Open, một case Blocked và ảnh thực thi đang bổ sung.',
+        '**Chưa kết luận đạt điều kiện phát hành**: workbook 40 case vẫn có TC-PAY-016 Fail, TC-APPT-014 Blocked và ảnh đang bổ sung; retest BUG-005/006 không giải quyết các mục này.')
+      .replace('CI phải Fail khi các assertions nghiệp vụ này Fail; không dùng unit/Newman Pass để che kết quả đó.',
+        'CI vẫn phải Fail nếu có assertion nghiệp vụ Fail; retest local Pass không thay thế việc kiểm tra lần chạy GitHub mới nhất.')
+      .replace('Quyền đọc/cập nhật lịch bác sĩ khác và dữ liệu thiếu/ID sai đã có test HTTP thực tế, với lỗi đã ghi trong registry.',
+        'Quyền đọc/cập nhật lịch bác sĩ khác và dữ liệu thiếu/ID sai đã có test HTTP thực tế; BUG-005/006 đã retest Pass và Closed.');
+  }
   writeFileSync(resolve(directory, 'latest-qa-summary.md'), content + verification);
   console.log(`Latest QA summary: ${business.data.counts.Pass} Pass / ${business.data.counts.Fail} Fail; manual ${counts['Not Run']} Not Run; ${open.length} non-Closed defects.`);
 }

@@ -1,0 +1,18 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/appointments",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 1
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 1
+    }
+  }
+]

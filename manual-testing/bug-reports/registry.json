@@ -169,7 +169,7 @@
       "testCaseIds": [
         "TC-AUTHZ-008"
       ],
-      "state": "Open",
+      "state": "Closed",
       "history": [
         {
           "state": "New",
@@ -184,6 +184,30 @@
           "note": "Reproduced with an owned Doctor account and separate foreign fixture; no fix claimed.",
           "evidence": "automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/execution.json",
           "at": "2026-11-13T15:38:21.253Z"
+        },
+        {
+          "state": "Fixed",
+          "actor": "qa-maintainer-assisted",
+          "note": "Appointment-ownership-and-input-validation-fixed",
+          "evidence": "server/src/routes/appointmentRoutes.js",
+          "fixCommit": "1bb247a27a205186791cacabacd6d7fd42e34b24",
+          "at": "2026-11-14T16:49:48.405Z"
+        },
+        {
+          "state": "Retest",
+          "actor": "automation:local",
+          "note": "Unchanged-defect-expectations-and-expanded-ownership-checks-pass",
+          "evidence": "automation-testing/reports/runs/QA-20261114T164815189Z-178426/execution.json",
+          "runId": "QA-20261114T164815189Z-178426",
+          "at": "2026-11-14T16:49:48.486Z"
+        },
+        {
+          "state": "Closed",
+          "actor": "qa-maintainer-assisted",
+          "note": "All-linked-assertions-pass-full-regression-65-of-65",
+          "evidence": "automation-testing/reports/runs/QA-20261114T164815189Z-178426/execution.json",
+          "runId": "QA-20261114T164815189Z-178426",
+          "at": "2026-11-14T16:49:48.570Z"
         }
       ]
     },
@@ -197,7 +221,7 @@
         "TC-APPT-025",
         "TC-APPT-026"
       ],
-      "state": "Open",
+      "state": "Closed",
       "history": [
         {
           "state": "New",
@@ -212,6 +236,30 @@
           "note": "Classify validated client input errors as 4xx; no fix or passing retest claimed.",
           "evidence": "automation-testing/reports/runs/QA-20261113T153459634Z-3e9268/execution.json",
           "at": "2026-11-13T15:38:21.367Z"
+        },
+        {
+          "state": "Fixed",
+          "actor": "qa-maintainer-assisted",
+          "note": "Appointment-ownership-and-input-validation-fixed",
+          "evidence": "server/src/routes/appointmentRoutes.js",
+          "fixCommit": "1bb247a27a205186791cacabacd6d7fd42e34b24",
+          "at": "2026-11-14T16:49:48.646Z"
+        },
+        {
+          "state": "Retest",
+          "actor": "automation:local",
+          "note": "Unchanged-defect-expectations-and-expanded-ownership-checks-pass",
+          "evidence": "automation-testing/reports/runs/QA-20261114T164815189Z-178426/execution.json",
+          "runId": "QA-20261114T164815189Z-178426",
+          "at": "2026-11-14T16:49:48.731Z"
+        },
+        {
+          "state": "Closed",
+          "actor": "qa-maintainer-assisted",
+          "note": "All-linked-assertions-pass-full-regression-65-of-65",
+          "evidence": "automation-testing/reports/runs/QA-20261114T164815189Z-178426/execution.json",
+          "runId": "QA-20261114T164815189Z-178426",
+          "at": "2026-11-14T16:49:48.813Z"
         }
       ]
     }

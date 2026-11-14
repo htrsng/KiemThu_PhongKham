@@ -1,0 +1,126 @@
+TAP version 13
+# (node:2608) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: TC-APPT-012 / controller clock boundary: now-startTime=-1800001ms allowed=false
+ok 1 - TC-APPT-012 / controller clock boundary: now-startTime=-1800001ms allowed=false
+  ---
+  duration_ms: 2.153
+  type: 'test'
+  ...
+# Subtest: TC-APPT-012 / controller clock boundary: now-startTime=-1800000ms allowed=true
+ok 2 - TC-APPT-012 / controller clock boundary: now-startTime=-1800000ms allowed=true
+  ---
+  duration_ms: 0.2791
+  type: 'test'
+  ...
+# Subtest: TC-APPT-012 / controller clock boundary: now-startTime=-1799999ms allowed=true
+ok 3 - TC-APPT-012 / controller clock boundary: now-startTime=-1799999ms allowed=true
+  ---
+  duration_ms: 0.2109
+  type: 'test'
+  ...
+# Subtest: TC-APPT-012 / controller clock boundary: now-startTime=1799999ms allowed=true
+ok 4 - TC-APPT-012 / controller clock boundary: now-startTime=1799999ms allowed=true
+  ---
+  duration_ms: 0.1948
+  type: 'test'
+  ...
+# Subtest: TC-APPT-012 / controller clock boundary: now-startTime=1800000ms allowed=true
+ok 5 - TC-APPT-012 / controller clock boundary: now-startTime=1800000ms allowed=true
+  ---
+  duration_ms: 0.3709
+  type: 'test'
+  ...
+# Subtest: TC-APPT-012 / controller clock boundary: now-startTime=1800001ms allowed=false
+ok 6 - TC-APPT-012 / controller clock boundary: now-startTime=1800001ms allowed=false
+  ---
+  duration_ms: 0.1416
+  type: 'test'
+  ...
+# Subtest: CSV preserves multiline Vietnamese fields, commas and quotes
+ok 7 - CSV preserves multiline Vietnamese fields, commas and quotes
+  ---
+  duration_ms: 3.6797
+  type: 'test'
+  ...
+# Subtest: Historical execution is preserved separately from new-build manual retest
+ok 8 - Historical execution is preserved separately from new-build manual retest
+  ---
+  duration_ms: 11.9691
+  type: 'test'
+  ...
+# Subtest: Historical report keeps source status and actual, including explicit missing values
+ok 9 - Historical report keeps source status and actual, including explicit missing values
+  ---
+  duration_ms: 23.4137
+  type: 'test'
+  ...
+# Subtest: Run IDs never reuse or overwrite previous metadata
+ok 10 - Run IDs never reuse or overwrite previous metadata
+  ---
+  duration_ms: 292.9968
+  type: 'test'
+  ...
+# Subtest: Empty/failed processes become explicit infrastructure Fail, with Excel output
+ok 11 - Empty/failed processes become explicit infrastructure Fail, with Excel output
+  ---
+  duration_ms: 385.6566
+  type: 'test'
+  ...
+# Subtest: Completed execution results cannot be overwritten by the exporter
+ok 12 - Completed execution results cannot be overwritten by the exporter
+  ---
+  duration_ms: 162.6743
+  type: 'test'
+  ...
+# Subtest: Known credentials and JWTs are removed from artifact text
+ok 13 - Known credentials and JWTs are removed from artifact text
+  ---
+  duration_ms: 0.8683
+  type: 'test'
+  ...
+# Subtest: Skipped Node tests remain Not Run instead of becoming Pass
+ok 14 - Skipped Node tests remain Not Run instead of becoming Pass
+  ---
+  duration_ms: 0.3744
+  type: 'test'
+  ...
+# Subtest: Cypress uses native measured duration and assertion error, not guessed zero
+ok 15 - Cypress uses native measured duration and assertion error, not guessed zero
+  ---
+  duration_ms: 0.8197
+  type: 'test'
+  ...
+# Subtest: Cypress state/report mismatches cannot silently become Pass
+ok 16 - Cypress state/report mismatches cannot silently become Pass
+  ---
+  duration_ms: 2.4575
+  type: 'test'
+  ...
+# Subtest: Defects cannot jump from New directly to Closed
+ok 17 - Defects cannot jump from New directly to Closed
+  ---
+  duration_ms: 0.7488
+  type: 'test'
+  ...
+# Subtest: A claimed fix without a build commit is rejected
+ok 18 - A claimed fix without a build commit is rejected
+  ---
+  duration_ms: 0.3414
+  type: 'test'
+  ...
+# Subtest: A failed real retest cannot close a defect
+ok 19 - A failed real retest cannot close a defect
+  ---
+  duration_ms: 32.587
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2348.9718

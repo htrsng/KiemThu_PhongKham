@@ -1,0 +1,26 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "httpStatus": 200,
+    "body": {
+      "role": "Admin"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/api/appointments",
+    "httpStatus": 400,
+    "body": {
+      "error": "Invalid doctorId"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/api/appointments",
+    "httpStatus": 200,
+    "body": {
+      "recordCount": 0
+    }
+  }
+]
