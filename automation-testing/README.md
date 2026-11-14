@@ -70,11 +70,11 @@ Dùng QA runner headless để tạo báo cáo thực thi hoàn chỉnh. Chế �
 
 Job summary tách **Automation API + UI** và **Defect regression**. Assertion nghiệp vụ Fail, test tự động bị bỏ qua/chưa chạy hoặc lỗi process đều làm QA runner thất bại. Không dùng `continue-on-error` để bỏ qua lỗi đã biết. Upload artifact vẫn chạy sau test Fail khi có bằng chứng.
 
-[CI lịch sử trước sửa](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43455436873), head `420cc74`, Failed do 11 assertions của BUG-005/006. Retest local trên commit `1bb247a` đạt **65 Pass / 0 Fail**, gồm 12 Cypress Pass. Luồng điều trị dùng token bác sĩ được gán lịch fixture, không dùng tài khoản bác sĩ không phụ trách. [Tổng hợp hiện hành](../manual-testing/test-execution/latest-qa-summary.md) dẫn kết quả mới; CI lịch sử được giữ nguyên.
+**[GitHub Actions: Success](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43617738189)** trên commit `01a9c67`: kiểm tra tài liệu, unit, build, API/Cypress, audit evidence và Newman đều đạt. Retest local trên commit sửa `1bb247a` đạt **65 Pass / 0 Fail**, gồm **12 Cypress Pass**. Luồng điều trị dùng token bác sĩ được gán lịch fixture. [Tổng hợp hiện hành](../manual-testing/test-execution/latest-qa-summary.md) dẫn kết quả mới; bằng chứng trước sửa được giữ trong các run lịch sử.
 
 ## 7. Kết quả và bằng chứng
 
-[Bộ 40 case ưu tiên](../manual-testing/test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx) đã ghi 38 Pass / 1 Fail / 1 Blocked; ảnh manual đang bổ sung. Spec chạy hỗ trợ ở `cypress/assisted/priority-40.cy.js`, ngoài glob của 12 test chuẩn. [Chi tiết nguồn hỗ trợ](../manual-testing/test-execution/assisted-runs/README.md) phân biệt native runner 39 Pass / 1 Fail với đánh giá Excel có một case Blocked do giới hạn thời gian.
+[Bộ 40 case ưu tiên](../manual-testing/test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx) ghi **38 Pass / 1 Fail / 1 Blocked**. Spec chạy hỗ trợ ở `cypress/assisted/priority-40.cy.js`, ngoài glob của 12 test chuẩn. [Chi tiết nguồn hỗ trợ](../manual-testing/test-execution/assisted-runs/README.md) phân biệt native runner 39 Pass / 1 Fail với đánh giá Excel có một case Blocked do giới hạn thời gian.
 
 - [Tổng hợp hồi quy đã công bố](reports/runs/QA-20261114T164815189Z-178426/summary.md): 12 UI Pass, tách khỏi API 46 Pass / 0 Fail và 7 test hồi quy BUG-002/003 Pass.
 - [JSON thực thi](reports/runs/QA-20261114T164815189Z-178426/execution.json) / [Excel](reports/runs/QA-20261114T164815189Z-178426/execution.xlsx): build, expected/actual, thời gian, trạng thái, case/bug và bằng chứng.

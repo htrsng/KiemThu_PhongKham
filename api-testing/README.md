@@ -70,11 +70,11 @@ Mỗi lần chạy tạo thư mục riêng trong `automation-testing/reports/gen
 | [TAP hồi quy lỗi](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/known-defects/results.tap) / [JUnit](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/known-defects/junit.xml) | 7 Pass |
 | [JSON thực thi](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/execution.json) | Build, expected/actual, trạng thái và bằng chứng từng test; kết quả UI được phân loại riêng |
 | [JSON Newman](reports/newman/QA-20261114T164829754Z-c4f8d8/newman-results.json) | 21 request; 46/46 assertions Pass; không có lỗi |
-| [CI lịch sử trước sửa](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43455436873) | API 35 Pass / 11 Fail; hồi quy BUG-002/003 7 Pass; UI 12 Pass. Job Failed do BUG-005/006; không phải kết quả retest local mới |
+| [GitHub Actions đã xác minh](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43617738189) | Success trên commit 01a9c67; API, hồi quy lỗi, Cypress, unit, build và Newman đều đạt |
 
 Xem [chỉ mục báo cáo](reports/README.md). Số liệu thuộc từng run riêng; không cộng dồn run lịch sử/run mới hoặc coi assertions Newman là các case manual độc lập bổ sung.
 
-[Workbook ưu tiên 40 case đã điền](../manual-testing/test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx) ghi 38 Pass / 1 Fail / 1 Blocked, ảnh manual đang bổ sung. [Bộ API/UI hỗ trợ 40 case](../manual-testing/test-execution/assisted-runs/README.md) là một run riêng; không cộng vào 46 API test chuẩn hoặc coi toàn bộ kết quả đó là xác minh manual có ảnh.
+[Workbook ưu tiên 40 case](../manual-testing/test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx) ghi **38 Pass / 1 Fail / 1 Blocked**. [Bộ API/UI hỗ trợ 40 case](../manual-testing/test-execution/assisted-runs/README.md) là một run riêng, không cộng vào 46 API test chuẩn.
 
 ## 7. Lỗi và giới hạn đã biết
 

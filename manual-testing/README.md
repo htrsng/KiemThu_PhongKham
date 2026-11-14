@@ -26,7 +26,7 @@ Bắt đầu từ [kế hoạch kiểm thử](test-plan/test-plan.md) và [danh 
 | --- | --- | --- |
 | [337 case gốc](test-cases/source-cases.csv) / 20 use case | Chuẩn hóa workbook học phần, giữ sheet/dòng nguồn và kết quả gốc | Excel ghi 337 Pass; là thực thi lịch sử, không phải retest build mới |
 | [70 case tập trung](test-cases/test-cases.csv) | Thiết kế hồi quy bổ trợ có bước, dữ liệu, kỳ vọng, ưu tiên và kỹ thuật | Một số assertions đã được tự động hóa; chưa retest thủ công toàn bộ bộ case |
-| [Bộ ưu tiên 40 case](test-cases/regression-suite.csv) | Tập con về xác thực/phân quyền, lịch hẹn/check-in, thanh toán và BUG-002/003/004 | Workbook đã ghi **38 Pass / 1 Fail / 1 Blocked**; ảnh manual đang bổ sung, kết quả hỗ trợ API/UI có nguồn riêng |
+| [Bộ ưu tiên 40 case](test-cases/regression-suite.csv) | Tập con về xác thực/phân quyền, lịch hẹn/check-in, thanh toán và BUG-002/003/004 | **38 Pass / 1 Fail / 1 Blocked**; kết quả hỗ trợ API/UI có nguồn riêng |
 
 70 case tập trung có chồng lấp với 337 case gốc: **không cộng thành 407 kịch bản độc lập**. Bộ 40 case là tập con, không phải bộ bổ sung. Automation bao phủ một phần không có nghĩa toàn bộ case đã Pass manual.
 
@@ -34,9 +34,9 @@ Bốn trường thiết kế thiếu được bổ sung bằng [bản hiệu ch�
 
 ## 4. Thực thi kiểm thử
 
-Kết quả hiện tại ở [workbook đã điền MAN-20261114-01](test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx), sheet **Execution**. Các dòng đã có build, thời gian, Actual và trạng thái; ảnh manual đang bổ sung. [Workbook 40 case trống](test-execution/manual-regression.xlsx) là mẫu dùng cho đợt mới. [Workbook tổng](test-execution/test-execution.xlsx) được giữ riêng.
+Kết quả hiện tại ở [workbook MAN-20261114-01](test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx), sheet **Execution**, gồm build, thời gian, Actual và trạng thái. [Workbook 40 case trống](test-execution/manual-regression.xlsx) là mẫu dùng cho đợt mới. [Workbook tổng](test-execution/test-execution.xlsx) được giữ riêng.
 
-Kết quả ghi trong file: **38 Pass / 1 Fail / 1 Blocked**. TC-PAY-016 Fail do phụ phí `-1` vẫn được thanh toán với thành tiền/thực thu `99999`; TC-APPT-014 Blocked vì chưa xác minh thời điểm bằng nhau tuyệt đối. Xem [nguồn API/UI hỗ trợ](test-execution/assisted-runs/README.md) và [hướng dẫn bổ sung evidence/retest](test-execution/manual-regression.md). Hoàn tất nhập kết quả không đồng nghĩa mọi case đều Pass hoặc ảnh đã đầy đủ.
+Kết quả ghi trong file: **38 Pass / 1 Fail / 1 Blocked**. TC-PAY-016 Fail do phụ phí `-1` vẫn được thanh toán với thành tiền/thực thu `99999`; TC-APPT-014 Blocked vì chưa xác minh thời điểm bằng nhau tuyệt đối. Xem [nguồn API/UI hỗ trợ](test-execution/assisted-runs/README.md) và [hướng dẫn thực thi/retest](test-execution/manual-regression.md).
 
 1. Lưu bản sao mới cho mỗi Run ID. Ghi commit build, môi trường/trình duyệt, người thực hiện và thời gian thực tế.
 2. Chuẩn bị dữ liệu giả và ghi ID bệnh nhân/lịch hẹn/hóa đơn đã dùng. Thực hiện các bước trên đúng build đó.
@@ -45,7 +45,7 @@ Kết quả ghi trong file: **38 Pass / 1 Fail / 1 Blocked**. TC-PAY-016 Fail do
 
 Kết quả học phần có ở [Excel](test-execution/history/manual-execution.xlsx) và [CSV](test-execution/history/manual-execution.csv). Metadata thiếu trong nguồn tiếp tục được ghi rõ là chưa có. Không chép kết quả automation vào trường manual hoặc lấy Expected điền cho Actual lịch sử còn thiếu.
 
-[Tổng hợp QA mới nhất](test-execution/latest-qa-summary.md) là nguồn trạng thái hiện hành; [báo cáo lịch sử](test-execution/test-report.md) giữ các run trước mở rộng coverage. Bộ 40 đã ghi kết quả, còn bổ sung ảnh và xử lý Fail/Blocked; không còn mô tả cả bộ là 40 Not Run. Dự án không khẳng định đã chạy lại thủ công toàn bộ 337 case.
+[Tổng hợp QA mới nhất](test-execution/latest-qa-summary.md) là nguồn trạng thái hiện hành; [báo cáo lịch sử](test-execution/test-report.md) giữ các run trước mở rộng coverage. Bộ 40 đã ghi kết quả, với hai mục cần xử lý/retest nêu trên. Bộ 337 case được trình bày riêng là kết quả lịch sử.
 
 ## 5. Quản lý lỗi
 
