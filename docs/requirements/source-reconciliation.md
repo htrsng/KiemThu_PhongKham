@@ -4,7 +4,7 @@ Nguồn gốc được giữ nguyên trong `docs/`: đặc tả, báo cáo cài 
 
 ## Nguồn số liệu được sử dụng
 
-Excel là nguồn thống nhất cho danh mục và kết quả kiểm thử học phần: **337 ID duy nhất / 20 use case, 337 Pass lịch sử**. README và danh mục test case sử dụng số liệu Excel. PDF được giữ để tham khảo đặc tả/bối cảnh học phần, không dùng làm nguồn tổng hợp kết quả kiểm thử. Workbook regression mới và các run automation vẫn phản ánh đợt thực thi tương ứng, không được thay bằng kết quả lịch sử.
+Excel là nguồn thống nhất cho danh mục và kết quả kiểm thử chức năng đợt trước: **337 ID duy nhất / 20 use case, 337 Pass lịch sử**. README và danh mục test case sử dụng số liệu Excel. PDF được giữ để tham khảo đặc tả và quá trình triển khai ban đầu, không dùng làm nguồn tổng hợp kết quả kiểm thử. Workbook regression mới và các run automation vẫn phản ánh đợt thực thi tương ứng, không được thay bằng kết quả lịch sử.
 
 ## Đối chiếu lưu trữ — không dùng để tổng hợp kết quả hiện hành
 

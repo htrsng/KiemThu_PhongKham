@@ -4,9 +4,9 @@
 
 ## 1. Tổng quan
 
-Kiểm thử thủ công chuyển yêu cầu nghiệp vụ SmileCare thành kịch bản, test case, hồ sơ thực thi và báo cáo lỗi có thể tái hiện. Hồ sơ học phần bao phủ 20 use case về danh mục, lịch khám, tiếp đón/điều trị, thanh toán, doanh thu và tiền lương. Kế hoạch hồi quy hiện tại ưu tiên xác thực, phân quyền, lịch hẹn/check-in và hóa đơn/thanh toán.
+Kiểm thử thủ công chuyển yêu cầu nghiệp vụ SmileCare thành kịch bản, test case, hồ sơ thực thi và báo cáo lỗi có thể tái hiện. Bộ kiểm thử chức năng trước đó bao phủ 20 use case về danh mục, lịch khám, tiếp đón/điều trị, thanh toán, doanh thu và tiền lương. Kế hoạch hồi quy hiện tại ưu tiên xác thực, phân quyền, lịch hẹn/check-in và hóa đơn/thanh toán.
 
-Bắt đầu từ [kế hoạch kiểm thử](test-plan/test-plan.md) và [danh mục kịch bản](test-scenarios/scenarios.md). Phạm vi đã thiết kế, kết quả thực thi học phần và retest trên build mới được ghi riêng.
+Bắt đầu từ [kế hoạch kiểm thử](test-plan/test-plan.md) và [danh mục kịch bản](test-scenarios/scenarios.md). Phạm vi đã thiết kế, kết quả thực thi đợt trước và retest trên build mới được ghi riêng.
 
 ## 2. Kỹ thuật thiết kế kiểm thử
 
@@ -24,13 +24,13 @@ Bắt đầu từ [kế hoạch kiểm thử](test-plan/test-plan.md) và [danh 
 
 | Bộ case | Mục đích | Cách hiểu kết quả thực thi |
 | --- | --- | --- |
-| [337 case gốc](test-cases/source-cases.csv) / 20 use case | Chuẩn hóa workbook học phần, giữ sheet/dòng nguồn và kết quả gốc | Excel ghi 337 Pass; là thực thi lịch sử, không phải retest build mới |
+| [337 case gốc](test-cases/source-cases.csv) / 20 use case | Chuẩn hóa workbook kiểm thử ban đầu, giữ sheet/dòng nguồn và kết quả gốc | Excel ghi 337 Pass; là thực thi lịch sử, không phải retest build mới |
 | [70 case tập trung](test-cases/test-cases.csv) | Thiết kế hồi quy bổ trợ có bước, dữ liệu, kỳ vọng, ưu tiên và kỹ thuật | Một số assertions đã được tự động hóa; chưa retest thủ công toàn bộ bộ case |
 | [Bộ ưu tiên 40 case](test-cases/regression-suite.csv) | Tập con về xác thực/phân quyền, lịch hẹn/check-in, thanh toán và BUG-002/003/004 | **38 Pass / 1 Fail / 1 Blocked**; kết quả hỗ trợ API/UI có nguồn riêng |
 
 70 case tập trung có chồng lấp với 337 case gốc: **không cộng thành 407 kịch bản độc lập**. Bộ 40 case là tập con, không phải bộ bổ sung. Automation bao phủ một phần không có nghĩa toàn bộ case đã Pass manual.
 
-Bốn trường thiết kế thiếu được bổ sung bằng [bản hiệu chỉnh](test-cases/source-corrections.json), giữ nguyên file gốc, trạng thái lịch sử và các trường Actual lịch sử còn thiếu. **Excel là nguồn thống nhất cho danh mục và kết quả kiểm thử học phần: 337 case / 20 use case, 337 Pass lịch sử.** PDF chỉ lưu làm tài liệu tham khảo; không dùng số liệu PDF để tổng hợp kết quả. [Đối chiếu nguồn](../docs/requirements/source-reconciliation.md) lưu thông tin kiểm tra nguồn gốc.
+Bốn trường thiết kế thiếu được bổ sung bằng [bản hiệu chỉnh](test-cases/source-corrections.json), giữ nguyên file gốc, trạng thái lịch sử và các trường Actual lịch sử còn thiếu. **Excel là nguồn thống nhất cho danh mục và kết quả kiểm thử chức năng đợt trước: 337 case / 20 use case, 337 Pass lịch sử.** PDF chỉ lưu làm tài liệu tham khảo; không dùng số liệu PDF để tổng hợp kết quả. [Đối chiếu nguồn](../docs/requirements/source-reconciliation.md) lưu thông tin kiểm tra nguồn gốc.
 
 ## 4. Thực thi kiểm thử
 
@@ -43,7 +43,7 @@ Kết quả ghi trong file: **38 Pass / 1 Fail / 1 Blocked**. TC-PAY-016 Fail do
 3. So sánh quan sát với **Expected — kết quả mong đợi**. Ghi thông báo, HTTP status, trạng thái đã lưu, số hóa đơn hoặc số dư thực tế vào **Actual — kết quả thực tế**, kèm ảnh hoặc response đã làm sạch.
 4. Chọn **Pass** khi đã quan sát đủ kỳ vọng; **Fail** nếu sai khác; **Blocked** kèm điều kiện/tính năng đang thiếu; case chưa làm giữ **Not Run**. Ghi Bug ID khi có lỗi.
 
-Kết quả học phần có ở [Excel](test-execution/history/manual-execution.xlsx) và [CSV](test-execution/history/manual-execution.csv). Metadata thiếu trong nguồn tiếp tục được ghi rõ là chưa có. Không chép kết quả automation vào trường manual hoặc lấy Expected điền cho Actual lịch sử còn thiếu.
+Kết quả đợt kiểm thử trước có ở [Excel](test-execution/history/manual-execution.xlsx) và [CSV](test-execution/history/manual-execution.csv). Metadata thiếu trong nguồn tiếp tục được ghi rõ là chưa có. Không chép kết quả automation vào trường manual hoặc lấy Expected điền cho Actual lịch sử còn thiếu.
 
 [Tổng hợp QA mới nhất](test-execution/latest-qa-summary.md) là nguồn trạng thái hiện hành; [báo cáo lịch sử](test-execution/test-report.md) giữ các run trước mở rộng coverage. Bộ 40 đã ghi kết quả, với hai mục cần xử lý/retest nêu trên. Bộ 337 case được trình bày riêng là kết quả lịch sử.
 
