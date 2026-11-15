@@ -37,8 +37,7 @@ Cypress có các luồng kết hợp UI/API. Bộ hiện tại chưa xác minh l
 
 | Hồ sơ | Kết quả | Nguồn |
 | --- | --- | --- |
-| Excel gốc, ghi chú kiểm thử cuối ngày 14/06/2026 | 337 case / 20 use case; ghi nhận 337 Pass | [Workbook kết quả lịch sử](manual-testing/test-execution/history/manual-execution.xlsx) |
-| Bảng tổng hợp trong PDF gốc | 314 case: 288 Pass / 26 Fail | [Báo cáo học phần, trang 36](docs/academic/LT2_N02_KiemThu.pdf#page=36) |
+| Kiểm thử học phần — nguồn Excel | **337 case / 20 use case; 337 Pass** | [Workbook kết quả lịch sử](manual-testing/test-execution/history/manual-execution.xlsx) |
 | Hồi quy nghiệp vụ mở rộng | 46 API + 12 UI + 7 test hồi quy BUG-002/003: **65 Pass / 0 Fail** | [Kết quả JSON](automation-testing/reports/runs/QA-20261114T164815189Z-178426/execution.json) |
 | Biên controller và hạ tầng | **19 Pass**: 6 biên ±30 phút/lệch 1 ms và 13 reporting/lifecycle; không phải HTTP/manual | [Kết quả unit](automation-testing/reports/runs/QA-20261114T164835731Z-7ba849/unit-results.json) |
 | Collection Postman chạy bằng Newman | 21 request; **46/46 assertions Pass** | [Kết quả Newman](api-testing/reports/newman/QA-20261114T164829754Z-c4f8d8/newman-results.json) |
@@ -46,7 +45,7 @@ Cypress có các luồng kết hợp UI/API. Bộ hiện tại chưa xác minh l
 
 **GitHub Actions: [Success — run 43617738189](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43617738189)** trên commit `01a9c67`. Workflow đã đạt các bước kiểm tra tài liệu, unit, build giao diện, API/Cypress, kiểm tra evidence và Newman. [Sổ theo dõi lỗi](manual-testing/bug-reports/README.md) lưu quá trình Fixed → Retest → Closed và bằng chứng trước/sau sửa BUG-005/006.
 
-Excel và PDF là hai hồ sơ lịch sử riêng; chênh lệch được giải thích trong [đối chiếu nguồn](docs/requirements/source-reconciliation.md). 70 thiết kế tập trung có chồng lấp với 337 case gốc; bộ manual 40 case là một tập con. Không cộng số thiết kế hoặc assertions tự động thành số case manual đã Pass.
+**Nguồn số liệu test case học phần thống nhất là Excel:** 337 case thuộc 20 use case, ghi nhận 337 Pass trong đợt kiểm thử gốc. PDF được lưu làm tài liệu tham khảo, không dùng để tổng hợp kết quả trên trang này. 70 thiết kế tập trung có chồng lấp với 337 case gốc; bộ regression 40 case là một tập con và có workbook thực thi riêng. Kết quả tự động thuộc các run được liên kết trong bảng, không cộng thành số case manual.
 
 Bộ 40 case ghi nhận `TC-PAY-016` Fail do phụ phí âm vẫn được thanh toán và `TC-APPT-014` Blocked do chưa xác minh thời điểm bằng nhau tuyệt đối. [Kết quả API/UI hỗ trợ](manual-testing/test-execution/assisted-runs/README.md) có hồ sơ riêng. Workbook kết quả trong bảng là nguồn của đợt thực thi; `manual-regression.xlsx` ở thư mục tổng là mẫu tái sử dụng.
 

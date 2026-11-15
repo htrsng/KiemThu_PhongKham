@@ -30,7 +30,7 @@ Bắt đầu từ [kế hoạch kiểm thử](test-plan/test-plan.md) và [danh 
 
 70 case tập trung có chồng lấp với 337 case gốc: **không cộng thành 407 kịch bản độc lập**. Bộ 40 case là tập con, không phải bộ bổ sung. Automation bao phủ một phần không có nghĩa toàn bộ case đã Pass manual.
 
-Bốn trường thiết kế thiếu được bổ sung bằng [bản hiệu chỉnh](test-cases/source-corrections.json), giữ nguyên file gốc, trạng thái lịch sử và các trường Actual lịch sử còn thiếu. [Đối chiếu nguồn](../docs/requirements/source-reconciliation.md) giải thích riêng bảng PDF: 314 case, 288 Pass / 26 Fail. Chưa xác định được thứ tự thời gian của hai bộ kết quả Excel và PDF.
+Bốn trường thiết kế thiếu được bổ sung bằng [bản hiệu chỉnh](test-cases/source-corrections.json), giữ nguyên file gốc, trạng thái lịch sử và các trường Actual lịch sử còn thiếu. **Excel là nguồn thống nhất cho danh mục và kết quả kiểm thử học phần: 337 case / 20 use case, 337 Pass lịch sử.** PDF chỉ lưu làm tài liệu tham khảo; không dùng số liệu PDF để tổng hợp kết quả. [Đối chiếu nguồn](../docs/requirements/source-reconciliation.md) lưu thông tin kiểm tra nguồn gốc.
 
 ## 4. Thực thi kiểm thử
 

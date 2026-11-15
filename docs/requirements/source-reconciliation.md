@@ -2,7 +2,11 @@
 
 Nguồn gốc được giữ nguyên trong `docs/`: đặc tả, báo cáo cài đặt, báo cáo kiểm thử và Excel. SHA-256, vị trí sheet/dòng và thống kê máy đọc nằm trong [source-reconciliation.json](source-reconciliation.json), [source-cases.csv](../../manual-testing/test-cases/source-cases.csv).
 
-## Chênh lệch 314 và 337
+## Nguồn số liệu được sử dụng
+
+Excel là nguồn thống nhất cho danh mục và kết quả kiểm thử học phần: **337 ID duy nhất / 20 use case, 337 Pass lịch sử**. README và danh mục test case sử dụng số liệu Excel. PDF được giữ để tham khảo đặc tả/bối cảnh học phần, không dùng làm nguồn tổng hợp kết quả kiểm thử. Workbook regression mới và các run automation vẫn phản ánh đợt thực thi tương ứng, không được thay bằng kết quả lịch sử.
+
+## Đối chiếu lưu trữ — không dùng để tổng hợp kết quả hiện hành
 
 | Nhóm | PDF bảng 2-1 / 3-1 | Excel đếm ID duy nhất | Chênh lệch |
 | --- | ---: | ---: | ---: |
