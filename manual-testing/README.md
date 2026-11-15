@@ -30,6 +30,8 @@ Bắt đầu từ [kế hoạch kiểm thử](test-plan/test-plan.md) và [danh 
 
 70 case tập trung có chồng lấp với 337 case gốc: **không cộng thành 407 kịch bản độc lập**. Bộ 40 case là tập con, không phải bộ bổ sung. Automation bao phủ một phần không có nghĩa toàn bộ case đã Pass manual.
 
+Khi mô tả dự án trong CV, “70 test case” cần được gọi rõ là **bộ thiết kế hồi quy 70 case**; kết quả thực thi bộ ưu tiên 40 case được ghi riêng. Không dùng 337 Pass của đợt trước làm bằng chứng retest sau sửa 6 bug: nguồn hiện có chưa xác nhận trình tự đó. Bằng chứng phát hiện/sửa/retest từng bug nằm trong [registry](bug-reports/registry.json) và các báo cáo liên kết.
+
 Bốn trường thiết kế thiếu được bổ sung bằng [bản hiệu chỉnh](test-cases/source-corrections.json), giữ nguyên file gốc, trạng thái lịch sử và các trường Actual lịch sử còn thiếu. **Excel là nguồn thống nhất cho danh mục và kết quả kiểm thử chức năng đợt trước: 337 case / 20 use case, 337 Pass lịch sử.** PDF chỉ lưu làm tài liệu tham khảo; không dùng số liệu PDF để tổng hợp kết quả. [Đối chiếu nguồn](../docs/requirements/source-reconciliation.md) lưu thông tin kiểm tra nguồn gốc.
 
 ## 4. Thực thi kiểm thử
