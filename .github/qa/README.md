@@ -1,8 +1,8 @@
-# Hạ tầng QA dùng chung
+# Shared QA Infrastructure
 
-`scripts/` điều phối các suite, nhập tài liệu nguồn, audit báo cáo và cập nhật lifecycle. `helpers/` quản lý Run ID, CSV/Excel, HTTP observations và redaction. `unit/` kiểm tra tính đúng đắn của reporting/lifecycle. Test nghiệp vụ nằm ở `api-testing/automated-tests/` và `automation-testing/cypress/`.
+`scripts/` coordinates test suites, imports source documents, audits reports, and updates defect lifecycles. `helpers/` manages run IDs, CSV/Excel files, HTTP observations, and redaction. `unit/` verifies reporting and lifecycle behavior. Business tests live in `api-testing/automated-tests/` and `automation-testing/cypress/`.
 
-Chạy từ thư mục gốc sau khi chuẩn bị theo [README](../../README.md):
+Run the following from the repository root after completing the setup in the [main README](../../README.md).
 
 ```sh
 node .github/qa/scripts/audit-qa.js
@@ -11,4 +11,4 @@ node --env-file=.env.test .github/qa/scripts/run-qa.js
 node --env-file=.env.test .github/qa/scripts/run-postman.js
 ```
 
-Audit một run: `node .github/qa/scripts/audit-run.js <run-directory>`. Publish: `node --env-file=.env.test .github/qa/scripts/publish-run.js <Run-ID>`. Run đã công bố không được ghi đè. `.env.test` nằm ở gốc và bị Git bỏ qua; không commit file này.
+To audit a run, use `node .github/qa/scripts/audit-run.js <run-directory>`. To publish a run, use `node --env-file=.env.test .github/qa/scripts/publish-run.js <Run-ID>`. Published runs are immutable. Keep the Git-ignored `.env.test` file in the repository root and out of commits.

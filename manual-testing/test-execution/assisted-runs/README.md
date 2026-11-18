@@ -1,37 +1,37 @@
-# Kết quả kiểm tra 40 case có hỗ trợ tự động
+# Assisted Execution Results for 40 Test Cases
 
-Mở [file Excel đã điền](QA-20261114T151532131Z-c5d60f/manual-regression-results.xlsx), sheet **Ket qua ho tro 40 case**.
+Open the [completed workbook](QA-20261114T151532131Z-c5d60f/manual-regression-results.xlsx) and select the **Ket qua ho tro 40 case** sheet.
 
-| Loại hồ sơ | Kết quả | Cách hiểu |
+| Record | Result | Interpretation |
 | --- | --- | --- |
-| Đánh giá 40 dòng trong Excel | 38 Pass / 1 Fail / 1 Blocked | Kết quả assertions API/UI thực tế có ghi giới hạn xác minh |
-| Cypress native cùng run | 39 Pass / 1 Fail | TC-APPT-014 kiểm tra HTTP gần giờ hiện tại Pass; Excel giữ Blocked vì chưa chứng minh điều kiện đúng thời điểm tuyệt đối |
-| Sheet Execution trong snapshot hỗ trợ lúc tạo file | 2 Pass / 38 Not Run | Giữ nguyên dữ liệu đã lưu tại thời điểm tạo snapshot; không phải trạng thái workbook hiện tại |
+| 40 rows assessed in Excel | 38 passed, 1 failed, 1 blocked | Observed API/UI assertion outcomes with verification limits recorded |
+| Cypress native results for the same run | 39 passed, 1 failed | TC-APPT-014 passed the HTTP check near the appointment time. Excel records Blocked because exact timing was unverified. |
+| Execution sheet in the original assisted snapshot | 2 passed, 38 not run | Preserves the manual data available when the snapshot was created. |
 
-Đây là **kết quả hỗ trợ tự động API/UI**, không phải xác nhận bạn đã trực tiếp thực thi manual đủ 40 case. Test qua API dùng request thật; test giao diện dùng Cypress. Không suy diễn Actual/Pass chỉ từ việc đọc code.
+This record contains **automated API/UI assistance**. API checks sent real HTTP requests, and UI checks ran in Cypress. Actual results and pass decisions are based on observations. Independent confirmation of manual execution for all 40 cases is unavailable.
 
-**Workbook hiện tại** ở [MAN-20261114-01/manual-regression.xlsx](../manual-runs/MAN-20261114-01/manual-regression.xlsx) đã ghi 38 Pass / 1 Fail / 1 Blocked; ảnh manual đang bổ sung. File snapshot hỗ trợ bên trên giữ nguyên nội dung để truy vết.
+The [current workbook](../manual-runs/MAN-20261114-01/manual-regression.xlsx) records 38 passed, 1 failed, and 1 blocked. Manual screenshots were still being added. The assisted snapshot is preserved for traceability.
 
-## Cách sử dụng file
+## Reading the Workbook
 
-- **Ket qua ho tro 40 case:** mỗi dòng có Run ID, build, thời gian, Actual, Status, phương thức xác minh, phạm vi và link evidence.
-- **Tong hop ho tro:** tổng hợp, môi trường, fingerprint, file nguồn và hướng dẫn đọc kết quả.
-- **Execution / Run setup:** bản sao dữ liệu manual bạn đã lưu; bản gốc không bị ghi đè. Các đường dẫn ảnh cũ trong hai sheet này vẫn tính theo thư mục manual gốc.
-- Thư mục `evidence/` cạnh Excel có 40 JSON quan sát và ảnh UI lỗi phụ phí âm. Giữ Excel và thư mục này cùng nhau khi sao chép. Bạn có thể thêm ảnh manual/Postman vào đó rồi ghi thêm đường dẫn ở dòng tương ứng.
+- **Ket qua ho tro 40 case** lists the run ID, build, time, actual result, status, verification method, scope, and evidence link for each row.
+- **Tong hop ho tro** contains the summary, environment, fingerprint, source file, and notes on interpreting the results.
+- **Execution / Run setup** copy the manual data available at the time. The workbook source was preserved. Older screenshot paths in these sheets are relative to the original manual directory.
+- The adjacent `evidence/` directory contains 40 JSON observations and a screenshot of the negative surcharge issue. Copy the workbook and directory together. Link any additional manual screenshots or Postman evidence from the relevant row.
 
-## Hai dòng cần chú ý
+## Cases That Need Follow-up
 
-- **TC-PAY-016 — Fail:** nhập phụ phí âm `-1`, UI vẫn gửi cập nhật và GET xác nhận `Đã thanh toán`, `finalAmount = amountPaid = 99999`. Cột Bug ID ghi cần phân loại lỗi; chưa tự đóng hoặc coi là Pass.
-- **TC-APPT-014 — Blocked:** request check-in gần giờ hiện tại trả 200 và có checkInTime. Chênh lệch thực tế được lưu; chưa dùng đồng hồ cố định để kiểm chứng `now == startTime` tuyệt đối.
+- **TC-PAY-016 — Failed.** With a surcharge of `-1`, the UI still sent a payment update. A GET confirmed the invoice was paid (`Đã thanh toán`) with `finalAmount = amountPaid = 99999`. The Bug ID column records that the finding still needs classification.
+- **TC-APPT-014 — Blocked.** Check-in near the appointment time returned HTTP 200 and saved `checkInTime`. The evidence records the actual difference. Verifying exact `now == startTime` still requires a controlled clock.
 
-[JSON tổng hợp](QA-20261114T151532131Z-c5d60f/assisted-results.json) và [run native](../../../automation-testing/reports/runs/QA-20261114T151532131Z-c5d60f/execution.json) giữ nguồn đối chiếu. Run này chạy riêng, không cộng vào kết quả CI 65 test hoặc số manual Pass trong trang tổng hợp QA hiện hành.
+The [JSON summary](QA-20261114T151532131Z-c5d60f/assisted-results.json) and [native run](../../../automation-testing/reports/runs/QA-20261114T151532131Z-c5d60f/execution.json) preserve the source results. Track this run separately from the 65-test business run and the manual pass count in the current QA summary.
 
-## Chạy lại khi cần
+## Rerunning the Suite
 
-Chuẩn bị backend/frontend và môi trường QA như README gốc, rồi chạy từ thư mục gốc:
+Set up the backend, frontend, and QA environment as described in the main README. Run the following from the repository root.
 
 ```sh
 node --env-file=.env.test .github/qa/scripts/run-assisted-40.js --source=manual-testing/test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx
 ```
 
-Cần Python có `openpyxl` để xuất workbook. Tùy chọn `--screenshots` bật thêm ảnh cho các case UI; mặc định dùng JSON observations và có thể bổ sung ảnh sau. Mỗi lần chạy tạo Run ID và file mới, không ghi đè workbook nguồn. Spec hỗ trợ nằm ở `automation-testing/cypress/assisted/`, ngoài glob E2E thông thường.
+Exporting the workbook requires Python with `openpyxl`. Use `--screenshots` to capture additional UI evidence. JSON observations are recorded by default. Each execution creates a new run ID and output file and preserves the source workbook. The assisted spec lives in `automation-testing/cypress/assisted/`, outside the standard E2E glob.

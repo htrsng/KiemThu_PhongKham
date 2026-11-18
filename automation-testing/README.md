@@ -1,84 +1,84 @@
-# Kiểm thử tự động — Cypress
+# Test Automation with Cypress
 
-[Tổng quan dự án](../README.md) | [Kiểm thử thủ công](../manual-testing/README.md) | [Kiểm thử API](../api-testing/README.md)
+[Project overview](../README.md) | [Manual testing](../manual-testing/README.md) | [API testing](../api-testing/README.md)
 
-## 1. Tổng quan
+## 1. Overview
 
-Cypress kiểm tra hành vi người dùng trên frontend và backend SmileCare đang chạy. Bộ gồm **12 test** về đăng nhập/phiên làm việc, điều hướng theo vai trò, check-in tại quầy và tương tác hóa đơn/thanh toán.
+Cypress verifies user behavior against the running SmileCare frontend and backend. The suite contains **12 tests** covering login and sessions, role-based navigation, reception check-in, and invoice and payment interactions.
 
-Một số test kết hợp thao tác UI, tiền điều kiện API và kiểm tra lại bằng API. Giai đoạn điều trị trong luồng BUG-004 dùng request API: **check-in UI → điều trị API → thanh toán tiền mặt UI**. Đây là luồng kết hợp, không khẳng định mọi hành động đều qua giao diện như một luồng UI E2E đầy đủ.
+Some tests combine UI actions, API setup, and API read-back. The BUG-004 workflow uses **UI check-in → API treatment → UI cash payment**. Its evidence covers a hybrid workflow.
 
-## 2. Kịch bản đã tự động hóa
+## 2. Automated Scenarios
 
-Xem [danh mục đủ 12 test](reports/cypress-test-catalog.csv) và [giải thích từng case/bug liên quan](../manual-testing/bug-reports/bug-testcase-map.md#5-giải-thích-đủ-12-cypress-test). Bộ chuẩn gồm 5 login, 3 RBAC, 1 check-in, 1 xem hóa đơn, 1 validation giảm giá và 1 luồng hybrid.
+See the [12-test catalog](reports/cypress-test-catalog.csv) and the [test and defect breakdown](../manual-testing/bug-reports/bug-testcase-map.md#5-giải-thích-đủ-12-cypress-test). The standard suite has five login tests, three RBAC tests, one check-in test, one invoice detail test, one discount validation test, and one hybrid workflow.
 
-| Spec | Kịch bản | Phạm vi xác minh |
+| Spec | Scenarios | Verification |
 | --- | --- | --- |
-| [login.cy.js](cypress/e2e/login.cy.js) | Chuyển hướng khi thiếu phiên; trường bắt buộc; email sai; phản hồi sai mật khẩu; phiên hợp lệ | Thao tác/assertions UI, response đăng nhập và tài khoản hiện tại |
-| [core-workflows.cy.js](cypress/e2e/core-workflows.cy.js) | Trang tài khoản Admin; giới hạn menu/API của Doctor và Reception | Hiển thị điều hướng và assertions phân quyền HTTP |
-| Cùng core spec | Check-in của Reception; chi tiết hóa đơn; từ chối giảm giá vượt mức | Thao tác/hiển thị UI, HTTP status, trạng thái đã lưu hoặc không phát sinh cập nhật |
-| Cùng core spec — BUG-004 | Check-in, hoàn thành điều trị, thu tiền mặt | Kết hợp UI/API; GET cuối kiểm tra paymentMethod, amountPaid = finalAmount và debt = 0 |
+| [login.cy.js](cypress/e2e/login.cy.js) | Redirect without a session, required fields, invalid email, incorrect password feedback, and a valid session | UI behavior, login response, and current account |
+| [core-workflows.cy.js](cypress/e2e/core-workflows.cy.js) | Admin account page and menu/API restrictions for Doctor and Reception | Navigation visibility and HTTP authorization checks |
+| Core workflows | Reception check-in, invoice detail, and rejection of an excessive discount | UI actions and display, HTTP status, and checks for persisted state or absent writes |
+| Core workflows, BUG-004 | Check-in, treatment completion, and cash payment | Hybrid UI/API checks. The final GET verifies the payment method, `amountPaid = finalAmount`, and `debt = 0`. |
 
-Bộ này chưa xác nhận coverage UI cho mọi use case học phần. Tiền lương/doanh thu, thanh toán kết hợp, QR/SMS và toàn bộ giao diện khám của bác sĩ nằm ngoài phạm vi hồi quy UI hiện đã chứng minh.
+The verified UI regression scope excludes payroll, revenue, split payments, QR/SMS, and the full doctor examination UI.
 
-## 3. Cấu trúc bộ kiểm thử
+## 3. Suite Structure
 
 ```text
 automation-testing/
-  cypress.config.js       # Backend thật, isolation và hooks thu bằng chứng/báo cáo
-  package.json            # Thư viện Cypress và Mochawesome reporter
+  cypress.config.js       # Live backend, isolation, and evidence/reporting hooks
+  package.json            # Cypress and Mochawesome reporter dependencies
   cypress/
-    e2e/                  # Spec đăng nhập và luồng nghiệp vụ
-    pages/                # Page object LoginPage
-    support/              # Commands và đăng ký reporter
-  fixtures/qa-data.js      # Tạo dữ liệu giả dùng chung và cleanup
-  reports/                # Bằng chứng đã công bố và đầu ra chạy bị Git bỏ qua
+    e2e/                  # Login and business workflow specs
+    pages/                # LoginPage page object
+    support/              # Commands and reporter registration
+  fixtures/qa-data.js      # Shared synthetic data setup and cleanup
+  reports/                # Published evidence and Git-ignored runtime output
 ```
 
-Test dùng selector `data-testid` ổn định, alias theo dõi request và assertions nghiệp vụ. Retry bằng 0; không nuốt exception chung hoặc dùng chờ cố định để che lỗi. [Cấu hình](cypress.config.js) bật video, ảnh khi test lỗi và báo cáo HTML/JSON Mochawesome.
+Tests use stable selectors such as `data-cy`, request aliases, and business assertions. Retries are set to zero. The suite avoids fixed waits and broad exception handlers that would hide failures. The [configuration](cypress.config.js) enables video, failure screenshots, and Mochawesome HTML/JSON reports.
 
-## 4. Dữ liệu kiểm thử và tính độc lập
+## 4. Test Data and Isolation
 
-[Bộ tạo fixture](fixtures/qa-data.js) tạo riêng bác sĩ, bệnh nhân, dịch vụ, ca trực và lịch hẹn/hóa đơn khi cần. Tiền điều kiện có thể được thêm trực tiếp; hành động cần kiểm tra đi qua UI hoặc HTTP đúng như spec mô tả.
+The [fixture builder](fixtures/qa-data.js) creates dedicated doctors, patients, services, shifts, appointments, and invoices as needed. Tests can seed prerequisites directly. Each business action under test goes through the UI or HTTP as described in its spec.
 
-Cypress bật test isolation, xóa cookie/localStorage và dọn dữ liệu do process sở hữu. Cleanup không drop database. Fixture yêu cầu API/MongoDB loopback và database kết thúc bằng `_test`. Dừng cưỡng bức process có thể để lại dữ liệu tạm.
+Cypress test isolation clears cookies and local storage between tests. Cleanup removes only data owned by the process and leaves the database in place. Fixtures require loopback API and MongoDB services and a database name ending in `_test`. A forced stop can leave temporary data behind.
 
-Thông tin đăng nhập lấy từ `.env.test` bị Git bỏ qua. HTTP observations chỉ giữ các trường nghiệp vụ được chọn; không công bố token, mật khẩu hoặc dữ liệu bệnh nhân thật trong ảnh/log.
+Credentials come from the Git-ignored `.env.test`. HTTP observations retain selected business fields. Keep tokens, passwords, and real patient data out of published screenshots and logs.
 
-## 5. Hướng dẫn chạy
+## 5. Running the Tests
 
-Hoàn thành [cài đặt dự án](../README.md#5-hướng-dẫn-chạy-kiểm-thử), mở cả API và frontend. Chạy từ thư mục gốc:
+Complete the [project setup](../README.md#5-running-the-tests) and start both the API and frontend. Run the following from the repository root.
 
 ```sh
 npm ci --prefix automation-testing
 
-# Cypress headless, có Run ID và báo cáo thực thi
+# Headless Cypress with a run ID and execution report
 node --env-file=.env.test .github/qa/scripts/run-qa.js --suite=ui
 
-# Toàn bộ API, hồi quy lỗi và Cypress
+# Full API, defect regression, and Cypress run
 node --env-file=.env.test .github/qa/scripts/run-qa.js
 
-# Mở Cypress có giao diện để khám phá/debug
+# Open Cypress interactively to explore and debug
 node --env-file=.env.test automation-testing/node_modules/cypress/bin/cypress open --project automation-testing
 ```
 
-Dùng QA runner headless để tạo báo cáo thực thi hoàn chỉnh. Chế độ có giao diện phục vụ xem/chạy spec, không thay thế báo cáo đó. Nếu IDE đặt `ELECTRON_RUN_AS_NODE`, hãy xóa biến trước khi mở Cypress có giao diện; runner headless tự bỏ biến này. Trong PowerShell: `Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue`.
+Use the headless QA runner for a complete execution report. Use interactive mode to inspect and debug specs. If your IDE sets `ELECTRON_RUN_AS_NODE`, clear it before opening Cypress interactively. The headless runner clears it automatically. In PowerShell, use `Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue`.
 
-## 6. Tích hợp CI
+## 6. CI Integration
 
-[Workflow GitHub Actions](../.github/workflows/cypress.yml) cài thư viện, mở MongoDB 7, audit thiết kế, kiểm tra reporting/lifecycle, build frontend và khởi động API/UI trên Ubuntu với Node.js 24. Sau đó chạy API, hồi quy lỗi, Cypress, audit bằng chứng và Newman.
+The [GitHub Actions workflow](../.github/workflows/cypress.yml) installs dependencies, starts MongoDB 7, audits test design, checks reporting and defect lifecycle, builds the frontend, and starts the API and UI on Ubuntu with Node.js 24. It then runs API, defect regression, Cypress, evidence audit, and Newman checks.
 
-Job summary tách **Automation API + UI** và **Defect regression**. Assertion nghiệp vụ Fail, test tự động bị bỏ qua/chưa chạy hoặc lỗi process đều làm QA runner thất bại. Không dùng `continue-on-error` để bỏ qua lỗi đã biết. Upload artifact vẫn chạy sau test Fail khi có bằng chứng.
+The job summary has separate **Automation API + UI** and **Defect regression** results. Failed business assertions, expected tests that are skipped or omitted, and process failures cause the runner to fail. Known failures remain subject to the same gate. Artifact upload can still run after a failure when evidence is available.
 
-**[GitHub Actions: Success](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43617738189)** trên commit `01a9c67`: kiểm tra tài liệu, unit, build, API/Cypress, audit evidence và Newman đều đạt. Retest local trên commit sửa `1bb247a` đạt **65 Pass / 0 Fail**, gồm **12 Cypress Pass**. Luồng điều trị dùng token bác sĩ được gán lịch fixture. [Tổng hợp hiện hành](../manual-testing/test-execution/latest-qa-summary.md) dẫn kết quả mới; bằng chứng trước sửa được giữ trong các run lịch sử.
+The [GitHub Actions record](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43617738189) shows Success at commit `01a9c67` for documentation checks, unit tests, build, API/Cypress, evidence audit, and Newman. The local retest at `1bb247a` recorded **65 passed and 0 failed**, including **12 Cypress tests passed**. The treatment step uses the token of the doctor assigned to the fixture appointment. See the [current summary](../manual-testing/test-execution/latest-qa-summary.md) and historical runs for post-fix and pre-fix evidence.
 
-## 7. Kết quả và bằng chứng
+## 7. Results and Evidence
 
-[Bộ 40 case ưu tiên](../manual-testing/test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx) ghi **38 Pass / 1 Fail / 1 Blocked**. Spec chạy hỗ trợ ở `cypress/assisted/priority-40.cy.js`, ngoài glob của 12 test chuẩn. [Chi tiết nguồn hỗ trợ](../manual-testing/test-execution/assisted-runs/README.md) phân biệt native runner 39 Pass / 1 Fail với đánh giá Excel có một case Blocked do giới hạn thời gian.
+The [40-case priority workbook](../manual-testing/test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx) records **38 passed, 1 failed, and 1 blocked**. Its assisted spec is `cypress/assisted/priority-40.cy.js`, outside the standard 12-test glob. The [assisted execution notes](../manual-testing/test-execution/assisted-runs/README.md) explain why Cypress recorded 39 passed and 1 failed, while the workbook has one blocked case due to a timing limitation.
 
-- [Tổng hợp hồi quy đã công bố](reports/runs/QA-20261114T164815189Z-178426/summary.md): 12 UI Pass, tách khỏi API 46 Pass / 0 Fail và 7 test hồi quy BUG-002/003 Pass.
-- [JSON thực thi](reports/runs/QA-20261114T164815189Z-178426/execution.json) / [Excel](reports/runs/QA-20261114T164815189Z-178426/execution.xlsx): build, expected/actual, thời gian, trạng thái, case/bug và bằng chứng.
-- [Ảnh check-in](reports/runs/QA-20261114T164815189Z-178426/ui/screenshots/core-workflows.cy.js/reception-checkin-persisted.png) / [ảnh hóa đơn](reports/runs/QA-20261114T164815189Z-178426/ui/screenshots/core-workflows.cy.js/invoice-detail.png).
-- [Chỉ mục báo cáo](reports/README.md) và [lịch sử các run](reports/runs/README.md): trước sửa, sau sửa, hồi quy và các giới hạn reporter lịch sử.
+- The [published regression summary](reports/runs/QA-20261114T164815189Z-178426/summary.md) records 12 UI tests passed, 46 API tests passed, and 7 BUG-002/003 regression tests passed in separate groups.
+- The [execution JSON](reports/runs/QA-20261114T164815189Z-178426/execution.json) and [Excel workbook](reports/runs/QA-20261114T164815189Z-178426/execution.xlsx) record build, expected and actual results, duration, status, case and defect IDs, and evidence.
+- The run includes a [check-in screenshot](reports/runs/QA-20261114T164815189Z-178426/ui/screenshots/core-workflows.cy.js/reception-checkin-persisted.png) and an [invoice screenshot](reports/runs/QA-20261114T164815189Z-178426/ui/screenshots/core-workflows.cy.js/invoice-detail.png).
+- The [report index](reports/README.md) and [run history](reports/runs/README.md) document pre-fix, post-fix, and regression runs, including historical reporter limitations.
 
-Run mới ghi vào `reports/generated/runs/<Run-ID>/`, bị Git bỏ qua. Artifact CI **clinic-qa-evidence** chứa ảnh, video, HTML/JSON Mochawesome và log process; tải từ đúng workflow run. Bản công bố trong Git chỉ chọn báo cáo/ảnh, không chứa toàn bộ video/HTML. Nội dung evidence của run cũ được giữ nguyên; [bảng ánh xạ đường dẫn](reports/legacy-paths.json) giải thích các vị trí nguồn đã chuyển.
+New runs write to the Git-ignored `reports/generated/runs/<Run-ID>/`. The **clinic-qa-evidence** CI artifact contains screenshots, video, Mochawesome HTML/JSON, and process logs. Download it from the corresponding workflow run. Git contains selected reports and screenshots. Existing evidence is preserved. The [legacy path mapping](reports/legacy-paths.json) identifies moved source locations.

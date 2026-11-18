@@ -1,5 +1,5 @@
-# QA fixtures
+# QA Fixtures
 
-`qa-data.js` được Node API tests, Cypress tasks và Newman runner dùng chung. Mỗi fixture có doctor/patient/service/shift và ID riêng; các hành động nghiệp vụ đang kiểm tra đi qua HTTP hoặc UI. Chỉ dùng loopback API/MongoDB và DB kết thúc `_test`.
+Node API tests, Cypress tasks, and the Newman runner share `qa-data.js`. Each fixture has its own doctor, patient, service, shift, and IDs. The business actions under test go through HTTP or the UI. Fixtures require loopback API and MongoDB services and a database name ending in `_test`.
 
-Cleanup chỉ xóa dữ liệu do process sở hữu, không drop database. Không lưu tài khoản, token, mật khẩu hoặc hồ sơ bệnh nhân thật trong thư mục này.
+Cleanup deletes only records owned by the process and leaves the database in place. Keep credentials, tokens, passwords, and real patient records out of this directory.

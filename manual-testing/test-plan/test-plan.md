@@ -1,4 +1,4 @@
-# Kế hoạch kiểm thử theo rủi ro — Portfolio QA
+# Kế hoạch kiểm thử theo rủi ro
 
 ## 1. Mục tiêu và phạm vi
 

@@ -1,83 +1,83 @@
-# Kiểm thử API
+# API Testing
 
-[Tổng quan dự án](../README.md) | [Kiểm thử thủ công](../manual-testing/README.md) | [Kiểm thử tự động](../automation-testing/README.md)
+[Project overview](../README.md) | [Manual testing](../manual-testing/README.md) | [Test automation](../automation-testing/README.md)
 
-## 1. Tổng quan
+## 1. Overview
 
-Kiểm thử API xác minh xác thực, phân quyền và nghiệp vụ phòng khám trên ứng dụng Express/MongoDB. Bộ Node gồm **46 test API HTTP và 7 test hồi quy BUG-002/003**. Retest sau sửa BUG-005/006 đạt 46 Pass / 0 Fail cho API; 7 test hồi quy lỗi cũng Pass. Collection Postman và unit controller được báo cáo riêng. [Tổng hợp QA mới nhất](../manual-testing/test-execution/latest-qa-summary.md) là nguồn trạng thái hiện hành.
+API testing verifies authentication, authorization, and clinic workflows on the Express/MongoDB application. The Node suite includes **46 HTTP API tests and 7 regression tests for BUG-002/003**. The retest after fixes for BUG-005/006 recorded 46 API tests passed and 0 failed. All 7 defect regression tests passed. Postman and controller unit testing have separate reports. See the [latest QA summary](../manual-testing/test-execution/latest-qa-summary.md) for current recorded results.
 
-## 2. Phạm vi API
+## 2. API Scope
 
-| Nhóm | Endpoint tiêu biểu | Assertions đã kiểm tra |
+| Area | Example endpoints | Verified assertions |
 | --- | --- | --- |
-| Xác thực | POST `/auth/login`, GET `/auth/me` | HTTP status, token/phiên làm việc, vai trò, không trả mật khẩu, từ chối token thiếu/sai/hết hạn |
-| Phân quyền | GET `/accounts`; GET/PATCH/DELETE `/invoices/:id` | Quyền Admin/Doctor/Reception; cập nhật bị cấm không làm đổi dữ liệu |
-| Quyền theo bác sĩ | Danh sách/chi tiết, PUT/PATCH, check-in, finish, DELETE; chặn đổi sang bác sĩ khác | Ba test Pass sau sửa BUG-005, gồm kiểm tra lịch của mình vẫn cập nhật được |
-| Đặt lịch/check-in | POST `/appointments`, PATCH `/appointments/:id/checkin` | Tạo hợp lệ, từ chối lịch quá khứ/trùng, quy tắc giờ/trạng thái và checkInTime đã lưu |
-| Trạng thái điều trị | PUT/PATCH `/appointments/:id`, PATCH `/appointments/:id/finish` | Chuyển tiến, từ chối chuyển sai, hoàn thành lặp và đồng thời |
-| Hóa đơn/thanh toán | GET `/invoices?appointmentId=:id`, PATCH/DELETE `/invoices/:id` | Hóa đơn duy nhất, phương thức thanh toán, số tiền thực thu/công nợ, số tiền âm/thiếu và quyền xóa |
-| Dữ liệu thiếu/ID sai | POST thiếu doctorId/patientId/startTime/endTime, doctorId/startTime sai định dạng; GET/PATCH/check-in ID sai | Chín test Pass sau sửa BUG-006; trả 4xx và không tạo/sửa dữ liệu |
+| Authentication | POST `/auth/login`, GET `/auth/me` | HTTP status, token and session behavior, role, password omission, and rejection of missing, invalid, or expired tokens |
+| Authorization | GET `/accounts`, GET/PATCH/DELETE `/invoices/:id` | Permissions for Admin, Doctor, and Reception. Rejected updates leave stored data unchanged. |
+| Doctor ownership | List and detail, PUT/PATCH, check-in, finish, DELETE, and reassignment restrictions | Three tests passed after the BUG-005 fix, including an allowed update to an appointment assigned to the doctor. |
+| Booking and check-in | POST `/appointments`, PATCH `/appointments/:id/checkin` | Valid creation, rejection of past and duplicate appointments, timing and state rules, and persisted check-in time |
+| Treatment state | PUT/PATCH `/appointments/:id`, PATCH `/appointments/:id/finish` | Forward transitions, rejection of invalid transitions, and repeated and concurrent completion |
+| Invoices and payments | GET `/invoices?appointmentId=:id`, PATCH/DELETE `/invoices/:id` | Invoice uniqueness, payment method, amount collected, outstanding balance, negative or insufficient payment, and deletion permissions |
+| Missing inputs and malformed IDs | POST with missing doctorId, patientId, startTime or endTime and malformed doctorId or startTime. GET/PATCH/check-in with malformed IDs. | Nine tests passed after the BUG-006 fix, confirming 4xx responses and no unintended data changes. |
 
-[Hợp đồng API và checklist](api-contract.md) ghi đầu vào, response kỳ vọng và các nhánh chưa kiểm tra. Base URL: `http://localhost:5000/api`. Bảng trên mô tả assertions đã kiểm tra, không khẳng định bao phủ toàn bộ endpoint/nhánh xử lý.
+The [API contract and checklist](api-contract.md) describe inputs, expected responses, and untested branches. The base URL is `http://localhost:5000/api`. The table lists the assertions covered by the suite. Other endpoints and branches remain outside that evidence.
 
-## 3. Các loại kiểm thử
+## 3. Test Types
 
-- **Trường hợp hợp lệ:** đăng nhập, đặt lịch, check-in, hoàn thành và lưu thanh toán đúng.
-- **Trường hợp không hợp lệ:** thiếu thông tin đăng nhập, email/mật khẩu sai, lịch quá khứ/trùng, chuyển trạng thái sai và số tiền âm/thiếu.
-- **Xác thực:** token thiếu, sai hoặc ký hợp lệ nhưng hết hạn; response không chứa mật khẩu.
-- **Phân quyền:** cho phép/từ chối theo vai trò, đọc lại dữ liệu sau cập nhật bị từ chối.
-- **Hồi quy nghiệp vụ:** hoàn thành có tính idempotent, 12 request hoàn thành đồng thời, hóa đơn duy nhất và bảo toàn hóa đơn đã thanh toán.
+- **Positive cases** cover login, appointment creation, check-in, completion, and payment persistence.
+- **Negative cases** cover missing credentials, invalid email or password, past or duplicate appointments, invalid transitions, and negative or insufficient payment.
+- **Authentication** covers missing, invalid, and validly signed but expired tokens, plus password omission from responses.
+- **Authorization** covers allow and deny decisions by role and read-back after rejected updates.
+- **Business regression** covers idempotent completion, 12 concurrent completion requests, invoice uniqueness, and preservation of a paid invoice.
 
-Sáu unit test controller dùng đồng hồ cố định kiểm tra đúng ±30 phút và lệch 1 ms, với persistence mock. Chạy `node .github/qa/scripts/run-unit.js` để lấy TAP/JUnit riêng; không tính sáu test này vào 46 test HTTP hoặc manual execution.
+Six controller unit tests use a fixed clock and mocked persistence to verify exactly ±30 minutes and offsets of 1 ms. Run `node .github/qa/scripts/run-unit.js` for separate TAP and JUnit reports. Those tests are tracked separately from HTTP and manual execution.
 
-Assertions kiểm tra HTTP **và dữ liệu nghiệp vụ đã lưu** bằng GET sau thao tác. BUG-002 yêu cầu HTTP 400 cùng trạng thái hoàn thành giữ nguyên; BUG-003 yêu cầu đúng một hóa đơn. Chỉ gửi request mà không kiểm tra kết quả không được tính là test tự động.
+Assertions verify HTTP responses **and persisted business data** through follow-up GET requests. BUG-002 requires HTTP 400 and an unchanged completed state. BUG-003 requires exactly one invoice. Automated test counts cover requests with assertions.
 
-## 4. Công cụ và cấu trúc kiểm thử
+## 4. Tools and Suite Structure
 
-| Vị trí | Vai trò |
+| Location | Purpose |
 | --- | --- |
-| [automated-tests/](automated-tests/) | Node.js `node:test` / `node:assert/strict`: xác thực, phân quyền, lịch hẹn/hóa đơn và hồi quy lỗi |
-| [postman/](postman/) | Collection có thể import, mẫu environment chưa điền thông tin đăng nhập, package Newman và lockfile |
-| [Script QA dùng chung](../.github/qa/README.md) | Run ID, quan sát an toàn, báo cáo TAP/JUnit/JSON và CSV/Excel |
-| [Bộ tạo dữ liệu](../automation-testing/fixtures/qa-data.js) | Bệnh nhân/bác sĩ/dịch vụ/ca trực giả, theo dõi ID sở hữu và cleanup |
+| [automated-tests/](automated-tests/) | Node.js `node:test` and `node:assert/strict` for authentication, authorization, appointments, invoices, and defect regression |
+| [postman/](postman/) | Importable collection, credential-free environment template, Newman package, and lockfile |
+| [Shared QA scripts](../.github/qa/README.md) | Run IDs, redacted observations, and TAP, JUnit, JSON, CSV, and Excel reports |
+| [Fixture builder](../automation-testing/fixtures/qa-data.js) | Synthetic patients, doctors, services, and shifts, with ownership tracking and cleanup |
 
-Fixture yêu cầu API/MongoDB loopback và database kết thúc bằng `_test`. Tiền điều kiện có thể được tạo trực tiếp; hành động nghiệp vụ cần kiểm tra đi qua HTTP. Thông tin đăng nhập và token không được đưa vào environment đã commit hoặc phần response công bố.
+Fixtures require loopback API and MongoDB services and a database name ending in `_test`. Tests may seed prerequisites directly. Business actions under test go through HTTP. Keep credentials and tokens out of committed environment files and published response data.
 
-## 5. Hướng dẫn chạy
+## 5. Running the Tests
 
-Hoàn thành [cài đặt dự án](../README.md#5-hướng-dẫn-chạy-kiểm-thử), mở API rồi chạy từ thư mục gốc:
+Complete the [project setup](../README.md#5-running-the-tests), start the API, and run the following from the repository root.
 
 ```sh
-# Bộ API và hồi quy lỗi; không cần mở UI
+# API and defect regression suites. Only the API needs to be running.
 node --env-file=.env.test .github/qa/scripts/run-qa.js --suite=api
 
-# Collection Postman với dữ liệu thử riêng
+# Postman collection with dedicated test data
 npm ci --prefix api-testing/postman
 node --env-file=.env.test .github/qa/scripts/run-postman.js
 ```
 
-Newman nhận thông tin đăng nhập/ID fixture trong bộ nhớ và dọn dữ liệu thuộc quyền sở hữu sau khi chạy. Nếu khám phá thủ công bằng Postman, import collection/environment, chuẩn bị tài khoản QA cục bộ, ID và ca trực/giờ hẹn hợp lệ. Không commit environment đã xuất có thông tin đăng nhập.
+Newman passes credentials and fixture IDs in memory and cleans up the data it owns afterward. For manual exploration in Postman, import the collection and environment and prepare local QA credentials, valid IDs, a shift, and an appointment time. Keep exported environments containing credentials out of Git.
 
-Mỗi lần chạy tạo thư mục riêng trong `automation-testing/reports/generated/runs/`. Assertion Fail, lỗi request/script hoặc lỗi tiến trình đều làm runner trả mã khác 0. Test hồi quy lỗi tiếp tục hoạt động sau khi sửa.
+Each run writes to a separate directory under `automation-testing/reports/generated/runs/`. Failed assertions, request or script errors, and process failures cause a nonzero exit. Keep defect regression tests in the suite after the fixes.
 
-## 6. Kết quả kiểm thử
+## 6. Results
 
-[Danh mục đầy đủ 46 API test](reports/api-test-catalog.csv) và [bảng giải thích bug/test case](../manual-testing/bug-reports/bug-testcase-map.md) chỉ rõ nhóm, mã nguồn, assertions tham chiếu và bằng chứng. 46 test runtime gắn với 33 mã thiết kế; bảy test trong known-defects là suite riêng.
+The [46-test API catalog](reports/api-test-catalog.csv) and [defect and test case mapping](../manual-testing/bug-reports/bug-testcase-map.md) identify the test groups, source files, assertions, and evidence. The 46 runtime tests map to 33 design IDs. The seven known-defect tests run in their own suite.
 
-| Bằng chứng | Kết quả đã ghi nhận |
+| Evidence | Recorded result |
 | --- | --- |
-| [TAP API](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/api/results.tap) / [JUnit](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/api/junit.xml) | 46 Pass / 0 Fail; 46 test |
-| [TAP hồi quy lỗi](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/known-defects/results.tap) / [JUnit](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/known-defects/junit.xml) | 7 Pass |
-| [JSON thực thi](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/execution.json) | Build, expected/actual, trạng thái và bằng chứng từng test; kết quả UI được phân loại riêng |
-| [JSON Newman](reports/newman/QA-20261114T164829754Z-c4f8d8/newman-results.json) | 21 request; 46/46 assertions Pass; không có lỗi |
-| [GitHub Actions đã xác minh](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43617738189) | Success trên commit 01a9c67; API, hồi quy lỗi, Cypress, unit, build và Newman đều đạt |
+| [API TAP](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/api/results.tap) / [JUnit](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/api/junit.xml) | All 46 API tests passed |
+| [Defect regression TAP](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/known-defects/results.tap) / [JUnit](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/known-defects/junit.xml) | All 7 defect regression tests passed |
+| [Execution JSON](../automation-testing/reports/runs/QA-20261114T164815189Z-178426/execution.json) | Build, expected and actual results, status, and evidence per test, with UI results categorized separately |
+| [Newman JSON](reports/newman/QA-20261114T164829754Z-c4f8d8/newman-results.json) | 21 requests, 46 of 46 assertions passed, and zero failures |
+| [Recorded GitHub Actions run](https://github.com/htrsng/KiemThu_PhongKham/actions/runs/43617738189) | Success at commit `01a9c67`, including API, defect regression, Cypress, unit, build, and Newman checks |
 
-Xem [chỉ mục báo cáo](reports/README.md). Số liệu thuộc từng run riêng; không cộng dồn run lịch sử/run mới hoặc coi assertions Newman là các case manual độc lập bổ sung.
+See the [report index](reports/README.md). Interpret counts within each run. Newman assertions are counted independently of manual cases.
 
-[Workbook ưu tiên 40 case](../manual-testing/test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx) ghi **38 Pass / 1 Fail / 1 Blocked**. [Bộ API/UI hỗ trợ 40 case](../manual-testing/test-execution/assisted-runs/README.md) là một run riêng, không cộng vào 46 API test chuẩn.
+The [40-case priority workbook](../manual-testing/test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx) records **38 passed, 1 failed, and 1 blocked**. The [assisted API/UI suite](../manual-testing/test-execution/assisted-runs/README.md) has its own run and counts.
 
-## 7. Lỗi và giới hạn đã biết
+## 7. Known Defects and Limitations
 
-[BUG-005](../manual-testing/bug-reports/BUG-005.md) và [BUG-006](../manual-testing/bug-reports/BUG-006.md) đã Closed sau sửa tại commit `1bb247a` và retest 46/46 API Pass. Quyền theo bác sĩ áp dụng cả danh sách, chi tiết, PUT/PATCH, check-in, finish và DELETE; test xác minh lịch khác không bị sửa và bác sĩ vẫn cập nhật được lịch của mình. Đầu vào thiếu/sai được trả 4xx trước khi xử lý. Bằng chứng trước sửa giữ nguyên. Workbook 40 case vẫn còn phát hiện phụ phí âm và một case Blocked, chưa được bộ retest này xác nhận giải quyết.
+[BUG-005](../manual-testing/bug-reports/BUG-005.md) and [BUG-006](../manual-testing/bug-reports/BUG-006.md) were closed after fixes in commit `1bb247a` and a retest with 46 of 46 API tests passed. Appointment ownership applies to listing, detail, PUT/PATCH, check-in, finish, and DELETE. The tests verify that another doctor's appointment remains unchanged and that a doctor can still update an assigned appointment. Missing and malformed inputs return 4xx before processing. The pre-fix evidence is preserved. The negative surcharge finding and the blocked case in the 40-case workbook remain outside this retest.
 
-Coverage mới xác minh các trường hợp cụ thể trên, không chứng minh toàn bộ endpoint/phân quyền đều được kiểm tra. Biên đúng 30 phút mới có bằng chứng controller, chưa phải HTTP/UI/manual. Thanh toán kết hợp và toàn bộ chính sách hóa đơn chính thức chưa được xác nhận là đã triển khai/Pass trên build mới. Xem [giới hạn API](api-contract.md), [đối chiếu nguồn](../docs/requirements/source-reconciliation.md) và [tổng hợp mới nhất](../manual-testing/test-execution/latest-qa-summary.md).
+The recorded evidence covers the specific endpoints and branches above. Controller tests currently provide the evidence at exactly 30 minutes. Full HTTP, UI, and manual verification at that boundary is still open. Implementation and passing results for split payments and the full invoice policy remain unverified on the newer build. See the [API limitations](api-contract.md), [source reconciliation](../docs/requirements/source-reconciliation.md), and [latest QA summary](../manual-testing/test-execution/latest-qa-summary.md).

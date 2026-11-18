@@ -1,73 +1,73 @@
-# Kiểm thử thủ công
+# Manual Testing
 
-[Tổng quan dự án](../README.md) | [Kiểm thử API](../api-testing/README.md) | [Kiểm thử tự động](../automation-testing/README.md)
+[Project overview](../README.md) | [API testing](../api-testing/README.md) | [Test automation](../automation-testing/README.md)
 
-## 1. Tổng quan
+## 1. Overview
 
-Kiểm thử thủ công chuyển yêu cầu nghiệp vụ SmileCare thành kịch bản, test case, hồ sơ thực thi và báo cáo lỗi có thể tái hiện. Bộ kiểm thử chức năng trước đó bao phủ 20 use case về danh mục, lịch khám, tiếp đón/điều trị, thanh toán, doanh thu và tiền lương. Kế hoạch hồi quy hiện tại ưu tiên xác thực, phân quyền, lịch hẹn/check-in và hóa đơn/thanh toán.
+Manual testing turns SmileCare business requirements into scenarios, test cases, execution records, and reproducible defect reports. Earlier functional testing covered 20 use cases, including master data, appointments, reception and treatment, payments, revenue, and payroll. Current regression design prioritizes authentication, authorization, appointments and check-in, and invoices and payments.
 
-Bắt đầu từ [kế hoạch kiểm thử](test-plan/test-plan.md) và [danh mục kịch bản](test-scenarios/scenarios.md). Phạm vi đã thiết kế, kết quả thực thi đợt trước và retest trên build mới được ghi riêng.
+Start with the [test plan](test-plan/test-plan.md) and [scenario catalog](test-scenarios/scenarios.md). Each record identifies its scope, including historical execution and retesting on newer builds.
 
-## 2. Kỹ thuật thiết kế kiểm thử
+## 2. Test Design Techniques
 
-| Kỹ thuật | Áp dụng | Ví dụ trong thiết kế |
+| Technique | Application | Design examples |
 | --- | --- | --- |
-| Phân vùng tương đương (EP) | Email hợp lệ/không hợp lệ; thiếu tiền khi có/không cho ghi nợ | TC-AUTH-003, TC-PAY-007/008 |
-| Phân tích giá trị biên (BVA) | Giới hạn giờ check-in, độ dài mật khẩu tối thiểu, giảm giá 100%, phụ phí âm | TC-AUTH-006, TC-APPT-011 đến 014, TC-PAY-012/016 |
-| Bảng quyết định | Giảm giá theo số tiền/phần trăm kết hợp phụ phí | TC-PAY-013/014 |
-| Chuyển trạng thái | Chuyển trạng thái lịch hẹn hợp lệ; lùi trạng thái/hủy sai | TC-APPT-016 đến 021 |
-| Đoán lỗi | Hoàn thành lịch lặp và tác động tạo trùng hóa đơn | TC-APPT-022 / BUG-003 |
+| Equivalence Partitioning (EP) | Valid and invalid email, insufficient payment with debt allowed or disallowed | TC-AUTH-003, TC-PAY-007/008 |
+| Boundary Value Analysis (BVA) | Check-in timing limits, minimum password length, 100% discounts, and negative surcharges | TC-AUTH-006, TC-APPT-011 through 014, TC-PAY-012/016 |
+| Decision Table | Fixed or percentage discounts combined with surcharges | TC-PAY-013/014 |
+| State Transition | Valid appointment transitions and invalid reversals or cancellation | TC-APPT-016 through 021 |
+| Error Guessing | Repeated appointment completion and duplicate invoice creation | TC-APPT-022 / BUG-003 |
 
-Đây là **ví dụ thiết kế**, không phải bằng chứng mọi ví dụ đã chạy trên build hiện tại. Đúng ±30 phút và lệch 1 ms đã có sáu unit test controller dùng đồng hồ cố định/persistence mock. HTTP kiểm tra sớm 29 phút, trễ 31 phút và đúng giờ hiện tại; chưa có bằng chứng HTTP/UI/manual tại đúng biên.
+These are **design examples** with execution recorded separately. Six controller unit tests use a fixed clock and mocked persistence to check exactly ±30 minutes and offsets of 1 ms. HTTP tests cover check-in 29 minutes early, 31 minutes late, and near the scheduled time. HTTP, UI, and manual evidence at the exact boundary is still pending.
 
-## 3. Danh mục test case
+## 3. Test Case Inventories
 
-| Bộ case | Mục đích | Cách hiểu kết quả thực thi |
+| Inventory | Purpose | How to read the results |
 | --- | --- | --- |
-| [337 case gốc](test-cases/source-cases.csv) / 20 use case | Chuẩn hóa workbook kiểm thử ban đầu, giữ sheet/dòng nguồn và kết quả gốc | Excel ghi 337 Pass; là thực thi lịch sử, không phải retest build mới |
-| [70 case tập trung](test-cases/test-cases.csv) | Thiết kế hồi quy bổ trợ có bước, dữ liệu, kỳ vọng, ưu tiên và kỹ thuật | Một số assertions đã được tự động hóa; chưa retest thủ công toàn bộ bộ case |
-| [Bộ ưu tiên 40 case](test-cases/regression-suite.csv) | Tập con về xác thực/phân quyền, lịch hẹn/check-in, thanh toán và BUG-002/003/004 | **38 Pass / 1 Fail / 1 Blocked**; kết quả hỗ trợ API/UI có nguồn riêng |
+| [337 original cases](test-cases/source-cases.csv) across 20 use cases | Normalizes the original workbook while preserving source sheets, row numbers, and results | Excel records 337 historical passes |
+| [70 focused cases](test-cases/test-cases.csv) | Regression designs with steps, test data, expectations, priorities, and techniques | Some assertions are automated. A full manual retest of this set is still pending. |
+| [40-case priority subset](test-cases/regression-suite.csv) | Authentication, authorization, appointments, check-in, payment, and BUG-002/003/004 | **38 passed, 1 failed, 1 blocked**. Assisted API/UI results have separate evidence. |
 
-70 case tập trung có chồng lấp với 337 case gốc: **không cộng thành 407 kịch bản độc lập**. Bộ 40 case là tập con, không phải bộ bổ sung. Automation bao phủ một phần không có nghĩa toàn bộ case đã Pass manual.
+The 70 focused cases overlap with the 337 historical cases, and the 40 priority cases are a subset of the focused cases. Count each inventory within its scope. Partial automation coverage leaves manual execution status to the workbook.
 
-Khi mô tả dự án trong CV, “70 test case” cần được gọi rõ là **bộ thiết kế hồi quy 70 case**; kết quả thực thi bộ ưu tiên 40 case được ghi riêng. Không dùng 337 Pass của đợt trước làm bằng chứng retest sau sửa 6 bug: nguồn hiện có chưa xác nhận trình tự đó. Bằng chứng phát hiện/sửa/retest từng bug nằm trong [registry](bug-reports/registry.json) và các báo cáo liên kết.
+On a CV, describe the 70 cases as a **70-case regression design** and report the 40-case execution separately. The 337 historical passes predate the current retest evidence. See the [registry](bug-reports/registry.json) and linked reports for the discovery, fix, and retest evidence for each defect.
 
-Bốn trường thiết kế thiếu được bổ sung bằng [bản hiệu chỉnh](test-cases/source-corrections.json), giữ nguyên file gốc, trạng thái lịch sử và các trường Actual lịch sử còn thiếu. **Excel là nguồn thống nhất cho danh mục và kết quả kiểm thử chức năng đợt trước: 337 case / 20 use case, 337 Pass lịch sử.** PDF chỉ lưu làm tài liệu tham khảo; không dùng số liệu PDF để tổng hợp kết quả. [Đối chiếu nguồn](../docs/requirements/source-reconciliation.md) lưu thông tin kiểm tra nguồn gốc.
+The [source corrections](test-cases/source-corrections.json) fill four missing design fields while preserving the original file, historical statuses, and missing actual results. **Excel is the source of record for the earlier functional catalog and its 337 historical passes across 20 use cases.** The PDF is kept as a reference. See the [source reconciliation](../docs/requirements/source-reconciliation.md) for the provenance check.
 
-## 4. Thực thi kiểm thử
+## 4. Test Execution
 
-Kết quả hiện tại ở [workbook MAN-20261114-01](test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx), sheet **Execution**, gồm build, thời gian, Actual và trạng thái. [Workbook 40 case trống](test-execution/manual-regression.xlsx) là mẫu dùng cho đợt mới. [Workbook tổng](test-execution/test-execution.xlsx) được giữ riêng.
+The [MAN-20261114-01 workbook](test-execution/manual-runs/MAN-20261114-01/manual-regression.xlsx) records the build, time, actual result, and status in the **Execution** sheet. Use the [blank 40-case workbook](test-execution/manual-regression.xlsx) for a new run. The [master workbook](test-execution/test-execution.xlsx) is kept separately.
 
-Kết quả ghi trong file: **38 Pass / 1 Fail / 1 Blocked**. TC-PAY-016 Fail do phụ phí `-1` vẫn được thanh toán với thành tiền/thực thu `99999`; TC-APPT-014 Blocked vì chưa xác minh thời điểm bằng nhau tuyệt đối. Xem [nguồn API/UI hỗ trợ](test-execution/assisted-runs/README.md) và [hướng dẫn thực thi/retest](test-execution/manual-regression.md).
+The recorded results are **38 passed, 1 failed, and 1 blocked**. TC-PAY-016 failed because the app accepted a surcharge of `-1` and saved both the total due and the amount collected as `99999`. TC-APPT-014 was blocked because exact timing equality was unverified. See the [assisted API/UI evidence](test-execution/assisted-runs/README.md) and [execution and retest guide](test-execution/manual-regression.md).
 
-1. Lưu bản sao mới cho mỗi Run ID. Ghi commit build, môi trường/trình duyệt, người thực hiện và thời gian thực tế.
-2. Chuẩn bị dữ liệu giả và ghi ID bệnh nhân/lịch hẹn/hóa đơn đã dùng. Thực hiện các bước trên đúng build đó.
-3. So sánh quan sát với **Expected — kết quả mong đợi**. Ghi thông báo, HTTP status, trạng thái đã lưu, số hóa đơn hoặc số dư thực tế vào **Actual — kết quả thực tế**, kèm ảnh hoặc response đã làm sạch.
-4. Chọn **Pass** khi đã quan sát đủ kỳ vọng; **Fail** nếu sai khác; **Blocked** kèm điều kiện/tính năng đang thiếu; case chưa làm giữ **Not Run**. Ghi Bug ID khi có lỗi.
+1. Save a fresh copy for each run ID. Record the build commit, environment and browser, tester, and actual execution time.
+2. Prepare synthetic data and record the patient, appointment, or invoice IDs used. Execute on the recorded build.
+3. Compare observations with **Expected**. Record messages, HTTP status, persisted state, invoice count, or the actual balance under **Actual**, with a screenshot or redacted response.
+4. Use **Pass** when all expectations are observed, **Fail** for a discrepancy, **Blocked** when a prerequisite or feature is missing, and **Not Run** for untouched cases. Add the Bug ID for defects.
 
-Kết quả đợt kiểm thử trước có ở [Excel](test-execution/history/manual-execution.xlsx) và [CSV](test-execution/history/manual-execution.csv). Metadata thiếu trong nguồn tiếp tục được ghi rõ là chưa có. Không chép kết quả automation vào trường manual hoặc lấy Expected điền cho Actual lịch sử còn thiếu.
+Earlier results are available in [Excel](test-execution/history/manual-execution.xlsx) and [CSV](test-execution/history/manual-execution.csv). Source metadata gaps are recorded explicitly. Keep automated results in their own fields, and leave missing historical actuals marked as unavailable.
 
-[Tổng hợp QA mới nhất](test-execution/latest-qa-summary.md) là nguồn trạng thái hiện hành; [báo cáo lịch sử](test-execution/test-report.md) giữ các run trước mở rộng coverage. Bộ 40 đã ghi kết quả, với hai mục cần xử lý/retest nêu trên. Bộ 337 case được trình bày riêng là kết quả lịch sử.
+The [latest QA summary](test-execution/latest-qa-summary.md) gives the current status. The [historical report](test-execution/test-report.md) preserves runs from before coverage expanded. The 40-case workbook records the two follow-up items above, and the 337-case record documents earlier execution.
 
-## 5. Quản lý lỗi
+## 5. Defect Management
 
-[Sổ theo dõi lỗi](bug-reports/README.md) dẫn đến tiền điều kiện, bước tái hiện, kết quả mong đợi/thực tế, severity, priority và bằng chứng. [Registry JSON](bug-reports/registry.json) lưu sự kiện vòng đời.
+The [defect register](bug-reports/README.md) links prerequisites, reproduction steps, expected and actual results, severity, priority, and evidence. The [JSON registry](bug-reports/registry.json) records lifecycle events.
 
-| Lỗi | Hiện tượng | Kết quả xác minh |
+| Defect | Symptom | Verification result |
 | --- | --- | --- |
-| [BUG-002](bug-reports/BUG-002.md) | Lịch đã hoàn thành bị lùi trạng thái | Closed sau retest tự động: HTTP 400, trạng thái đã lưu giữ nguyên |
-| [BUG-003](bug-reports/BUG-003.md) | Hoàn thành lặp tạo trùng hóa đơn | Closed sau retest tuần tự/đồng thời: đúng một hóa đơn |
-| [BUG-004](bug-reports/BUG-004.md) | UI thu tiền mặt không lưu số tiền thực thu | Closed sau retest: amountPaid = finalAmount, debt = 0 |
-| [BUG-005](bug-reports/BUG-005.md) | Doctor đọc/cập nhật lịch bác sĩ khác | Closed, High/P0; ba test HTTP Pass sau sửa |
-| [BUG-006](bug-reports/BUG-006.md) | Dữ liệu thiếu/ID sai trả HTTP 500 | Closed, Medium/P2; chín test HTTP Pass sau sửa |
+| [BUG-002](bug-reports/BUG-002.md) | A completed appointment could move to an earlier state | Closed after automated retest. HTTP 400 and persisted state unchanged. |
+| [BUG-003](bug-reports/BUG-003.md) | Repeated completion created duplicate invoices | Closed after sequential and concurrent retesting. Exactly one invoice. |
+| [BUG-004](bug-reports/BUG-004.md) | Cash payment in the UI failed to save the amount collected | Closed after retest. `amountPaid = finalAmount` and `debt = 0`. |
+| [BUG-005](bug-reports/BUG-005.md) | A doctor could read or update another doctor's appointment | Closed, High/P0. Three HTTP tests passed after the fix. |
+| [BUG-006](bug-reports/BUG-006.md) | Missing data or malformed IDs returned HTTP 500 | Closed, Medium/P2. Nine HTTP tests passed after the fix. |
 
-Vòng đời: **New → Open → Fixed → Retest → Closed**; retest thất bại chuyển Reopened. Giữ bằng chứng Trước sửa → Sau sửa → Hồi quy. [Trước sửa](../automation-testing/reports/runs/QA-20261113T124125327Z-5e0311/execution.json) và [Sau sửa / Hồi quy](../automation-testing/reports/runs/QA-20261113T124551346Z-2f0e1e/execution.json) là hai hồ sơ riêng, không ghi đè. Đóng lỗi cần commit sửa và assertions retest liên kết đều Pass; kết quả trong workbook và nguồn automation được ghi đúng phạm vi.
+The lifecycle is **New → Open → Fixed → Retest → Closed**. A failed retest moves the defect to Reopened. Keep independent [pre-fix](../automation-testing/reports/runs/QA-20261113T124125327Z-5e0311/execution.json) and [post-fix and regression](../automation-testing/reports/runs/QA-20261113T124551346Z-2f0e1e/execution.json) records. Closing a defect requires a fix commit and a retest with all linked assertions passing. Record workbook and automated outcomes in their respective scopes.
 
-## 6. Truy xuất yêu cầu
+## 6. Requirements Traceability
 
-- [RTM lịch sử](rtm/historical-rtm.csv): 337 case gốc thuộc 20 use case, trang đặc tả, mã nguồn liên quan và kết quả lịch sử.
-- [RTM tập trung](rtm/rtm.tsv): 31 yêu cầu; 30 Current và một yêu cầu tiền lương Deferred. Coverage là Designed — đã thiết kế, không phải đã thực thi.
-- [Liên kết case tập trung với nguồn](rtm/trace-links.json): ánh xạ hành vi liên quan, không chứng minh hai kịch bản tương đương toàn bộ.
-- [RTM theo run](../automation-testing/reports/runs/QA-20261113T124551346Z-2f0e1e/traceability.csv): trạng thái manual và automation một phần nằm ở các trường riêng.
+- The [historical RTM](rtm/historical-rtm.csv) maps 337 original cases across 20 use cases to specification pages, relevant code, and historical results.
+- The [focused RTM](rtm/rtm.tsv) tracks 31 requirements, with 30 Current and one payroll requirement Deferred. The coverage label Designed records test design status.
+- The [focused-to-source case links](rtm/trace-links.json) connect related behaviors. The degree of equivalence depends on each case's steps and expectations.
+- The [run-level RTM](../automation-testing/reports/runs/QA-20261113T124551346Z-2f0e1e/traceability.csv) records manual status and partial automation status in separate fields.
 
-Chạy `node .github/qa/scripts/audit-qa.js` từ thư mục gốc sau khi sửa thiết kế/ánh xạ. Làm theo [CONTRIBUTING.md](../CONTRIBUTING.md) để giữ tính toàn vẹn của nguồn và bằng chứng.
+Run `node .github/qa/scripts/audit-qa.js` from the repository root after editing designs or mappings. Follow [CONTRIBUTING.md](../CONTRIBUTING.md) to preserve sources and evidence.
